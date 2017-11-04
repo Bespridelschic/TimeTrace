@@ -7,7 +7,64 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<Page.Resources>
+		<Style TargetType="TextBox">
+			<Setter Property="Height" Value="60"/>
+			<Setter Property="Width" Value="250"/>
+			<Setter Property="PlaceholderText" Value="Введите ваш логин..."/>
+			<Setter Property="ToolTipService.Placement" Value="Top"/>
+			<Setter Property="ToolTipService.ToolTip" Value="Введите данные что были указаны при регистрации"/>
+		</Style>
 
-    </Grid>
+		<Style TargetType="PasswordBox">
+			<Setter Property="Height" Value="60"/>
+			<Setter Property="Width" Value="250"/>
+			<Setter Property="PlaceholderText" Value="Введите ваш пароль..."/>
+			<Setter Property="ToolTipService.Placement" Value="Top"/>
+			<Setter Property="ToolTipService.ToolTip" Value="Введите данные что были указаны при регистрации"/>
+		</Style>
+
+		<Style TargetType="Button">
+			<Setter Property="Height" Value="30"/>
+			<Setter Property="Width" Value="100"/>
+			<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="BorderBrush" Value="SteelBlue"/>
+			<Setter Property="ToolTipService.Placement" Value="Top"/>
+			<Setter Property="ToolTipService.ToolTip" Value="Войти в систему"/>
+		</Style>
+	</Page.Resources>
+	
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="0.3*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.7*"/>
+			<RowDefinition Height="0.7*"/>
+		</Grid.RowDefinitions>
+
+		<Grid Grid.Row="1">
+			<TextBlock Text="Time Trace" FontSize="60" Foreground="SteelBlue" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		</Grid>
+
+		<Grid Grid.Row="2">
+			<TextBox Name="LoginTextBox" Header="Логин:"/>
+		</Grid>
+
+		<Grid Grid.Row="3">
+			<PasswordBox Name="PasswordTextBox" Header="Пароль:"/>
+		</Grid>
+
+		<Grid Grid.Row="4">
+			<Button Content="Войти" Click="LoginInSystemButton"/>
+		</Grid>
+
+		<Grid Grid.Row="5">
+			<HyperlinkButton VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Нет аккаунта? Зарегистируйтесь!" Margin="0, 0, 5, 1"
+							 ToolTipService.Placement="Top" ToolTipService.ToolTip="Перейти на страницу регистрации" NavigateUri="http://o129pak8.beget.tech/" />
+		</Grid>
+	</Grid>
 </Page>
