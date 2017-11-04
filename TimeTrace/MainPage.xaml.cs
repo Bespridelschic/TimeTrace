@@ -36,6 +36,9 @@ namespace TimeTrace
 			//LoginButton.BorderBrush = color;
 		}
 
+		/// <summary>
+		/// Собитие при входе в систему
+		/// </summary>
 		private async void LoginInSystemButton(object sender, RoutedEventArgs e)
 		{
 			WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/site/hello");
