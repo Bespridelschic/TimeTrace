@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -41,22 +42,29 @@ namespace TimeTrace
 		/// </summary>
 		private async void LoginInSystemButton(object sender, RoutedEventArgs e)
 		{
-			WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/site/hello");
-			WebResponse response = await request.GetResponseAsync();
-
-			Stream webStream = response.GetResponseStream();
-			string responseMessage = string.Empty;
-
-			using (StreamReader sr = new StreamReader(webStream))
+			try
 			{
-				string line = "";
-				while ((line = sr.ReadLine()) != null)
-				{
-					responseMessage += line;
-				}
-			}
+				WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/site/hello1");
+				WebResponse response = await request.GetResponseAsync();
 
-			await (new MessageDialog($"{responseMessage}", "Результат запроса")).ShowAsync();
+				Stream webStream = response.GetResponseStream();
+				string responseMessage = string.Empty;
+
+				using (StreamReader sr = new StreamReader(webStream))
+				{
+					string line = "";
+					while ((line = sr.ReadLine()) != null)
+					{
+						responseMessage += line;
+					}
+				}
+
+				await (new MessageDialog($"{responseMessage}", "Результат запроса")).ShowAsync();
+			}
+			catch(Exception ex)
+			{
+				await (new MessageDialog($"{ex.Message}", "Ошибка запроса!")).ShowAsync();
+			}
 		}
 	}
 }
