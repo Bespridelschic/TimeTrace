@@ -35,7 +35,6 @@
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="HorizontalAlignment" Value="Center"/>
 			<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
-			<Setter Property="BorderBrush" Value="SteelBlue"/>
 			<Setter Property="ToolTipService.Placement" Value="Top"/>
 			<Setter Property="ToolTipService.ToolTip" Value="Войти в систему"/>
 		</Style>
@@ -60,7 +59,7 @@
 		</Grid.RowDefinitions>
 
 		<Grid Grid.Row="1">
-			<TextBlock Text="Time Trace" FontSize="60" Foreground="SteelBlue" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+			<TextBlock Name="HeaderText" Text="Time Trace" FontSize="60" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Grid>
 
 		<Grid Grid.Row="2">
@@ -76,7 +75,7 @@
 		</Grid>
 
 		<Grid Grid.Row="5">
-			<Button Content="Войти" Click="LoginInSystemButton"/>
+			<Button Content="Войти" Click="LoginInSystemButton" Name="LoginButton"/>
 		</Grid>
 
 		<Grid Grid.Row="6">

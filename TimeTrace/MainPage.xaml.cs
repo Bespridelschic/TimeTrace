@@ -16,25 +16,28 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
 namespace TimeTrace
 {
-    /// <summary>
-    /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
-    /// </summary>
-    public sealed partial class MainPage : Page
-    {
-        public MainPage()
-        {
-            this.InitializeComponent();
+	/// <summary>
+	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
+	/// </summary>
+	public sealed partial class MainPage : Page
+	{
+		public MainPage()
+		{
+			this.InitializeComponent();
 
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(400, 700));
 
-			//var color = this.Resources["SystemAccentColor"];
-
-			//LoginButton.BorderBrush = color;
+			// Получение системного цвета и установка цвета не автоматическим элементам
+			var color = (Color)this.Resources["SystemAccentColor"];
+			SolidColorBrush brush = new SolidColorBrush(color);
+			LoginButton.BorderBrush = brush;
+			HeaderText.Foreground = brush;
 		}
 
 		/// <summary>
@@ -44,7 +47,7 @@ namespace TimeTrace
 		{
 			try
 			{
-				WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/site/hello1");
+				WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/site/hello");
 				WebResponse response = await request.GetResponseAsync();
 
 				Stream webStream = response.GetResponseStream();
@@ -61,7 +64,7 @@ namespace TimeTrace
 
 				await (new MessageDialog($"{responseMessage}", "Результат запроса")).ShowAsync();
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				await (new MessageDialog($"{ex.Message}", "Ошибка запроса!")).ShowAsync();
 			}
