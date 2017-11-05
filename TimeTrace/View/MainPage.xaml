@@ -71,7 +71,7 @@
 		</Grid>
 
 		<Grid Grid.Row="4">
-			<CheckBox Name="SavePassword" Content="Сохранить пароль" IsChecked="True"/>
+			<CheckBox Name="SavePasswordChBox" Content="Сохранить пароль" IsChecked="True"/>
 		</Grid>
 
 		<Grid Grid.Row="5">

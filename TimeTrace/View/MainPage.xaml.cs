@@ -46,14 +46,6 @@ namespace TimeTrace
 			LoginButton.BorderBrush = brush;
 			HeaderText.Foreground = brush;
 
-			if (Directory.Exists(@"D:\Downloads\file.dat"))
-			{
-				using (StreamReader sr = File.OpenText(@"D:\Downloads\file.dat"))
-				{
-					LoginTextBox.Text = sr.ReadLine();
-				}
-			}
-
 			// Лямбда обработки клавиши Enter на главном экране
 			KeyUp += (sender, e) =>
 				{
@@ -69,8 +61,6 @@ namespace TimeTrace
 		/// </summary>
 		private async void LoginInSystemButton(object sender, RoutedEventArgs e)
 		{
-			User user = new User(LoginTextBox.Text, PasswordTextBox.Password);
-
 			if (LoginTextBox.Text == string.Empty || PasswordTextBox.Password == string.Empty)
 			{
 				await (new MessageDialog("Одно из полей не задано", "Ошибка входа")).ShowAsync();
@@ -86,6 +76,8 @@ namespace TimeTrace
 				return;
 			}
 
+			User user = new User(LoginTextBox.Text, PasswordTextBox.Password);
+
 			if (user.Email == "BadEmail")
 			{
 				await (new MessageDialog("Не правильно введен Email", "Ошибка входа")).ShowAsync();
@@ -94,13 +86,20 @@ namespace TimeTrace
 
 			//await (new MessageDialog($"{user.PasswordEncrypt()}", "Зашифрованный пароль")).ShowAsync(); return;
 
-			if (SavePassword.IsChecked == true)
+			if (SavePasswordChBox.IsChecked == true)
 			{
 				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 				StorageFile storageFile = await storageFolder.CreateFileAsync("PSF.bin", CreationCollisionOption.ReplaceExisting);
 
 				await FileIO.WriteTextAsync(storageFile, PasswordTextBox.Password);
 			}
+
+			// Read from file
+
+			/*StorageFolder storageFolder1 = ApplicationData.Current.LocalFolder;
+			StorageFile storageFile1 = await storageFolder1.GetFileAsync("PSF.bin");
+
+			await (new MessageDialog($"{FileIO.ReadTextAsync(storageFile1)}", "Зашифрованный пароль")).ShowAsync();*/
 
 			//return;
 
