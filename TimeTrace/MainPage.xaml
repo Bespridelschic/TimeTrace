@@ -16,7 +16,7 @@
 		<Style TargetType="TextBox" BasedOn="{StaticResource CommonStyleAligment}">
 			<Setter Property="Height" Value="60"/>
 			<Setter Property="Width" Value="250"/>
-			<Setter Property="PlaceholderText" Value="Введите ваш логин..."/>
+			<Setter Property="PlaceholderText" Value="Введите ваш Email..."/>
 			<Setter Property="ToolTipService.Placement" Value="Top"/>
 			<Setter Property="ToolTipService.ToolTip" Value="Введите данные что были указаны при регистрации"/>
 		</Style>
@@ -63,7 +63,7 @@
 		</Grid>
 
 		<Grid Grid.Row="2">
-			<TextBox Name="LoginTextBox" Header="Логин:"/>
+			<TextBox Name="LoginTextBox" Header="Почта:" IsSpellCheckEnabled="False"/>
 		</Grid>
 
 		<Grid Grid.Row="3">
@@ -71,11 +71,11 @@
 		</Grid>
 
 		<Grid Grid.Row="4">
-			<CheckBox Content="Сохранить пароль" IsChecked="True"/>
+			<CheckBox Name="SavePassword" Content="Сохранить пароль" IsChecked="True"/>
 		</Grid>
 
 		<Grid Grid.Row="5">
-			<Button Content="Войти" Click="LoginInSystemButton" Name="LoginButton"/>
+			<Button Name="LoginButton" Content="Войти" Click="LoginInSystemButton"/>
 		</Grid>
 
 		<Grid Grid.Row="6">
