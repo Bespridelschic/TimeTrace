@@ -4,12 +4,17 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.Storage;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace TimeTrace.Model
 {
 	public class User
 	{
-		#region Свойства
+		#region Свойства		
 		private string email;
 		public string Email
 		{
@@ -34,7 +39,10 @@ namespace TimeTrace.Model
 		public string Password
 		{
 			get { return password; }
-			set { password = value; }
+			set
+			{
+				password = value;
+			}
 		}
 		#endregion
 
@@ -51,6 +59,7 @@ namespace TimeTrace.Model
 		}
 		#endregion
 
+		#region JSON
 		/// <summary>
 		/// Сериализация объекта User в формат Json
 		/// </summary>
@@ -71,30 +80,91 @@ namespace TimeTrace.Model
 			User user = JsonConvert.DeserializeObject<User>(jsonString);
 			return user;
 		}
+		#endregion
 
-		public string PasswordEncrypt()
+		/// <summary>
+		/// Хэширование пароля алгоритмом SHA512 UTF8-UTF8
+		/// </summary>
+		/// <returns>Хэшированный пароль</returns>
+		public string GetHashEncrypt()
 		{
 			SHA512 hash = SHA512.Create();
-
-
-			TripleDES tripleDES = TripleDES.Create();
-			tripleDES.KeySize = 128;
-			tripleDES.BlockSize = 128;
-			tripleDES.Padding = PaddingMode.PKCS7;
-			tripleDES.Mode = CipherMode.CBC;
-			tripleDES.Key = Encoding.UTF8.GetBytes("TimeTraceSecretCodeForPassword");
-
-			ICryptoTransform cryptoTransform = tripleDES.CreateEncryptor();
-			byte[] passwordIdByte = Encoding.UTF8.GetBytes(password);
-			byte[] cryptoPassword = cryptoTransform.TransformFinalBlock(passwordIdByte, 0, passwordIdByte.Length);
-
-			return Convert.ToBase64String(cryptoPassword);
+			var result = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+			return Encoding.UTF8.GetString(result);
 		}
+
+		#region Работа с файлом
+		/// <summary>
+		/// Сохранение данных пользователя в файл
+		/// </summary>
+		public async Task<string> SaveUserToFile()
+		{
+			StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+			StorageFile storageFile = await storageFolder.CreateFileAsync("PSF.bin", CreationCollisionOption.ReplaceExisting);
+
+			string result = string.Empty;
+
+			using (Aes crypto = Aes.Create())
+			{
+				crypto.BlockSize = 128;
+				crypto.KeySize = 256;
+				crypto.GenerateIV();
+				crypto.GenerateKey();
+				crypto.Mode = CipherMode.CBC;
+				crypto.Padding = PaddingMode.PKCS7;
+
+				ICryptoTransform cryptoTransform = crypto.CreateEncryptor();
+				byte[] passwordBytes = cryptoTransform.TransformFinalBlock(Encoding.UTF8.GetBytes(Password), 0, Password.Length);
+
+				passwordCrypted = result;
+				return result = Convert.ToBase64String(passwordBytes);
+			}
+
+			await FileIO.WriteTextAsync(storageFile, result);
+			return result;
+		}
+		string passwordCrypted;
+		/// <summary>
+		/// Получение пароля из локального хранилища
+		/// </summary>
+		/// <returns></returns>
+		public async Task<string> LoadUserFromFile()
+		{
+			StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+			StorageFile storageFile = await storageFolder.GetFileAsync("PSF.bin");
+
+			string result = string.Empty;
+
+			using (Aes crypto = Aes.Create())
+			{
+				crypto.BlockSize = 128;
+				crypto.KeySize = 256;
+				crypto.GenerateIV();
+				crypto.GenerateKey();
+				crypto.Mode = CipherMode.CBC;
+				crypto.Padding = PaddingMode.PKCS7;
+
+				ICryptoTransform cryptoTransform = crypto.CreateDecryptor();
+
+				byte[] encryptedBytes = Convert.FromBase64String(passwordCrypted);
+				byte[] passwordBytes = cryptoTransform.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
+
+				return result = Encoding.UTF8.GetString(passwordBytes);
+			}
+
+			if (File.Exists(storageFile.Path))
+			{
+				return await FileIO.ReadTextAsync(storageFile);
+			}
+
+			return null;
+		}
+		#endregion
 
 		#region Overrides
 		public override string ToString()
 		{
-			return $"{Email}, {Password}";
+			return $"{Email}: {Password}";
 		}
 		#endregion
 	}

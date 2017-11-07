@@ -20,38 +20,44 @@ using Windows.UI;
 using Newtonsoft.Json;
 using System.Xml.Serialization;
 using TimeTrace.Model;
+using TimeTrace.View;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using Windows.Storage;
 using System.Security.Cryptography;
+using Windows.ApplicationModel.Core;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
-namespace TimeTrace
+namespace TimeTrace.View
 {
 	/// <summary>
 	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
 	/// </summary>
-	public sealed partial class MainPage : Page
+	public sealed partial class SignInPage : Page
 	{
-		public MainPage()
+		public SignInPage()
 		{
 			this.InitializeComponent();
 
-			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(400, 700));
+			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(385, 800));
 
 			// Получение системного цвета и установка цвета не автоматическим элементам
 			var color = (Color)this.Resources["SystemAccentColor"];
 			SolidColorBrush brush = new SolidColorBrush(color);
-			LoginButton.BorderBrush = brush;
+			SignInButton.BorderBrush = brush;
 			HeaderText.Foreground = brush;
+
+			// Получение логина из файла
+			//Task<string> task = GetPasswordFromLocal();
+			//LoginTextBox.Text = task.Result;
 
 			// Лямбда обработки клавиши Enter на главном экране
 			KeyUp += (sender, e) =>
 				{
 					if (e.Key == Windows.System.VirtualKey.Enter)
 					{
-						LoginInSystemButton(this, e);
+						SignInButton_Click(this, e);
 					}
 				};
 		}
@@ -59,15 +65,15 @@ namespace TimeTrace
 		/// <summary>
 		/// Собитие при входе в систему
 		/// </summary>
-		private async void LoginInSystemButton(object sender, RoutedEventArgs e)
+		private async void SignInButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (LoginTextBox.Text == string.Empty || PasswordTextBox.Password == string.Empty)
+			if (EmailTextBox.Text == string.Empty || PasswordTextBox.Password == string.Empty)
 			{
 				await (new MessageDialog("Одно из полей не задано", "Ошибка входа")).ShowAsync();
 
-				if (LoginTextBox.Text == string.Empty)
+				if (EmailTextBox.Text == string.Empty)
 				{
-					LoginTextBox.Focus(FocusState.Keyboard);
+					EmailTextBox.Focus(FocusState.Keyboard);
 				}
 				else
 				{
@@ -76,7 +82,12 @@ namespace TimeTrace
 				return;
 			}
 
-			User user = new User(LoginTextBox.Text, PasswordTextBox.Password);
+			User user = new User(EmailTextBox.Text, PasswordTextBox.Password);
+			var res = user.SaveUserToFile();
+			await (new MessageDialog($"{res.Result}", "Зашифрованный")).ShowAsync();
+
+			res = user.LoadUserFromFile();
+			await (new MessageDialog($"{res.Result}", "Расшифрованный")).ShowAsync();
 
 			if (user.Email == "BadEmail")
 			{
@@ -84,7 +95,7 @@ namespace TimeTrace
 				return;
 			}
 
-			//await (new MessageDialog($"{user.PasswordEncrypt()}", "Зашифрованный пароль")).ShowAsync(); return;
+			await (new MessageDialog($"В сеть {user.GetHashEncrypt()}", $"Локально {user.SaveUserToFile()}")).ShowAsync();
 
 			if (SavePasswordChBox.IsChecked == true)
 			{
@@ -154,6 +165,11 @@ namespace TimeTrace
 			//catch (Exception ex)
 			//{
 			//	await (new MessageDialog($"{ex.Message}", "Ошибка запроса!")).ShowAsync();
+		}
+
+		private void SignUpButton_Click(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(SignUpPage), EmailTextBox.Text.ToString());
 		}
 	}
 }
