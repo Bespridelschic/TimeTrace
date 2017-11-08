@@ -5,4 +5,12 @@
     xmlns:local="using:TimeTrace"
     RequestedTheme="Light">
 
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="ResourceDictionaries/SignInUpDictionary.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
+	
 </Application>

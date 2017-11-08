@@ -1,0 +1,70 @@
+﻿<Page
+    x:Class="TimeTrace.View.SignUp.SignUpExtendPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TimeTrace.View.SignUp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+	<Page.Resources>
+		<Style TargetType="Grid" x:Key="GridAnimation">
+			<Setter Property="Transitions">
+				<Setter.Value>
+					<TransitionCollection>
+						<EdgeUIThemeTransition Edge="Top"/>
+					</TransitionCollection>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Page.Resources>
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="32"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.6*"/>
+			<RowDefinition Height="0.5*"/>
+			<RowDefinition Height="0.5*"/>
+			<RowDefinition Height="0.1*"/>
+		</Grid.RowDefinitions>
+
+		<Grid Grid.Row="0" Background="{StaticResource HostBackdropBrush}"/>
+
+		<Grid Grid.Row="1" Style="{StaticResource GridAnimation}">
+			<TextBlock Name="HeaderText" Text="Больше информации" FontSize="30"/>
+		</Grid>
+
+		<Grid Grid.Row="2" Style="{StaticResource GridAnimation}">
+			<TextBox Name="LastNameTextBox" Header="Фамилия:" IsSpellCheckEnabled="True" PlaceholderText="Введите вашу фамилию..."
+					 ToolTipService.ToolTip="Введите свою фамилию"/>
+		</Grid>
+
+		<Grid Grid.Row="3" Style="{StaticResource GridAnimation}">
+			<TextBox Name="NameTextBox" Header="Имя:" IsSpellCheckEnabled="True" PlaceholderText="Введите ваше имя..."
+					 ToolTipService.ToolTip="Введите своё имя"/>
+		</Grid>
+
+		<Grid Grid.Row="4" Style="{StaticResource GridAnimation}">
+			<TextBox Name="MiddleNameTextBox" Header="Отчество:" IsSpellCheckEnabled="True" PlaceholderText="Введите ваше отчество..."
+					 ToolTipService.ToolTip="Введите своё отчество"/>
+		</Grid>
+
+		<Grid Grid.Row="5" Style="{StaticResource GridAnimation}">
+			<CalendarDatePicker Name="BirthdateCalendar" Header="Дата рождения:" PlaceholderText="Установите дату рождения..."
+								ToolTipService.ToolTip="Уточните дату вашего рождения"/>
+		</Grid>
+
+		<Grid Grid.Row="6" Style="{StaticResource GridAnimation}">
+			<Button Name="SignUpCompleteButton" Content="Завершить" Click="SignUpCompleteButton_Click" VerticalAlignment="Bottom"
+					ToolTipService.ToolTip="Завершить регистрацию в системе"/>
+		</Grid>
+
+		<Grid Grid.Row="7">
+			<ProgressRing Name="SignUpProgressRing"/>
+		</Grid>
+	</Grid>
+</Page>

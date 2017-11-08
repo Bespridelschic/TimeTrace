@@ -117,7 +117,7 @@ namespace TimeTrace.Model
 				byte[] passwordBytes = cryptoTransform.TransformFinalBlock(Encoding.UTF8.GetBytes(Password), 0, Password.Length);
 
 				passwordCrypted = result;
-				return result = Convert.ToBase64String(passwordBytes);
+				return result = Encoding.UTF8.GetString(passwordBytes);
 			}
 
 			await FileIO.WriteTextAsync(storageFile, result);
@@ -146,7 +146,7 @@ namespace TimeTrace.Model
 
 				ICryptoTransform cryptoTransform = crypto.CreateDecryptor();
 
-				byte[] encryptedBytes = Convert.FromBase64String(passwordCrypted);
+				byte[] encryptedBytes = Encoding.UTF8.GetBytes(passwordCrypted);
 				byte[] passwordBytes = cryptoTransform.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
 
 				return result = Encoding.UTF8.GetString(passwordBytes);

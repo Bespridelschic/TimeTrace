@@ -48,18 +48,15 @@ namespace TimeTrace.View
 			SignInButton.BorderBrush = brush;
 			HeaderText.Foreground = brush;
 
-			// Получение логина из файла
-			//Task<string> task = GetPasswordFromLocal();
-			//LoginTextBox.Text = task.Result;
-
 			// Лямбда обработки клавиши Enter на главном экране
 			KeyUp += (sender, e) =>
+			{
+				if (e.Key == Windows.System.VirtualKey.Enter)
 				{
-					if (e.Key == Windows.System.VirtualKey.Enter)
-					{
-						SignInButton_Click(this, e);
-					}
-				};
+					SignInButton_Click(this, e);
+				}
+			};
+
 		}
 
 		/// <summary>
@@ -69,16 +66,27 @@ namespace TimeTrace.View
 		{
 			if (EmailTextBox.Text == string.Empty || PasswordTextBox.Password == string.Empty)
 			{
-				await (new MessageDialog("Одно из полей не задано", "Ошибка входа")).ShowAsync();
+				if (PasswordTextBox.Password == string.Empty)
+				{
+					PasswordTextBox.Focus(FocusState.Keyboard);
+					PassTypeErrorTextBlock.Visibility = Visibility.Visible;
+					FieldsTypeErrorTextBlock.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					PassTypeErrorTextBlock.Visibility = Visibility.Collapsed;
+				}
 
 				if (EmailTextBox.Text == string.Empty)
 				{
 					EmailTextBox.Focus(FocusState.Keyboard);
+					EmailTypeErrorTextBlock.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					PasswordTextBox.Focus(FocusState.Keyboard);
+					EmailTypeErrorTextBlock.Visibility = Visibility.Collapsed;
 				}
+
 				return;
 			}
 

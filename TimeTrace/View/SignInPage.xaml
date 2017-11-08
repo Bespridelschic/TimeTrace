@@ -6,51 +6,25 @@
 	xmlns:Data="using:TimeTrace.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+	xmlns:media="using:Windows.UI.Xaml.Media"
+	mc:Ignorable="d">
 
 	<Page.Resources>
-		<Style TargetType="Control" x:Key="CommonAligmentStyle">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Style TargetType="Grid" x:Key="GridAnimation">
+			<Setter Property="Transitions">
+				<Setter.Value>
+					<TransitionCollection>
+						<EntranceThemeTransition/>
+					</TransitionCollection>
+				</Setter.Value>
+			</Setter>
 		</Style>
 
-		<Style TargetType="TextBox" BasedOn="{StaticResource CommonAligmentStyle}">
-			<Setter Property="Height" Value="60"/>
-			<Setter Property="Width" Value="250"/>
-			<Setter Property="PlaceholderText" Value="Введите ваш Email..."/>
-			<Setter Property="ToolTipService.Placement" Value="Top"/>
-			<Setter Property="ToolTipService.ToolTip" Value="Введите данные что были указаны при регистрации"/>
-		</Style>
-
-		<Style TargetType="PasswordBox" BasedOn="{StaticResource CommonAligmentStyle}">
-			<Setter Property="Height" Value="60"/>
-			<Setter Property="Width" Value="250"/>
-			<Setter Property="PlaceholderText" Value="Введите ваш пароль..."/>
-			<Setter Property="ToolTipService.Placement" Value="Top"/>
-			<Setter Property="ToolTipService.ToolTip" Value="Введите данные что были указаны при регистрации"/>
-		</Style>
-
-		<Style TargetType="Button" BasedOn="{StaticResource CommonAligmentStyle}">
-			<Setter Property="Height" Value="30"/>
-			<Setter Property="Width" Value="100"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
-			<Setter Property="ToolTipService.Placement" Value="Top"/>
-			<Setter Property="ToolTipService.ToolTip" Value="Войти в систему"/>
-		</Style>
-
-		<Style TargetType="CheckBox" BasedOn="{StaticResource CommonAligmentStyle}">
-			<Setter Property="Height" Value="60"/>
-			<Setter Property="Width" Value="250"/>
-			<Setter Property="ToolTipService.Placement" Value="Top"/>
-			<Setter Property="ToolTipService.ToolTip" Value="Автоматический вход в систему при каждом запуске"/>
-		</Style>
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="0.3*"/>
+			<RowDefinition Height="32"/>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="0.6*"/>
 			<RowDefinition Height="0.6*"/>
@@ -59,29 +33,51 @@
 			<RowDefinition Height="0.5*"/>
 		</Grid.RowDefinitions>
 
-		<Grid Grid.Row="1">
-			<TextBlock Name="HeaderText" Text="Time Trace" FontSize="60" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="0.2*"/>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="0.2*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{StaticResource HostBackdropBrush}"/>
+
+		<Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource GridAnimation}">
+			<TextBlock Name="HeaderText" Text="Time Trace"/>
 		</Grid>
 
-		<Grid Grid.Row="2">
-			<TextBox Name="EmailTextBox" Header="Почта:" IsSpellCheckEnabled="False"/>
+		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
+			<TextBox Name="EmailTextBox" Header="Почта:" IsSpellCheckEnabled="False" PlaceholderText="Введите ваш Email..."/>
 		</Grid>
 
-		<Grid Grid.Row="3">
+		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
 			<PasswordBox Name="PasswordTextBox" Header="Пароль:"/>
 		</Grid>
 
-		<Grid Grid.Row="4">
-			<CheckBox Name="SavePasswordChBox" Content="Сохранить пароль" IsChecked="True"/>
+		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
+			<CheckBox Name="SavePasswordChBox" Content="Сохранить пароль" IsChecked="True" ToolTipService.ToolTip="Использовать автоматический вход в систему"
+					  VerticalAlignment="Top"/>
+			
+			<TextBlock Name="FieldsTypeErrorTextBlock" Text="Ошибка входа! Проверьте поля *" Foreground="Red" FontSize="15" VerticalAlignment="Bottom"
+					   Visibility="Collapsed"/>
 		</Grid>
 
-		<Grid Grid.Row="5">
-			<Button Name="SignInButton" Content="Войти" Click="SignInButton_Click"/>
+		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
+			<Button Name="SignInButton" Content="Войти" Click="SignInButton_Click" ToolTipService.ToolTip="Войти в систему"/>
 		</Grid>
 
-		<Grid Grid.Row="6">
+		<Grid Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource GridAnimation}">
 			<HyperlinkButton VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Нет аккаунта? Зарегистируйтесь!" Margin="0, 0, 10, 5"
-							 ToolTipService.Placement="Top" ToolTipService.ToolTip="Перейти на страницу регистрации" Click="SignUpButton_Click" />
+							 ToolTipService.ToolTip="Перейти на страницу регистрации" Click="SignUpButton_Click" />
 		</Grid>
+
+		<!--Поля указания ошибок-->
+		<Grid Grid.Row="2">
+			<TextBlock Name="EmailTypeErrorTextBlock" Text="*" Foreground="Red" HorizontalAlignment="Right" Margin="0, 40, 0, 0" Visibility="Collapsed"/>
+		</Grid>
+		
+		<Grid Grid.Row="3">
+			<TextBlock Name="PassTypeErrorTextBlock" Text="*" Foreground="Red" HorizontalAlignment="Right" Margin="0, 40, 0, 0" Visibility="Collapsed"/>
+		</Grid>
+		
 	</Grid>
 </Page>
