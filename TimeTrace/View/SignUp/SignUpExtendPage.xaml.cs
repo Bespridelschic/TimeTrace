@@ -38,10 +38,19 @@ namespace TimeTrace.View.SignUp
 
 		private async void SignUpCompleteButton_Click(object sender, RoutedEventArgs e)
 		{
+			/*Frame frame = Window.Current.Content as Frame;
+
 			SignUpProgressRing.IsActive = true;
+
 			await Task.Delay(100);
+
+			List<PageStackEntry> pageEntries = frame.BackStack.ToList();
+			if (pageEntries.Count > 0)
+				frame.Navigate(pageEntries[0].SourcePageType);
+
+			SignUpProgressRing.IsActive = false;*/
+
 			Frame.Navigate(typeof(SignInPage));
-			Frame.BackStack.Clear();
 		}
 	}
 }

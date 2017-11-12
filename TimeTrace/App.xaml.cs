@@ -91,7 +91,7 @@ namespace TimeTrace
 					}
 				});
 
-
+				// Лямбда для навигации
 				rootFrame.Navigated += (s, args) =>
 				{
 					if (rootFrame.CanGoBack) // если можно перейти назад, показываем кнопку

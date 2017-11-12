@@ -29,25 +29,17 @@ namespace TimeTrace.View
 		public SignUpPage()
 		{
 			this.InitializeComponent();
-
-			var color = (Color)this.Resources["SystemAccentColor"];
-			SolidColorBrush brush = new SolidColorBrush(color);
-			SignUpButton.BorderBrush = brush;
-			HeaderText.Foreground = brush;
-			SignUpProgressRing.Foreground = brush;
 		}
-
 		/// <summary>
-		/// Переход на предыдущую страницу
+		/// Получение системного цвета и установка цвета не автоматическим элементам
 		/// </summary>
-		/// <param name="sender">Объект отправитель</param>
-		/// <param name="e">Параметр события</param>
-		private async void SignUpButton_Click(object sender, RoutedEventArgs e)
+		private SolidColorBrush SolidBrush
 		{
-			SignUpProgressRing.IsActive = true;
-			await Task.Delay(100);
-			Frame.Navigate(typeof(SignUpExtendPage), EmailTextBox.Text.ToString());
-			Frame.BackStack.RemoveAt(Frame.BackStackDepth - 1);
+			get
+			{
+				var color = (Color)this.Resources["SystemAccentColor"];
+				return new SolidColorBrush(color);
+			}
 		}
 	}
 }
