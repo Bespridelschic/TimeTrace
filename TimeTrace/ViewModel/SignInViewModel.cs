@@ -18,6 +18,9 @@ using Windows.UI.Xaml.Media;
 
 namespace TimeTrace.ViewModel
 {
+	/// <summary>
+	/// ViewModel для входа в систему
+	/// </summary>
 	public class SignInViewModel : INotifyPropertyChanged
 	{
 		private User currentUser;
@@ -31,6 +34,7 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		// Команды входа / регистрации
 		public ICommand SignInCommand { get; set; }
 		public ICommand SignUpCommand { get; set; }
 
@@ -46,6 +50,29 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		// Начальная позиция курсора текста
+		private int selectionStart;
+		public int SelectionStart
+		{
+			get { return selectionStart; }
+			set
+			{
+				selectionStart = value;
+				OnPropertyChanged("StartSelect");
+			}
+		}
+
+		// Состояние флага сохранения пароля локально
+		private bool isPasswordSave;
+		public bool IsPasswordSave
+		{
+			get { return isPasswordSave; }
+			set
+			{
+				isPasswordSave = value;
+				OnPropertyChanged("IsPasswordSave");
+			}
+		}
 
 		public SignInViewModel()
 		{
@@ -53,9 +80,51 @@ namespace TimeTrace.ViewModel
 			this.SignUpCommand = new SignUpCommand();
 
 			CurrentUser = new User();
-			CurrentUser = (CurrentUser.LoadUserFromFile()).Result;
+			CurrentUser.LoadUserFromFile();
 
 			Processing = false;
+			IsPasswordSave = true;
+
+			SelectionStart = CurrentUser.Email.Length;
+		}
+
+		public static void ShowMessage()
+		{
+			(new MessageDialog("From VM", "Ошибка входа")).ShowAsync();
+		}
+
+		// Диалоговое окно подтверждения аккаунта
+		public async Task<string> ConfirmAccountDialogAsync()
+		{
+			TextBox inputTextBox = new TextBox
+			{
+				AcceptsReturn = false,
+				Height = 32,
+				Width = 300,
+				PlaceholderText = "Ввести полученный код"
+			};
+
+			ContentDialog dialog = new ContentDialog
+			{
+				Content = inputTextBox,
+				Title = "Подтверждение аккаунта",
+				PrimaryButtonText = "Активировать",
+				SecondaryButtonText = "Получить код",
+				//CloseButtonText = "Позже",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+			{
+				return inputTextBox.Text;
+			}
+
+			if (await dialog.ShowAsync() == ContentDialogResult.Secondary)
+			{
+
+			}
+
+			return string.Empty;
 		}
 
 		#region INotifyPropertyChanged
@@ -68,6 +137,9 @@ namespace TimeTrace.ViewModel
 
 		#endregion
 	}
+
+	// TODO: имплементировать фокус на незаполненные поля, реагирование на Enter
+
 
 	/// <summary>
 	/// Класс команды входа в систему
@@ -93,22 +165,20 @@ namespace TimeTrace.ViewModel
 					return false;
 				}
 
-				if (user.Password.Length < 8)
-				{
-					(new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа")).ShowAsync();
-					return false;
-				}
-
 				if (!user.EmailCorrectChech())
 				{
 					(new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка входа")).ShowAsync();
 					return false;
 				}
 
-				return true;
+				if (user.Password.Length < 8)
+				{
+					(new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа")).ShowAsync();
+					return false;
+				}
 			}
 
-			return false;
+			return true;
 		}
 
 		public async void Execute(object parameter)
@@ -126,6 +196,7 @@ namespace TimeTrace.ViewModel
 						case 0:
 							{
 								await (new MessageDialog("Вы успешно вошли в систему", "Успех")).ShowAsync();
+								//await CurrentUserViewModel.CurrentUser.SaveUserToFile();
 
 								break;
 							}
@@ -138,7 +209,8 @@ namespace TimeTrace.ViewModel
 							}
 						case 2:
 							{
-								await (new MessageDialog("Ваш профиль не активирован", "Ошибка входа")).ShowAsync();
+								await CurrentUserViewModel.ConfirmAccountDialogAsync();
+								//await CurrentUserViewModel.CurrentUser.SaveUserToFile();
 
 								break;
 							}
@@ -150,7 +222,7 @@ namespace TimeTrace.ViewModel
 							}
 						default:
 							{
-								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику программного обеспечения", "Ошибка входа")).ShowAsync();
+								await (new MessageDialog("Непредвиденная ошибка. Обратитесь к разработчику программного обеспечения", "Ошибка входа")).ShowAsync();
 
 								break;
 							}
@@ -178,11 +250,16 @@ namespace TimeTrace.ViewModel
 			return true;
 		}
 
-		public void Execute(object parameter)
+		public async void Execute(object parameter)
 		{
 			if (parameter is User user)
 			{
-				Frame frame = Window.Current.Content as Frame;
+				/*Frame frame = Window.Current.Content as Frame;
+
+				if (frame == null)
+				{
+					await(new MessageDialog("Frame is null", "Отказ")).ShowAsync();
+				}
 
 				if (user.Email.Length > 0)
 				{
@@ -191,7 +268,7 @@ namespace TimeTrace.ViewModel
 				else
 				{
 					frame.Navigate(typeof(SignUpPage));
-				}
+				}*/
 			}
 		}
 	}

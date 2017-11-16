@@ -19,8 +19,6 @@
 			</Setter>
 		</Style>
 	</Page.Resources>
-	
-	
 
 	<Page.DataContext>
 		<Data:SignInViewModel/>
@@ -51,17 +49,16 @@
 
 		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
 			<TextBox Name="EmailTextBox" Header="Почта:" IsSpellCheckEnabled="False" PlaceholderText="Введите ваш Email..."
-					 Text="{Binding CurrentUser.Email, Mode=TwoWay}"/>
+					 Text="{Binding CurrentUser.Email, Mode=TwoWay}" SelectionStart="{Binding SelectionStart, Mode=OneWay}" SelectionLength="0"/>
 		</Grid>
 
 		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox Name="PasswordTextBox" Header="Пароль:" MaxLength="20"
-						 Password="{Binding CurrentUser.Password, Mode=TwoWay}"/>
+			<PasswordBox Name="PasswordTextBox" Header="Пароль:" MaxLength="20" Password="{Binding CurrentUser.Password, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<CheckBox Name="SavePasswordChBox" Content="Сохранить пароль" IsChecked="True" ToolTipService.ToolTip="Использовать автоматический вход в систему"
-					  VerticalAlignment="Top"/>
+			<CheckBox Content="Сохранить пароль" IsChecked="{Binding IsPasswordSave, Mode=TwoWay}"
+					  ToolTipService.ToolTip="Использовать автоматический вход в систему" VerticalAlignment="Top"/>
 		</Grid>
 
 		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
@@ -83,7 +80,7 @@
 		<Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource GridAnimation}">
 			<HyperlinkButton VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Забыли пароль?" Margin="10, 0, 0, 5"
 							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля" Foreground="{x:Bind SolidBrush}"
-							 />
+							 Click="{x:Bind }"/>
 
 		</Grid>
 

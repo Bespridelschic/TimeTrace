@@ -116,6 +116,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="ProjectDiagrams\ProjectClassDiagrams.cd" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +158,6 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="System.Xml.ReaderWriter">
-      <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

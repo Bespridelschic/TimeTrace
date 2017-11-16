@@ -16,7 +16,8 @@ namespace TimeTrace.Model
 {
 	public class User : INotifyPropertyChanged
 	{
-		#region Свойства		
+		#region Свойства
+
 		private string email;
 		public string Email
 		{
@@ -83,7 +84,6 @@ namespace TimeTrace.Model
 			}
 		}
 
-
 		#endregion
 
 		#region Проверка корректности данных
@@ -106,7 +106,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Security level of password
+		/// Уровни сложности пароля
 		/// </summary>
 		public enum PasswordScore
 		{
@@ -152,10 +152,25 @@ namespace TimeTrace.Model
 
 		public User()
 		{
+			Email = string.Empty;
+			Password = string.Empty;
 
+			LastName = string.Empty;
+			FirstName = string.Empty;
+			MiddleName = string.Empty;
+			Birthday = string.Empty;
 		}
 
-		public User(string email, string password, string firstName = null, string lastName = null, string middleName = null, string birthday = null)
+		/// <summary>
+		/// Инициализация объекта класса <seealso cref="User"/>
+		/// </summary>
+		/// <param name="email">Адрес электронной почты</param>
+		/// <param name="password">Пароль</param>
+		/// <param name="firstName">Имя</param>
+		/// <param name="lastName">Фамилия</param>
+		/// <param name="middleName">Отчество</param>
+		/// <param name="birthday">Дата рождения</param>
+		public User(string email, string password, string firstName = "", string lastName = "", string middleName = "", string birthday = "")
 		{
 			Email = email;
 			Password = password;
@@ -171,10 +186,10 @@ namespace TimeTrace.Model
 		#region JSON
 
 		/// <summary>
-		/// Сериализация объекта User в формат Json
+		/// Сериализация объекта User в формат Json при входе в систему
 		/// </summary>
 		/// <returns>Строка в формате Json</returns>
-		public string JsonSerialize()
+		private string JsonSignInSerialize()
 		{
 			var res = new { email = Email, password = Password };
 			return JsonConvert.SerializeObject(res);
@@ -184,7 +199,7 @@ namespace TimeTrace.Model
 		/// Сериализация объекта User в формат Json при регистрации
 		/// </summary>
 		/// <returns>Строка в формате Json</returns>
-		public string SignUpJsonSerialize()
+		private string SignUpJsonSerialize()
 		{
 			var res = new { email = Email, password = Password, firstName = FirstName, lastName = LastName, middleName = MiddleName, birthday = Birthday };
 			return JsonConvert.SerializeObject(res);
@@ -194,12 +209,36 @@ namespace TimeTrace.Model
 		/// Десериализация объекта User в формате Json
 		/// </summary>
 		/// <param name="jsonString">Строка в формате Json</param>
-		/// <returns></returns>
-		public User JsonDeserialize(string jsonString)
+		/// <returns>Десериализированный объект User</returns>
+		private User JsonDeserialize(string jsonString)
 		{
 			User user = JsonConvert.DeserializeObject<User>(jsonString);
 			return user;
 		}
+
+		/// <summary>
+		/// Сериализация Email и активационного кода для активации аккаунта
+		/// </summary>
+		/// <param name="activationCode">Код активации</param>
+		/// <returns>Строка в формате Json</returns>
+		private string JsonAccountActivationSerialize(string activationCode)
+		{
+			var res = new { email = Email, SecretKey = activationCode };
+			return JsonConvert.SerializeObject(res);
+		}
+
+		/// <summary>
+		/// Сериализация Email и токена для входа в систему
+		/// </summary>
+		/// <param name="token">Значение токена</param>
+		/// <returns></returns>
+		private string JsonSignInWithTokenSerialize(string token)
+		{
+			var res = new { email = Email, token = token };
+			return JsonConvert.SerializeObject(res);
+		}
+
+		// TODO: Десериализация токена
 
 		#endregion
 
@@ -253,7 +292,7 @@ namespace TimeTrace.Model
 		/// Получение пароля из локального хранилища
 		/// </summary>
 		/// <returns></returns>
-		public async Task<User> LoadUserFromFile()
+		public async Task LoadUserFromFile()
 		{
 			try
 			{
@@ -262,32 +301,21 @@ namespace TimeTrace.Model
 
 				// Расположение файла C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
 
-				if (File.Exists(storageFile.Path) && storageFile != null)
+				var fileLines = await (FileIO.ReadLinesAsync(storageFile));
+
+				if (fileLines.Count <= 2)
 				{
-					string[] data = new string[2];
-
-					using (StreamReader sr = new StreamReader(await storageFile.OpenStreamForReadAsync()))
-					{
-						string line = string.Empty;
-
-						// Все свойства объекта
-						for (int i = 0; i < 6 && ((line = sr.ReadLineAsync().Result) != null); i++)
-						{
-							data[i] = line;
-						}
-
-						if (data.Length > 1)
-						{
-							return (new User(data[0], data[1]));
-						}
-					}
+					Email = fileLines[0];
+				}
+				if (fileLines.Count == 2)
+				{
+					Password = fileLines[1];
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 
 			}
-			return new User();
 
 			/*string result = string.Empty;
 
@@ -330,7 +358,7 @@ namespace TimeTrace.Model
 				byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
 				// устанавливаем тип содержимого - параметр ContentType
-				request.ContentType = "json";
+				request.ContentType = "application/json";
 
 				// Устанавливаем заголовок Content-Length запроса - свойство ContentLength
 				request.ContentLength = byteArray.Length;
@@ -372,42 +400,49 @@ namespace TimeTrace.Model
 			{
 				WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/customer/login");
 				request.Method = "POST";
-				await (new MessageDialog("1", "Успех")).ShowAsync();
-				string data = this.JsonSerialize();
+
+				string data = this.JsonSignInSerialize();
 				byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
 				// устанавливаем тип содержимого - параметр ContentType
-				request.ContentType = "json";
+				request.ContentType = "application/json";
 
 				// Устанавливаем заголовок Content-Length запроса - свойство ContentLength
 				request.ContentLength = byteArray.Length;
-				await (new MessageDialog("2", "Успех")).ShowAsync();
+
 				//записываем данные в поток запроса
 				using (Stream dataStream = request.GetRequestStream())
 				{
-					await (new MessageDialog("3", "Успех")).ShowAsync();
 					dataStream.Write(byteArray, 0, byteArray.Length);
 				}
 
 				string result = string.Empty;
-				await (new MessageDialog("4", "Успех")).ShowAsync();
+
 				WebResponse response = await request.GetResponseAsync();
-				await (new MessageDialog("5", "Успех")).ShowAsync();
 				using (Stream stream = response.GetResponseStream())
 				{
 					using (StreamReader reader = new StreamReader(stream))
 					{
-						await (new MessageDialog("6", "Успех")).ShowAsync();
 						result += reader.ReadToEnd();
 					}
 				}
-				await (new MessageDialog($"6 {result}", "Успех")).ShowAsync();
-				response.Close();
-				Int32.TryParse(result, out int codeResult);
 
-				return codeResult;
+				response.Close();
+
+				JsonTextReader jsonReader = new JsonTextReader(new StringReader(result));
+
+				for (int i = 0; jsonReader.Read() && i < 2; i++)
+				{
+					if (i ==0 && jsonReader != null)
+					{
+						await (new MessageDialog($"{jsonReader.Value}")).ShowAsync();
+						return Int32.Parse((string)jsonReader.Value);
+					}
+				}
+
+				return -1;
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return -1;
 			}

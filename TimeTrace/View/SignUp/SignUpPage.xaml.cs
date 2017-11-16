@@ -30,6 +30,7 @@ namespace TimeTrace.View
 		{
 			this.InitializeComponent();
 		}
+
 		/// <summary>
 		/// Получение системного цвета и установка цвета не автоматическим элементам
 		/// </summary>
