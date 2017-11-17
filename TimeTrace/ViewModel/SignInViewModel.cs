@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TimeTrace.Model;
 using TimeTrace.View;
+using TimeTrace.View.SignUp;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -34,11 +35,9 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
-		// Команды входа / регистрации
-		public ICommand SignInCommand { get; set; }
-		public ICommand SignUpCommand { get; set; }
-
-		// Состояние ProgressRing
+		/// <summary>
+		/// ProgressRing
+		/// </summary>
 		private bool processing;
 		public bool Processing
 		{
@@ -50,7 +49,9 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
-		// Начальная позиция курсора текста
+		/// <summary>
+		/// Начальная позиция курсора текста
+		/// </summary>
 		private int selectionStart;
 		public int SelectionStart
 		{
@@ -62,7 +63,9 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
-		// Состояние флага сохранения пароля локально
+		/// <summary>
+		/// Состояние флага сохранения пароля локально
+		/// </summary>
 		private bool isPasswordSave;
 		public bool IsPasswordSave
 		{
@@ -74,11 +77,11 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Конструктор инициализирующий новый объект <see cref="User"/> и пытающийся считать данные с файла
+		/// </summary>
 		public SignInViewModel()
 		{
-			this.SignInCommand = new SignInCommand(this);
-			this.SignUpCommand = new SignUpCommand();
-
 			CurrentUser = new User();
 			CurrentUser.LoadUserFromFile();
 
@@ -88,43 +91,179 @@ namespace TimeTrace.ViewModel
 			SelectionStart = CurrentUser.Email.Length;
 		}
 
-		public static void ShowMessage()
+		/// <summary>
+		/// Проверка полей на корректность
+		/// </summary>
+		/// <returns>Удовлетворяют ли поля бизнес-логике</returns>
+		private bool CanAppSignIn()
 		{
-			(new MessageDialog("From VM", "Ошибка входа")).ShowAsync();
+			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
+			{
+				(new MessageDialog("Заполните все поля", "Ошибка входа")).ShowAsync();
+				return false;
+			}
+
+			if (!CurrentUser.EmailCorrectChech())
+			{
+				(new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка входа")).ShowAsync();
+				return false;
+			}
+
+			if (CurrentUser.Password.Length < 8)
+			{
+				(new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа")).ShowAsync();
+				return false;
+			}
+
+			return true;
 		}
 
-		// Диалоговое окно подтверждения аккаунта
-		public async Task<string> ConfirmAccountDialogAsync()
+		/// <summary>
+		/// Попытка входа в систему
+		/// </summary>
+		public async void AppSignIn()
 		{
-			TextBox inputTextBox = new TextBox
+			if (!CanAppSignIn())
 			{
-				AcceptsReturn = false,
-				Height = 32,
+				return;
+			}
+
+			Processing = true;
+
+			try
+			{
+				var requestResult = await CurrentUser.SignInPostRequestAsync();
+
+				await (new MessageDialog($"{requestResult}", "Успех")).ShowAsync();
+
+				switch (requestResult)
+				{
+					case 0:
+						{
+							await (new MessageDialog("Вы успешно вошли в систему", "Успех")).ShowAsync();
+
+							if (IsPasswordSave)
+							{
+								await CurrentUser.SaveUserToFile();
+							}
+
+							break;
+						}
+					case 1:
+						{
+							await (new MessageDialog($"Не найдено совпадений с существующими аккаунтами." +
+								$"Проверьте корректность введенных данных, или зарегистрируйте новый аккаунт", "Ошибка входа")).ShowAsync();
+
+							break;
+						}
+					case 2:
+						{
+							await ConfirmAccountDialogAsync();
+
+							if (IsPasswordSave)
+							{
+								await CurrentUser.SaveUserToFile();
+							}
+
+							break;
+						}
+					case -1:
+						{
+							await (new MessageDialog("Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+
+							break;
+						}
+					default:
+						{
+							await (new MessageDialog("Непредвиденная ошибка. Обратитесь к разработчику программного обеспечения", "Ошибка входа")).ShowAsync();
+
+							break;
+						}
+				}
+			}
+			catch (Exception ex)
+			{
+				await (new MessageDialog($"{ex.Message}\n" +
+					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+			}
+
+			Processing = false;
+		}
+
+		/// <summary>
+		/// Переход на страницу регистрации
+		/// </summary>
+		public async void SignUp()
+		{
+			if (Window.Current.Content is Frame frame)
+			{
+				Processing = false;
+				frame.Navigate(typeof(SignUpExtendPage), CurrentUser.Email);
+			}
+		}
+
+		/// <summary>
+		/// Попытка входа в систему с помощью токена
+		/// </summary>
+		public async void AppSignInWithToken()
+		{
+
+		}
+
+		/// <summary>
+		/// Диалоговое окно подтверждения аккаунта
+		/// </summary>
+		/// <returns>Статус подтверждения аккаунта</returns>
+		public async Task ConfirmAccountDialogAsync()
+		{
+			TextBox textBox = new TextBox
+			{
+				Text = CurrentUser.Email,
+				IsReadOnly = true,
 				Width = 300,
-				PlaceholderText = "Ввести полученный код"
-			};
+				Height = 33
+		};
 
 			ContentDialog dialog = new ContentDialog
 			{
-				Content = inputTextBox,
-				Title = "Подтверждение аккаунта",
-				PrimaryButtonText = "Активировать",
-				SecondaryButtonText = "Получить код",
-				//CloseButtonText = "Позже",
+				Title = "Активировать аккаунт",
+				Content = textBox,
+				PrimaryButtonText = "Получить код",
+				CloseButtonText = "Отложить",
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
 			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
 			{
-				return inputTextBox.Text;
+				try
+				{
+					var requestResult = await CurrentUser.AccountActivationPostRequestAsync();
+
+					switch (requestResult)
+					{
+						case 0:
+							{
+								await (new MessageDialog("На вашу электронную почту отправлено письмо с инструкцией по активации", "Подтверждение аккаунта")).ShowAsync();
+								break;
+							}
+						case 1:
+							{
+								await (new MessageDialog("Не предвиденная ошибка. Повторите попытку позже", "Подтверждение аккаунта")).ShowAsync();
+								break;
+							}
+						default:
+							{
+								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику", "Подтверждение аккаунта")).ShowAsync();
+								break;
+							}
+					}
+				}
+				catch (Exception ex)
+				{
+					await (new MessageDialog($"{ex.Message}\n" +
+						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка входа")).ShowAsync();
+				}
 			}
-
-			if (await dialog.ShowAsync() == ContentDialogResult.Secondary)
-			{
-
-			}
-
-			return string.Empty;
 		}
 
 		#region INotifyPropertyChanged
@@ -136,140 +275,5 @@ namespace TimeTrace.ViewModel
 		}
 
 		#endregion
-	}
-
-	// TODO: имплементировать фокус на незаполненные поля, реагирование на Enter
-
-
-	/// <summary>
-	/// Класс команды входа в систему
-	/// </summary>
-	public class SignInCommand : ICommand
-	{
-		public event EventHandler CanExecuteChanged;
-
-		public SignInViewModel CurrentUserViewModel { get; set; }
-
-		public SignInCommand(SignInViewModel userViewModel)
-		{
-			CurrentUserViewModel = userViewModel;
-		}
-
-		public bool CanExecute(object parameter)
-		{
-			if (parameter is User user)
-			{
-				if (user.Email.Length == 0 || user.Password.Length == 0)
-				{
-					(new MessageDialog("Заполните все поля", "Ошибка входа")).ShowAsync();
-					return false;
-				}
-
-				if (!user.EmailCorrectChech())
-				{
-					(new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка входа")).ShowAsync();
-					return false;
-				}
-
-				if (user.Password.Length < 8)
-				{
-					(new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа")).ShowAsync();
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		public async void Execute(object parameter)
-		{
-			CurrentUserViewModel.Processing = true;
-
-			try
-			{
-				if (parameter is User user)
-				{
-					var requestResult = await user.SignInPostRequestAsync();
-
-					switch (requestResult)
-					{
-						case 0:
-							{
-								await (new MessageDialog("Вы успешно вошли в систему", "Успех")).ShowAsync();
-								//await CurrentUserViewModel.CurrentUser.SaveUserToFile();
-
-								break;
-							}
-						case 1:
-							{
-								await (new MessageDialog($"Не найдено совпадений с существующими аккаунтами." +
-									$"Проверьте корректность введенных данных, или зарегистрируйте новый аккаунт", "Ошибка входа")).ShowAsync();
-
-								break;
-							}
-						case 2:
-							{
-								await CurrentUserViewModel.ConfirmAccountDialogAsync();
-								//await CurrentUserViewModel.CurrentUser.SaveUserToFile();
-
-								break;
-							}
-						case -1:
-							{
-								await (new MessageDialog("Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
-
-								break;
-							}
-						default:
-							{
-								await (new MessageDialog("Непредвиденная ошибка. Обратитесь к разработчику программного обеспечения", "Ошибка входа")).ShowAsync();
-
-								break;
-							}
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				await (new MessageDialog($"{ex.Message}", "Ошибка входа")).ShowAsync();
-			}
-
-			CurrentUserViewModel.Processing = false;
-		}
-	}
-
-	/// <summary>
-	/// Класс команды регистрации нового пользователя
-	/// </summary>
-	public class SignUpCommand : ICommand
-	{
-		public event EventHandler CanExecuteChanged;
-
-		public bool CanExecute(object parameter)
-		{
-			return true;
-		}
-
-		public async void Execute(object parameter)
-		{
-			if (parameter is User user)
-			{
-				/*Frame frame = Window.Current.Content as Frame;
-
-				if (frame == null)
-				{
-					await(new MessageDialog("Frame is null", "Отказ")).ShowAsync();
-				}
-
-				if (user.Email.Length > 0)
-				{
-					frame.Navigate(typeof(SignUpPage), user.Email);
-				}
-				else
-				{
-					frame.Navigate(typeof(SignUpPage));
-				}*/
-			}
-		}
 	}
 }

@@ -29,28 +29,29 @@ namespace TimeTrace.View.SignUp
 		{
 			this.InitializeComponent();
 
-			var color = (Color)this.Resources["SystemAccentColor"];
-			SolidColorBrush brush = new SolidColorBrush(color);
-			SignUpCompleteButton.BorderBrush = brush;
-			HeaderText.Foreground = brush;
-			SignUpProgressRing.Foreground = brush;
+			ViewModel = new ViewModel.SignUpViewModel();
 		}
 
-		private async void SignUpCompleteButton_Click(object sender, RoutedEventArgs e)
+		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			/*Frame frame = Window.Current.Content as Frame;
+			if (e.Parameter != null)
+			{
+				ViewModel.CurrentUser.Email = e.Parameter.ToString();
+			}
+		}
 
-			SignUpProgressRing.IsActive = true;
+		public ViewModel.SignUpViewModel ViewModel { get; private set; }
 
-			await Task.Delay(100);
-
-			List<PageStackEntry> pageEntries = frame.BackStack.ToList();
-			if (pageEntries.Count > 0)
-				frame.Navigate(pageEntries[0].SourcePageType);
-
-			SignUpProgressRing.IsActive = false;*/
-
-			Frame.Navigate(typeof(SignInPage));
+		/// <summary>
+		/// Получение системного цвета и установка цвета не автоматическим элементам
+		/// </summary>
+		private SolidColorBrush SolidBrush
+		{
+			get
+			{
+				var color = (Color)this.Resources["SystemAccentColor"];
+				return new SolidColorBrush(color);
+			}
 		}
 	}
 }

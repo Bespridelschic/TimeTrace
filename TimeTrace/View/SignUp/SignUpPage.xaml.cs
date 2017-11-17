@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
+using TimeTrace.Model;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,6 +30,18 @@ namespace TimeTrace.View
 		public SignUpPage()
 		{
 			this.InitializeComponent();
+
+			ViewModel = new ViewModel.SignUpViewModel();
+		}
+
+		public ViewModel.SignUpViewModel ViewModel { get; private set; }
+
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			if (e.Parameter != null)
+			{
+				ViewModel.CurrentUser = (User)e.Parameter;
+			}
 		}
 
 		/// <summary>

@@ -3,7 +3,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TimeTrace"
-	xmlns:Data="using:TimeTrace.ViewModel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
@@ -19,10 +18,6 @@
 			</Setter>
 		</Style>
 	</Page.Resources>
-
-	<Page.DataContext>
-		<Data:SignInViewModel/>
-	</Page.DataContext>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
@@ -49,38 +44,34 @@
 
 		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
 			<TextBox Name="EmailTextBox" Header="Почта:" IsSpellCheckEnabled="False" PlaceholderText="Введите ваш Email..."
-					 Text="{Binding CurrentUser.Email, Mode=TwoWay}" SelectionStart="{Binding SelectionStart, Mode=OneWay}" SelectionLength="0"/>
+					 Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}"
+					 SelectionStart="{x:Bind ViewModel.SelectionStart, Mode=OneWay}" SelectionLength="0"/>
 		</Grid>
 
 		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox Name="PasswordTextBox" Header="Пароль:" MaxLength="20" Password="{Binding CurrentUser.Password, Mode=TwoWay}"/>
+			<PasswordBox Name="PasswordTextBox" Header="Пароль:" MaxLength="20" Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<CheckBox Content="Сохранить пароль" IsChecked="{Binding IsPasswordSave, Mode=TwoWay}"
+			<CheckBox Content="Сохранить пароль" IsChecked="{x:Bind ViewModel.IsPasswordSave, Mode=TwoWay}"
 					  ToolTipService.ToolTip="Использовать автоматический вход в систему" VerticalAlignment="Top"/>
 		</Grid>
 
 		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<Button Content="Войти" ToolTipService.ToolTip="Войти в систему" BorderBrush="{x:Bind SolidBrush}"
-					Command="{Binding SignInCommand}" CommandParameter="{Binding CurrentUser}"/>
+			<Button Content="Войти" ToolTipService.ToolTip="Войти в систему" BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.AppSignIn}"
+					VerticalAlignment="Top"/>
+
+			<HyperlinkButton VerticalAlignment="Bottom" Content="Забыли пароль?" Foreground="{x:Bind SolidBrush}"
+							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля"/>
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1">
-			<ProgressRing Visibility="Visible" IsActive="{Binding Processing, Mode=TwoWay}" VerticalAlignment="Top"/>
-		</Grid>
-		
-		<Grid Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource GridAnimation}">
-			<HyperlinkButton VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Зарегистрироваться!" Margin="0, 0, 10, 5"
-							 ToolTipService.ToolTip="Перейти на страницу регистрации" Foreground="{x:Bind SolidBrush}"
-							 Command="{Binding SignUpCommand}" CommandParameter="{Binding CurrentUser, Mode=TwoWay}" />
-
+			<ProgressRing Visibility="Visible" IsActive="{x:Bind ViewModel.Processing, Mode=TwoWay}" VerticalAlignment="Top"/>
 		</Grid>
 
-		<Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource GridAnimation}">
-			<HyperlinkButton VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Забыли пароль?" Margin="10, 0, 0, 5"
-							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля" Foreground="{x:Bind SolidBrush}"
-							 Click="{x:Bind }"/>
+		<Grid Grid.Row="6" Grid.Column="1" Style="{StaticResource GridAnimation}">
+			<HyperlinkButton VerticalAlignment="Bottom" Content="Зарегистрироваться!" Click="{x:Bind ViewModel.SignUp}"
+							 ToolTipService.ToolTip="Перейти на страницу регистрации" Foreground="{x:Bind SolidBrush}"/>
 
 		</Grid>
 

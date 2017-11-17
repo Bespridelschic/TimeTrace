@@ -73,6 +73,8 @@
 	<!--Ссылки-->
 	<Style TargetType="HyperlinkButton">
 		<Setter Property="ToolTipService.Placement" Value="Top"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
 
 	<!--Анимация ожидания-->

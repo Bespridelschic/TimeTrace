@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Net;
 using Windows.UI.Popups;
+using Newtonsoft.Json.Linq;
 
 namespace TimeTrace.Model
 {
@@ -189,7 +190,7 @@ namespace TimeTrace.Model
 		/// Сериализация объекта User в формат Json при входе в систему
 		/// </summary>
 		/// <returns>Строка в формате Json</returns>
-		private string JsonSignInSerialize()
+		private string SignInJsonSerialize()
 		{
 			var res = new { email = Email, password = Password };
 			return JsonConvert.SerializeObject(res);
@@ -217,13 +218,13 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Сериализация Email и активационного кода для активации аккаунта
+		/// Сериализация Email для инициирования активации аккаунта
 		/// </summary>
-		/// <param name="activationCode">Код активации</param>
+		/// <param name="activationCode"></param>
 		/// <returns>Строка в формате Json</returns>
-		private string JsonAccountActivationSerialize(string activationCode)
+		private string AccountActivationJsonSerialize()
 		{
-			var res = new { email = Email, SecretKey = activationCode };
+			var res = new { email = Email };
 			return JsonConvert.SerializeObject(res);
 		}
 
@@ -237,8 +238,6 @@ namespace TimeTrace.Model
 			var res = new { email = Email, token = token };
 			return JsonConvert.SerializeObject(res);
 		}
-
-		// TODO: Десериализация токена
 
 		#endregion
 
@@ -314,7 +313,7 @@ namespace TimeTrace.Model
 			}
 			catch (Exception)
 			{
-
+				
 			}
 
 			/*string result = string.Empty;
@@ -336,6 +335,21 @@ namespace TimeTrace.Model
 			}*/
 		}
 
+		/// <summary>
+		/// Сохранение пользовательского токена в файл
+		/// </summary>
+		/// <param name="token">Токен</param>
+		/// <returns></returns>
+		private async Task SaveUserTokenToFile(string token)
+		{
+			StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+			StorageFile storageFile = await storageFolder.CreateFileAsync("TKF.bin", CreationCollisionOption.ReplaceExisting);
+
+			// Расположение файла C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
+
+			await FileIO.WriteTextAsync(storageFile, token);
+		}
+
 		#endregion
 
 		#region Работа с сервером
@@ -348,13 +362,10 @@ namespace TimeTrace.Model
 		{
 			try
 			{
-				WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/customer/signup");
+				WebRequest request = WebRequest.Create("http://mindstructuring.ru/customer/signup");
 				request.Method = "POST";
 
-				string strDate = $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}";
-				User user = new User("mail2@mail.ru", "1234567890", "firstName", "lastName", "MiddleName", strDate);
-
-				string data = user.SignUpJsonSerialize();
+				string data = this.SignUpJsonSerialize();
 				byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
 				// устанавливаем тип содержимого - параметр ContentType
@@ -381,10 +392,61 @@ namespace TimeTrace.Model
 				}
 				response.Close();
 
-				Int32.TryParse(result, out int codeResult);
-				return codeResult;
+				// Парсер JSON
+				JObject JsonString = JObject.Parse(result);
+
+				return (int)JsonString["answer"];
 			}
-			catch (Exception ex)
+			catch (Exception)
+			{
+				return -1;
+			}
+		}
+
+		/// <summary>
+		/// Активация аккаунта
+		/// </summary>
+		/// <returns>Статус успеха активации: 0 - успешно, 1 - не успешно</returns>
+		public async Task<int> AccountActivationPostRequestAsync()
+		{
+			try
+			{
+				WebRequest request = WebRequest.Create("http://mindstructuring.ru/customer/sendactivationkey");
+				request.Method = "POST";
+
+				string data = this.AccountActivationJsonSerialize();
+				byte[] byteArray = Encoding.UTF8.GetBytes(data);
+
+				// устанавливаем тип содержимого - параметр ContentType
+				request.ContentType = "application/json";
+
+				// Устанавливаем заголовок Content-Length запроса - свойство ContentLength
+				request.ContentLength = byteArray.Length;
+
+				//записываем данные в поток запроса
+				using (Stream dataStream = request.GetRequestStream())
+				{
+					dataStream.Write(byteArray, 0, byteArray.Length);
+				}
+
+				string result = string.Empty;
+
+				WebResponse response = await request.GetResponseAsync();
+				using (Stream stream = response.GetResponseStream())
+				{
+					using (StreamReader reader = new StreamReader(stream))
+					{
+						result += reader.ReadToEnd();
+					}
+				}
+				response.Close();
+
+				// Парсер JSON
+				JObject JsonString = JObject.Parse(result);
+
+				return (int)JsonString["answer"];
+			}
+			catch (Exception)
 			{
 				return -1;
 			}
@@ -398,10 +460,10 @@ namespace TimeTrace.Model
 		{
 			try
 			{
-				WebRequest request = WebRequest.Create("http://o129pak8.beget.tech/customer/login");
+				WebRequest request = WebRequest.Create("http://mindstructuring.ru/customer/login");
 				request.Method = "POST";
 
-				string data = this.JsonSignInSerialize();
+				string data = this.SignInJsonSerialize();
 				byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
 				// устанавливаем тип содержимого - параметр ContentType
@@ -429,18 +491,17 @@ namespace TimeTrace.Model
 
 				response.Close();
 
-				JsonTextReader jsonReader = new JsonTextReader(new StringReader(result));
+				// Парсер JSON
+				JObject JsonString = JObject.Parse(result);
 
-				for (int i = 0; jsonReader.Read() && i < 2; i++)
+				int answerCode = (int)JsonString["answer"];
+				if (answerCode == 0)
 				{
-					if (i ==0 && jsonReader != null)
-					{
-						await (new MessageDialog($"{jsonReader.Value}")).ShowAsync();
-						return Int32.Parse((string)jsonReader.Value);
-					}
+					string token = (string)JsonString["_csrf"];
+					await SaveUserTokenToFile(token);
 				}
 
-				return -1;
+				return answerCode;
 			}
 			catch (Exception)
 			{
