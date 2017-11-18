@@ -59,6 +59,20 @@ namespace TimeTrace.ViewModel
 		}
 
 		/// <summary>
+		/// Начальная позиция курсора текста
+		/// </summary>
+		private int selectionStart;
+		public int SelectionStart
+		{
+			get { return selectionStart; }
+			set
+			{
+				selectionStart = value;
+				OnPropertyChanged("StartSelect");
+			}
+		}
+
+		/// <summary>
 		/// Максимальная дата - текущий день
 		/// </summary>
 		public DateTime MaxDate { get; set; }
@@ -87,6 +101,7 @@ namespace TimeTrace.ViewModel
 
 			Processing = false;
 			ConfirmPassword = "";
+			SelectionStart = CurrentUser.Email.Length;
 
 			SelectedDate = new DateTimeOffset(new DateTime(2000, 1, 1));
 			MaxDate = DateTime.Today;
@@ -107,30 +122,30 @@ namespace TimeTrace.ViewModel
 		/// Проверка полей на корректность
 		/// </summary>
 		/// <returns>Удовлетворяют ли поля бизнес-логике</returns>
-		private bool CanSignUp()
+		private async Task<bool> CanSignUp()
 		{
 			if (CurrentUser.Email == "" || CurrentUser.Password == "" || ConfirmPassword == "")
 			{
-				(new MessageDialog("Необходимо заполнить все поля", "Проблема регистрации")).ShowAsync();
+				await new MessageDialog("Необходимо заполнить все поля", "Проблема регистрации").ShowAsync();
 				return false;
 			}
 
 			if (CurrentUser.Password.Length < 8)
 			{
-				new MessageDialog("Минимальная длина пароля составляет 8 символов", "Проблема регистрации").ShowAsync();
+				await new MessageDialog("Минимальная длина пароля составляет 8 символов", "Проблема регистрации").ShowAsync();
 				return false;
 			}
 
 			if (CurrentUser.Password != ConfirmPassword)
 			{
-				new MessageDialog("Введенные пароли не совпадают", "Проблема регистрации").ShowAsync();
+				await new MessageDialog("Введенные пароли не совпадают", "Проблема регистрации").ShowAsync();
 
 				return false;
 			}
 
 			if (!CurrentUser.EmailCorrectChech())
 			{
-				new MessageDialog("Проверьте корректность введенного адреса электронной почты", "Проблема регистрации").ShowAsync();
+				await new MessageDialog("Проверьте корректность введенного адреса электронной почты", "Проблема регистрации").ShowAsync();
 				return false;
 			}
 
@@ -142,7 +157,9 @@ namespace TimeTrace.ViewModel
 		/// </summary>
 		public async void SignUpComplete()
 		{
-			if (!CanSignUp())
+			var CanSignUpResult = await CanSignUp();
+
+			if (!CanSignUpResult)
 			{
 				return;
 			}
@@ -151,14 +168,14 @@ namespace TimeTrace.ViewModel
 
 			try
 			{
-				var requestResult = await CurrentUser.SignUpPostRequestAsync();
+				var requestResult = await UserRequest.SignUpPostRequestAsync(CurrentUser);
 
 				switch (requestResult)
 				{
 					case 0:
 						{
 							await (new MessageDialog("Аккаунт успешно зарегистирован", "Успех")).ShowAsync();
-							await CurrentUser.SaveUserToFile();
+							await UserFileWorker.SaveUserToFileAsync(CurrentUser);
 
 							break;
 						}

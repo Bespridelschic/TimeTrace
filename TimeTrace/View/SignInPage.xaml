@@ -62,7 +62,8 @@
 					VerticalAlignment="Top"/>
 
 			<HyperlinkButton VerticalAlignment="Bottom" Content="Забыли пароль?" Foreground="{x:Bind SolidBrush}"
-							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля"/>
+							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля"
+							 Click="{x:Bind ViewModel.UserPasswordRecovery}"/>
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1">

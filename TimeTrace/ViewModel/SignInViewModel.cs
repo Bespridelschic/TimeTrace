@@ -10,6 +10,7 @@ using System.Windows.Input;
 using TimeTrace.Model;
 using TimeTrace.View;
 using TimeTrace.View.SignUp;
+using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -24,6 +25,8 @@ namespace TimeTrace.ViewModel
 	/// </summary>
 	public class SignInViewModel : INotifyPropertyChanged
 	{
+		#region Свойства
+
 		private User currentUser;
 		public User CurrentUser
 		{
@@ -77,41 +80,49 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		#endregion
+
 		/// <summary>
 		/// Конструктор инициализирующий новый объект <see cref="User"/> и пытающийся считать данные с файла
 		/// </summary>
 		public SignInViewModel()
 		{
 			CurrentUser = new User();
-			CurrentUser.LoadUserFromFile();
+			UserFileWorker.LoadUserFromFileAsync(CurrentUser).Wait();
 
 			Processing = false;
 			IsPasswordSave = true;
 
 			SelectionStart = CurrentUser.Email.Length;
+
+			//var res = AppSignInWithToken();
+			//if (res.Result == 0)
+			//{
+				// Переход на главную страницу
+			//}
 		}
 
 		/// <summary>
 		/// Проверка полей на корректность
 		/// </summary>
 		/// <returns>Удовлетворяют ли поля бизнес-логике</returns>
-		private bool CanAppSignIn()
+		private async Task<bool> CanAppSignIn()
 		{
 			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
 			{
-				(new MessageDialog("Заполните все поля", "Ошибка входа")).ShowAsync();
+				await new MessageDialog("Заполните все поля", "Ошибка входа").ShowAsync();
 				return false;
 			}
 
 			if (!CurrentUser.EmailCorrectChech())
 			{
-				(new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка входа")).ShowAsync();
+				await new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка входа").ShowAsync();
 				return false;
 			}
 
 			if (CurrentUser.Password.Length < 8)
 			{
-				(new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа")).ShowAsync();
+				await new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа").ShowAsync();
 				return false;
 			}
 
@@ -123,7 +134,9 @@ namespace TimeTrace.ViewModel
 		/// </summary>
 		public async void AppSignIn()
 		{
-			if (!CanAppSignIn())
+			var CanAppSignInResult = await CanAppSignIn();
+
+			if (!CanAppSignInResult)
 			{
 				return;
 			}
@@ -132,9 +145,7 @@ namespace TimeTrace.ViewModel
 
 			try
 			{
-				var requestResult = await CurrentUser.SignInPostRequestAsync();
-
-				await (new MessageDialog($"{requestResult}", "Успех")).ShowAsync();
+				var requestResult = await UserRequest.SignInPostRequestAsync(CurrentUser);
 
 				switch (requestResult)
 				{
@@ -144,7 +155,11 @@ namespace TimeTrace.ViewModel
 
 							if (IsPasswordSave)
 							{
-								await CurrentUser.SaveUserToFile();
+								await UserFileWorker.SaveUserToFileAsync(CurrentUser);
+							}
+							else
+							{
+								await UserFileWorker.RemoveUserDataFromFilesAsync();
 							}
 
 							break;
@@ -162,7 +177,11 @@ namespace TimeTrace.ViewModel
 
 							if (IsPasswordSave)
 							{
-								await CurrentUser.SaveUserToFile();
+								await UserFileWorker.SaveUserToFileAsync(CurrentUser);
+							}
+							else
+							{
+								await UserFileWorker.RemoveUserDataFromFilesAsync();
 							}
 
 							break;
@@ -193,7 +212,7 @@ namespace TimeTrace.ViewModel
 		/// <summary>
 		/// Переход на страницу регистрации
 		/// </summary>
-		public async void SignUp()
+		public void SignUp()
 		{
 			if (Window.Current.Content is Frame frame)
 			{
@@ -202,19 +221,118 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		public async void UserPasswordRecovery()
+		{
+			await PasswordRecoveryDialogAsync();
+		}
+
 		/// <summary>
 		/// Попытка входа в систему с помощью токена
 		/// </summary>
-		public async void AppSignInWithToken()
+		public async Task<int> AppSignInWithToken()
 		{
+			var res = await UserFileWorker.LoadUserEmailAndTokenFromFile();
 
+			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
+			{
+				return 1;
+			}
+
+			try
+			{
+				var requestResult = await UserRequest.SignInWithTokenPostRequestAsync(res.email, res.token);
+
+				switch (requestResult)
+				{
+					case 0:
+						{
+							await (new MessageDialog("Вы успешно вошли в систему", "Успех")).ShowAsync();
+
+
+							break;
+						}
+				}
+			}
+			catch (Exception ex)
+			{
+				await (new MessageDialog($"{ex.Message}\n" +
+					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+			}
+
+			return 1;
+		}
+
+		/// <summary>
+		/// Диалоговое окно восстановления пароля
+		/// </summary>
+		/// <returns>Статус восстановления пароля</returns>
+		private async Task PasswordRecoveryDialogAsync()
+		{
+			TextBox emailTextBox = new TextBox
+			{
+				Header = "Электронная почта",
+				Text = CurrentUser.Email,
+				Width = 300,
+				Height = 60
+			};
+
+			TextBox passwordTextBox = new TextBox
+			{
+				Header = "Новый пароль",
+				Width = 300,
+				Height = 60
+			};
+
+			ContentDialog dialog = new ContentDialog
+			{
+				Title = "Восстановление пароля",
+				Content = emailTextBox,
+				PrimaryButtonText = "Восстановить пароль",
+				CloseButtonText = "Отложить",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+			{
+				try
+				{
+					var requestResult = 0;// await UserRequest.AccountActivationPostRequestAsync(CurrentUser);
+
+					switch (requestResult)
+					{
+						case 0:
+							{
+								await (new MessageDialog("На вашу электронную почту отправлено письмо с " +
+									"инструкцией по изменению пароля", "Восстановление пароля")).ShowAsync();
+								break;
+							}
+						case 1:
+							{
+								await (new MessageDialog("Не удалось сменить пароль. Пользователь с таким адресом " +
+									"электронной почты не найден", "Восстановление пароля")).ShowAsync();
+								break;
+							}
+						default:
+							{
+								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику",
+									"Восстановление пароля")).ShowAsync();
+								break;
+							}
+					}
+				}
+				catch (Exception ex)
+				{
+					await (new MessageDialog($"{ex.Message}\n" +
+						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка восстановления пароля")).ShowAsync();
+				}
+			}
 		}
 
 		/// <summary>
 		/// Диалоговое окно подтверждения аккаунта
 		/// </summary>
 		/// <returns>Статус подтверждения аккаунта</returns>
-		public async Task ConfirmAccountDialogAsync()
+		private async Task ConfirmAccountDialogAsync()
 		{
 			TextBox textBox = new TextBox
 			{
@@ -222,7 +340,7 @@ namespace TimeTrace.ViewModel
 				IsReadOnly = true,
 				Width = 300,
 				Height = 33
-		};
+			};
 
 			ContentDialog dialog = new ContentDialog
 			{
@@ -237,7 +355,7 @@ namespace TimeTrace.ViewModel
 			{
 				try
 				{
-					var requestResult = await CurrentUser.AccountActivationPostRequestAsync();
+					var requestResult = await UserRequest.AccountActivationPostRequestAsync(CurrentUser);
 
 					switch (requestResult)
 					{

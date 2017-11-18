@@ -55,7 +55,7 @@
 
 		<Grid Grid.Row="5" Style="{StaticResource GridAnimation}">
 			<CalendarDatePicker Header="Дата рождения:" PlaceholderText="Установите дату рождения..." ToolTipService.ToolTip="Уточните дату вашего рождения"
-								DateFormat="{}{year.full}-{month.integer}-{day.integer}" MaxDate="{x:Bind ViewModel.MaxDate}"
+								DateFormat="{}{day.integer} {month.full} {year.full}" MaxDate="{x:Bind ViewModel.MaxDate}"
 								Date="{x:Bind ViewModel.SelectedDate, Mode=TwoWay}"/>
 		</Grid>
 

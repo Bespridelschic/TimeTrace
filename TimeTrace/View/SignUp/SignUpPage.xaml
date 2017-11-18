@@ -45,7 +45,8 @@
 
 		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
 			<TextBox Header="Электронная почта:" PlaceholderText="Введите ваш Email..." Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}"
-					 ToolTipService.ToolTip="Введите вашу реальную электронную почту" IsSpellCheckEnabled="False"/>
+					 ToolTipService.ToolTip="Введите вашу реальную электронную почту" IsSpellCheckEnabled="False"
+					 SelectionStart="{x:Bind ViewModel.SelectionStart, Mode=OneWay}" SelectionLength="0"/>
 		</Grid>
 
 		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
