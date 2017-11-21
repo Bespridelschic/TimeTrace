@@ -119,12 +119,12 @@ namespace TimeTrace.Model
 
 				await FileIO.WriteTextAsync(storageFile, token);
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				throw;
 			}
 		}
-		
+
 		/// <summary>
 		/// Удаление файлов, содержащих данные для входа
 		/// </summary>Результат удаления файлов</returns>
@@ -144,7 +144,7 @@ namespace TimeTrace.Model
 					System.IO.File.Delete(storageFile2.Path);
 				}
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				throw;
 			}
@@ -170,7 +170,7 @@ namespace TimeTrace.Model
 
 				string email = string.Empty;
 
-				if (fileLines.Count < 2)
+				if (fileLines.Count > 0)
 				{
 					email = fileLines[0];
 				}
@@ -179,7 +179,7 @@ namespace TimeTrace.Model
 
 				string token = string.Empty;
 
-				if (fileLines.Count < 2)
+				if (fileLines.Count > 0)
 				{
 					token = fileLines[0];
 				}
@@ -188,7 +188,6 @@ namespace TimeTrace.Model
 				{
 					return (email, token);
 				}
-
 				else
 				{
 					return (null, null);

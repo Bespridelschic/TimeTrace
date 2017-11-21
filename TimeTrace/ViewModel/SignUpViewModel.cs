@@ -30,6 +30,8 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		#region Свойства
+
 		/// <summary>
 		/// Состояние ProgressRing
 		/// </summary>
@@ -91,6 +93,8 @@ namespace TimeTrace.ViewModel
 				OnPropertyChanged("SelectedDate");
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Стандартный конструктор

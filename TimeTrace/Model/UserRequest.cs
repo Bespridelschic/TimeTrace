@@ -25,7 +25,7 @@ namespace TimeTrace.Model
 			{
 				return null;
 			}
-
+			
 			try
 			{
 				WebRequest request = WebRequest.Create(url);
@@ -74,11 +74,11 @@ namespace TimeTrace.Model
 		{
 			try
 			{
-				string result = await BasePostRequestAsync("http://mindstructuring.ru/customer/signup", SignUpJsonSerialize(user));
+				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/signup", SignUpJsonSerialize(user));
 
 				if (string.IsNullOrEmpty(result))
 				{
-					throw new NullReferenceException("Строка возврата вернула null");
+					throw new NullReferenceException("Сервер вернул null");
 				}
 
 				// Парсер JSON
@@ -101,11 +101,11 @@ namespace TimeTrace.Model
 		{
 			try
 			{
-				string result = await BasePostRequestAsync("http://mindstructuring.ru/customer/sendactivationkey", AccountActivationJsonSerialize(user));
+				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/sendactivationkey", AccountActivationJsonSerialize(user));
 
 				if (string.IsNullOrEmpty(result))
 				{
-					throw new NullReferenceException("Строка возврата вернула null");
+					throw new NullReferenceException("Сервер вернул null");
 				}
 
 				// Парсер JSON
@@ -128,11 +128,11 @@ namespace TimeTrace.Model
 		{
 			try
 			{
-				string result = await BasePostRequestAsync("http://mindstructuring.ru/customer/login", SignInJsonSerialize(user));
+				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/login", SignInJsonSerialize(user));
 
 				if (string.IsNullOrEmpty(result))
 				{
-					throw new NullReferenceException("Строка возврата вернула null");
+					throw new NullReferenceException("Сервер вернул null");
 				}
 
 				// Парсер JSON
@@ -163,11 +163,11 @@ namespace TimeTrace.Model
 		{
 			try
 			{
-				string result = await BasePostRequestAsync("http://mindstructuring.ru/customer/login", SignInWithTokenJsonSerialize(email, token));
+				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/login", SignInWithTokenJsonSerialize(email, token));
 
 				if (string.IsNullOrEmpty(result))
 				{
-					throw new NullReferenceException("Строка возврата вернула null");
+					throw new NullReferenceException("Сервер вернул null");
 				}
 
 				// Парсер JSON
@@ -181,6 +181,33 @@ namespace TimeTrace.Model
 				}
 
 				return answerCode;
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Отправка данные на сервер для восстановления пароля
+		/// </summary>
+		/// <param name="user">Объект класса <see cref="User"/></param>
+		/// <returns>Код регистрации: 0 - Успех, 1 - Не удача</returns>
+		public static async Task<int> PasswordResetPostRequestAsync(User user)
+		{
+			try
+			{
+				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/sendresetkey", SignInJsonSerialize(user));
+
+				if (string.IsNullOrEmpty(result))
+				{
+					throw new NullReferenceException("Сервер вернул null");
+				}
+
+				// Парсер JSON
+				JObject JsonString = JObject.Parse(result);
+
+				return (int)JsonString["answer"];
 			}
 			catch (Exception)
 			{

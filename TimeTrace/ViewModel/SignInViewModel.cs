@@ -98,7 +98,7 @@ namespace TimeTrace.ViewModel
 			//var res = AppSignInWithToken();
 			//if (res.Result == 0)
 			//{
-				// Переход на главную страницу
+			//	(new MessageDialog("Можно войти с помощью токена")).ShowAsync();
 			//}
 		}
 
@@ -110,19 +110,19 @@ namespace TimeTrace.ViewModel
 		{
 			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
 			{
-				await new MessageDialog("Заполните все поля", "Ошибка входа").ShowAsync();
+				await new MessageDialog("Заполните все поля", "Ошибка операции").ShowAsync();
 				return false;
 			}
 
 			if (!CurrentUser.EmailCorrectChech())
 			{
-				await new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка входа").ShowAsync();
+				await new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка операции").ShowAsync();
 				return false;
 			}
 
 			if (CurrentUser.Password.Length < 8)
 			{
-				await new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка входа").ShowAsync();
+				await new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка операции").ShowAsync();
 				return false;
 			}
 
@@ -221,20 +221,111 @@ namespace TimeTrace.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Восстановление пароля
+		/// </summary>
 		public async void UserPasswordRecovery()
 		{
-			await PasswordRecoveryDialogAsync();
+			#region Разметка диалогового окна
+
+			TextBox emailTextBox = new TextBox
+			{
+				PlaceholderText = "Введите вашу электронную почту...",
+				Header = "Адрес электронной почты:",
+				Text = CurrentUser.Email
+			};
+
+			PasswordBox passwordTextBox = new PasswordBox
+			{
+				PlaceholderText = "Введите новый пароль...",
+				Header = "Новый пароль:",
+				MaxLength = 20,
+			};
+
+			Grid grid = new Grid();
+			RowDefinition row1 = new RowDefinition();
+			RowDefinition row2 = new RowDefinition();
+			RowDefinition row3 = new RowDefinition();
+
+			row1.Height = new GridLength(0, GridUnitType.Auto);
+			row2.Height = new GridLength(10);
+			row3.Height = new GridLength(0, GridUnitType.Auto);
+
+			grid.RowDefinitions.Add(row1);
+			grid.RowDefinitions.Add(row2);
+			grid.RowDefinitions.Add(row3);
+
+			grid.Children.Add(emailTextBox);
+			grid.Children.Add(passwordTextBox);
+
+			Grid.SetRow(emailTextBox, 0);
+			Grid.SetRow(passwordTextBox, 2);
+
+			#endregion
+
+			ContentDialog dialog = new ContentDialog
+			{
+				Title = "Восстановление пароля",
+				Content = grid,
+				PrimaryButtonText = "Восстановить",
+				CloseButtonText = "Отложить",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+			{
+				try
+				{
+					CurrentUser.Email = emailTextBox.Text;
+					CurrentUser.Password = passwordTextBox.Password;
+
+					var CanAppSignInResult = await CanAppSignIn();
+					if (!CanAppSignInResult)
+					{
+						CurrentUser.Password = string.Empty;
+
+						return;
+					}
+
+					var requestResult = await UserRequest.PasswordResetPostRequestAsync(CurrentUser);
+
+					switch (requestResult)
+					{
+						case 0:
+							{
+								await (new MessageDialog("На вашу электронную почту отправлено письмо с инструкцией по активации", "Изменение пароля")).ShowAsync();
+								break;
+							}
+						case 1:
+							{
+								await (new MessageDialog("Ошибка изменения пароля! Сброс пароля не возможен", "Изменение пароля")).ShowAsync();
+								break;
+							}
+						default:
+							{
+								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику", "Изменение пароля")).ShowAsync();
+								break;
+							}
+					}
+				}
+				catch (Exception ex)
+				{
+					await (new MessageDialog($"{ex.Message}\n" +
+						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка изменения пароля")).ShowAsync();
+				}
+			}
 		}
 
 		/// <summary>
 		/// Попытка входа в систему с помощью токена
 		/// </summary>
-		public async Task<int> AppSignInWithToken()
+		private async Task<int> AppSignInWithToken()
 		{
 			var res = await UserFileWorker.LoadUserEmailAndTokenFromFile();
 
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
+				// Не трогать! 1 - не удачная попытка входа в приложение с помощью токена
 				return 1;
 			}
 
@@ -259,73 +350,8 @@ namespace TimeTrace.ViewModel
 					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
 			}
 
+			// Не трогать! 1 - не удачная попытка входа в приложение с помощью токена
 			return 1;
-		}
-
-		/// <summary>
-		/// Диалоговое окно восстановления пароля
-		/// </summary>
-		/// <returns>Статус восстановления пароля</returns>
-		private async Task PasswordRecoveryDialogAsync()
-		{
-			TextBox emailTextBox = new TextBox
-			{
-				Header = "Электронная почта",
-				Text = CurrentUser.Email,
-				Width = 300,
-				Height = 60
-			};
-
-			TextBox passwordTextBox = new TextBox
-			{
-				Header = "Новый пароль",
-				Width = 300,
-				Height = 60
-			};
-
-			ContentDialog dialog = new ContentDialog
-			{
-				Title = "Восстановление пароля",
-				Content = emailTextBox,
-				PrimaryButtonText = "Восстановить пароль",
-				CloseButtonText = "Отложить",
-				DefaultButton = ContentDialogButton.Primary,
-			};
-
-			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-			{
-				try
-				{
-					var requestResult = 0;// await UserRequest.AccountActivationPostRequestAsync(CurrentUser);
-
-					switch (requestResult)
-					{
-						case 0:
-							{
-								await (new MessageDialog("На вашу электронную почту отправлено письмо с " +
-									"инструкцией по изменению пароля", "Восстановление пароля")).ShowAsync();
-								break;
-							}
-						case 1:
-							{
-								await (new MessageDialog("Не удалось сменить пароль. Пользователь с таким адресом " +
-									"электронной почты не найден", "Восстановление пароля")).ShowAsync();
-								break;
-							}
-						default:
-							{
-								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику",
-									"Восстановление пароля")).ShowAsync();
-								break;
-							}
-					}
-				}
-				catch (Exception ex)
-				{
-					await (new MessageDialog($"{ex.Message}\n" +
-						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка восстановления пароля")).ShowAsync();
-				}
-			}
 		}
 
 		/// <summary>

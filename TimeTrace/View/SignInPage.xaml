@@ -62,8 +62,7 @@
 					VerticalAlignment="Top"/>
 
 			<HyperlinkButton VerticalAlignment="Bottom" Content="Забыли пароль?" Foreground="{x:Bind SolidBrush}"
-							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля"
-							 Click="{x:Bind ViewModel.UserPasswordRecovery}"/>
+							 ToolTipService.ToolTip="Перейти на страницу восстановления пароля" Click="{x:Bind ViewModel.UserPasswordRecovery}"/>
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1">
@@ -71,7 +70,7 @@
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<HyperlinkButton VerticalAlignment="Bottom" Content="Зарегистрироваться!" Click="{x:Bind ViewModel.SignUp}"
+			<HyperlinkButton VerticalAlignment="Bottom" Content="Зарегистрировать новый аккаунт!" Click="{x:Bind ViewModel.SignUp}"
 							 ToolTipService.ToolTip="Перейти на страницу регистрации" Foreground="{x:Bind SolidBrush}"/>
 
 		</Grid>

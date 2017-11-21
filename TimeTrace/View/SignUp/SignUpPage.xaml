@@ -50,7 +50,7 @@
 		</Grid>
 
 		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox Header="Пароль:" PlaceholderText="Введите ваш пароль..." Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}" MaxLength="19"
+			<PasswordBox Header="Пароль:" PlaceholderText="Введите ваш пароль..." Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}" MaxLength="20"
 					 ToolTipService.ToolTip="Введите пароль, с помощью которого вы будете входить в систему. Придумайте надёжный пароль"/>
 		</Grid>
 
