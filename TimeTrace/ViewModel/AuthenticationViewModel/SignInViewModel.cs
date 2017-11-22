@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TimeTrace.Model;
 using TimeTrace.View;
+using TimeTrace.View.MainView;
 using TimeTrace.View.SignUp;
 using Windows.Storage;
 using Windows.UI.Popups;
@@ -87,6 +88,13 @@ namespace TimeTrace.ViewModel
 		/// </summary>
 		public SignInViewModel()
 		{
+			//AppSignInWithToken().Wait();
+			/*var res = AppSignInWithToken();
+			if (res.Result == 0)
+			{
+				(new MessageDialog("Можно войти с помощью токена")).ShowAsync();
+		}*/
+
 			CurrentUser = new User();
 			UserFileWorker.LoadUserFromFileAsync(CurrentUser).Wait();
 
@@ -94,12 +102,6 @@ namespace TimeTrace.ViewModel
 			IsPasswordSave = true;
 
 			SelectionStart = CurrentUser.Email.Length;
-
-			//var res = AppSignInWithToken();
-			//if (res.Result == 0)
-			//{
-			//	(new MessageDialog("Можно войти с помощью токена")).ShowAsync();
-			//}
 		}
 
 		/// <summary>
@@ -151,8 +153,6 @@ namespace TimeTrace.ViewModel
 				{
 					case 0:
 						{
-							await (new MessageDialog("Вы успешно вошли в систему", "Успех")).ShowAsync();
-
 							if (IsPasswordSave)
 							{
 								await UserFileWorker.SaveUserToFileAsync(CurrentUser);
@@ -160,6 +160,11 @@ namespace TimeTrace.ViewModel
 							else
 							{
 								await UserFileWorker.RemoveUserDataFromFilesAsync();
+							}
+
+							if (Window.Current.Content is Frame frame)
+							{
+								frame.Navigate(typeof(StartPage));
 							}
 
 							break;

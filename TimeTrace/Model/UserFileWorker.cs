@@ -117,7 +117,9 @@ namespace TimeTrace.Model
 
 				// Расположение файла C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
 
-				await FileIO.WriteTextAsync(storageFile, token);
+				string[] stringToFile = { token };
+
+				await FileIO.WriteLinesAsync(storageFile, stringToFile);
 			}
 			catch (Exception)
 			{
@@ -169,19 +171,17 @@ namespace TimeTrace.Model
 				var fileLines = await (FileIO.ReadLinesAsync(storageFileEmail));
 
 				string email = string.Empty;
-
 				if (fileLines.Count > 0)
 				{
 					email = fileLines[0];
 				}
 
-				fileLines = await (FileIO.ReadLinesAsync(storageFileToken));
-
+				var fileLines2 = await (FileIO.ReadLinesAsync(storageFileToken));
 				string token = string.Empty;
 
-				if (fileLines.Count > 0)
+				if (fileLines2.Count > 0)
 				{
-					token = fileLines[0];
+					token = fileLines2[0];
 				}
 
 				if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(token))

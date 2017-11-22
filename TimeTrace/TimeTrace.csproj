@@ -100,18 +100,39 @@
     </Compile>
     <Compile Include="Model\UserFileWorker.cs" />
     <Compile Include="Model\UserRequest.cs" />
-    <Compile Include="ViewModel\SignInViewModel.cs" />
-    <Compile Include="ViewModel\SignUpViewModel.cs" />
-    <Compile Include="View\SignInPage.xaml.cs">
+    <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />
+    <Compile Include="ViewModel\AuthenticationViewModel\SignUpViewModel.cs" />
+    <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\SignUp\SignUpExtendPage.xaml.cs">
+    <Compile Include="View\AuthenticationView\SignUp\SignUpExtendPage.xaml.cs">
       <DependentUpon>SignUpExtendPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SignUp\SignUpPage.xaml.cs">
+    <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\ContactsPage.xaml.cs">
+      <DependentUpon>ContactsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\GroupMapsPage.xaml.cs">
+      <DependentUpon>GroupMapsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\PersonalMapsPage.xaml.cs">
+      <DependentUpon>PersonalMapsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\SchedulePage.xaml.cs">
+      <DependentUpon>SchedulePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -141,15 +162,43 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="View\SignInPage.xaml">
+    <Page Include="View\AuthenticationView\SignInPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SignUp\SignUpExtendPage.xaml">
+    <Page Include="View\AuthenticationView\SignUp\SignUpExtendPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SignUp\SignUpPage.xaml">
+    <Page Include="View\AuthenticationView\SignUp\SignUpPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\ContactsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\GroupMapsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\PersonalMapsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\SchedulePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\StartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

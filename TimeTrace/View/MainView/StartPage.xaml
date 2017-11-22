@@ -1,0 +1,64 @@
+﻿<Page
+    x:Class="TimeTrace.View.MainView.StartPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TimeTrace.View.MainView"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="NavView_SelectionChanged">
+
+		<NavigationView.HeaderTemplate>
+			<DataTemplate>
+				<Grid Margin="24, 24, 0, 0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<TextBlock Text="Time Tracking" FontSize="28" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
+				</Grid>
+			</DataTemplate>
+		</NavigationView.HeaderTemplate>
+
+		<NavigationView.AutoSuggestBox>
+			<AutoSuggestBox QueryIcon="Find" PlaceholderText="Поиск по картам"/>
+		</NavigationView.AutoSuggestBox>
+
+		<NavigationView.MenuItems>
+			<NavigationViewItem Content="Домой" Tag="home" Icon="Home"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Переход на домашнюю страницу"/>
+
+			<NavigationViewItem Content="Расписание" Tag="schedule" Icon="Globe"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Посмотреть текущее расписание"/>
+
+			<NavigationViewItem Content="Список контактов" Tag="contacts" Icon="Phone"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Перейти на страницу со списком контактов"/>
+
+			<NavigationViewItemSeparator/>
+
+			<NavigationViewItem Content="Персональные карты" Tag="personalMaps" Icon="Contact"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Редактирование и создание персональных карт"/>
+
+			<NavigationViewItem Content="Организационные карты" Tag="groupMaps" Icon="People"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Создание и редактирование карт предназначенных для группы людей"/>
+
+			<NavigationViewItem Content="Синронизация с OutLook" Tag="scheduleSync" Icon="Upload"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Установить текущее расписание в OutLook"/>
+		</NavigationView.MenuItems>
+
+		<NavigationView.PaneFooter>
+			<NavigationViewItem Content="Помощь" Tag="help" Icon="Help"
+									ToolTipService.Placement="Right" ToolTipService.ToolTip="Получение справки с инструкциями по работе"/>
+		</NavigationView.PaneFooter>
+
+		<Frame x:Name="ContentFrame">
+			<Frame.ContentTransitions>
+				<TransitionCollection>
+					<NavigationThemeTransition/>
+				</TransitionCollection>
+			</Frame.ContentTransitions>
+		</Frame>
+
+	</NavigationView>
+</Page>
