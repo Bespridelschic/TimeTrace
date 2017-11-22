@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace TimeTrace.View.SignUp
+namespace TimeTrace.View.AuthenticationView.SignUp
 {
 	/// <summary>
 	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
@@ -29,7 +29,7 @@ namespace TimeTrace.View.SignUp
 		{
 			this.InitializeComponent();
 
-			ViewModel = new ViewModel.SignUpViewModel();
+			ViewModel = new ViewModel.AuthenticationViewModel.SignUpViewModel();
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -40,7 +40,7 @@ namespace TimeTrace.View.SignUp
 			}
 		}
 
-		public ViewModel.SignUpViewModel ViewModel { get; private set; }
+		public ViewModel.AuthenticationViewModel.SignUpViewModel ViewModel { get; private set; }
 
 		/// <summary>
 		/// Получение системного цвета и установка цвета не автоматическим элементам

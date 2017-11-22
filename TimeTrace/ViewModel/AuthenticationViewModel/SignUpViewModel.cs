@@ -7,15 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TimeTrace.Model;
-using TimeTrace.View;
-using TimeTrace.View.SignUp;
+using TimeTrace.View.AuthenticationView;
+using TimeTrace.View.AuthenticationView.SignUp;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 
-namespace TimeTrace.ViewModel
+namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
 	public class SignUpViewModel : INotifyPropertyChanged
 	{

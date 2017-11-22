@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using TimeTrace.View.SignUp;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -20,7 +19,7 @@ using TimeTrace.Model;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace TimeTrace.View
+namespace TimeTrace.View.AuthenticationView.SignUp
 {
 	/// <summary>
 	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
@@ -31,10 +30,10 @@ namespace TimeTrace.View
 		{
 			this.InitializeComponent();
 
-			ViewModel = new ViewModel.SignUpViewModel();
+			ViewModel = new ViewModel.AuthenticationViewModel.SignUpViewModel();
 		}
 
-		public ViewModel.SignUpViewModel ViewModel { get; private set; }
+		public ViewModel.AuthenticationViewModel.SignUpViewModel ViewModel { get; private set; }
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{

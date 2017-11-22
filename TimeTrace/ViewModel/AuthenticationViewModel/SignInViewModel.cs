@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using TimeTrace.Model;
-using TimeTrace.View;
 using TimeTrace.View.MainView;
-using TimeTrace.View.SignUp;
-using Windows.Storage;
+using TimeTrace.View.AuthenticationView.SignUp;
 using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 
-namespace TimeTrace.ViewModel
+namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
 	/// <summary>
 	/// ViewModel для входа в систему

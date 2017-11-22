@@ -1,18 +1,12 @@
-﻿using System;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+﻿using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using TimeTrace.Model;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
-using TimeTrace.View.SignUp;
+using TimeTrace.ViewModel.AuthenticationViewModel;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Popups;
-//using System.Drawing;
 
-// Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
-
-namespace TimeTrace.View
+namespace TimeTrace.View.AuthenticationView
 {
 	/// <summary>
 	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
@@ -26,7 +20,7 @@ namespace TimeTrace.View
 			// Установка размеров начального окна
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(385, 800));
 
-			ViewModel = new ViewModel.SignInViewModel();
+			ViewModel = new SignInViewModel();
 
 			KeyDown += (sender, e) =>
 			{
@@ -51,7 +45,7 @@ namespace TimeTrace.View
 		}
 
 		// Привязка ViewModel
-		public ViewModel.SignInViewModel ViewModel { get; private set; }
+		public SignInViewModel ViewModel { get; private set; }
 
 		/// <summary>
 		/// Получение системного цвета и установка цвета не автоматическим элементам
