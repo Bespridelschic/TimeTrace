@@ -71,6 +71,21 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			}
 		}
 
+		/// <summary>
+		/// Состояние флага доступности элементов управления графического интерфейса
+		/// </summary>
+		private bool controlEnable;
+		public bool ControlEnable
+		{
+			get { return controlEnable; }
+			set
+			{
+				controlEnable = value;
+				OnPropertyChanged("ControlEnable");
+			}
+		}
+
+
 		#endregion
 
 		/// <summary>
@@ -78,18 +93,12 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public SignInViewModel()
 		{
-			//AppSignInWithToken().Wait();
-			/*var res = AppSignInWithToken();
-			if (res.Result == 0)
-			{
-				(new MessageDialog("Можно войти с помощью токена")).ShowAsync();
-		}*/
-
 			CurrentUser = new User();
-			UserFileWorker.LoadUserFromFileAsync(CurrentUser).Wait();
+			UserFileWorker.LoadUserFromFileAsync(CurrentUser).GetAwaiter();
 
 			Processing = false;
 			IsPasswordSave = true;
+			ControlEnable = true;
 
 			SelectionStart = CurrentUser.Email.Length;
 		}
@@ -133,6 +142,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				return;
 			}
 
+			ControlEnable = false;
 			Processing = true;
 
 			try
@@ -201,6 +211,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
 			}
 
+			ControlEnable = true;
 			Processing = false;
 		}
 
@@ -211,7 +222,6 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		{
 			if (Window.Current.Content is Frame frame)
 			{
-				Processing = false;
 				frame.Navigate(typeof(SignUpExtendPage), CurrentUser.Email);
 			}
 		}
@@ -221,6 +231,9 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public async void UserPasswordRecovery()
 		{
+			string currentPassword = CurrentUser.Password;
+			string currentEmail = new string(CurrentUser.Email.ToCharArray());
+
 			#region Разметка диалогового окна
 
 			TextBox emailTextBox = new TextBox
@@ -277,8 +290,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					var CanAppSignInResult = await CanAppSignIn();
 					if (!CanAppSignInResult)
 					{
-						CurrentUser.Password = string.Empty;
-
+						CurrentUser.Password = currentPassword;
+						CurrentUser.Email = currentEmail;
 						return;
 					}
 
@@ -309,44 +322,6 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка изменения пароля")).ShowAsync();
 				}
 			}
-		}
-
-		/// <summary>
-		/// Попытка входа в систему с помощью токена
-		/// </summary>
-		private async Task<int> AppSignInWithToken()
-		{
-			var res = await UserFileWorker.LoadUserEmailAndTokenFromFile();
-
-			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
-			{
-				// Не трогать! 1 - не удачная попытка входа в приложение с помощью токена
-				return 1;
-			}
-
-			try
-			{
-				var requestResult = await UserRequest.SignInWithTokenPostRequestAsync(res.email, res.token);
-
-				switch (requestResult)
-				{
-					case 0:
-						{
-							await (new MessageDialog("Вы успешно вошли в систему", "Успех")).ShowAsync();
-
-
-							break;
-						}
-				}
-			}
-			catch (Exception ex)
-			{
-				await (new MessageDialog($"{ex.Message}\n" +
-					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
-			}
-
-			// Не трогать! 1 - не удачная попытка входа в приложение с помощью токена
-			return 1;
 		}
 
 		/// <summary>

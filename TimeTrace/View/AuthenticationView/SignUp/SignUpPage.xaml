@@ -2,7 +2,6 @@
     x:Class="TimeTrace.View.AuthenticationView.SignUp.SignUpPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TimeTrace.ViewModel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
@@ -55,13 +54,14 @@
 		</Grid>
 
 		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox Header="Подтвердите пароль:" PlaceholderText="Подтвердите ваш пароль..." Password="{x:Bind ViewModel.ConfirmPassword, Mode=TwoWay}"  MaxLength="19"
-					 ToolTipService.ToolTip="Подтвердите пароль, введённый ранее"/>
+			<PasswordBox Header="Подтвердите пароль:" PlaceholderText="Подтвердите ваш пароль..."
+						 Password="{x:Bind ViewModel.ConfirmPassword, Mode=TwoWay}" MaxLength="19"
+						 ToolTipService.ToolTip="Подтвердите пароль, введённый ранее"/>
 		</Grid>
 
 		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
 			<Button Content="Зарегистироваться" ToolTipService.ToolTip="Зарегистрироваться в системе" VerticalAlignment="Bottom"
-					BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.SignUpComplete}"/>
+					BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.SignUpComplete}" IsEnabled="{x:Bind ViewModel.ControlEnable, Mode=OneWay}"/>
 
 			<TextBlock Text="Все поля являются обязательными*" FontSize="12" VerticalAlignment="Top" Foreground="Gray"/>
 		</Grid>
@@ -69,6 +69,6 @@
 		<Grid Grid.Row="6" Grid.Column="1">
 			<ProgressRing Name="SignUpProgressRing" IsActive="{x:Bind ViewModel.Processing, Mode=TwoWay}" Foreground="{x:Bind SolidBrush}"/>
 		</Grid>
-		
+
 	</Grid>
 </Page>

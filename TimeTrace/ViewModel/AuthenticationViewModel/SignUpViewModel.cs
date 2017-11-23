@@ -94,6 +94,20 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			}
 		}
 
+		/// <summary>
+		/// Состояние флага доступности элементов управления графического интерфейса
+		/// </summary>
+		private bool controlEnable;
+		public bool ControlEnable
+		{
+			get { return controlEnable; }
+			set
+			{
+				controlEnable = value;
+				OnPropertyChanged("ControlEnable");
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -101,6 +115,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public SignUpViewModel()
 		{
+			ControlEnable = false;
+
 			CurrentUser = new User();
 
 			Processing = false;
@@ -109,6 +125,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			SelectedDate = new DateTimeOffset(new DateTime(2000, 1, 1));
 			MaxDate = DateTime.Today;
+
+			ControlEnable = true;
 		}
 
 		/// <summary>
@@ -169,6 +187,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			}
 
 			Processing = true;
+			ControlEnable = false;
 
 			try
 			{
@@ -187,6 +206,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						{
 							await (new MessageDialog("Пользователь с таким Email уже зарегистрирован", "Ошибка регистрации")).ShowAsync();
 
+							ControlEnable = true;
 							Processing = false;
 							return;
 						}

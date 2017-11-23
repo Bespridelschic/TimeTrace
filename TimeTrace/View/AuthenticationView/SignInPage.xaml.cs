@@ -21,14 +21,6 @@ namespace TimeTrace.View.AuthenticationView
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(385, 800));
 
 			ViewModel = new SignInViewModel();
-
-			KeyDown += (sender, e) =>
-			{
-				if (e.Key == Windows.System.VirtualKey.Enter)
-				{
-					ViewModel.AppSignIn();
-				}
-			};
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using TimeTrace.View;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -33,6 +34,8 @@ namespace TimeTrace
 		/// </summary>
 		public App()
 		{
+			AppSignInWithToken().GetAwaiter();
+
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
 		}
@@ -143,5 +146,42 @@ namespace TimeTrace
 			//TODO: Сохранить состояние приложения и остановить все фоновые операции
 			deferral.Complete();
 		}
+
+		/// <summary>
+		/// Попытка входа в систему с помощью токена
+		/// </summary>
+		private async Task AppSignInWithToken()
+		{
+			var res = await Model.UserFileWorker.LoadUserEmailAndTokenFromFile();
+
+			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
+			{
+				return;
+			}
+
+			try
+			{
+				var requestResult = await Model.UserRequest.SignInWithTokenPostRequestAsync(res.email, res.token);
+				//requestResult = 0;
+				switch (requestResult)
+				{
+					case 0:
+						{
+							if (Window.Current.Content is Frame frame)
+							{
+								frame.Navigate(typeof(View.MainView.StartPage));
+							}
+
+							break;
+						}
+				}
+			}
+			catch (Exception ex)
+			{
+				await (new Windows.UI.Popups.MessageDialog($"{ex.Message}\n" +
+					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+			}
+		}
+
 	}
 }
