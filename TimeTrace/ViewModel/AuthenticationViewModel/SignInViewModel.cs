@@ -141,13 +141,13 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			{
 				return;
 			}
-
+			
 			ControlEnable = false;
 			Processing = true;
 
 			try
 			{
-				var requestResult = await UserRequest.SignInPostRequestAsync(CurrentUser);
+				var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.SignIn, CurrentUser);
 
 				switch (requestResult)
 				{
@@ -295,7 +295,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						return;
 					}
 
-					var requestResult = await UserRequest.PasswordResetPostRequestAsync(CurrentUser);
+					var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.PasswordReset, CurrentUser);
 
 					switch (requestResult)
 					{
@@ -351,7 +351,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			{
 				try
 				{
-					var requestResult = await UserRequest.AccountActivationPostRequestAsync(CurrentUser);
+					var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.AccountActivation, CurrentUser);
 
 					switch (requestResult)
 					{

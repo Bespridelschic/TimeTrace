@@ -16,7 +16,7 @@
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
-					<TextBlock Text="Time Tracking" FontSize="28" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
+					<TextBlock Text="Time Tracking" FontSize="30" Foreground="White" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
 				</Grid>
 			</DataTemplate>
 		</NavigationView.HeaderTemplate>

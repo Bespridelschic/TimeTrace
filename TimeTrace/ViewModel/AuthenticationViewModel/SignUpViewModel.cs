@@ -76,15 +76,22 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// <summary>
 		/// Поля календаря
 		/// </summary>
-		private DateTimeOffset selectedDate;
-		public DateTimeOffset SelectedDate
+		private DateTimeOffset? selectedDate;
+		public DateTimeOffset? SelectedDate
 		{
 			get { return selectedDate; }
 			set
 			{
-				selectedDate = value;
-				CurrentUser.Birthday = $"{selectedDate.Year}-{selectedDate.Month}-{selectedDate.Day}";
-				OnPropertyChanged("SelectedDate");
+				if (value != null)
+				{
+					selectedDate = value;
+					CurrentUser.Birthday = $"{selectedDate.Value.Year}-{selectedDate.Value.Month}-{selectedDate.Value.Day}";
+					OnPropertyChanged("SelectedDate");
+				}
+				else
+				{
+					CurrentUser.Birthday = string.Empty;
+				}
 			}
 		}
 
@@ -116,8 +123,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			Processing = false;
 			ConfirmPassword = "";
 			SelectionStart = CurrentUser.Email.Length;
-
-			SelectedDate = new DateTimeOffset(new DateTime(2000, 1, 1));
+			SelectedDate = null;
 			MaxDate = DateTime.Today;
 
 			ControlEnable = true;
@@ -185,7 +191,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			try
 			{
-				var requestResult = await UserRequest.SignUpPostRequestAsync(CurrentUser);
+				var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.SignUp, CurrentUser);
 
 				switch (requestResult)
 				{
@@ -203,12 +209,6 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							ControlEnable = true;
 							Processing = false;
 							return;
-						}
-					case -1:
-						{
-							await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка входа")).ShowAsync();
-
-							break;
 						}
 					default:
 						{

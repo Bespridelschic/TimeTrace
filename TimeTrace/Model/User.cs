@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Windows.Storage;
-using System.IO;
-using System.Threading.Tasks;
-using System.Net;
-using Windows.UI.Popups;
-using Newtonsoft.Json.Linq;
 
 namespace TimeTrace.Model
 {
@@ -23,6 +15,7 @@ namespace TimeTrace.Model
 		#region Свойства
 
 		private string email;
+		[JsonProperty(PropertyName = "email")]
 		public string Email
 		{
 			get { return email; }
@@ -34,6 +27,7 @@ namespace TimeTrace.Model
 		}
 
 		private string password;
+		[JsonProperty(PropertyName = "password")]
 		public string Password
 		{
 			get { return password; }
@@ -45,6 +39,7 @@ namespace TimeTrace.Model
 		}
 
 		private string lastName;
+		[JsonProperty(PropertyName = "lastName")]
 		public string LastName
 		{
 			get { return lastName; }
@@ -56,6 +51,7 @@ namespace TimeTrace.Model
 		}
 
 		private string firstName;
+		[JsonProperty(PropertyName = "firstName")]
 		public string FirstName
 		{
 			get { return firstName; }
@@ -67,6 +63,7 @@ namespace TimeTrace.Model
 		}
 
 		private string middleName;
+		[JsonProperty(PropertyName = "middleName")]
 		public string MiddleName
 		{
 			get { return middleName; }
@@ -78,6 +75,7 @@ namespace TimeTrace.Model
 		}
 
 		private string birthday;
+		[JsonProperty(PropertyName = "birthday")]
 		public string Birthday
 		{
 			get { return birthday; }

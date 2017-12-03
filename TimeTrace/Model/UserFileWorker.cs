@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
 using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace TimeTrace.Model
 {
@@ -27,24 +31,6 @@ namespace TimeTrace.Model
 			string[] stringToFile = { user.Email, user.Password };
 
 			await FileIO.WriteLinesAsync(storageFile, stringToFile);
-
-			//string result = string.Empty;
-
-			/*using (Aes crypto = Aes.Create())
-			{
-				crypto.BlockSize = 128;
-				crypto.KeySize = 256;
-				crypto.GenerateIV();
-				crypto.GenerateKey();
-				crypto.Mode = CipherMode.CBC;
-				crypto.Padding = PaddingMode.PKCS7;
-
-				ICryptoTransform cryptoTransform = crypto.CreateEncryptor();
-				byte[] passwordBytes = cryptoTransform.TransformFinalBlock(Encoding.UTF8.GetBytes(Password), 0, Password.Length);
-
-				passwordCrypted = result;
-				return result = Encoding.UTF8.GetString(passwordBytes);
-			}*/
 		}
 
 		/// <summary>
@@ -83,24 +69,6 @@ namespace TimeTrace.Model
 			{
 				throw;
 			}
-
-			/*string result = string.Empty;
-
-			using (Aes crypto = Aes.Create())
-			{
-				crypto.BlockSize = 128;
-				crypto.KeySize = 256;
-				crypto.GenerateIV();
-				crypto.GenerateKey();
-				crypto.Mode = CipherMode.CBC;
-				crypto.Padding = PaddingMode.PKCS7;
-
-				ICryptoTransform cryptoTransform = crypto.CreateDecryptor();
-
-				//byte[] encryptedBytes = Encoding.UTF8.GetBytes(passwordCrypted);
-				//byte[] passwordBytes = cryptoTransform.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
-
-			}*/
 		}
 
 		/// <summary>
@@ -196,6 +164,50 @@ namespace TimeTrace.Model
 			else
 			{
 				return (null, null);
+			}
+		}
+
+		/// <summary>
+		/// Закрытый класс шифрования / дешифрования AES
+		/// </summary>
+		private class AesEnDecryption
+		{
+			// Key with 256 and IV with 16 length
+			private string AES_Key = "Y+3xQDLPWalRKK3U/JuabsJNnuEO91zRiOH5gjgOqck=";
+			private string AES_IV = "15CV1/ZOnVI3rY4wk4INBg==";
+			private IBuffer m_iv = null;
+			private CryptographicKey m_key;
+
+			public AesEnDecryption()
+			{
+				IBuffer key = Convert.FromBase64String(AES_Key).AsBuffer();
+				m_iv = Convert.FromBase64String(AES_IV).AsBuffer();
+				SymmetricKeyAlgorithmProvider provider = SymmetricKeyAlgorithmProvider.OpenAlgorithm(SymmetricAlgorithmNames.AesCbcPkcs7);
+				m_key = provider.CreateSymmetricKey(key);
+			}
+
+			/// <summary>
+			/// Метод шифрования байт
+			/// </summary>
+			/// <param name="input">Массив байт, подлежащих шифрованию</param>
+			/// <returns>Массив зашифрованных байт</returns>
+			public byte[] Encrypt(byte[] input)
+			{
+
+				IBuffer bufferMsg = CryptographicBuffer.ConvertStringToBinary(Encoding.ASCII.GetString(input), BinaryStringEncoding.Utf8);
+				IBuffer bufferEncrypt = CryptographicEngine.Encrypt(m_key, bufferMsg, m_iv);
+				return bufferEncrypt.ToArray();
+			}
+
+			/// <summary>
+			/// Метод расшифровки байт
+			/// </summary>
+			/// <param name="input">Массив зашифрованных байт</param>
+			/// <returns>Массив расшифрованных байт</returns>
+			public byte[] Decrypt(byte[] input)
+			{
+				IBuffer bufferDecrypt = CryptographicEngine.Decrypt(m_key, input.AsBuffer(), m_iv);
+				return bufferDecrypt.ToArray();
 			}
 		}
 	}

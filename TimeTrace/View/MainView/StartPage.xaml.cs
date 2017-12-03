@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,6 +31,11 @@ namespace TimeTrace.View.MainView
 			
 		}
 
+		/// <summary>
+		/// Навигация по меню приложения
+		/// </summary>
+		/// <param name="sender">Объект отправитель</param>
+		/// <param name="args">Событие</param>
 		private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			if (args.IsSettingsSelected)

@@ -56,7 +56,7 @@ namespace TimeTrace.Model
 					}
 				}
 				response.Close();
-
+				
 				return result;
 			}
 			catch (Exception)
@@ -66,69 +66,46 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
+		/// Перечисляемый тип отправляемого запроса
+		/// </summary>
+		public enum PostRequestDestination
+		{
+			SignIn,
+			SignUp,
+			AccountActivation,
+			PasswordReset
+		}
+
+		/// <summary>
 		/// Отправка данные на сервер для регистрации
 		/// </summary>
 		/// <param name="user">Объект класса <see cref="User"/></param>
 		/// <returns>Код регистрации: 0 - Успех, 1 - Не удача</returns>
-		public static async Task<int> SignUpPostRequestAsync(User user)
+		public static async Task<int> PostRequestAsync(PostRequestDestination destination, User user)
 		{
+			string link = string.Empty;
+
+			switch (destination)
+			{
+				case PostRequestDestination.SignIn:
+					link = "https://mindstructuring.ru/customer/login";
+					break;
+				case PostRequestDestination.SignUp:
+					link = "https://mindstructuring.ru/customer/signup";
+					break;
+				case PostRequestDestination.AccountActivation:
+					link = "https://mindstructuring.ru/customer/sendactivationkey";
+					break;
+				case PostRequestDestination.PasswordReset:
+					link = "https://mindstructuring.ru/customer/sendresetkey";
+					break;
+				default:
+					throw new ArgumentException("Не найдено совпадения для ключа PostRequestDestination");
+			}
+
 			try
 			{
-				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/signup", SignUpJsonSerialize(user));
-
-				if (string.IsNullOrEmpty(result))
-				{
-					throw new NullReferenceException("Сервер вернул null");
-				}
-
-				// Парсер JSON
-				JObject JsonString = JObject.Parse(result);
-
-				return (int)JsonString["answer"];
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-		}
-
-		/// <summary>
-		/// Активация аккаунта
-		/// </summary>
-		/// <param name="user">Объект класса <see cref="User"/></param>
-		/// <returns>Статус успеха активации: 0 - Успех, 1 - Не удача</returns>
-		public static async Task<int> AccountActivationPostRequestAsync(User user)
-		{
-			try
-			{
-				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/sendactivationkey", AccountActivationJsonSerialize(user));
-
-				if (string.IsNullOrEmpty(result))
-				{
-					throw new NullReferenceException("Сервер вернул null");
-				}
-
-				// Парсер JSON
-				JObject JsonString = JObject.Parse(result);
-
-				return (int)JsonString["answer"];
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-		}
-
-		/// <summary>
-		/// Отправка данных на сервер для входа
-		/// </summary>
-		/// <param name="user">Объект класса <see cref="User"/></param>
-		/// <returns>Код входа: 0 - Успех, 1 - Не удача</returns>
-		public static async Task<int> SignInPostRequestAsync(User user)
-		{
-			try
-			{
-				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/login", SignInJsonSerialize(user));
+				string result = await BasePostRequestAsync(link, JsonSerialize(user));
 
 				if (string.IsNullOrEmpty(result))
 				{
@@ -139,7 +116,7 @@ namespace TimeTrace.Model
 				JObject JsonString = JObject.Parse(result);
 
 				int answerCode = (int)JsonString["answer"];
-				if (answerCode == 0)
+				if (destination == PostRequestDestination.SignIn && answerCode == 0)
 				{
 					string token = (string)JsonString["_csrf"];
 					await UserFileWorker.SaveUserTokenToFileAsync(token);
@@ -188,61 +165,18 @@ namespace TimeTrace.Model
 			}
 		}
 
-		/// <summary>
-		/// Отправка данные на сервер для восстановления пароля
-		/// </summary>
-		/// <param name="user">Объект класса <see cref="User"/></param>
-		/// <returns>Код регистрации: 0 - Успех, 1 - Не удача</returns>
-		public static async Task<int> PasswordResetPostRequestAsync(User user)
-		{
-			try
-			{
-				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/sendresetkey", SignInJsonSerialize(user));
-
-				if (string.IsNullOrEmpty(result))
-				{
-					throw new NullReferenceException("Сервер вернул null");
-				}
-
-				// Парсер JSON
-				JObject JsonString = JObject.Parse(result);
-
-				return (int)JsonString["answer"];
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-		}
-
 		#region JSON
 
 		/// <summary>
-		/// Сериализация объекта User в формат Json при входе в систему
+		/// Сериализация объекта User в формат Json
 		/// </summary>
 		/// <param name="user">Объекта класса <see cref="User"/></param>
 		/// <returns>Строка в формате Json</returns>
-		private static string SignInJsonSerialize(User user)
+		private static string JsonSerialize(User user)
 		{
 			if (user != null)
 			{
-				var res = new { email = user.Email, password = user.Password };
-				return JsonConvert.SerializeObject(res);
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Сериализация объекта User в формат Json при регистрации
-		/// </summary>
-		/// <param name="user">Объекта класса <see cref="User"/></param>
-		/// <returns>Строка в формате Json</returns>
-		private static string SignUpJsonSerialize(User user)
-		{
-			if (user != null)
-			{
-				var res = new { email = user.Email, password = user.Password, firstName = user.FirstName, lastName = user.LastName, middleName = user.MiddleName, birthday = user.Birthday };
-				return JsonConvert.SerializeObject(res);
+				return JsonConvert.SerializeObject(user);
 			}
 			return null;
 		}
@@ -263,21 +197,6 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Сериализация Email для инициирования активации аккаунта
-		/// </summary>
-		/// <param name="user">Объекта класса <see cref="User"/></param>
-		/// <returns>Строка в формате Json</returns>
-		private static string AccountActivationJsonSerialize(User user)
-		{
-			if (user != null)
-			{
-				var res = new { email = user.Email };
-				return JsonConvert.SerializeObject(res);
-			}
-			return null;
-		}
-
-		/// <summary>
 		/// Сериализация Email и токена для входа в систему
 		/// </summary>
 		/// <param name="user">Объекта класса <see cref="User"/></param>
@@ -287,7 +206,7 @@ namespace TimeTrace.Model
 		{
 			if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(token))
 			{
-				var res = new { email = email, token = token };
+				var res = new { email = email, _csrf = token };
 				return JsonConvert.SerializeObject(res);
 			}
 			return null;
