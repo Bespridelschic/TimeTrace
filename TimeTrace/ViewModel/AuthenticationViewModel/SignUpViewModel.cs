@@ -11,60 +11,63 @@ using Windows.UI.Xaml.Controls;
 
 namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
-	public class SignUpViewModel : INotifyPropertyChanged
+	public class SignUpViewModel : BaseViewModel
 	{
+		#region Свойства
+
 		private User currentUser;
+		/// <summary>
+		/// Текущий используемый пользователь
+		/// </summary>
 		public User CurrentUser
 		{
 			get { return currentUser; }
 			set
 			{
 				currentUser = value;
-				OnPropertyChanged("CurrentUser");
+				OnPropertyChanged();
 			}
 		}
 
-		#region Свойства
-
+		private bool processing;
 		/// <summary>
 		/// Состояние ProgressRing
 		/// </summary>
-		private bool processing;
 		public bool Processing
 		{
 			get { return processing; }
 			set
 			{
 				processing = value;
-				OnPropertyChanged("Processing");
+				OnPropertyChanged();
 			}
 		}
-
+		
+		private string confirmPassword;
 		/// <summary>
 		/// Поля подтверждающего пароля
 		/// </summary>
-		private string confirmPassword;
 		public string ConfirmPassword
 		{
 			get { return confirmPassword; }
 			set
 			{
 				confirmPassword = value;
-				OnPropertyChanged("ConfirmPassword");
+				OnPropertyChanged();
 			}
 		}
-
+		
+		private int selectionStart;
 		/// <summary>
 		/// Начальная позиция курсора текста
 		/// </summary>
-		private int selectionStart;
 		public int SelectionStart
 		{
 			get { return selectionStart; }
 			set
 			{
 				selectionStart = value;
-				OnPropertyChanged("StartSelect");
+				OnPropertyChanged();
 			}
 		}
 
@@ -72,11 +75,11 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// Максимальная дата - текущий день
 		/// </summary>
 		public DateTime MaxDate { get; set; }
-
+		
+		private DateTimeOffset? selectedDate;
 		/// <summary>
 		/// Поля календаря
 		/// </summary>
-		private DateTimeOffset? selectedDate;
 		public DateTimeOffset? SelectedDate
 		{
 			get { return selectedDate; }
@@ -86,7 +89,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				{
 					selectedDate = value;
 					CurrentUser.Birthday = $"{selectedDate.Value.Year}-{selectedDate.Value.Month}-{selectedDate.Value.Day}";
-					OnPropertyChanged("SelectedDate");
+					OnPropertyChanged();
 				}
 				else
 				{
@@ -94,18 +97,18 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				}
 			}
 		}
-
+		
+		private bool controlEnable;
 		/// <summary>
 		/// Состояние флага доступности элементов управления графического интерфейса
 		/// </summary>
-		private bool controlEnable;
 		public bool ControlEnable
 		{
 			get { return controlEnable; }
 			set
 			{
 				controlEnable = value;
-				OnPropertyChanged("ControlEnable");
+				OnPropertyChanged();
 			}
 		}
 
@@ -230,16 +233,6 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				frame.Navigate(typeof(SignInPage), CurrentUser);
 			}
 		}
-
-		#region INotifyPropertyChanged
-
-		public event PropertyChangedEventHandler PropertyChanged = delegate { };
-		public void OnPropertyChanged([CallerMemberName]string prop = "")
-		{
-			PropertyChanged(this, new PropertyChangedEventArgs(prop));
-		}
-
-		#endregion
 	}
 }
 

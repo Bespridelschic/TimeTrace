@@ -5,8 +5,18 @@
     xmlns:local="using:TimeTrace.View.MainView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+	xmlns:media="using:Windows.UI.Xaml.Media"
+	mc:Ignorable="d">
 
+	<Page.Resources>
+		<!--Акриловая кисть-->
+		<media:AcrylicBrush x:Key="HostBackdropBrush"
+						BackgroundSource="HostBackdrop"
+						TintColor="LightBlue"
+						TintOpacity="0.6"
+						FallbackColor="LightSkyBlue"/>
+	</Page.Resources>
+	
 	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="NavView_SelectionChanged">
 
 		<NavigationView.HeaderTemplate>
@@ -14,9 +24,12 @@
 				<Grid Margin="24, 24, 0, 0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition/>
+						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 					<TextBlock Text="Time Tracking" FontSize="30" Foreground="White" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
+					<TextBlock Grid.Column="1" Text="Добро пожаловать, User!" VerticalAlignment="Center" Foreground="White"
+							   HorizontalAlignment="Right" Margin="0, 0, 15, 0" FontSize="18"/>
+
 				</Grid>
 			</DataTemplate>
 		</NavigationView.HeaderTemplate>

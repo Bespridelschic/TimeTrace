@@ -14,77 +14,79 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 	/// <summary>
 	/// ViewModel для входа в систему
 	/// </summary>
-	public class SignInViewModel : INotifyPropertyChanged
+	public class SignInViewModel : BaseViewModel
 	{
 		#region Свойства
 
 		private User currentUser;
+		/// <summary>
+		/// Текущий используемый пользователь
+		/// </summary>
 		public User CurrentUser
 		{
 			get { return currentUser; }
 			set
 			{
 				currentUser = value;
-				OnPropertyChanged("CurrentUser");
+				OnPropertyChanged();
 			}
 		}
-
+		
+		private bool processing;
 		/// <summary>
 		/// ProgressRing
 		/// </summary>
-		private bool processing;
 		public bool Processing
 		{
 			get { return processing; }
 			set
 			{
 				processing = value;
-				OnPropertyChanged("Processing");
+				OnPropertyChanged();
 			}
 		}
 
+		private int selectionStart;
 		/// <summary>
 		/// Начальная позиция курсора текста
 		/// </summary>
-		private int selectionStart;
 		public int SelectionStart
 		{
 			get { return selectionStart; }
 			set
 			{
 				selectionStart = value;
-				OnPropertyChanged("StartSelect");
+				OnPropertyChanged();
 			}
 		}
 
+		private bool isPasswordSave;
 		/// <summary>
 		/// Состояние флага сохранения пароля локально
 		/// </summary>
-		private bool isPasswordSave;
 		public bool IsPasswordSave
 		{
 			get { return isPasswordSave; }
 			set
 			{
 				isPasswordSave = value;
-				OnPropertyChanged("IsPasswordSave");
+				OnPropertyChanged();
 			}
 		}
 
+		private bool controlEnable;
 		/// <summary>
 		/// Состояние флага доступности элементов управления графического интерфейса
 		/// </summary>
-		private bool controlEnable;
 		public bool ControlEnable
 		{
 			get { return controlEnable; }
 			set
 			{
 				controlEnable = value;
-				OnPropertyChanged("ControlEnable");
+				OnPropertyChanged();
 			}
 		}
-
 
 		#endregion
 
@@ -379,15 +381,5 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				}
 			}
 		}
-
-		#region INotifyPropertyChanged
-
-		public event PropertyChangedEventHandler PropertyChanged = delegate { };
-		private void OnPropertyChanged([CallerMemberName]string prop = "")
-		{
-			PropertyChanged(this, new PropertyChangedEventArgs(prop));
-		}
-
-		#endregion
 	}
 }

@@ -9,8 +9,25 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<TextBlock Text="Здесь располагается список контактов, добавленных пользователем" TextWrapping="Wrap"
-				   VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Italic" FontSize="50" Margin="70" Foreground="SteelBlue"/>
-		
-    </Grid>
+		<ListBox Margin="5" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+			<TextBlock Text="Список контактов" FontSize="30" Foreground="SteelBlue"/>
+			<ListBoxItem ToolTipService.Placement="Right">
+				<ToolTipService.ToolTip>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="0.4*"/>
+						</Grid.RowDefinitions>
+						<Image Grid.Row="0" Source="/Assets/user-192.png" Height="250"/>
+						<TextBox Text="Фамилия Имя Отчество" Grid.Row="1" Foreground="SteelBlue" VerticalAlignment="Top"
+								 HorizontalAlignment="Center" Margin="0, 2, 0, 0" FontSize="20"/>
+					</Grid>
+				</ToolTipService.ToolTip>
+				<StackPanel Orientation="Horizontal">
+					<Image Source="/Assets/user-48.png" Width="40"/>
+					<TextBlock Text="Фамилия Имя Отчество" Margin="15, 0, 0, 0" Foreground="SteelBlue" FontSize="25"/>
+				</StackPanel>
+			</ListBoxItem>
+		</ListBox>
+	</Grid>
 </Page>

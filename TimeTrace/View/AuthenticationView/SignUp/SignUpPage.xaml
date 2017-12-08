@@ -7,15 +7,21 @@
 	mc:Ignorable="d">
 
 	<Page.Resources>
-		<Style TargetType="Grid" x:Key="GridAnimation">
-			<Setter Property="Transitions">
-				<Setter.Value>
-					<TransitionCollection>
-						<EdgeUIThemeTransition Edge="Left"/>
-					</TransitionCollection>
-				</Setter.Value>
-			</Setter>
-		</Style>
+		<ResourceDictionary>
+			<!--Анимация появления слева-->
+			<Style TargetType="Grid" x:Key="GridAnimation">
+				<Setter Property="Transitions">
+					<Setter.Value>
+						<TransitionCollection>
+							<EdgeUIThemeTransition Edge="Left"/>
+						</TransitionCollection>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/AuthenticationDictionary.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

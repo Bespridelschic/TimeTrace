@@ -101,10 +101,13 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\MapEvent.cs" />
     <Compile Include="Model\UserFileWorker.cs" />
     <Compile Include="Model\UserRequest.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignUpViewModel.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\PersonalEventCreateViewModel.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
     </Compile>
@@ -125,8 +128,11 @@
     <Compile Include="View\MainView\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MainView\PersonalMapsPage.xaml.cs">
-      <DependentUpon>PersonalMapsPage.xaml</DependentUpon>
+    <Compile Include="View\MainView\PersonalMapsCreatePages\CategorySelectPage.xaml.cs">
+      <DependentUpon>CategorySelectPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\PersonalMapsCreatePages\PersonalEventCreatePage.xaml.cs">
+      <DependentUpon>PersonalEventCreatePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainView\SchedulePage.xaml.cs">
       <DependentUpon>SchedulePage.xaml</DependentUpon>
@@ -142,10 +148,16 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="ProjectDiagrams\ProjectClassDiagrams.cd" />
+    <None Include="ProjectDiagrams\ClassDiagram1.cd" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\user-192.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\user-48.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -160,7 +172,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="ResourceDictionaries\SignInUpDictionary.xaml">
+    <Page Include="ResourceDictionaries\MainDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="ResourceDictionaries\AuthenticationDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -189,7 +206,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainView\PersonalMapsPage.xaml">
+    <Page Include="View\MainView\PersonalMapsCreatePages\CategorySelectPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\PersonalMapsCreatePages\PersonalEventCreatePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
