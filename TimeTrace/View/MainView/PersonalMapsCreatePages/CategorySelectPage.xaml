@@ -32,7 +32,8 @@
 			<RowDefinition Height="0.7*"/>
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Выберите одно из жизненных направлений" Foreground="{StaticResource HostBackdropBrush}" FontSize="35"/>
+		<TextBlock Text="Выберите одно из жизненных направлений" Foreground="{StaticResource HostBackdropBrush}" FontSize="35" TextWrapping="WrapWholeWords"
+				   HorizontalAlignment="Center" Margin="20, 0, 20, 0"/>
 		<Button Grid.Row="1" VerticalAlignment="Top" Content="Спорт" Background="PaleVioletRed" Foreground="White"
 				Click="{x:Bind ViewModel.CategorySelect}"/>
 

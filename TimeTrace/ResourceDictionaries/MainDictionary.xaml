@@ -6,51 +6,46 @@
 	<!--Общее для всех ресурсов-->
 	<Style TargetType="Control" x:Key="CommonAligmentStyle">
 		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="ToolTipService.Placement" Value="Top"/>
+		<Setter Property="MaxWidth" Value="456"/>
 	</Style>
 
 	<!--Текстовый блок-->
 	<Style TargetType="TextBlock">
-		<Setter Property="FontSize" Value="50"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 	</Style>
 
 	<!--Текстовое поле-->
 	<Style TargetType="TextBox" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="60"/>
-		<Setter Property="Width" Value="250"/>
 		<Setter Property="PlaceholderText" Value="Введите ваши данные"/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Введите ваши данные"/>
 	</Style>
 
 	<!--Поле для ввода паролей-->
 	<Style TargetType="PasswordBox" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="60"/>
 		<Setter Property="Width" Value="250"/>
 		<Setter Property="PlaceholderText" Value="Введите ваш пароль..."/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Введите ваш пароль"/>
 	</Style>
-	
+
 	<!--Поле для ввода дат-->
 	<Style TargetType="CalendarDatePicker" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="60"/>
-		<Setter Property="Width" Value="250"/>
-		<Setter Property="PlaceholderText" Value="Установить дату..."/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
+		<Setter Property="PlaceholderText" Value="Установить дату"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Установите дату"/>
+		<Setter Property="DateFormat" Value="{}{day.integer} {month.full} {year.full}"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="MaxWidth" Value="456"/>
+	</Style>
+
+	<!--Time Picker-->
+	<Style TargetType="TimePicker" BasedOn="{StaticResource CommonAligmentStyle}">
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
 	</Style>
 
 	<!--Кнопка-->
 	<Style TargetType="Button" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="33"/>
-		<Setter Property="Width" Value="160"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Использовать"/>
 	</Style>
 
@@ -58,8 +53,17 @@
 	<Style TargetType="CheckBox" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="40"/>
 		<Setter Property="Width" Value="250"/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Выбрать"/>
+	</Style>
+
+	<!--RadioButton-->
+	<Style TargetType="RadioButton" BasedOn="{StaticResource CommonAligmentStyle}">
+
+	</Style>
+
+	<!--AutoSuggestBox-->
+	<Style TargetType="AutoSuggestBox" BasedOn="{StaticResource CommonAligmentStyle}">
+
 	</Style>
 
 	<!--Акриловая кисть-->
@@ -70,10 +74,8 @@
 						FallbackColor="LightSkyBlue"/>
 
 	<!--Ссылки-->
-	<Style TargetType="HyperlinkButton">
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
+	<Style TargetType="HyperlinkButton" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="HorizontalAlignment" Value="Center"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
 
 	<!--Анимация ожидания-->

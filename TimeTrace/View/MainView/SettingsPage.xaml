@@ -7,10 +7,75 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+	<Page.Resources>
+		<ResourceDictionary>
+			<Style TargetType="StackPanel">
+				<Setter Property="Transitions">
+					<Setter.Value>
+						<TransitionCollection>
+							<EntranceThemeTransition/>
+						</TransitionCollection>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
+	
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<TextBlock Text="Здесь располагаются системные настройки приложения" TextWrapping="Wrap"
-				   VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Italic" FontSize="50" Margin="70" Foreground="SteelBlue"/>
-		
-    </Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+		<TextBlock Text="Глобальные настройки приложения" Margin="20" FontSize="30" Foreground="SteelBlue" TextWrapping="Wrap" Grid.Row="0"/>
+
+		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" VerticalAlignment="Center">
+			<StackPanel>
+				<ComboBox Header="Язык приложения" Margin="50, 10" Width="200">
+					<ComboBoxItem IsSelected="True">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Русский"/>
+						</StackPanel>
+					</ComboBoxItem>
+					<ComboBoxItem>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="English"/>
+						</StackPanel>
+					</ComboBoxItem>
+				</ComboBox>
+
+				<ComboBox Header="Цветовая гамма" Margin="50, 10" Width="200">
+					<ComboBoxItem IsSelected="True">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Системный цвет"/>
+						</StackPanel>
+					</ComboBoxItem>
+					<ComboBoxItem>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Свой цвет"/>
+						</StackPanel>
+					</ComboBoxItem>
+				</ComboBox>
+
+				<TextBlock Text="Темы" Margin="50, 5" HorizontalAlignment="Left"/>
+				<RadioButton GroupName="Themes" Content="Светлая" Margin="50, 0"/>
+				<RadioButton GroupName="Themes" Content="Темная" Margin="50, 0"/>
+				<RadioButton GroupName="Themes" Content="Системная" Margin="50, 0"/>
+
+				<ColorPicker ColorSpectrumShape="Ring"
+							IsColorSliderVisible="True"
+							IsColorChannelTextInputVisible="False"
+							IsHexInputVisible="False"
+							IsAlphaEnabled="False"
+							IsAlphaSliderVisible="True"
+							IsAlphaTextInputVisible="True" />
+
+			</StackPanel>
+		</ScrollViewer>
+
+	</Grid>
 </Page>

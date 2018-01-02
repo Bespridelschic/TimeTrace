@@ -101,6 +101,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\GlobalProperties.cs" />
     <Compile Include="Model\MapEvent.cs" />
     <Compile Include="Model\UserFileWorker.cs" />
     <Compile Include="Model\UserRequest.cs" />

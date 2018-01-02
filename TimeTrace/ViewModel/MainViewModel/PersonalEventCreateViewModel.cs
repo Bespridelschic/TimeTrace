@@ -10,6 +10,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.UI.Popups;
+using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -64,6 +66,22 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		private bool isSelectManAndPlace;
+		/// <summary>
+		/// При привязке события к человеку и месту
+		/// </summary>
+		public bool IsSelectManAndPlace
+		{
+			get { return isSelectManAndPlace; }
+			set
+			{
+				isSelectManAndPlace = value;
+				isSelectMan = true;
+				IsSelectPlace = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -74,13 +92,31 @@ namespace TimeTrace.ViewModel.MainViewModel
 			CurrentMapEvent = new MapEvent();
 			MinDate = DateTime.Today;
 
-			IsSelectMan = false;
 			IsSelectPlace = true;
+			IsSelectMan = false;
+			IsSelectManAndPlace = false;
 		}
 
+		/// <summary>
+		/// Создание нового события
+		/// </summary>
+		/// <returns>Результат создания события</returns>
 		public async Task EventCreate()
 		{
-			await (new MessageDialog($"{CurrentMapEvent.Name}", "Сработало")).ShowAsync();
+			XDocument doc = new XDocument(
+				new XElement("Events",
+					new XElement("Sport", new XAttribute("Name", $"{CurrentMapEvent.Name}"),
+						new XElement("Description", $"{CurrentMapEvent.Description}"),
+						new XElement("Place", $"{CurrentMapEvent.Place}"),
+						new XElement("User", $"{CurrentMapEvent.UserBind.LastName}"),
+						new XElement("Date", $"{CurrentMapEvent.EventDate}"),
+						new XElement("Time", $"{CurrentMapEvent.EventTime}"),
+						new XElement("Span", $"{CurrentMapEvent.EventTimeSpan}"),
+						new XElement("Interval", $"{CurrentMapEvent.EventInterval}")
+					)
+				)
+			);
+			await (new MessageDialog($"{doc.ToString()}")).ShowAsync();
 		}
 
 		/// <summary>

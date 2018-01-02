@@ -45,7 +45,6 @@ namespace TimeTrace.View.MainView
 			}
 			else
 			{
-
 				NavigationViewItem item = args.SelectedItem as NavigationViewItem;
 
 				switch (item.Tag)

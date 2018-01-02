@@ -43,16 +43,30 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private DateTime? dateTime;
+		private DateTimeOffset? eventDate;
 		/// <summary>
-		/// Дата и время события
+		/// Дата события
 		/// </summary>
-		public DateTime? DateTime
+		public DateTimeOffset? EventDate
 		{
-			get { return dateTime; }
+			get { return eventDate; }
 			set
 			{
-				dateTime = value;
+				eventDate = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private TimeSpan eventTime;
+		/// <summary>
+		/// Время события
+		/// </summary>
+		public TimeSpan EventTime
+		{
+			get { return eventTime; }
+			set
+			{
+				eventTime = value;
 				OnPropertyChanged();
 			}
 		}
@@ -71,16 +85,16 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private User user;
+		private User userBind;
 		/// <summary>
 		/// Привязка события на человека
 		/// </summary>
 		public User UserBind
 		{
-			get { return user; }
+			get { return userBind; }
 			set
 			{
-				user = value;
+				userBind = value;
 				OnPropertyChanged();
 			}
 		}
@@ -148,23 +162,28 @@ namespace TimeTrace.Model
 		public MapEvent()
 		{
 			TypeOfEvent = EventType.NotDefined;
+			UserBind = new User();
 		}
 
 		/// <summary>
 		/// Установка события
 		/// </summary>
 		/// <param name="eventName">Имя события</param>
-		/// <param name="dateTime">Дата и время события</param>
+		/// <param name="date">Дата события</param>
+		/// <param name="time">Время события</param>
 		/// <param name="place">Место события</param>
 		/// <param name="eventTimeSpan">Продолжительность события</param>
 		/// <param name="eventInterval">Интервал повторения события</param>
 		/// <param name="eventType">Тип события</param>
-		public MapEvent(string eventName, string description, DateTime? dateTime, string place, TimeSpan? eventTimeSpan, TimeSpan? eventInterval, EventType eventType)
+		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place, string user, TimeSpan? eventTimeSpan, TimeSpan? eventInterval, EventType eventType)
 		{
 			Name = eventName;
 			Description = description;
-			DateTime = dateTime;
+			EventDate = date;
+			EventTime = time;
 			Place = place;
+			UserBind = new User();
+			userBind.LastName = user;
 			EventTimeSpan = eventTimeSpan;
 			EventInterval = eventInterval;
 			TypeOfEvent = eventType;

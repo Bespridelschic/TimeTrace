@@ -9,12 +9,11 @@
 	mc:Ignorable="d">
 
 	<Page.Resources>
-		<!--Акриловая кисть-->
-		<media:AcrylicBrush x:Key="HostBackdropBrush"
-						BackgroundSource="HostBackdrop"
-						TintColor="LightBlue"
-						TintOpacity="0.6"
-						FallbackColor="LightSkyBlue"/>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Page.Resources>
 	
 	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="NavView_SelectionChanged">
@@ -29,7 +28,6 @@
 					<TextBlock Text="Time Tracking" FontSize="30" Foreground="White" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
 					<TextBlock Grid.Column="1" Text="Добро пожаловать, User!" VerticalAlignment="Center" Foreground="White"
 							   HorizontalAlignment="Right" Margin="0, 0, 15, 0" FontSize="18"/>
-
 				</Grid>
 			</DataTemplate>
 		</NavigationView.HeaderTemplate>
