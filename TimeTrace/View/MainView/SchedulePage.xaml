@@ -2,15 +2,58 @@
     x:Class="TimeTrace.View.MainView.SchedulePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TimeTrace.View.MainView"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<Page.Resources>
+		<ResourceDictionary>
+			<Style TargetType="StackPanel">
+				<Setter Property="Transitions">
+					<Setter.Value>
+						<TransitionCollection>
+							<EntranceThemeTransition/>
+						</TransitionCollection>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
+	
+    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<TextBlock Text="Здесь располагается расписание пользователя на заданный период" TextWrapping="Wrap"
-				   VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Italic" FontSize="50" Margin="70" Foreground="SteelBlue"/>
-		
-    </Grid>
+		<TextBlock Text="Текущее расписание на неделю" Foreground="SteelBlue" FontSize="25" HorizontalAlignment="Left" Margin="20"/>
+
+		<Grid Margin="20, 0, 20, 0" HorizontalAlignment="Left" BorderBrush="SteelBlue" BorderThickness="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<TextBlock Grid.Row="0" Text="Понедельник" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Row="1" Text="Вторник" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Row="2" Text="Среда" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Row="3" Text="Четверг" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Row="4" Text="Пятница" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Row="5" Text="Суббота" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Row="6" Text="Воскресение" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
+
+
+			<TextBlock Grid.Column="1" Text="Начать новую жизнь" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Center"/>
+			<TextBlock Grid.Column="1" Grid.Row="6" Text="Паттерны, читать паттерны!" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Center"/>
+		</Grid>
+
+	</StackPanel>
 </Page>

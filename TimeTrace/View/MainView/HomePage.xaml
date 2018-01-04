@@ -2,20 +2,67 @@
     x:Class="TimeTrace.View.MainView.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TimeTrace.View.MainView"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<!--<Grid.RowDefinitions>
-			<RowDefinition/>
-			<RowDefinition/>
-			<RowDefinition/>
-		</Grid.RowDefinitions>-->
+	<Page.Resources>
+		<ResourceDictionary>
+			<Style TargetType="StackPanel">
+				<Setter Property="Transitions">
+					<Setter.Value>
+						<TransitionCollection>
+							<EntranceThemeTransition/>
+						</TransitionCollection>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
 
-		<TextBlock Text="Здесь располагается вся представленная пользователем информация, а так же общая статистика" TextWrapping="Wrap"
-				   VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Italic" FontSize="50" Margin="70" Foreground="SteelBlue"/>
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+			
+			<PersonPicture DisplayName="Hello User!" ProfilePicture="/Assets/user-192.png" Initials="Usr" HorizontalAlignment="Center"
+					   Margin="0, 20, 0, 5" Width="200" Height="200"/>
 
-	</Grid>
+			<TextBlock Text="Добро пожаловать, User!" HorizontalAlignment="Center" FontSize="25" Foreground="SteelBlue" Margin="0, 0, 0, 20"/>
+
+			<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
+				<TextBlock Text="Полезное для вас" Foreground="SteelBlue" FontSize="20"/>
+
+				<VariableSizedWrapGrid Orientation="Horizontal">
+					<Button Foreground="White" Background="SteelBlue" Content="Расписание" Width="120" Margin="20"/>
+					<Button Foreground="White" Background="SteelBlue" Content="К картам" Width="120" Margin="20"/>
+					<Button Foreground="White" Background="SteelBlue" Content="К настройкам" Width="120" Margin="20"/>
+					<Button Foreground="White" Background="SteelBlue" Content="Помощь" Width="120" Margin="20"/>
+				</VariableSizedWrapGrid>
+
+			</StackPanel>
+
+			<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center">
+				<TextBlock Text="Личная статистика" FontSize="20" Margin="0, 0, 0, 20"/>
+
+				<VariableSizedWrapGrid Orientation="Horizontal">
+					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
+						<TextBlock Text="Создано карт: " FontSize="15"/>
+						<TextBlock Text="?" FontSize="15"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
+						<TextBlock Text="Контактов: " FontSize="15"/>
+						<TextBlock Text="?" FontSize="15"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
+						<TextBlock Text="Общий стаж: " FontSize="15"/>
+						<TextBlock Text="?" FontSize="15"/>
+					</StackPanel>
+				</VariableSizedWrapGrid>
+				
+			</StackPanel>
+			
+		</StackPanel>
+	</ScrollViewer>
 </Page>

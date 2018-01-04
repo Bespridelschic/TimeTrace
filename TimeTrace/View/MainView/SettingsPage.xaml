@@ -31,7 +31,7 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Глобальные настройки приложения" Margin="20" FontSize="30" Foreground="SteelBlue" TextWrapping="Wrap" Grid.Row="0"/>
+		<TextBlock Text="Глобальные настройки приложения" Margin="20, 20, 20, 5" FontSize="30" Foreground="SteelBlue" TextWrapping="Wrap" Grid.Row="0"/>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" VerticalAlignment="Center">
 			<StackPanel>

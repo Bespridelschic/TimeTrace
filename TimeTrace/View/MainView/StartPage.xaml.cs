@@ -29,6 +29,8 @@ namespace TimeTrace.View.MainView
 		public StartPage()
 		{
 			this.InitializeComponent();
+
+			ContentFrame.Navigate(typeof(HomePage));
 			
 		}
 
