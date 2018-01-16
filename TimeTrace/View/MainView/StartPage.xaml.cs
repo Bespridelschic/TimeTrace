@@ -53,27 +53,31 @@ namespace TimeTrace.View.MainView
 				{
 					case "home":
 						ContentFrame.Navigate(typeof(HomePage));
-						TitleText = "Домашняя страница";
+						NavHeader.Header = "Домашняя страница";
 						break;
 
 					case "schedule":
 						ContentFrame.Navigate(typeof(SchedulePage));
-						TitleText = "Расписание";
+						NavHeader.Header = "Расписание";
 						break;
 
 					case "contacts":
 						ContentFrame.Navigate(typeof(ContactsPage));
-						TitleText = "Контакты";
+						NavHeader.Header = "Контакты";
 						break;
 
 					case "personalMaps":
 						ContentFrame.Navigate(typeof(PersonalMapsPage));
-						TitleText = "Интеллект-карты пользователя";
+						NavHeader.Header = "Интеллект-карты пользователя";
 						break;
 
 					case "groupMaps":
 						ContentFrame.Navigate(typeof(GroupMapsPage));
-						TitleText = "Интеллект-карты с участием пользователя";
+						NavHeader.Header = "Интеллект-карты с участием пользователя";
+						break;
+
+					default:
+						NavHeader.Header = "Time Tracking";
 						break;
 				}
 			}

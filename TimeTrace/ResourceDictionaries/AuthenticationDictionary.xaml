@@ -3,20 +3,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:media="using:Windows.UI.Xaml.Media">
 
-	<!--Общее для всех ресурсов-->
+	<!--Common Resource-->
 	<Style TargetType="Control" x:Key="CommonAligmentStyle">
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 	</Style>
 
-	<!--Текстовый блок-->
+	<!--Text Block-->
 	<Style TargetType="TextBlock">
 		<Setter Property="FontSize" Value="50"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 	</Style>
 
-	<!--Текстовое поле-->
+	<!--Text Box-->
 	<Style TargetType="TextBox" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="60"/>
 		<Setter Property="Width" Value="250"/>
@@ -25,7 +25,7 @@
 		<Setter Property="ToolTipService.ToolTip" Value="Введите ваши данные"/>
 	</Style>
 
-	<!--Поле для ввода паролей-->
+	<!--Password Box-->
 	<Style TargetType="PasswordBox" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="60"/>
 		<Setter Property="Width" Value="250"/>
@@ -34,7 +34,7 @@
 		<Setter Property="ToolTipService.ToolTip" Value="Введите ваш пароль"/>
 	</Style>
 	
-	<!--Поле для ввода дат-->
+	<!--Calendar Picker-->
 	<Style TargetType="CalendarDatePicker" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="60"/>
 		<Setter Property="Width" Value="250"/>
@@ -43,7 +43,7 @@
 		<Setter Property="ToolTipService.ToolTip" Value="Установите дату"/>
 	</Style>
 
-	<!--Кнопка-->
+	<!--Button-->
 	<Style TargetType="Button" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="33"/>
 		<Setter Property="Width" Value="160"/>
@@ -62,21 +62,21 @@
 		<Setter Property="ToolTipService.ToolTip" Value="Выбрать"/>
 	</Style>
 
-	<!--Акриловая кисть-->
+	<!--Acrylic Brush-->
 	<media:AcrylicBrush x:Key="HostBackdropBrush"
 						BackgroundSource="HostBackdrop"
 						TintColor="LightBlue"
 						TintOpacity="0.6"
 						FallbackColor="LightSkyBlue"/>
 
-	<!--Ссылки-->
+	<!--Link-->
 	<Style TargetType="HyperlinkButton">
 		<Setter Property="ToolTipService.Placement" Value="Top"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
 
-	<!--Анимация ожидания-->
+	<!--Progress Ring-->
 	<Style TargetType="ProgressRing" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="30"/>
 		<Setter Property="Width" Value="30"/>

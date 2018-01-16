@@ -3,39 +3,38 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:media="using:Windows.UI.Xaml.Media">
 
-	<!--Общее для всех ресурсов-->
+	<!--Common resource-->
 	<Style TargetType="Control" x:Key="CommonAligmentStyle">
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="ToolTipService.Placement" Value="Top"/>
 		<Setter Property="MaxWidth" Value="456"/>
 	</Style>
 
-	<!--Текстовый блок-->
+	<!--Text Block-->
 	<Style TargetType="TextBlock">
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 	</Style>
 
-	<!--Текстовое поле-->
+	<!--Text Box-->
 	<Style TargetType="TextBox" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="PlaceholderText" Value="Введите ваши данные"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Введите ваши данные"/>
 	</Style>
 
-	<!--Поле для ввода паролей-->
+	<!--Password Box-->
 	<Style TargetType="PasswordBox" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Width" Value="250"/>
 		<Setter Property="PlaceholderText" Value="Введите ваш пароль..."/>
 		<Setter Property="ToolTipService.ToolTip" Value="Введите ваш пароль"/>
 	</Style>
 
-	<!--Поле для ввода дат-->
+	<!--Calendar Picker-->
 	<Style TargetType="CalendarDatePicker" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="PlaceholderText" Value="Установить дату"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Установите дату"/>
 		<Setter Property="DateFormat" Value="{}{day.integer} {month.full} {year.full}"/>
 		<Setter Property="HorizontalAlignment" Value="Stretch"/>
-		<Setter Property="MaxWidth" Value="456"/>
 	</Style>
 
 	<!--Time Picker-->
@@ -43,20 +42,20 @@
 		<Setter Property="HorizontalAlignment" Value="Stretch"/>
 	</Style>
 
-	<!--Кнопка-->
+	<!--Button-->
 	<Style TargetType="Button" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Использовать"/>
 	</Style>
 
-	<!--CheckBox-->
+	<!--Check Box-->
 	<Style TargetType="CheckBox" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="40"/>
 		<Setter Property="Width" Value="250"/>
 		<Setter Property="ToolTipService.ToolTip" Value="Выбрать"/>
 	</Style>
 
-	<!--RadioButton-->
+	<!--Radio Button-->
 	<Style TargetType="RadioButton" BasedOn="{StaticResource CommonAligmentStyle}">
 
 	</Style>
@@ -66,22 +65,27 @@
 
 	</Style>
 
-	<!--Акриловая кисть-->
+	<!--Acrylic Brush-->
 	<media:AcrylicBrush x:Key="HostBackdropBrush"
 						BackgroundSource="HostBackdrop"
 						TintColor="LightBlue"
 						TintOpacity="0.6"
 						FallbackColor="LightSkyBlue"/>
 
-	<!--Ссылки-->
+	<!--Link-->
 	<Style TargetType="HyperlinkButton" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 	</Style>
 
-	<!--Анимация ожидания-->
+	<!--Progress Ring-->
 	<Style TargetType="ProgressRing" BasedOn="{StaticResource CommonAligmentStyle}">
 		<Setter Property="Height" Value="30"/>
 		<Setter Property="Width" Value="30"/>
 	</Style>
 
+	<!--Combo Box-->
+	<Style TargetType="ComboBox" BasedOn="{StaticResource CommonAligmentStyle}">
+		<Setter Property="Header" Value="Подлежит переименованию!"/>
+	</Style>
+	
 </ResourceDictionary>

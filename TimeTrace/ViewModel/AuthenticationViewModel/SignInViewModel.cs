@@ -117,7 +117,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				return false;
 			}
 
-			if (!CurrentUser.EmailCorrectChech())
+			if (!CurrentUser.EmailCorrectCheck())
 			{
 				await new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка операции").ShowAsync();
 				return false;
@@ -149,7 +149,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			try
 			{
-				var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.SignIn, CurrentUser);
+				var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.SignIn, CurrentUser);
 
 				switch (requestResult)
 				{
@@ -297,7 +297,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						return;
 					}
 
-					var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.PasswordReset, CurrentUser);
+					var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.PasswordReset, CurrentUser);
 
 					switch (requestResult)
 					{
@@ -353,7 +353,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			{
 				try
 				{
-					var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.AccountActivation, CurrentUser);
+					var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.AccountActivation, CurrentUser);
 
 					switch (requestResult)
 					{

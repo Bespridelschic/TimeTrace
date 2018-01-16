@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace TimeTrace.Model
 {
 	/// <summary>
-	/// Статический класс работы пользователя с сервером
+	/// Static class to work with the server
 	/// </summary>
-	public static class UserRequest
+	public static class UserRequests
 	{
 		/// <summary>
-		/// Базовый метод отправки запроса серверу
+		/// Base method for sending POST requests
 		/// </summary>
-		/// <param name="url">URL строка сервера</param>
-		/// <param name="data">Данные отправляемые серверу в формате Json</param>
+		/// <param name="url">URL</param>
+		/// <param name="data">Data in json format</param>
 		/// <returns></returns>
 		private static async Task<string> BasePostRequestAsync(string url, string data)
 		{
@@ -33,13 +33,12 @@ namespace TimeTrace.Model
 
 				byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
-				// устанавливаем тип содержимого - параметр ContentType
 				request.ContentType = "application/json";
 
-				// Устанавливаем заголовок Content-Length запроса - свойство ContentLength
+				// Set header
 				request.ContentLength = byteArray.Length;
 
-				//записываем данные в поток запроса
+				// Write data to stream
 				using (Stream dataStream = request.GetRequestStream())
 				{
 					dataStream.Write(byteArray, 0, byteArray.Length);
@@ -66,7 +65,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Перечисляемый тип отправляемого запроса
+		/// Type of sending request
 		/// </summary>
 		public enum PostRequestDestination
 		{
@@ -77,10 +76,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Отправка данные на сервер для регистрации
+		/// Sending data to server
 		/// </summary>
-		/// <param name="user">Объект класса <see cref="User"/></param>
-		/// <returns>Код регистрации: 0 - Успех, 1 - Не удача</returns>
+		/// <param name="user">Object of <see cref="User"/></param>
+		/// <returns>Return code from server: 0 - success, 1 - fail</returns>
 		public static async Task<int> PostRequestAsync(PostRequestDestination destination, User user)
 		{
 			string link = string.Empty;
@@ -100,7 +99,7 @@ namespace TimeTrace.Model
 					link = "https://mindstructuring.ru/customer/sendresetkey";
 					break;
 				default:
-					throw new ArgumentException("Не найдено совпадения для ключа PostRequestDestination");
+					throw new ArgumentException("Not fount type of sending request PostRequestDestination");
 			}
 
 			try
@@ -131,11 +130,11 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Отправка данных на сервер для входа с помощью токена
+		/// Sending data for enter with token and email
 		/// </summary>
-		/// <param name="email">Строка с адресом электронной почты</param>
-		/// <param name="token">Строка с токеном</param>
-		/// <returns>Код входа: 0 - Успех, 1 - Не удача</returns>
+		/// <param name="email">Email</param>
+		/// <param name="token">Token</param>
+		/// <returns>Return code from server: 0 - success, 1 - fail</returns>
 		public static async Task<int> SignInWithTokenPostRequestAsync(string email, string token)
 		{
 			try
@@ -144,7 +143,7 @@ namespace TimeTrace.Model
 
 				if (string.IsNullOrEmpty(result))
 				{
-					throw new NullReferenceException("Сервер вернул null");
+					throw new NullReferenceException("Server return null");
 				}
 
 				// Парсер JSON
@@ -168,10 +167,10 @@ namespace TimeTrace.Model
 		#region JSON
 
 		/// <summary>
-		/// Сериализация объекта User в формат Json
+		/// Serialize user to json format
 		/// </summary>
-		/// <param name="user">Объекта класса <see cref="User"/></param>
-		/// <returns>Строка в формате Json</returns>
+		/// <param name="user">Object of <see cref="User"/></param>
+		/// <returns>Json string</returns>
 		private static string JsonSerialize(User user)
 		{
 			if (user != null)
@@ -182,10 +181,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Десериализация объекта User в формате Json
+		/// Deserialize user from json
 		/// </summary>
-		/// <param name="user">Строка в формате Json</param>
-		/// <returns>Объекта класса <see cref="User"/></returns>
+		/// <param name="user">Json string</param>
+		/// <returns>New object of <see cref="User"/></returns>
 		private static User JsonDeserialize(string jsonString)
 		{
 			if (!string.IsNullOrEmpty(jsonString))
@@ -197,10 +196,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Сериализация Email и токена для входа в систему
+		/// Serialize token and email
 		/// </summary>
-		/// <param name="user">Объекта класса <see cref="User"/></param>
-		/// <param name="token">Строка с токеном</param>
+		/// <param name="user">Object of <see cref="User"/></param>
+		/// <param name="token">Token</param>
 		/// <returns>Строка в формате Json</returns>
 		private static string SignInWithTokenJsonSerialize(string email, string token)
 		{

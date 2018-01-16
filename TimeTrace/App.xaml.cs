@@ -153,7 +153,7 @@ namespace TimeTrace
 		/// </summary>
 		private async Task AppSignInWithToken()
 		{
-			var res = await Model.UserFileWorker.LoadUserEmailAndTokenFromFile();
+			var res = await Model.UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
 
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
@@ -162,7 +162,7 @@ namespace TimeTrace
 
 			try
 			{
-				var requestResult = await Model.UserRequest.SignInWithTokenPostRequestAsync(res.email, res.token);
+				var requestResult = await Model.UserRequests.SignInWithTokenPostRequestAsync(res.email, res.token);
 				
 				switch (requestResult)
 				{

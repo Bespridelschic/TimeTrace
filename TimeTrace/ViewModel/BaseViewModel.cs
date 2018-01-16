@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace TimeTrace.ViewModel
 {
 	/// <summary>
-	/// Абстрактный базовый класс ViewModel
+	/// Abstract base class of ViewModel
 	/// </summary>
 	public abstract class BaseViewModel : INotifyPropertyChanged
 	{
 		/// <summary>
-		/// Событие
+		/// Event
 		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
 		/// <summary>
-		/// Регистрация события
+		/// Event registration
 		/// </summary>
-		/// <param name="property">Имя свойства</param>
+		/// <param name="property">Caller properties name</param>
 		protected void OnPropertyChanged([CallerMemberName]string property = "")
 		{
 			PropertyChanged(this, new PropertyChangedEventArgs(property));

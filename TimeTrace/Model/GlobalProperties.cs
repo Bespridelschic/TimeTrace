@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace TimeTrace.Model
 {
+	/// <summary>
+	/// Global settings
+	/// </summary>
     internal static class GlobalProperties
     {
 		/// <summary>
-		/// Языки приложения
+		/// Application language
 		/// </summary>
 		public enum Language
 		{
@@ -18,7 +21,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Цвета приложения
+		/// Application colors
 		/// </summary>
 		public enum Color
 		{
@@ -27,17 +30,17 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Язык используемый в приложении
+		/// Current application color
 		/// </summary>
 		public static Language AppLanguage { get; set; }
 
 		/// <summary>
-		/// Текущий тип цветовой палитры
+		/// Current application color
 		/// </summary>
 		public static Color AppColor { get; set; }
 
 		/// <summary>
-		/// Инициализация глобальных свойств
+		/// Initializing global properties
 		/// </summary>
 		static GlobalProperties()
 		{

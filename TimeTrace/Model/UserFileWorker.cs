@@ -12,21 +12,21 @@ using Windows.Storage.Streams;
 namespace TimeTrace.Model
 {
 	/// <summary>
-	/// Статический класс работы с файлами и каталогами сохраняемых данных
+	/// Class for working with files and directories
 	/// </summary>
 	public static class UserFileWorker
 	{
 		/// <summary>
-		/// Сохранение данных пользователя в файл
+		/// Save user to file
 		/// </summary>
-		/// <param name="user">Объект класса <see cref="User"/></param>
-		/// <returns>Успех сохранения в файл</returns>
+		/// <param name="user">Saving object <see cref="User"/></param>
+		/// <returns>Success of saving</returns>
 		public static async Task SaveUserToFileAsync(User user)
 		{
 			StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 			StorageFile storageFile = await storageFolder.CreateFileAsync("_psf.bin", CreationCollisionOption.ReplaceExisting);
 
-			// Расположение файла C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
+			// Catalog C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
 
 			string[] stringToFile = { user.Email, user.Password };
 
@@ -34,10 +34,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Получение пароля из локального хранилища
+		/// Getting email and password from file
 		/// </summary>
-		/// <param name="user">Объект класса <see cref="User"/></param>
-		/// <returns>Успех загрузки из файла</returns>
+		/// <param name="user">Object of <see cref="User"/></param>
+		/// <returns>Success of loading</returns>
 		public static async Task LoadUserFromFileAsync(User user)
 		{
 			try
@@ -52,7 +52,7 @@ namespace TimeTrace.Model
 
 				StorageFile storageFile = await storageFolder.GetFileAsync("_psf.bin");
 
-				// Расположение файла C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
+				// Catalog C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
 
 				var fileLines = await (FileIO.ReadLinesAsync(storageFile));
 
@@ -72,10 +72,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Сохранение пользовательского токена в файл
+		/// Save user token to file
 		/// </summary>
-		/// <param name="token">Токен</param>
-		/// <returns>Результат сохранения токена в файл</returns>
+		/// <param name="token">Token</param>
+		/// <returns>Success of saving</returns>
 		public static async Task SaveUserTokenToFileAsync(string token)
 		{
 			try
@@ -83,7 +83,7 @@ namespace TimeTrace.Model
 				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 				StorageFile storageFile = await storageFolder.CreateFileAsync("_tkf.bin", CreationCollisionOption.ReplaceExisting);
 
-				// Расположение файла C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
+				// Catalog C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
 
 				string[] stringToFile = { token };
 
@@ -96,7 +96,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Удаление файлов, содержащих данные для входа
+		/// Remove all confidential files
 		/// </summary>Результат удаления файлов</returns>
 		public static async Task RemoveUserDataFromFilesAsync()
 		{
@@ -121,10 +121,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Получение Email и Token из файлов
+		/// Getting email and token from file
 		/// </summary>
 		/// <returns>Кортеж email и token</returns>
-		public static async Task<(string email, string token)> LoadUserEmailAndTokenFromFile()
+		public static async Task<(string email, string token)> LoadUserEmailAndTokenFromFileAsync()
 		{
 			var storageFile = await ApplicationData.Current.LocalFolder.TryGetItemAsync("_psf.bin");
 			var storageFile2 = await ApplicationData.Current.LocalFolder.TryGetItemAsync("_tkf.bin");
@@ -168,7 +168,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Закрытый класс шифрования / дешифрования AES
+		/// Private class for encrypt / decrypt AES
 		/// </summary>
 		private class AesEnDecryption
 		{

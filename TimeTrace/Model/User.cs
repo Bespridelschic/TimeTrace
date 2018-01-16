@@ -8,11 +8,11 @@ using System.Runtime.CompilerServices;
 namespace TimeTrace.Model
 {
 	/// <summary>
-	/// Класс пользователя
+	/// User class
 	/// </summary>
 	public class User : INotifyPropertyChanged
 	{
-		#region Свойства
+		#region Properties
 
 		private string email;
 		[JsonProperty(PropertyName = "email")]
@@ -88,13 +88,13 @@ namespace TimeTrace.Model
 
 		#endregion
 
-		#region Проверка корректности введенных данных
+		#region Validation of entered data
 
 		/// <summary>
-		/// Проверка адреса электронной почты на корректность записи
+		/// Validation of entered email
 		/// </summary>
 		/// <returns></returns>
-		public bool EmailCorrectChech()
+		public bool EmailCorrectCheck()
 		{
 			string pattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
 			var res = Regex.Match(Email, pattern);
@@ -108,7 +108,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Уровни сложности пароля
+		/// Password complexity level
 		/// </summary>
 		public enum PasswordScore
 		{
@@ -121,7 +121,7 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Проверка уровня сложности пароля
+		/// Checking the complexity of the password
 		/// </summary>
 		/// <returns>Уровень сложности пароля</returns>
 		public PasswordScore PasswordSecurityCheck()
@@ -150,7 +150,7 @@ namespace TimeTrace.Model
 
 		#endregion
 
-		#region Конструкторы
+		#region Constructors
 
 		public User()
 		{
@@ -164,14 +164,14 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Инициализация объекта класса <seealso cref="User"/>
+		/// Initializing new <seealso cref="User"/>
 		/// </summary>
-		/// <param name="email">Адрес электронной почты</param>
-		/// <param name="password">Пароль</param>
-		/// <param name="firstName">Имя</param>
-		/// <param name="lastName">Фамилия</param>
-		/// <param name="middleName">Отчество</param>
-		/// <param name="birthday">Дата рождения</param>
+		/// <param name="email">Email</param>
+		/// <param name="password">Password</param>
+		/// <param name="firstName">Name</param>
+		/// <param name="lastName">Last name</param>
+		/// <param name="middleName">Middle name</param>
+		/// <param name="birthday">Birthday</param>
 		public User(string email, string password, string firstName = "", string lastName = "", string middleName = "", string birthday = "")
 		{
 			Email = email;
@@ -186,9 +186,9 @@ namespace TimeTrace.Model
 		#endregion
 
 		/// <summary>
-		/// Хэширование пароля алгоритмом SHA512 UTF8-UTF8
+		/// Hash algorithm SHA512 UTF8-UTF8
 		/// </summary>
-		/// <returns>Хэшированный пароль</returns>
+		/// <returns>Hash of password</returns>
 		public string GetHashEncrypt()
 		{
 			SHA512 hash = SHA512.Create();

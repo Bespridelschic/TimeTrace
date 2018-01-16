@@ -168,7 +168,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				return false;
 			}
 
-			if (!CurrentUser.EmailCorrectChech())
+			if (!CurrentUser.EmailCorrectCheck())
 			{
 				await new MessageDialog("Проверьте корректность введенного адреса электронной почты", "Проблема регистрации").ShowAsync();
 				return false;
@@ -194,7 +194,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			try
 			{
-				var requestResult = await UserRequest.PostRequestAsync(UserRequest.PostRequestDestination.SignUp, CurrentUser);
+				var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.SignUp, CurrentUser);
 
 				switch (requestResult)
 				{

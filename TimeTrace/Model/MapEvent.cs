@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace TimeTrace.Model
 {
 	/// <summary>
-	/// Класс события календаря
+	/// Event map class
 	/// </summary>
 	public class MapEvent : INotifyPropertyChanged
 	{
-		#region Свойства
+		#region Properties
 
 		private string name;
 		/// <summary>
-		/// Наименование события
+		/// Event name
 		/// </summary>
 		public string Name
 		{
@@ -31,7 +31,7 @@ namespace TimeTrace.Model
 
 		private string description;
 		/// <summary>
-		/// Описание события
+		/// Event description
 		/// </summary>
 		public string Description
 		{
@@ -45,7 +45,7 @@ namespace TimeTrace.Model
 
 		private DateTimeOffset? eventDate;
 		/// <summary>
-		/// Дата события
+		/// Event start date
 		/// </summary>
 		public DateTimeOffset? EventDate
 		{
@@ -59,21 +59,35 @@ namespace TimeTrace.Model
 
 		private TimeSpan eventTime;
 		/// <summary>
-		/// Время события
+		/// Event start time
 		/// </summary>
 		public TimeSpan EventTime
 		{
 			get { return eventTime; }
 			set
 			{
-				eventTime = value;
-				OnPropertyChanged();
+				if (eventTime != value)
+				{
+					eventTime = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Full event date and time
+		/// </summary>
+		public DateTime FullEventDate
+		{
+			get
+			{
+				return EventDate.Value.Date + EventTime;
 			}
 		}
 
 		private string place;
 		/// <summary>
-		/// Место привязки
+		/// Event place
 		/// </summary>
 		public string Place
 		{
@@ -87,7 +101,7 @@ namespace TimeTrace.Model
 
 		private User userBind;
 		/// <summary>
-		/// Привязка события на человека
+		/// The person associated with the event
 		/// </summary>
 		public User UserBind
 		{
@@ -99,33 +113,43 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private TimeSpan? eventTimeSpan;
+		private TimeSpan eventDuration;
 		/// <summary>
-		/// Продолжительность события
+		/// Event duration
 		/// </summary>
-		public TimeSpan? EventTimeSpan
+		public TimeSpan EventDuration
 		{
-			get { return eventTimeSpan; }
+			get { return eventDuration; }
 			set
 			{
-				eventTimeSpan = value;
-				OnPropertyChanged();
+				if (eventDuration != value)
+				{
+					eventDuration = value;
+					OnPropertyChanged();
+				}
 			}
 		}
 
-		private TimeSpan? eventInterval;
+		private TimeSpan eventInterval;
 		/// <summary>
-		/// Повторяемость события
+		/// Repeat the event
 		/// </summary>
-		public TimeSpan? EventInterval
+		public TimeSpan EventInterval
 		{
 			get { return eventInterval; }
-			set { eventInterval = value; }
+			set
+			{
+				if (eventInterval != value)
+				{
+					eventInterval = value;
+					OnPropertyChanged();
+				}
+			}
 		}
 
 		private EventType typeOfEvent;
 		/// <summary>
-		/// Тип события календаря
+		/// Event type
 		/// </summary>
 		public EventType TypeOfEvent
 		{
@@ -139,10 +163,10 @@ namespace TimeTrace.Model
 
 		#endregion
 
-		#region Перечисления
+		#region Enums
 
 		/// <summary>
-		/// Перечисляемый тип события
+		/// Type of event
 		/// </summary>
 		public enum EventType
 		{
@@ -154,10 +178,10 @@ namespace TimeTrace.Model
 
 		#endregion
 
-		#region Конструкторы
+		#region Constructors
 
 		/// <summary>
-		/// Стандартный конструктор
+		/// Standart constructor
 		/// </summary>
 		public MapEvent()
 		{
@@ -166,16 +190,16 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Установка события
+		/// Event set
 		/// </summary>
-		/// <param name="eventName">Имя события</param>
-		/// <param name="date">Дата события</param>
-		/// <param name="time">Время события</param>
-		/// <param name="place">Место события</param>
-		/// <param name="eventTimeSpan">Продолжительность события</param>
-		/// <param name="eventInterval">Интервал повторения события</param>
-		/// <param name="eventType">Тип события</param>
-		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place, string user, TimeSpan? eventTimeSpan, TimeSpan? eventInterval, EventType eventType)
+		/// <param name="eventName">Event name</param>
+		/// <param name="date">Event start date</param>
+		/// <param name="time">Event start time</param>
+		/// <param name="place">Event place</param>
+		/// <param name="eventTimeSpan">Event duration</param>
+		/// <param name="eventInterval">Repeat the event</param>
+		/// <param name="eventType">Event type</param>
+		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place, string user, TimeSpan eventTimeSpan, TimeSpan eventInterval, EventType eventType)
 		{
 			Name = eventName;
 			Description = description;
@@ -184,7 +208,7 @@ namespace TimeTrace.Model
 			Place = place;
 			UserBind = new User();
 			userBind.LastName = user;
-			EventTimeSpan = eventTimeSpan;
+			EventDuration = eventTimeSpan;
 			EventInterval = eventInterval;
 			TypeOfEvent = eventType;
 		}

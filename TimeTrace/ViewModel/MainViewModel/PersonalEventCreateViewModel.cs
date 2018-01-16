@@ -15,13 +15,16 @@ using System.Diagnostics;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
+	/// <summary>
+	/// ViewModel of creation new event
+	/// </summary>
 	public class PersonalEventCreateViewModel : BaseViewModel
 	{
-		#region Свойства
+		#region Properties
 
 		private MapEvent currentMapEvent;
 		/// <summary>
-		/// Модель текущего устанавливаемого события
+		/// Current event model
 		/// </summary>
 		public MapEvent CurrentMapEvent
 		{
@@ -34,27 +37,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Минимальная дата - текущий день
+		/// Min date - current day
 		/// </summary>
 		public DateTime MinDate { get; set; }
 
-		private bool isSelectPlace;
-		/// <summary>
-		/// При привязке события к месту
-		/// </summary>
-		public bool IsSelectPlace
-		{
-			get { return isSelectPlace; }
-			set
-			{
-				isSelectPlace = value;
-				OnPropertyChanged();
-			}
-		}
-
 		private bool isSelectMan;
 		/// <summary>
-		/// При привязке события к человеку
+		/// Enabled of man binding
 		/// </summary>
 		public bool IsSelectMan
 		{
@@ -66,35 +55,69 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-		private bool isSelectManAndPlace;
+		private bool isSelectPlace;
 		/// <summary>
-		/// При привязке события к человеку и месту
+		/// Enabled of place binding
 		/// </summary>
-		public bool IsSelectManAndPlace
+		public bool IsSelectPlace
 		{
-			get { return isSelectManAndPlace; }
+			get { return isSelectPlace; }
 			set
 			{
-				isSelectManAndPlace = value;
-				isSelectMan = true;
-				IsSelectPlace = true;
+				isSelectPlace = value;
 				OnPropertyChanged();
 			}
 		}
 
+		private int bindingObjectIndex;
+		/// <summary>
+		/// Binding object of event
+		/// </summary>
+		public int BindingObjectIndex
+		{
+			get { return bindingObjectIndex; }
+			set
+			{
+				bindingObjectIndex = value;
+				switch (value)
+				{
+					case 0:
+						{
+							IsSelectPlace = true;
+							IsSelectMan = false;
+							break;
+						}
+					case 1:
+						{
+							IsSelectMan = true;
+							IsSelectPlace = false;
+							break;
+						}
+					case 2:
+						{
+							IsSelectPlace = true;
+							IsSelectMan = true;
+							break;
+						}
+					default:
+						throw new Exception("Не определенный индекс привязки события!");
+				}
+				OnPropertyChanged();
+			}
+		}
+
+
 		#endregion
 
 		/// <summary>
-		/// Стандартный конструктор
+		/// Standart constructor
 		/// </summary>
 		public PersonalEventCreateViewModel()
 		{
 			CurrentMapEvent = new MapEvent();
 			MinDate = DateTime.Today;
 
-			IsSelectPlace = true;
-			IsSelectMan = false;
-			IsSelectManAndPlace = false;
+			BindingObjectIndex = 0;
 		}
 
 		/// <summary>
@@ -103,15 +126,21 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <returns>Результат создания события</returns>
 		public async Task EventCreate()
 		{
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name))
+			{
+				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
+
+				return;
+			}
+
 			XDocument doc = new XDocument(
 				new XElement("Events",
 					new XElement("Sport", new XAttribute("Name", $"{CurrentMapEvent.Name}"),
 						new XElement("Description", $"{CurrentMapEvent.Description}"),
 						new XElement("Place", $"{CurrentMapEvent.Place}"),
 						new XElement("User", $"{CurrentMapEvent.UserBind.LastName}"),
-						new XElement("Date", $"{CurrentMapEvent.EventDate}"),
-						new XElement("Time", $"{CurrentMapEvent.EventTime}"),
-						new XElement("Span", $"{CurrentMapEvent.EventTimeSpan}"),
+						new XElement("Date", $"{CurrentMapEvent.FullEventDate}"),
+						new XElement("Duration", $"{CurrentMapEvent.EventDuration}"),
 						new XElement("Interval", $"{CurrentMapEvent.EventInterval}")
 					)
 				)
