@@ -51,21 +51,40 @@
 
 					<TextBox PlaceholderText="Задайте описание событию" Header="Описание события" MaxLength="400" Margin="15, 5, 15, 5" TextWrapping="Wrap"
 						 AcceptsReturn="True" ToolTipService.ToolTip="Описание события" Text="{x:Bind ViewModel.CurrentMapEvent.Description, Mode=TwoWay}"
-						 IsSpellCheckEnabled="True"/>
+						 IsSpellCheckEnabled="True" MaxHeight="120" Height="120"/>
 
 					<CalendarDatePicker PlaceholderText="Установите дату события" Header="Дата события*" Margin="15, 5, 15, 5"
 							DateFormat="{}{day.integer} {month.full} {year.full}"
 							Date="{x:Bind ViewModel.CurrentMapEvent.EventDate, Mode=TwoWay}"
 							MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"/>
 
-					<TimePicker Margin="15, 5, 15, 5" Header="Время события*" ToolTipService.ToolTip="Время, к которому будет привязано событие"
+					<TimePicker Margin="15, 5, 15, 5" Header="Время начала события" ToolTipService.ToolTip="Время, к которому будет привязано событие"
 							Time="{x:Bind ViewModel.CurrentMapEvent.EventTime, Mode=TwoWay}"/>
-
-					<TimePicker Margin="15, 5, 15, 5" Header="Длительность*" ToolTipService.ToolTip="Длительность создаваемого события"
-							Time="{x:Bind ViewModel.CurrentMapEvent.EventDuration, Mode=TwoWay}"/>
 
 				</StackPanel>
 
+				<StackPanel>
+
+					<ToggleSwitch Name="IsAllDayLongToggleSwitch" Header="Весь день?" OffContent="Да" OnContent="Нет" Margin="15, 5, 15, 5"/>
+
+					<TimePicker Margin="15, 5, 15, 5" Header="Длительность" ToolTipService.ToolTip="Длительность создаваемого события"
+							Time="{x:Bind ViewModel.CurrentMapEvent.EventDuration, Mode=TwoWay}" IsEnabled="{Binding ElementName=IsAllDayLongToggleSwitch, Path=IsOn}"/>
+
+					<ToggleSwitch Name="IsRepeatToggleSwitch" Header="Повторяемое событие?" OffContent="Нет" OnContent="Да" Margin="15, 5, 15, 5"/>
+
+					<ComboBox Header="Интервал повторения" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Интервал повторения"
+						ToolTipService.ToolTip="Как часто будет происходить напоминание"
+						IsEnabled="{Binding ElementName=IsRepeatToggleSwitch, Path=IsOn, Mode=TwoWay}">
+						<ComboBoxItem Content="Каждый день"/>
+						<ComboBoxItem Content="Через день"/>
+						<ComboBoxItem Content="Раз в неделю"/>
+						<ComboBoxItem Content="Раз в месяц"/>
+						<ComboBoxItem Content="Раз в год"/>
+						<ComboBoxItem Content="Свой вариант"/>
+					</ComboBox>
+					
+				</StackPanel>
+				
 				<StackPanel>
 					
 					<ComboBox Grid.Column="1" Header="Объект привязки" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Объект привязки"
@@ -83,19 +102,6 @@
 						ToolTipService.ToolTip="Имя человека, к которому привязывается событие"
 						Text="{x:Bind ViewModel.CurrentMapEvent.UserBind.LastName, Mode=TwoWay}"
 						Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}"/>
-
-					<ToggleSwitch Name="IsRepeatToggleSwitch" Header="Повторяемое событие?" OffContent="Нет" OnContent="Да" Margin="15, 5, 15, 5"/>
-
-					<ComboBox Header="Интервал повторения" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Интервал повторения"
-						ToolTipService.ToolTip="Как часто будет происходить напоминание"
-						IsEnabled="{Binding ElementName=IsRepeatToggleSwitch, Path=IsOn, Mode=TwoWay}">
-						<ComboBoxItem Content="Каждый день"/>
-						<ComboBoxItem Content="Через день"/>
-						<ComboBoxItem Content="Раз в неделю"/>
-						<ComboBoxItem Content="Раз в месяц"/>
-						<ComboBoxItem Content="Раз в год"/>
-						<ComboBoxItem Content="Свой вариант"/>
-					</ComboBox>
 
 				</StackPanel>
 				

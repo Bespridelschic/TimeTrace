@@ -27,6 +27,7 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		public PersonalMapsPage()
 		{
 			this.InitializeComponent();
+			
 			ViewModel = new PersonalEventCreateViewModel();
 		}
 

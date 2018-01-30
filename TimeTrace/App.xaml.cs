@@ -74,8 +74,8 @@ namespace TimeTrace
 					// Если стек навигации не восстанавливается для перехода к первой странице,
 					// настройка новой страницы путем передачи необходимой информации в качестве параметра
 					// параметр
-					rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
-					//rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
+					//rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
+					rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
 				}
 				// Обеспечение активности текущего окна
 				Window.Current.Activate();
@@ -162,8 +162,8 @@ namespace TimeTrace
 
 			try
 			{
-				var requestResult = await Model.UserRequests.SignInWithTokenPostRequestAsync(res.email, res.token);
-				
+				var requestResult = await Model.UserRequests.PostRequestAsync(Model.UserRequests.PostRequestDestination.SignInWithToken, null);
+
 				switch (requestResult)
 				{
 					case 0:
@@ -183,6 +183,5 @@ namespace TimeTrace
 					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
 			}
 		}
-
 	}
 }

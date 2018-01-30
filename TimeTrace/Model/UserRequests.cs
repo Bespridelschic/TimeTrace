@@ -25,7 +25,7 @@ namespace TimeTrace.Model
 			{
 				return null;
 			}
-			
+
 			try
 			{
 				WebRequest request = WebRequest.Create(url);
@@ -55,7 +55,7 @@ namespace TimeTrace.Model
 					}
 				}
 				response.Close();
-				
+
 				return result;
 			}
 			catch (Exception)
@@ -70,9 +70,10 @@ namespace TimeTrace.Model
 		public enum PostRequestDestination
 		{
 			SignIn,
+			SignInWithToken,
 			SignUp,
 			AccountActivation,
-			PasswordReset
+			PasswordReset,
 		}
 
 		/// <summary>
@@ -83,39 +84,58 @@ namespace TimeTrace.Model
 		public static async Task<int> PostRequestAsync(PostRequestDestination destination, User user)
 		{
 			string link = string.Empty;
-
-			switch (destination)
-			{
-				case PostRequestDestination.SignIn:
-					link = "https://mindstructuring.ru/customer/login";
-					break;
-				case PostRequestDestination.SignUp:
-					link = "https://mindstructuring.ru/customer/signup";
-					break;
-				case PostRequestDestination.AccountActivation:
-					link = "https://mindstructuring.ru/customer/sendactivationkey";
-					break;
-				case PostRequestDestination.PasswordReset:
-					link = "https://mindstructuring.ru/customer/sendresetkey";
-					break;
-				default:
-					throw new ArgumentException("Not fount type of sending request PostRequestDestination");
-			}
+			string result = string.Empty;
 
 			try
 			{
-				string result = await BasePostRequestAsync(link, JsonSerialize(user));
+				switch (destination)
+				{
+					case PostRequestDestination.SignIn:
+						link = "https://mindstructuring.ru/customer/login";
+						result = await BasePostRequestAsync(link, JsonSerialize(user));
+						break;
+
+					case PostRequestDestination.SignInWithToken:
+						link = "https://mindstructuring.ru/customer/login";
+						var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
+
+						if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
+						{
+							throw new Exception("File with email and token not fount");
+						}
+
+						result = await BasePostRequestAsync(link, TokenJsonSerialize(res.email, res.token));
+						break;
+
+					case PostRequestDestination.SignUp:
+						link = "https://mindstructuring.ru/customer/signup";
+						result = await BasePostRequestAsync(link, JsonSerialize(user));
+						break;
+
+					case PostRequestDestination.AccountActivation:
+						link = "https://mindstructuring.ru/customer/sendactivationkey";
+						result = await BasePostRequestAsync(link, JsonSerialize(user));
+						break;
+
+					case PostRequestDestination.PasswordReset:
+						link = "https://mindstructuring.ru/customer/sendresetkey";
+						result = await BasePostRequestAsync(link, JsonSerialize(user));
+						break;
+
+					default:
+						throw new ArgumentException("Not fount type of sending request PostRequestDestination");
+				}
 
 				if (string.IsNullOrEmpty(result))
 				{
-					throw new NullReferenceException("Сервер вернул null");
+					throw new NullReferenceException("Server return null");
 				}
 
 				// Парсер JSON
 				JObject JsonString = JObject.Parse(result);
 
 				int answerCode = (int)JsonString["answer"];
-				if (destination == PostRequestDestination.SignIn && answerCode == 0)
+				if ((destination == PostRequestDestination.SignIn || destination == PostRequestDestination.SignInWithToken) && answerCode == 0)
 				{
 					string token = (string)JsonString["_csrf"];
 					await UserFileWorker.SaveUserTokenToFileAsync(token);
@@ -130,38 +150,27 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Sending data for enter with token and email
+		/// Getting user information from server in raw format JSON
 		/// </summary>
-		/// <param name="email">Email</param>
-		/// <param name="token">Token</param>
-		/// <returns>Return code from server: 0 - success, 1 - fail</returns>
-		public static async Task<int> SignInWithTokenPostRequestAsync(string email, string token)
+		/// <returns>String in raw format json</returns>
+		public static async Task<string> GetUserInfoPostRequestAsync()
 		{
-			try
+			var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
+
+			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
-				string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/login", SignInWithTokenJsonSerialize(email, token));
-
-				if (string.IsNullOrEmpty(result))
-				{
-					throw new NullReferenceException("Server return null");
-				}
-
-				// Парсер JSON
-				JObject JsonString = JObject.Parse(result);
-
-				int answerCode = (int)JsonString["answer"];
-				if (answerCode == 0)
-				{
-					string newToken = (string)JsonString["_csrf"];
-					await UserFileWorker.SaveUserTokenToFileAsync(newToken);
-				}
-
-				return answerCode;
+				throw new Exception("File with email and token not fount");
 			}
-			catch (Exception)
+
+			string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/getcustomer", TokenJsonSerialize(res.email, res.token));
+
+			JObject jsonString = JObject.Parse(result);
+			if ((int)jsonString["answer"] != 0)
 			{
-				throw;
+				throw new Exception("Server return null");
 			}
+
+			return result;
 		}
 
 		#region JSON
@@ -201,7 +210,7 @@ namespace TimeTrace.Model
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <param name="token">Token</param>
 		/// <returns>Строка в формате Json</returns>
-		private static string SignInWithTokenJsonSerialize(string email, string token)
+		private static string TokenJsonSerialize(string email, string token)
 		{
 			if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(token))
 			{

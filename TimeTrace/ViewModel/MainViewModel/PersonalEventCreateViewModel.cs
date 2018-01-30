@@ -106,7 +106,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-
 		#endregion
 
 		/// <summary>
@@ -126,7 +125,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <returns>Результат создания события</returns>
 		public async Task EventCreate()
 		{
-			if (string.IsNullOrEmpty(CurrentMapEvent.Name))
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.EventDate == null)
 			{
 				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
 

@@ -26,10 +26,14 @@
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 			
-			<PersonPicture DisplayName="Hello User!" ProfilePicture="/Assets/user-192.png" Initials="Usr" HorizontalAlignment="Center"
-					   Margin="0, 20, 0, 5" Width="200" Height="200"/>
+			<PersonPicture HorizontalAlignment="Center" Margin="0, 20, 0, 5" Width="200" Height="200"/>
 
-			<TextBlock Text="Добро пожаловать, User!" HorizontalAlignment="Center" FontSize="25" Foreground="SteelBlue" Margin="0, 0, 0, 20"/>
+			<StackPanel Orientation="Horizontal" Margin="0, 0, 0, 20" HorizontalAlignment="Center">
+				<TextBlock Text="Добро пожаловать, " FontSize="25" Foreground="SteelBlue" />
+				<TextBlock Text="{x:Bind ViewModel.UserName, Mode=OneWay}" FontSize="25" Foreground="SteelBlue" />
+				<TextBlock Text="!" FontSize="25" Foreground="SteelBlue" />
+			</StackPanel>
+			
 
 			<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
 				<TextBlock Text="Полезное для вас" Foreground="SteelBlue" FontSize="20"/>
@@ -49,15 +53,15 @@
 				<VariableSizedWrapGrid Orientation="Horizontal">
 					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
 						<TextBlock Text="Создано карт: " FontSize="15"/>
-						<TextBlock Text="?" FontSize="15"/>
+						<TextBlock Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" FontSize="15"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
 						<TextBlock Text="Контактов: " FontSize="15"/>
-						<TextBlock Text="?" FontSize="15"/>
+						<TextBlock Text="{x:Bind ViewModel.NumContacts, Mode=OneWay}" FontSize="15"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
 						<TextBlock Text="Общий стаж: " FontSize="15"/>
-						<TextBlock Text="?" FontSize="15"/>
+						<TextBlock Text="{x:Bind ViewModel.Experience, Mode=OneWay}" FontSize="15"/>
 					</StackPanel>
 				</VariableSizedWrapGrid>
 				

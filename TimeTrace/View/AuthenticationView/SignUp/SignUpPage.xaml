@@ -8,7 +8,7 @@
 
 	<Page.Resources>
 		<ResourceDictionary>
-			<!--Анимация появления слева-->
+			<!--Animation-->
 			<Style TargetType="Grid" x:Key="GridAnimation">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -45,31 +45,27 @@
 		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{StaticResource HostBackdropBrush}"/>
 
 		<Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<TextBlock Text="Регистрация" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{x:Bind SolidBrush}"/>
+			<TextBlock x:Uid="HeaderTextBoxRegistrationPage" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{x:Bind SolidBrush}"/>
 		</Grid>
 
 		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<TextBox Header="Электронная почта:" PlaceholderText="Введите ваш Email..." Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}"
-					 ToolTipService.ToolTip="Введите вашу реальную электронную почту" IsSpellCheckEnabled="False"
+			<TextBox x:Uid="EmailBoxRegistration" Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}" IsSpellCheckEnabled="False"
 					 SelectionStart="{x:Bind ViewModel.SelectionStart, Mode=OneWay}" SelectionLength="0"/>
 		</Grid>
 
 		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox Header="Пароль:" PlaceholderText="Введите ваш пароль..." Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}" MaxLength="20"
-					 ToolTipService.ToolTip="Введите пароль, с помощью которого вы будете входить в систему. Придумайте надёжный пароль"/>
+			<PasswordBox x:Uid="PasswordBoxRegistration" Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}" MaxLength="20"/>
 		</Grid>
 
 		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox Header="Подтвердите пароль:" PlaceholderText="Подтвердите ваш пароль..."
-						 Password="{x:Bind ViewModel.ConfirmPassword, Mode=TwoWay}" MaxLength="19"
-						 ToolTipService.ToolTip="Подтвердите пароль, введённый ранее"/>
+			<PasswordBox x:Uid="ConfirmPasswordBoxRegistration" Password="{x:Bind ViewModel.ConfirmPassword, Mode=TwoWay}" MaxLength="19"/>
 		</Grid>
 
 		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<Button Content="Зарегистироваться" ToolTipService.ToolTip="Зарегистрироваться в системе" VerticalAlignment="Bottom"
+			<Button x:Uid="RegistrationButton" VerticalAlignment="Bottom"
 					BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.SignUpComplete}" IsEnabled="{x:Bind ViewModel.ControlEnable, Mode=OneWay}"/>
 
-			<TextBlock Text="Все поля являются обязательными*" FontSize="12" VerticalAlignment="Top" Foreground="Gray"/>
+			<TextBlock x:Uid="ObligatoryFieldAttentionText" FontSize="12" VerticalAlignment="Top" Foreground="Gray"/>
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1">

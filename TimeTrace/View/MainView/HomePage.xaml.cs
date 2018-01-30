@@ -25,6 +25,9 @@ namespace TimeTrace.View.MainView
 		public HomePage()
 		{
 			this.InitializeComponent();
+			ViewModel = new ViewModel.MainViewModel.HomeViewModel();
 		}
+
+		ViewModel.MainViewModel.HomeViewModel ViewModel { get; set; }
 	}
 }
