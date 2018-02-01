@@ -9,25 +9,50 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<ListBox Margin="5" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-			<TextBlock Text="Список контактов" FontSize="30" Foreground="SteelBlue"/>
-			<ListBoxItem ToolTipService.Placement="Right">
-				<ToolTipService.ToolTip>
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*"/>
-							<RowDefinition Height="0.4*"/>
-						</Grid.RowDefinitions>
-						<Image Grid.Row="0" Source="/Assets/user-192.png" Height="250"/>
-						<TextBox Text="Фамилия Имя Отчество" Grid.Row="1" Foreground="SteelBlue" VerticalAlignment="Top"
+		<Pivot>
+			<PivotItem Header="Все">
+				<ListBox Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+					<ListBoxItem ToolTipService.Placement="Right">
+						<ToolTipService.ToolTip>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="*"/>
+									<RowDefinition Height="0.4*"/>
+								</Grid.RowDefinitions>
+								<PersonPicture Height="150" Width="150"/>
+								<TextBox Text="Фамилия Имя Отчество" Grid.Row="1" VerticalAlignment="Top" Foreground="SteelBlue" BorderThickness="0"
 								 HorizontalAlignment="Center" Margin="0, 2, 0, 0" FontSize="20"/>
-					</Grid>
-				</ToolTipService.ToolTip>
-				<StackPanel Orientation="Horizontal">
-					<Image Source="/Assets/user-48.png" Width="40"/>
-					<TextBlock Text="Фамилия Имя Отчество" Margin="15, 0, 0, 0" Foreground="SteelBlue" FontSize="25"/>
-				</StackPanel>
-			</ListBoxItem>
-		</ListBox>
+							</Grid>
+						</ToolTipService.ToolTip>
+						<StackPanel Orientation="Horizontal">
+							<Image Source="/Assets/user-48.png" Width="40"/>
+							<TextBlock Text="Фамилия Имя Отчество" Margin="15, 0, 0, 0" Foreground="SteelBlue" FontSize="25"/>
+						</StackPanel>
+					</ListBoxItem>
+				</ListBox>
+			</PivotItem>
+
+			<PivotItem Header="Активные">
+				<ListBox Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+					<ListBoxItem ToolTipService.Placement="Right">
+						<ToolTipService.ToolTip>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="*"/>
+									<RowDefinition Height="0.4*"/>
+								</Grid.RowDefinitions>
+								<PersonPicture Height="150" Width="150"/>
+								<TextBox Text="Фамилия Имя Отчество" Grid.Row="1" VerticalAlignment="Top" Foreground="SteelBlue" BorderThickness="0"
+								 HorizontalAlignment="Center" Margin="0, 2, 0, 0" FontSize="20"/>
+							</Grid>
+						</ToolTipService.ToolTip>
+						<StackPanel Orientation="Horizontal">
+							<Image Source="/Assets/user-48.png" Width="40"/>
+							<TextBlock Text="Фамилия Имя Отчество" Margin="15, 0, 0, 0" Foreground="SteelBlue" FontSize="25"/>
+						</StackPanel>
+					</ListBoxItem>
+				</ListBox>
+			</PivotItem>
+		</Pivot>
 	</Grid>
 </Page>

@@ -50,23 +50,23 @@
 		</Grid>
 
 		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<TextBox x:Uid="EmailBox" IsSpellCheckEnabled="False" Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}" InputScope="EmailNameOrAddress"
+			<TextBox x:Uid="/SignInUp/EmailBox" IsSpellCheckEnabled="False" Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}" InputScope="EmailNameOrAddress"
 					 SelectionStart="{x:Bind ViewModel.SelectionStart, Mode=OneWay}" SelectionLength="0"/>
 		</Grid>
 
 		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox x:Uid="PasswordBox" MaxLength="20" Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}"/>
+			<PasswordBox x:Uid="/SignInUp/PasswordBox" MaxLength="20" Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<CheckBox x:Uid="PasswordSaveChechBox" IsChecked="{x:Bind ViewModel.IsPasswordSave, Mode=TwoWay}" VerticalAlignment="Top"/>
+			<CheckBox x:Uid="/SignInUp/PasswordSaveChechBox" IsChecked="{x:Bind ViewModel.IsPasswordSave, Mode=TwoWay}" VerticalAlignment="Top"/>
 		</Grid>
 
 		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<Button x:Uid="SignInButton" BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.AppSignIn}"
+			<Button x:Uid="/SignInUp/SignInButton" BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.AppSignIn}"
 					VerticalAlignment="Top" IsEnabled="{x:Bind ViewModel.ControlEnable, Mode=OneWay}"/>
 
-			<HyperlinkButton x:Uid="PasswordForgotLink" VerticalAlignment="Bottom" Foreground="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.UserPasswordRecovery}"/>
+			<HyperlinkButton x:Uid="/SignInUp/PasswordForgotLink" VerticalAlignment="Bottom" Foreground="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.UserPasswordRecovery}"/>
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1">
@@ -74,7 +74,7 @@
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<HyperlinkButton x:Uid="SignUpLink" VerticalAlignment="Top" Padding="-1" Click="{x:Bind ViewModel.SignUp}" Foreground="{x:Bind SolidBrush}"/>
+			<HyperlinkButton x:Uid="/SignInUp/SignUpLink" VerticalAlignment="Top" Padding="-1" Click="{x:Bind ViewModel.SignUp}" Foreground="{x:Bind SolidBrush}"/>
 
 		</Grid>
 

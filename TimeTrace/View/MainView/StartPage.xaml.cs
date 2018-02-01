@@ -30,7 +30,7 @@ namespace TimeTrace.View.MainView
 		{
 			this.InitializeComponent();
 
-			ContentFrame.Navigate(typeof(HomePage));
+			ContentFrame.Navigate(typeof(HomePage), ContentFrame);
 			
 		}
 
@@ -52,7 +52,7 @@ namespace TimeTrace.View.MainView
 				switch (item.Tag)
 				{
 					case "home":
-						ContentFrame.Navigate(typeof(HomePage));
+						ContentFrame.Navigate(typeof(HomePage), ContentFrame);
 						NavHeader.Header = "Домашняя страница";
 						break;
 
@@ -67,7 +67,7 @@ namespace TimeTrace.View.MainView
 						break;
 
 					case "personalMaps":
-						ContentFrame.Navigate(typeof(PersonalMapsPage));
+						ContentFrame.Navigate(typeof(PersonalMapsPage), ContentFrame);
 						NavHeader.Header = "Интеллект-карты пользователя";
 						break;
 

@@ -38,14 +38,14 @@
 		</Grid.ColumnDefinitions>
 
 		<TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Установка нового события календаря"
-				   Foreground="SteelBlue" FontSize="35" Margin="20" TextWrapping="WrapWholeWords"/>
+				   Foreground="SteelBlue" FontSize="35" Margin="20, 20, 20, 0" TextWrapping="WrapWholeWords"/>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0, 10, 0, 10" VerticalAlignment="Center">
 
 			<VariableSizedWrapGrid Orientation="Horizontal" HorizontalAlignment="Center">
-				
+
 				<StackPanel>
-					
+
 					<TextBox PlaceholderText="Задайте имя события" Header="Имя события*" Margin="15, 5, 15, 5" MaxLength="100" IsSpellCheckEnabled="True"
 					 ToolTipService.ToolTip="Имя событие, отображаемое в календаре" Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}" Width="350"/>
 
@@ -60,6 +60,26 @@
 
 					<TimePicker Margin="15, 5, 15, 5" Header="Время начала события" ToolTipService.ToolTip="Время, к которому будет привязано событие"
 							Time="{x:Bind ViewModel.CurrentMapEvent.EventTime, Mode=TwoWay}"/>
+
+				</StackPanel>
+
+				<StackPanel>
+					
+					<ComboBox Grid.Column="1" Header="Объект привязки" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Объект привязки"
+						ToolTipService.ToolTip="Объект привязки" SelectedIndex="{x:Bind ViewModel.BindingObjectIndex, Mode=TwoWay}">
+						<ComboBoxItem Content="Место"/>
+						<ComboBoxItem Content="Человек"/>
+						<ComboBoxItem Content="Человек и место"/>
+					</ComboBox>
+
+					<TextBox PlaceholderText="Выберите место события" Header="Место события" Margin="15, 5, 15, 5"
+						ToolTipService.ToolTip="Место, привязываемое к событию" Text="{x:Bind ViewModel.CurrentMapEvent.Place, Mode=TwoWay}"
+						Visibility="{x:Bind ViewModel.IsSelectPlace, Mode=OneWay}" MaxLength="100" IsSpellCheckEnabled="True"/>
+
+					<AutoSuggestBox PlaceholderText="Человек связанный с событием" Header="Имя контакта" Margin="15, 5, 15, 5"
+						ToolTipService.ToolTip="Имя человека, к которому привязывается событие"
+						Text="{x:Bind ViewModel.CurrentMapEvent.UserBind.LastName, Mode=TwoWay}"
+						Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}"/>
 
 				</StackPanel>
 
@@ -82,29 +102,9 @@
 						<ComboBoxItem Content="Раз в год"/>
 						<ComboBoxItem Content="Свой вариант"/>
 					</ComboBox>
-					
-				</StackPanel>
-				
-				<StackPanel>
-					
-					<ComboBox Grid.Column="1" Header="Объект привязки" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Объект привязки"
-						ToolTipService.ToolTip="Объект привязки" SelectedIndex="{x:Bind ViewModel.BindingObjectIndex, Mode=TwoWay}">
-						<ComboBoxItem Content="Место"/>
-						<ComboBoxItem Content="Человек"/>
-						<ComboBoxItem Content="Человек и место"/>
-					</ComboBox>
-
-					<TextBox PlaceholderText="Выберите место события" Header="Место события" Margin="15, 5, 15, 5"
-						ToolTipService.ToolTip="Место, привязываемое к событию" Text="{x:Bind ViewModel.CurrentMapEvent.Place, Mode=TwoWay}"
-						Visibility="{x:Bind ViewModel.IsSelectPlace, Mode=OneWay}" MaxLength="100" IsSpellCheckEnabled="True"/>
-
-					<AutoSuggestBox PlaceholderText="Человек связанный с событием" Header="Имя контакта" Margin="15, 5, 15, 5"
-						ToolTipService.ToolTip="Имя человека, к которому привязывается событие"
-						Text="{x:Bind ViewModel.CurrentMapEvent.UserBind.LastName, Mode=TwoWay}"
-						Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}"/>
 
 				</StackPanel>
-				
+
 			</VariableSizedWrapGrid>
 
 		</ScrollViewer>

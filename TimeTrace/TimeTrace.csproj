@@ -152,7 +152,8 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="ProjectDiagrams\ClassDiagram1.cd" />
-    <PRIResource Include="Strings\ru-RU\Resources.resw" />
+    <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
+    <PRIResource Include="Strings\en-US\SignInUp.resw" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -247,7 +248,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ContentDialogs\" />
-    <Folder Include="Strings\en-US\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

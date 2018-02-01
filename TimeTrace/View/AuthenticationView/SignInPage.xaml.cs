@@ -36,7 +36,6 @@ namespace TimeTrace.View.AuthenticationView
 			}
 		}
 
-		// Привязка ViewModel
 		public SignInViewModel ViewModel { get; private set; }
 
 		/// <summary>

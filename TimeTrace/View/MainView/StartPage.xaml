@@ -18,7 +18,7 @@
 
 	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="NavView_SelectionChanged" x:Name="NavHeader">
 		
-		<!--<NavigationView.HeaderTemplate>
+		<NavigationView.HeaderTemplate>
 			<DataTemplate>
 				<Grid Margin="24, 24, 0, 0">
 					<Grid.ColumnDefinitions>
@@ -30,7 +30,7 @@
 							   HorizontalAlignment="Right" Margin="0, 0, 15, 0" FontSize="18"/>
 				</Grid>
 			</DataTemplate>
-		</NavigationView.HeaderTemplate>-->
+		</NavigationView.HeaderTemplate>
 
 		<NavigationView.AutoSuggestBox>
 			<AutoSuggestBox QueryIcon="Find" PlaceholderText="Поиск по картам"/>

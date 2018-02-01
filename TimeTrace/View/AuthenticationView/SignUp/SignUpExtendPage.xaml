@@ -40,30 +40,30 @@
 		<Grid Grid.Row="0" Background="{StaticResource HostBackdropBrush}"/>
 
 		<Grid Grid.Row="1" Style="{StaticResource GridAnimation}">
-			<TextBlock x:Uid="HeaderTextBoxExtendPage" FontSize="35" Foreground="{x:Bind SolidBrush}"/>
+			<TextBlock x:Uid="/SignInUp/HeaderTextBoxExtendPage" FontSize="35" Foreground="{x:Bind SolidBrush}"/>
 		</Grid>
 
 		<Grid Grid.Row="2" Style="{StaticResource GridAnimation}">
-			<TextBox x:Uid="LastNameTextBox" IsSpellCheckEnabled="True" Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=TwoWay}"/>
+			<TextBox x:Uid="/SignInUp/LastNameTextBox" IsSpellCheckEnabled="True" Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="3" Style="{StaticResource GridAnimation}">
-			<TextBox x:Uid="FirstNameTextBox" IsSpellCheckEnabled="True" Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=TwoWay}"/>
+			<TextBox x:Uid="/SignInUp/FirstNameTextBox" IsSpellCheckEnabled="True" Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="4" Style="{StaticResource GridAnimation}">
-			<TextBox x:Uid="MiddleNameTextBox" IsSpellCheckEnabled="True" Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=TwoWay}"/>
+			<TextBox x:Uid="/SignInUp/MiddleNameTextBox" IsSpellCheckEnabled="True" Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="5" Style="{StaticResource GridAnimation}">
-			<CalendarDatePicker x:Uid="BirthdayCalendar" DateFormat="{}{day.integer} {month.full} {year.full}" MaxDate="{x:Bind ViewModel.MaxDate}"
+			<CalendarDatePicker x:Uid="/SignInUp/BirthdayCalendar" DateFormat="{}{day.integer} {month.full} {year.full}" MaxDate="{x:Bind ViewModel.MaxDate}"
 								Date="{x:Bind ViewModel.SelectedDate, Mode=TwoWay}"/>
 		</Grid>
 
 		<Grid Grid.Row="6" Style="{StaticResource GridAnimation}">
-			<TextBlock x:Uid="OptionalFieldAttentionText" Foreground="Gray" FontSize="12" VerticalAlignment="Top"/>
+			<TextBlock x:Uid="/SignInUp/OptionalFieldAttentionText" Foreground="Gray" FontSize="12" VerticalAlignment="Top"/>
 
-			<Button x:Uid="RegistrationNextStepButton" VerticalAlignment="Bottom" BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.SignUpContinue}"/>
+			<Button x:Uid="/SignInUp/RegistrationNextStepButton" VerticalAlignment="Bottom" BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.SignUpContinue}"/>
 		</Grid>
 
 		<Grid Grid.Row="7">

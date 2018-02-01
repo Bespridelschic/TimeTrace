@@ -74,8 +74,8 @@ namespace TimeTrace
 					// Если стек навигации не восстанавливается для перехода к первой странице,
 					// настройка новой страницы путем передачи необходимой информации в качестве параметра
 					// параметр
-					//rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
-					rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
+					rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
+					//rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
 				}
 				// Обеспечение активности текущего окна
 				Window.Current.Activate();
@@ -164,17 +164,12 @@ namespace TimeTrace
 			{
 				var requestResult = await Model.UserRequests.PostRequestAsync(Model.UserRequests.PostRequestDestination.SignInWithToken, null);
 
-				switch (requestResult)
+				if (requestResult == 0)
 				{
-					case 0:
-						{
-							if (Window.Current.Content is Frame frame)
-							{
-								frame.Navigate(typeof(View.MainView.StartPage));
-							}
-
-							break;
-						}
+					if (Window.Current.Content is Frame frame)
+					{
+						frame.Navigate(typeof(View.MainView.StartPage));
+					}
 				}
 			}
 			catch (Exception ex)

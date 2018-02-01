@@ -153,17 +153,19 @@ namespace TimeTrace.Model
 		/// Getting user information from server in raw format JSON
 		/// </summary>
 		/// <returns>String in raw format json</returns>
-		public static async Task<string> GetUserInfoPostRequestAsync()
+		public static async Task<string> PostRequestAsync()
 		{
+			// Get user token and email for request
 			var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
-
+			
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
 				throw new Exception("File with email and token not fount");
 			}
 
+			// Get user json string from server
 			string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/getcustomer", TokenJsonSerialize(res.email, res.token));
-
+			
 			JObject jsonString = JObject.Parse(result);
 			if ((int)jsonString["answer"] != 0)
 			{

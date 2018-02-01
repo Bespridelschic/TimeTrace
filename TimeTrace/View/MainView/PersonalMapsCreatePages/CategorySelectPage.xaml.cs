@@ -31,6 +31,14 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 			ViewModel = new PersonalEventCreateViewModel();
 		}
 
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			if (e != null)
+			{
+				ViewModel.Frame = (Frame)e.Parameter;
+			}
+		}
+
 		PersonalEventCreateViewModel ViewModel { get; set; }
 	}
 }

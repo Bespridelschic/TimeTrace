@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TimeTrace.Model;
 using TimeTrace.View.AuthenticationView;
 using TimeTrace.View.AuthenticationView.SignUp;
+using Windows.ApplicationModel.Resources;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -13,11 +14,11 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
 	public class SignUpViewModel : BaseViewModel
 	{
-		#region Свойства
+		#region Properties
 
 		private User currentUser;
 		/// <summary>
-		/// Текущий используемый пользователь
+		/// Current user
 		/// </summary>
 		public User CurrentUser
 		{
@@ -31,7 +32,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 		private bool processing;
 		/// <summary>
-		/// Состояние ProgressRing
+		/// State of ProgressRing
 		/// </summary>
 		public bool Processing
 		{
@@ -42,10 +43,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private string confirmPassword;
 		/// <summary>
-		/// Поля подтверждающего пароля
+		/// Password confirm
 		/// </summary>
 		public string ConfirmPassword
 		{
@@ -56,10 +57,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private int selectionStart;
 		/// <summary>
-		/// Начальная позиция курсора текста
+		/// Start text cursor position
 		/// </summary>
 		public int SelectionStart
 		{
@@ -72,13 +73,13 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Максимальная дата - текущий день
+		/// Maximum date - current date
 		/// </summary>
 		public DateTime MaxDate { get; set; }
-		
+
 		private DateTimeOffset? selectedDate;
 		/// <summary>
-		/// Поля календаря
+		/// Selected calendar date
 		/// </summary>
 		public DateTimeOffset? SelectedDate
 		{
@@ -97,10 +98,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				}
 			}
 		}
-		
+
 		private bool controlEnable;
 		/// <summary>
-		/// Состояние флага доступности элементов управления графического интерфейса
+		/// Status of enabled interface controls
 		/// </summary>
 		public bool ControlEnable
 		{
@@ -112,28 +113,32 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			}
 		}
 
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
 		#endregion
 
 		/// <summary>
-		/// Стандартный конструктор
+		/// Initialization of new object
 		/// </summary>
 		public SignUpViewModel()
 		{
-			ControlEnable = false;
-
 			CurrentUser = new User();
+			ResourceLoader = ResourceLoader.GetForCurrentView("SignInUp");
 
+			ControlEnable = false;
 			Processing = false;
 			ConfirmPassword = "";
 			SelectionStart = CurrentUser.Email.Length;
 			SelectedDate = null;
 			MaxDate = DateTime.Today;
-
 			ControlEnable = true;
-		}
+	}
 
 		/// <summary>
-		/// Переход на страницу завершения регистрации
+		/// Navigate to page of registration ending
 		/// </summary>
 		public void SignUpContinue()
 		{
@@ -144,33 +149,40 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Проверка полей на корректность
+		/// Check fields correction
 		/// </summary>
-		/// <returns>Удовлетворяют ли поля бизнес-логике</returns>
+		/// <returns>Is fields correct</returns>
 		private async Task<bool> CanSignUp()
 		{
-			if (CurrentUser.Email == "" || CurrentUser.Password == "" || ConfirmPassword == "")
+			if (string.IsNullOrEmpty(CurrentUser.Email) || string.IsNullOrEmpty(CurrentUser.Password) || string.IsNullOrEmpty(ConfirmPassword))
 			{
-				await new MessageDialog("Необходимо заполнить все поля", "Проблема регистрации").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/FillAllFieldsText"),
+					ResourceLoader.GetString("/SignInUp/RegistrationProblemText")).ShowAsync();
+
 				return false;
 			}
 
 			if (CurrentUser.Password.Length < 8)
 			{
-				await new MessageDialog("Минимальная длина пароля составляет 8 символов", "Проблема регистрации").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/PasswordLengthShortText"),
+					ResourceLoader.GetString("/SignInUp/RegistrationProblemText")).ShowAsync();
+
 				return false;
 			}
 
 			if (CurrentUser.Password != ConfirmPassword)
 			{
-				await new MessageDialog("Введенные пароли не совпадают", "Проблема регистрации").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/PasswordsDoNotMatch"),
+					ResourceLoader.GetString("/SignInUp/RegistrationProblemText")).ShowAsync();
 
 				return false;
 			}
 
 			if (!CurrentUser.EmailCorrectCheck())
 			{
-				await new MessageDialog("Проверьте корректность введенного адреса электронной почты", "Проблема регистрации").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/IncorrectEmailText"),
+					ResourceLoader.GetString("/SignInUp/RegistrationProblemText")).ShowAsync();
+
 				return false;
 			}
 
@@ -178,7 +190,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Попытка зарегистрировать аккаунт
+		/// Try to sign up
 		/// </summary>
 		public async void SignUpComplete()
 		{
@@ -200,14 +212,16 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				{
 					case 0:
 						{
-							await (new MessageDialog("Аккаунт успешно зарегистирован", "Успех")).ShowAsync();
+							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/AccountSuccessRegistredText"),
+								ResourceLoader.GetString("/SignInUp/SuccessText"))).ShowAsync();
 							await UserFileWorker.SaveUserToFileAsync(CurrentUser);
 
 							break;
 						}
 					case 1:
 						{
-							await (new MessageDialog("Пользователь с таким Email уже зарегистрирован", "Ошибка регистрации")).ShowAsync();
+							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/EmailAlreadyRegisteredText"),
+								ResourceLoader.GetString("/SignInUp/RegistrationError"))).ShowAsync();
 
 							ControlEnable = true;
 							Processing = false;
@@ -215,7 +229,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						}
 					default:
 						{
-							await (new MessageDialog("Ошибка регистрации, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/ServerConnectionProblemBadRegistrationText"),
+								ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 
 							break;
 						}
@@ -224,7 +239,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			catch (Exception ex)
 			{
 				await (new MessageDialog($"{ex.Message}\n" +
-					$"Ошибка регистрации, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+					$"{ResourceLoader.GetString("/SignInUp/ServerConnectionProblemBadRegistrationText")}",
+					ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 			}
 
 			if (Window.Current.Content is Frame frame)

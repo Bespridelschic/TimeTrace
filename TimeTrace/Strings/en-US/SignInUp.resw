@@ -117,152 +117,270 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountActivateText" xml:space="preserve">
+    <value>Account activation</value>
+    <comment>Activation page title</comment>
+  </data>
+  <data name="AccountSuccessRegistredText" xml:space="preserve">
+    <value>Account successfully registered</value>
+    <comment>Account is registred report</comment>
+  </data>
+  <data name="AccountVerificationText" xml:space="preserve">
+    <value>Account Verification</value>
+    <comment>Account verification text</comment>
+  </data>
+  <data name="ActivationInstructionText" xml:space="preserve">
+    <value>Check your E-mail, we are send you instruction for activation</value>
+    <comment>Activation account instructions report</comment>
+  </data>
   <data name="BirthdayCalendar.Header" xml:space="preserve">
-    <value>Дата рождения:</value>
-    <comment>Поле для ввода даты рождения</comment>
+    <value>Birthday:</value>
+    <comment>Birthday field</comment>
   </data>
   <data name="BirthdayCalendar.PlaceholderText" xml:space="preserve">
-    <value>Установите дату рождения...</value>
+    <value>Set your date of birth...</value>
   </data>
   <data name="BirthdayCalendar.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Уточните дату вашего рождения</value>
+    <value>Set your real date of birth</value>
+  </data>
+  <data name="CantActivateAccountText" xml:space="preserve">
+    <value>Remote server isn't available now. Please, Try later</value>
+    <comment>Can't activate account report</comment>
+  </data>
+  <data name="CantChangePasswordText" xml:space="preserve">
+    <value>Password change error. Please, try later</value>
+    <comment>Can't change passwort report</comment>
+  </data>
+  <data name="ChangePasswordText" xml:space="preserve">
+    <value>Changing password</value>
+    <comment>Password changing title</comment>
+  </data>
+  <data name="CheckCorrectionText" xml:space="preserve">
+    <value>Check your input data or create a new account</value>
+    <comment>Chech correction report</comment>
   </data>
   <data name="ConfirmPasswordBoxRegistration.Header" xml:space="preserve">
-    <value>Подтвердите пароль:</value>
-    <comment>Поле для подтверждения введенного пароля</comment>
+    <value>Confirm password:</value>
+    <comment>Confirm password field</comment>
   </data>
   <data name="ConfirmPasswordBoxRegistration.PlaceholderText" xml:space="preserve">
-    <value>Подтвердите ваш пароль...</value>
+    <value>Confirm your password...</value>
   </data>
   <data name="ConfirmPasswordBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Подтвердите пароль, введённый ранее</value>
+    <value>Confirm the password entered earlier</value>
+  </data>
+  <data name="EmailAlreadyRegisteredText" xml:space="preserve">
+    <value>E-mail with this email already registered</value>
+    <comment>E-mail is already registered report</comment>
   </data>
   <data name="EmailBox.Header" xml:space="preserve">
-    <value>Почта:</value>
-    <comment>Поле для ввода электронного адреса</comment>
+    <value>E-mail address:</value>
+    <comment>E-mail enter field</comment>
   </data>
   <data name="EmailBox.PlaceholderText" xml:space="preserve">
-    <value>Введите ваш эл. адрес...</value>
+    <value>Enter your E-mail...</value>
   </data>
   <data name="EmailBox.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите зарегистрированный адрес электронной почты</value>
+    <value>Enter registered E-mail</value>
   </data>
   <data name="EmailBoxRegistration.Header" xml:space="preserve">
-    <value>Электронная почта:</value>
-    <comment>Поле для ввода электронной почты для завершения регистрации</comment>
+    <value>E-mail:</value>
+    <comment>E-mail registration field</comment>
   </data>
   <data name="EmailBoxRegistration.PlaceholderText" xml:space="preserve">
-    <value>Введите вашу эл. почту...</value>
+    <value>Enter your E-mail...</value>
   </data>
   <data name="EmailBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите вашу реальную электронную почту</value>
+    <value>Enter your registrered E-mail</value>
+  </data>
+  <data name="EmailBoxRegistrationHeader" xml:space="preserve">
+    <value>E-mail:</value>
+    <comment>E-mail registration field</comment>
+  </data>
+  <data name="EmailBoxRegistrationPlaceholderText" xml:space="preserve">
+    <value>Enter your E-mail...</value>
+  </data>
+  <data name="FillAllFieldsText" xml:space="preserve">
+    <value>Fill in all the fields</value>
+    <comment>Fill in all the fields report</comment>
   </data>
   <data name="FirstNameTextBox.Header" xml:space="preserve">
-    <value>Имя:</value>
-    <comment>Поле для ввода имени</comment>
+    <value>First name:</value>
+    <comment>Name field</comment>
   </data>
   <data name="FirstNameTextBox.PlaceholderText" xml:space="preserve">
-    <value>Введите ваше имя...</value>
+    <value>Enter your first name...</value>
   </data>
   <data name="FirstNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите своё имя</value>
+    <value>Enter your real first name</value>
+  </data>
+  <data name="GetKeyButtonText" xml:space="preserve">
+    <value>Get key</value>
+    <comment>Get key button</comment>
   </data>
   <data name="HeaderTextBoxExtendPage.Text" xml:space="preserve">
-    <value>Общая информация</value>
-    <comment>Заголовок окна заполнения общих данных</comment>
+    <value>Common information</value>
+    <comment>Extended registration page title</comment>
   </data>
   <data name="HeaderTextBoxRegistrationPage.Text" xml:space="preserve">
-    <value>Регистрация</value>
-    <comment>Заголовок окна завершения регистрации</comment>
+    <value>Registration</value>
+    <comment>Registration finish page title</comment>
+  </data>
+  <data name="IncorrectEmailText" xml:space="preserve">
+    <value>E-mail incorrect. Check it again</value>
+    <comment>E-mail incorrect report</comment>
   </data>
   <data name="LastNameTextBox.Header" xml:space="preserve">
-    <value>Фамилия:</value>
-    <comment>Поле для ввода фамилии</comment>
+    <value>Last name:</value>
+    <comment>Last name field</comment>
   </data>
   <data name="LastNameTextBox.PlaceholderText" xml:space="preserve">
-    <value>Введите вашу фамилию...</value>
+    <value>Enter your last name...</value>
   </data>
   <data name="LastNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите свою фамилию</value>
+    <value>Enter your real last name</value>
+  </data>
+  <data name="LaterButtonText" xml:space="preserve">
+    <value>Later</value>
+    <comment>Cancel password recovery button</comment>
   </data>
   <data name="MiddleNameTextBox.Header" xml:space="preserve">
-    <value>Отчество:</value>
-    <comment>Поле для ввода отчества</comment>
+    <value>Middle name:</value>
+    <comment>Middle name field</comment>
   </data>
   <data name="MiddleNameTextBox.PlaceholderText" xml:space="preserve">
-    <value>Введите ваше отчество...</value>
+    <value>Enter your middle name...</value>
   </data>
   <data name="MiddleNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите своё отчество</value>
+    <value>Enter your real middle name if you have one</value>
+  </data>
+  <data name="NewPasswordHeader" xml:space="preserve">
+    <value>New password:</value>
+    <comment>New password text box</comment>
+  </data>
+  <data name="NewPasswordPlaceholderText" xml:space="preserve">
+    <value>Input a new password...</value>
+  </data>
+  <data name="NoMatchesFoundText" xml:space="preserve">
+    <value>No matches found for accounts.</value>
+    <comment>No matches found for accounts report</comment>
   </data>
   <data name="ObligatoryFieldAttentionText.Text" xml:space="preserve">
-    <value>Все поля являются обязательными*</value>
-    <comment>Предупреждение об обязательности полей</comment>
+    <value>All fields are obligatory*</value>
+    <comment>Obligatory attention text</comment>
+  </data>
+  <data name="OperationFailedText" xml:space="preserve">
+    <value>Operation failed</value>
+    <comment>Operation failed report</comment>
   </data>
   <data name="OptionalFieldAttentionText.Text" xml:space="preserve">
-    <value>Поля не являются обязательными*</value>
-    <comment>Предупреждение о необязательности полей</comment>
+    <value>All field are optional*</value>
+    <comment>Optional attention text</comment>
   </data>
   <data name="PasswordBox.Header" xml:space="preserve">
-    <value>Пароль:</value>
-    <comment>Поле для ввода пароля</comment>
+    <value>Password:</value>
+    <comment>Password field</comment>
   </data>
   <data name="PasswordBox.PlaceholderText" xml:space="preserve">
-    <value>Введите ваш пароль...</value>
+    <value>Enter your password...</value>
   </data>
   <data name="PasswordBox.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите ваш пароль от аккаунта</value>
+    <value>Enter your real account password</value>
   </data>
   <data name="PasswordBoxRegistration.Header" xml:space="preserve">
-    <value>Пароль:</value>
-    <comment>Поле для ввода пароля для завершения регистрации</comment>
+    <value>Password:</value>
+    <comment>Registration finish password field</comment>
   </data>
   <data name="PasswordBoxRegistration.PlaceholderText" xml:space="preserve">
-    <value>Введите желаемый пароль...</value>
+    <value>Enter strong password...</value>
   </data>
   <data name="PasswordBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Введите пароль, с помощью которого вы будете входить в систему. Придумайте надёжный пароль</value>
+    <value>Enter strong account password</value>
   </data>
   <data name="PasswordForgotLink.Content" xml:space="preserve">
-    <value>Забыли пароль?</value>
-    <comment>Кнопка восстановления пароля</comment>
+    <value>Forgot password?</value>
+    <comment>Recovery password button</comment>
   </data>
   <data name="PasswordForgotLink.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Перейти на страницу восстановления пароля</value>
+    <value>Go to password recovery page</value>
+  </data>
+  <data name="PasswordLengthShortText" xml:space="preserve">
+    <value>Password must be at least 8 characters</value>
+    <comment>Password length is short report</comment>
+  </data>
+  <data name="PasswordRecoveryText" xml:space="preserve">
+    <value>Password recovery</value>
+    <comment>Password recovery page title</comment>
   </data>
   <data name="PasswordSaveChechBox.Content" xml:space="preserve">
-    <value>Сохранить пароль</value>
-    <comment>Галочка сохранения пароль</comment>
+    <value>Save the password</value>
+    <comment>Password save check</comment>
   </data>
   <data name="PasswordSaveChechBox.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Использовать автоматический вход в систему</value>
+    <value>Use automatic login</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+    <comment>Passwords do not match report</comment>
+  </data>
+  <data name="RecoveryButtonText" xml:space="preserve">
+    <value>Recovery</value>
+    <comment>Recovery text button</comment>
   </data>
   <data name="RegistrationButton.Content" xml:space="preserve">
-    <value>Зарегистироваться</value>
-    <comment>Кнопка завершения регистрации</comment>
+    <value>Create account</value>
+    <comment>Registration finish button</comment>
   </data>
   <data name="RegistrationButton.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Зарегистрироваться в системе</value>
+    <value>Create an account in the system</value>
+  </data>
+  <data name="RegistrationError" xml:space="preserve">
+    <value>Registration error</value>
+    <comment>Registration error report</comment>
   </data>
   <data name="RegistrationNextStepButton.Content" xml:space="preserve">
-    <value>Далее</value>
-    <comment>Кнопка продолжения регистрации в системе</comment>
+    <value>Next</value>
+    <comment>Next registration step in a system</comment>
   </data>
   <data name="RegistrationNextStepButton.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Продолжить регистрацию в системе</value>
+    <value>Continue registration in the system</value>
+  </data>
+  <data name="RegistrationProblemText" xml:space="preserve">
+    <value>Registration problem</value>
+    <comment>Registration problem page title</comment>
+  </data>
+  <data name="ServerConnectionProblemBadRegistrationText" xml:space="preserve">
+    <value>Registration error, remote server is not available. Please try again later</value>
+    <comment>Remote server isn't available for registration report</comment>
+  </data>
+  <data name="ServerConnectionProblemText" xml:space="preserve">
+    <value>Remote server isn't available now. Please, Try later</value>
+    <comment>Remote server isn't available for login report</comment>
   </data>
   <data name="SignInButton.Content" xml:space="preserve">
-    <value>Вход</value>
-    <comment>Кнопка входа в систему</comment>
+    <value>Sign in</value>
+    <comment>Sign in button</comment>
   </data>
   <data name="SignInButton.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Войти в систему</value>
+    <value>Login to the system</value>
+  </data>
+  <data name="SignInErrorText" xml:space="preserve">
+    <value>Sign in error</value>
+    <comment>Error accessing the system report</comment>
   </data>
   <data name="SignUpLink.Content" xml:space="preserve">
-    <value>Зарегистрировать новый аккаунт</value>
-    <comment>Кнопка регистрации нового аккаунта</comment>
+    <value>Sign up</value>
+    <comment>Sign up button</comment>
   </data>
   <data name="SignUpLink.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Перейти на страницу регистрации</value>
+    <value>Go to sign up page</value>
+  </data>
+  <data name="SuccessText" xml:space="preserve">
+    <value>Success</value>
+    <comment>Success registration report</comment>
+  </data>
+  <data name="UndefinedErrorText" xml:space="preserve">
+    <value>Undefined error. Please, contact the developer</value>
+    <comment>Undefined error report</comment>
   </data>
 </root>

@@ -8,19 +8,20 @@ using TimeTrace.View.AuthenticationView.SignUp;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
 	/// <summary>
-	/// ViewModel для входа в систему
+	/// ViewModel for sign in
 	/// </summary>
 	public class SignInViewModel : BaseViewModel
 	{
-		#region Свойства
+		#region Properties
 
 		private User currentUser;
 		/// <summary>
-		/// Текущий используемый пользователь
+		/// Current using user
 		/// </summary>
 		public User CurrentUser
 		{
@@ -48,7 +49,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 		private int selectionStart;
 		/// <summary>
-		/// Начальная позиция курсора текста
+		/// Start cursor position in a text
 		/// </summary>
 		public int SelectionStart
 		{
@@ -62,7 +63,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 		private bool isPasswordSave;
 		/// <summary>
-		/// Состояние флага сохранения пароля локально
+		/// Status of the save password flag
 		/// </summary>
 		public bool IsPasswordSave
 		{
@@ -76,7 +77,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 		private bool controlEnable;
 		/// <summary>
-		/// Состояние флага доступности элементов управления графического интерфейса
+		/// Status of enabled interface controls
 		/// </summary>
 		public bool ControlEnable
 		{
@@ -88,14 +89,20 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			}
 		}
 
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
 		#endregion
 
 		/// <summary>
-		/// Конструктор инициализирующий новый объект <see cref="User"/> и пытающийся считать данные с файла
+		/// Initialize object <see cref="User"/> and try read information from local storage
 		/// </summary>
 		public SignInViewModel()
 		{
 			CurrentUser = new User();
+			ResourceLoader = ResourceLoader.GetForCurrentView("SignInUp");
 			UserFileWorker.LoadUserFromFileAsync(CurrentUser).GetAwaiter();
 
 			Processing = false;
@@ -106,26 +113,32 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Проверка полей на корректность
+		/// Check fields correct
 		/// </summary>
 		/// <returns>Удовлетворяют ли поля бизнес-логике</returns>
 		private async Task<bool> CanAppSignIn()
 		{
 			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
 			{
-				await new MessageDialog("Заполните все поля", "Ошибка операции").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/FillAllFieldsText"),
+					ResourceLoader.GetString("/SignInUp/OperationFailedText")).ShowAsync();
+
 				return false;
 			}
 
 			if (!CurrentUser.EmailCorrectCheck())
 			{
-				await new MessageDialog("Не корректно введён адрес электронной почты. Проверьте корректность", "Ошибка операции").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/IncorrectEmailText"),
+					ResourceLoader.GetString("/SignInUp/OperationFailedText")).ShowAsync();
+
 				return false;
 			}
 
 			if (CurrentUser.Password.Length < 8)
 			{
-				await new MessageDialog("Пароль должен составлять минимум 8 символов", "Ошибка операции").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/PasswordLengthShortText"),
+					ResourceLoader.GetString("/SignInUp/OperationFailedText")).ShowAsync();
+
 				return false;
 			}
 
@@ -133,7 +146,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Попытка входа в систему
+		/// Sign in operation
 		/// </summary>
 		public async void AppSignIn()
 		{
@@ -173,8 +186,9 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						}
 					case 1:
 						{
-							await (new MessageDialog($"Не найдено совпадений с существующими аккаунтами." +
-								$"Проверьте корректность введенных данных, или зарегистрируйте новый аккаунт", "Ошибка входа")).ShowAsync();
+							await (new MessageDialog($"{ResourceLoader.GetString("/SignInUp/NoMatchesFoundText")}" +
+								$"{ResourceLoader.GetString("/SignInUp/CheckCorrectionText")}",
+								ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 
 							break;
 						}
@@ -193,15 +207,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 							break;
 						}
-					case -1:
-						{
-							await (new MessageDialog("Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
-
-							break;
-						}
 					default:
 						{
-							await (new MessageDialog("Непредвиденная ошибка. Обратитесь к разработчику программного обеспечения", "Ошибка входа")).ShowAsync();
+							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/ServerConnectionProblemText"),
+								ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 
 							break;
 						}
@@ -210,15 +219,18 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			catch (Exception ex)
 			{
 				await (new MessageDialog($"{ex.Message}\n" +
-					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+					$"{ResourceLoader.GetString("/SignInUp/ServerConnectionProblemText")}",
+					ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 			}
-
-			ControlEnable = true;
-			Processing = false;
+			finally
+			{
+				ControlEnable = true;
+				Processing = false;
+			}
 		}
 
 		/// <summary>
-		/// Переход на страницу регистрации
+		/// Registration page navigate
 		/// </summary>
 		public void SignUp()
 		{
@@ -229,26 +241,26 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Восстановление пароля
+		/// Password recovery operation
 		/// </summary>
 		public async void UserPasswordRecovery()
 		{
 			string currentPassword = CurrentUser.Password;
 			string currentEmail = new string(CurrentUser.Email.ToCharArray());
 
-			#region Разметка диалогового окна
+			#region Dialog window
 
 			TextBox emailTextBox = new TextBox
 			{
-				PlaceholderText = "Введите вашу электронную почту...",
-				Header = "Адрес электронной почты:",
+				PlaceholderText = ResourceLoader.GetString("/SignInUp/EmailBoxRegistrationPlaceholderText"),
+				Header = ResourceLoader.GetString("/SignInUp/EmailBoxRegistrationHeader"),
 				Text = CurrentUser.Email
 			};
 
 			PasswordBox passwordTextBox = new PasswordBox
 			{
-				PlaceholderText = "Введите новый пароль...",
-				Header = "Новый пароль:",
+				PlaceholderText = ResourceLoader.GetString("/SignInUp/NewPasswordPlaceholderText"),
+				Header = ResourceLoader.GetString("/SignInUp/NewPasswordHeader"),
 				MaxLength = 20,
 			};
 
@@ -275,10 +287,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			ContentDialog dialog = new ContentDialog
 			{
-				Title = "Восстановление пароля",
+				Title = ResourceLoader.GetString("/SignInUp/PasswordRecoveryText"),
 				Content = grid,
-				PrimaryButtonText = "Восстановить",
-				CloseButtonText = "Отложить",
+				PrimaryButtonText = ResourceLoader.GetString("/SignInUp/RecoveryButtonText"),
+				CloseButtonText = ResourceLoader.GetString("/SignInUp/LaterButtonText"),
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
@@ -303,17 +315,20 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					{
 						case 0:
 							{
-								await (new MessageDialog("На вашу электронную почту отправлено письмо с инструкцией по активации", "Изменение пароля")).ShowAsync();
+								await (new MessageDialog(ResourceLoader.GetString("/SignInUp/ActivationInstructionText"),
+									ResourceLoader.GetString("/SignInUp/ChangePasswordText"))).ShowAsync();
 								break;
 							}
 						case 1:
 							{
-								await (new MessageDialog("Ошибка изменения пароля! Сброс пароля не возможен", "Изменение пароля")).ShowAsync();
+								await (new MessageDialog(ResourceLoader.GetString("/SignInUp/CantChangePasswordText"),
+									ResourceLoader.GetString("/SignInUp/ChangePasswordText"))).ShowAsync();
 								break;
 							}
 						default:
 							{
-								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику", "Изменение пароля")).ShowAsync();
+								await (new MessageDialog(ResourceLoader.GetString("/SignInUp/UndefinedErrorText"),
+									ResourceLoader.GetString("/SignInUp/ChangePasswordText"))).ShowAsync();
 								break;
 							}
 					}
@@ -321,15 +336,15 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				catch (Exception ex)
 				{
 					await (new MessageDialog($"{ex.Message}\n" +
-						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка изменения пароля")).ShowAsync();
+						$"{ResourceLoader.GetString("/SignInUp/UndefinedErrorText")}", ResourceLoader.GetString("/SignInUp/OperationFailedText"))).ShowAsync();
 				}
 			}
 		}
 
 		/// <summary>
-		/// Диалоговое окно подтверждения аккаунта
+		/// Account confirm dialog message
 		/// </summary>
-		/// <returns>Статус подтверждения аккаунта</returns>
+		/// <returns>Account state</returns>
 		private async Task ConfirmAccountDialogAsync()
 		{
 			TextBox textBox = new TextBox
@@ -342,10 +357,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			ContentDialog dialog = new ContentDialog
 			{
-				Title = "Активировать аккаунт",
+				Title = ResourceLoader.GetString("/SignInUp/AccountActivateText"),
 				Content = textBox,
-				PrimaryButtonText = "Получить код",
-				CloseButtonText = "Отложить",
+				PrimaryButtonText = ResourceLoader.GetString("/SignInUp/GetKeyButtonText"),
+				CloseButtonText = ResourceLoader.GetString("/SignInUp/LaterButtonText"),
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
@@ -359,17 +374,20 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					{
 						case 0:
 							{
-								await (new MessageDialog("На вашу электронную почту отправлено письмо с инструкцией по активации", "Подтверждение аккаунта")).ShowAsync();
+								await (new MessageDialog("ActivationInstructionText",
+									ResourceLoader.GetString("/SignInUp/AccountVerificationText"))).ShowAsync();
 								break;
 							}
 						case 1:
 							{
-								await (new MessageDialog("Не предвиденная ошибка. Повторите попытку позже", "Подтверждение аккаунта")).ShowAsync();
+								await (new MessageDialog(ResourceLoader.GetString("/SignInUp/CantActivateAccountText"),
+									ResourceLoader.GetString("/SignInUp/AccountVerificationText"))).ShowAsync();
 								break;
 							}
 						default:
 							{
-								await (new MessageDialog("Не предвиденная ошибка. Обратитесь к разработчику", "Подтверждение аккаунта")).ShowAsync();
+								await (new MessageDialog(ResourceLoader.GetString("/SignInUp/UndefinedErrorText"),
+									ResourceLoader.GetString("/SignInUp/AccountVerificationText"))).ShowAsync();
 								break;
 							}
 					}
@@ -377,7 +395,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				catch (Exception ex)
 				{
 					await (new MessageDialog($"{ex.Message}\n" +
-						$"Не предвиденная ошибка. Обратитесь к разработчику", "Ошибка входа")).ShowAsync();
+						$"{ResourceLoader.GetString("/SignInUp/UndefinedErrorText")}",
+						ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 				}
 			}
 		}

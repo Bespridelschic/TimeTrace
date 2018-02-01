@@ -29,5 +29,13 @@ namespace TimeTrace.View.MainView
 		}
 
 		ViewModel.MainViewModel.HomeViewModel ViewModel { get; set; }
+
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			if (e != null)
+			{
+				ViewModel.Frame = (Frame)e.Parameter;
+			}
+		}
 	}
 }

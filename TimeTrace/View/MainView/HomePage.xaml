@@ -39,9 +39,9 @@
 				<TextBlock Text="Полезное для вас" Foreground="SteelBlue" FontSize="20"/>
 
 				<VariableSizedWrapGrid Orientation="Horizontal">
-					<Button Foreground="White" Background="SteelBlue" Content="Расписание" Width="120" Margin="20"/>
-					<Button Foreground="White" Background="SteelBlue" Content="К картам" Width="120" Margin="20"/>
-					<Button Foreground="White" Background="SteelBlue" Content="К настройкам" Width="120" Margin="20"/>
+					<Button Foreground="White" Background="SteelBlue" Content="Расписание" Width="120" Margin="20" Click="{x:Bind ViewModel.SchedulePageChoice}"/>
+					<Button Foreground="White" Background="SteelBlue" Content="К картам" Width="120" Margin="20" Click="{x:Bind ViewModel.PersonalMapsPageChoice}"/>
+					<Button Foreground="White" Background="SteelBlue" Content="К настройкам" Width="120" Margin="20" Click="{x:Bind ViewModel.SettingsPageChoice}"/>
 					<Button Foreground="White" Background="SteelBlue" Content="Помощь" Width="120" Margin="20"/>
 				</VariableSizedWrapGrid>
 

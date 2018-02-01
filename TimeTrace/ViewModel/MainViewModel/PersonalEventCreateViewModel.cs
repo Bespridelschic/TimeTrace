@@ -106,6 +106,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		public Frame Frame { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -120,9 +122,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Создание нового события
+		/// Creating a new event
 		/// </summary>
-		/// <returns>Результат создания события</returns>
+		/// <returns>Result of event creation</returns>
 		public async Task EventCreate()
 		{
 			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.EventDate == null)
@@ -148,14 +150,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Выбор категории события
+		/// Selecting an event category
 		/// </summary>
 		public void CategorySelect()
 		{
-			if (Window.Current.Content is Frame frame)
-			{
-				frame.Navigate(typeof(NewEventCreatePage));
-			}
+			Frame.Navigate(typeof(NewEventCreatePage));
 		}
 	}
 }
