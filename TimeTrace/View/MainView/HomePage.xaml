@@ -23,50 +23,108 @@
 		</ResourceDictionary>
 	</Page.Resources>
 
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
-		<StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-			
-			<PersonPicture HorizontalAlignment="Center" Margin="0, 20, 0, 5" Width="200" Height="200"/>
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="10"/>
+		</Grid.RowDefinitions>
 
-			<StackPanel Orientation="Horizontal" Margin="0, 0, 0, 20" HorizontalAlignment="Center">
-				<TextBlock Text="Добро пожаловать, " FontSize="25" Foreground="SteelBlue" />
-				<TextBlock Text="{x:Bind ViewModel.UserName, Mode=OneWay}" FontSize="25" Foreground="SteelBlue" />
-				<TextBlock Text="!" FontSize="25" Foreground="SteelBlue" />
-			</StackPanel>
-			
+		<ScrollViewer VerticalScrollBarVisibility="Auto">
+			<StackPanel>
+				<Button HorizontalAlignment="Center" Margin="0, 20, 0, 5" ToolTipService.ToolTip="Изменить аватар" Click="{x:Bind ViewModel.AvatarChange}">
+					<Button.Background>
+						<SolidColorBrush Opacity="0"/>
+					</Button.Background>
+					<PersonPicture Width="200" Height="200" PreferSmallImage="True"/>
+				</Button>
 
-			<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
-				<TextBlock Text="Полезное для вас" Foreground="SteelBlue" FontSize="20"/>
+				<StackPanel Orientation="Horizontal" Margin="0, 0, 0, 20" HorizontalAlignment="Center">
+					<TextBlock Text="Добро пожаловать, " FontSize="25" Foreground="SteelBlue" />
+					<TextBlock Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" FontSize="25" Foreground="SteelBlue" />
+					<TextBlock Text="!" FontSize="25" Foreground="SteelBlue" />
+				</StackPanel>
 
-				<VariableSizedWrapGrid Orientation="Horizontal">
-					<Button Foreground="White" Background="SteelBlue" Content="Расписание" Width="120" Margin="20" Click="{x:Bind ViewModel.SchedulePageChoice}"/>
-					<Button Foreground="White" Background="SteelBlue" Content="К картам" Width="120" Margin="20" Click="{x:Bind ViewModel.PersonalMapsPageChoice}"/>
-					<Button Foreground="White" Background="SteelBlue" Content="К настройкам" Width="120" Margin="20" Click="{x:Bind ViewModel.SettingsPageChoice}"/>
-					<Button Foreground="White" Background="SteelBlue" Content="Помощь" Width="120" Margin="20"/>
+
+				<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1" Margin="20, 0, 20, 0">
+					<TextBlock Text="Полезное для вас" Foreground="SteelBlue" FontSize="20"/>
+
+					<VariableSizedWrapGrid Orientation="Horizontal">
+						<Button Foreground="White" Background="SteelBlue" Content="Расписание" Width="120" Margin="20" Click="{x:Bind ViewModel.SchedulePageChoice}"/>
+						<Button Foreground="White" Background="SteelBlue" Content="К картам" Width="120" Margin="20" Click="{x:Bind ViewModel.PersonalMapsPageChoice}"/>
+						<Button Foreground="White" Background="SteelBlue" Content="К настройкам" Width="120" Margin="20" Click="{x:Bind ViewModel.SettingsPageChoice}"/>
+						<Button Foreground="White" Background="SteelBlue" Content="Помощь" Width="120" Margin="20"/>
+					</VariableSizedWrapGrid>
+
+					<Button Content="Сообщить об ошибке или высказать предложение" Grid.Row="1" HorizontalAlignment="Center"
+						Margin="0, 0, 0, 20" Foreground="White" Background="CadetBlue"/>
+
+				</StackPanel>
+
+				<VariableSizedWrapGrid Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+					<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
+						<TextBlock Text="Персональные данные" FontSize="20" Margin="20, 10"/>
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="150"/>
+								<ColumnDefinition Width="150"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<TextBlock Text="Фамилия: " FontSize="15" Margin="5, 15" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=OneWay, TargetNullValue=Unknown}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1"/>
+
+							<TextBlock Text="Имя: " FontSize="15" Grid.Row="1" Margin="5, 15" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="1"/>
+
+							<TextBlock Text="Отчество: " FontSize="15" Grid.Row="2" Margin="5, 15" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="2"/>
+
+							<TextBlock Text="Дата рождения: " FontSize="15" Grid.Row="3" Margin="5, 15" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.CurrentUser.Birthday, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="3"/>
+
+						</Grid>
+
+					</StackPanel>
+
+					<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
+						<TextBlock Text="Личная статистика" FontSize="20" Margin="20, 10"/>
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="150"/>
+								<ColumnDefinition Width="150"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<TextBlock Text="Создано карт: " FontSize="15" Margin="5, 15" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1"/>
+
+							<TextBlock Text="Контактов: " FontSize="15" Margin="5, 15" Grid.Row="1" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.NumContacts, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="1"/>
+
+							<TextBlock Text="Зарегистрирован:" FontSize="15" Margin="5, 15" Grid.Row="2" HorizontalAlignment="Right"/>
+							<TextBlock Text="{x:Bind ViewModel.Experience, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="2"/>
+
+							<TextBlock Text="Статус:" FontSize="15" Margin="5, 15" Grid.Row="3" HorizontalAlignment="Right"/>
+							<TextBlock Text="1" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="3"/>
+
+						</Grid>
+
+					</StackPanel>
 				</VariableSizedWrapGrid>
-
 			</StackPanel>
-
-			<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<TextBlock Text="Личная статистика" FontSize="20" Margin="0, 0, 0, 20"/>
-
-				<VariableSizedWrapGrid Orientation="Horizontal">
-					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
-						<TextBlock Text="Создано карт: " FontSize="15"/>
-						<TextBlock Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" FontSize="15"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
-						<TextBlock Text="Контактов: " FontSize="15"/>
-						<TextBlock Text="{x:Bind ViewModel.NumContacts, Mode=OneWay}" FontSize="15"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Center">
-						<TextBlock Text="Общий стаж: " FontSize="15"/>
-						<TextBlock Text="{x:Bind ViewModel.Experience, Mode=OneWay}" FontSize="15"/>
-					</StackPanel>
-				</VariableSizedWrapGrid>
-				
-			</StackPanel>
-			
-		</StackPanel>
-	</ScrollViewer>
+		</ScrollViewer>
+	</Grid>
 </Page>

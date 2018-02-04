@@ -154,7 +154,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void CategorySelect()
 		{
-			Frame.Navigate(typeof(NewEventCreatePage));
+			Frame.Navigate(typeof(NewEventCreatePage), Frame);
+		}
+
+		/// <summary>
+		/// Cancell event creation and back to categories
+		/// </summary>
+		public void BackToCategories()
+		{
+			Frame.Navigate(typeof(PersonalMapsPage), Frame);
 		}
 	}
 }

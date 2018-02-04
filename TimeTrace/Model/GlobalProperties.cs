@@ -12,15 +12,6 @@ namespace TimeTrace.Model
     internal static class GlobalProperties
     {
 		/// <summary>
-		/// Application language
-		/// </summary>
-		public enum Language
-		{
-			Russian,
-			English
-		}
-
-		/// <summary>
 		/// Application colors
 		/// </summary>
 		public enum Color
@@ -32,11 +23,6 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Current application color
 		/// </summary>
-		public static Language AppLanguage { get; set; }
-
-		/// <summary>
-		/// Current application color
-		/// </summary>
 		public static Color AppColor { get; set; }
 
 		/// <summary>
@@ -44,7 +30,6 @@ namespace TimeTrace.Model
 		/// </summary>
 		static GlobalProperties()
 		{
-			AppLanguage = Language.Russian;
 			AppColor = Color.System;
 		}
     }

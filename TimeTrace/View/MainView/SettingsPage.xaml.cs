@@ -25,6 +25,10 @@ namespace TimeTrace.View.MainView
 		public SettingsPage()
 		{
 			this.InitializeComponent();
+
+			ViewModel = new ViewModel.MainViewModel.SettingsViewModel();
 		}
+
+		ViewModel.MainViewModel.SettingsViewModel ViewModel;
 	}
 }

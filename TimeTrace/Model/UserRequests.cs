@@ -153,7 +153,7 @@ namespace TimeTrace.Model
 		/// Getting user information from server in raw format JSON
 		/// </summary>
 		/// <returns>String in raw format json</returns>
-		public static async Task<string> PostRequestAsync()
+		public static async Task<ServerUser> PostRequestAsync()
 		{
 			// Get user token and email for request
 			var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
@@ -172,7 +172,7 @@ namespace TimeTrace.Model
 				throw new Exception("Server return null");
 			}
 
-			return result;
+			return JsonDeserialize((string)jsonString["customer"]);
 		}
 
 		#region JSON
@@ -196,11 +196,11 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Json string</param>
 		/// <returns>New object of <see cref="User"/></returns>
-		private static User JsonDeserialize(string jsonString)
+		private static ServerUser JsonDeserialize(string jsonString)
 		{
 			if (!string.IsNullOrEmpty(jsonString))
 			{
-				User user = JsonConvert.DeserializeObject<User>(jsonString);
+				ServerUser user = JsonConvert.DeserializeObject<ServerUser>(jsonString);
 				return user;
 			}
 			return null;

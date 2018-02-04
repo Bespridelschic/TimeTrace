@@ -2,10 +2,8 @@
     x:Class="TimeTrace.View.MainView.StartPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TimeTrace.View.MainView"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:media="using:Windows.UI.Xaml.Media"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
 	<Page.Resources>
@@ -18,7 +16,7 @@
 
 	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="NavView_SelectionChanged" x:Name="NavHeader">
 		
-		<NavigationView.HeaderTemplate>
+		<!--<NavigationView.HeaderTemplate>
 			<DataTemplate>
 				<Grid Margin="24, 24, 0, 0">
 					<Grid.ColumnDefinitions>
@@ -28,6 +26,31 @@
 					<TextBlock Text="Time Tracking" FontSize="30" Foreground="White" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
 					<TextBlock Grid.Column="1" Text="Добро пожаловать, User!" VerticalAlignment="Center" Foreground="White"
 							   HorizontalAlignment="Right" Margin="0, 0, 15, 0" FontSize="18"/>
+				</Grid>
+			</DataTemplate>
+		</NavigationView.HeaderTemplate>-->
+
+		<NavigationView.HeaderTemplate>
+			<DataTemplate>
+				<Grid Margin="24,10,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<TextBlock Style="{StaticResource TitleTextBlockStyle}"
+                           FontSize="28"
+                           VerticalAlignment="Bottom"
+                           Text="Welcome back!"
+							Margin="0, 0, 0, 5"/>
+					<CommandBar Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            DefaultLabelPosition="Right"
+                            Background="{ThemeResource HostBackdropBrush}">
+						<AppBarButton Label="Refresh" Icon="Refresh"/>
+						<AppBarButton Label="Import" Icon="Import"/>
+						<AppBarButton Label="User" Icon="Pictures"/>
+					</CommandBar>
 				</Grid>
 			</DataTemplate>
 		</NavigationView.HeaderTemplate>
@@ -40,7 +63,7 @@
 			<NavigationViewItem Content="Домой" Tag="home" Icon="Home"
 									ToolTipService.Placement="Right" ToolTipService.ToolTip="Переход на домашнюю страницу"/>
 
-			<NavigationViewItem Content="Расписание" Tag="schedule" Icon="Globe"
+			<NavigationViewItem Content="Расписание" Tag="schedule" Icon="Calendar"
 									ToolTipService.Placement="Right" ToolTipService.ToolTip="Посмотреть текущее расписание"/>
 
 			<NavigationViewItem Content="Список контактов" Tag="contacts" Icon="Phone"

@@ -13,7 +13,7 @@
 			<PivotItem Header="Все">
 				<ListBox Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 					<ListBoxItem ToolTipService.Placement="Right">
-						<ToolTipService.ToolTip>
+						<!--<ToolTipService.ToolTip>
 							<Grid>
 								<Grid.RowDefinitions>
 									<RowDefinition Height="*"/>
@@ -23,9 +23,9 @@
 								<TextBox Text="Фамилия Имя Отчество" Grid.Row="1" VerticalAlignment="Top" Foreground="SteelBlue" BorderThickness="0"
 								 HorizontalAlignment="Center" Margin="0, 2, 0, 0" FontSize="20"/>
 							</Grid>
-						</ToolTipService.ToolTip>
+						</ToolTipService.ToolTip>-->
 						<StackPanel Orientation="Horizontal">
-							<Image Source="/Assets/user-48.png" Width="40"/>
+							<PersonPicture Width="40" PreferSmallImage="True"/>
 							<TextBlock Text="Фамилия Имя Отчество" Margin="15, 0, 0, 0" Foreground="SteelBlue" FontSize="25"/>
 						</StackPanel>
 					</ListBoxItem>

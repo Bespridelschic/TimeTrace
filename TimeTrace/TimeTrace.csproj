@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="Model\GlobalProperties.cs" />
     <Compile Include="Model\MapEvent.cs" />
+    <Compile Include="Model\ServerUser.cs" />
     <Compile Include="Model\UserFileWorker.cs" />
     <Compile Include="Model\UserRequests.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\PersonalEventCreateViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
     </Compile>
@@ -151,9 +153,9 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="ProjectDiagrams\ClassDiagram1.cd" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />
+    <None Include="ProjectDiagrams\ClassDiagram1.cd" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -246,9 +248,7 @@
       <Version>10.0.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ContentDialogs\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

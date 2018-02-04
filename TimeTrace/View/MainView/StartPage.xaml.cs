@@ -30,6 +30,7 @@ namespace TimeTrace.View.MainView
 		{
 			this.InitializeComponent();
 
+			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(650, 800));
 			ContentFrame.Navigate(typeof(HomePage), ContentFrame);
 			
 		}

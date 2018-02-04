@@ -251,4 +251,3 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 	}
 }
-
