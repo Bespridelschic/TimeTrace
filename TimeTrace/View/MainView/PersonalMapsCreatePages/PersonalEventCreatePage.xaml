@@ -59,7 +59,7 @@
 
 					<CalendarDatePicker PlaceholderText="Установите дату начала события" Header="Дата начала события*" Margin="15, 5, 15, 5"
 							DateFormat="{}{day.integer} {month.full} {year.full}"
-							Date="{x:Bind ViewModel.CurrentMapEvent.EventDate, Mode=TwoWay}"
+							Date="{x:Bind ViewModel.CurrentMapEvent.StartEventDate, Mode=TwoWay}"
 							MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"/>
 
 				</StackPanel>
@@ -67,18 +67,18 @@
 				<StackPanel>
 
 					<TimePicker Margin="15, 5, 15, 5" Header="Время начала события" ToolTipService.ToolTip="Время, к которому будет привязано событие"
-							Time="{x:Bind ViewModel.CurrentMapEvent.EventTime, Mode=TwoWay}"/>
+							Time="{x:Bind ViewModel.CurrentMapEvent.StartEventTime, Mode=TwoWay}"/>
 
 					<ToggleSwitch Name="IsAllDayLongToggleSwitch" Header="Весь день" OffContent="Да" OnContent="Нет" Margin="15, 5, 15, 5"/>
 
 					<CalendarDatePicker PlaceholderText="Установите дату окончания события" Header="Дата окончания события*" Margin="15, 5, 15, 5"
 							DateFormat="{}{day.integer} {month.full} {year.full}"
-							Date="{x:Bind ViewModel.CurrentMapEvent.EventDate, Mode=TwoWay}"
+							Date="{x:Bind ViewModel.CurrentMapEvent.EndEventDate, Mode=TwoWay}"
 							MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"
 							IsEnabled="{Binding ElementName=IsAllDayLongToggleSwitch, Path=IsOn}"/>
 					
 					<TimePicker Margin="15, 5, 15, 5" Header="Время окончания события" ToolTipService.ToolTip="Длительность создаваемого события"
-							Time="{x:Bind ViewModel.CurrentMapEvent.EventDuration, Mode=TwoWay}" IsEnabled="{Binding ElementName=IsAllDayLongToggleSwitch, Path=IsOn}"/>
+							Time="{x:Bind ViewModel.CurrentMapEvent.EndEventTime, Mode=TwoWay}" IsEnabled="{Binding ElementName=IsAllDayLongToggleSwitch, Path=IsOn}"/>
 
 				</StackPanel>
 

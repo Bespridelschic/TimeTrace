@@ -82,8 +82,8 @@ namespace TimeTrace
 					// Если стек навигации не восстанавливается для перехода к первой странице,
 					// настройка новой страницы путем передачи необходимой информации в качестве параметра
 					// параметр
-					rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
-					//rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
+					//rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
+					rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
 				}
 				// Обеспечение активности текущего окна
 				Window.Current.Activate();
