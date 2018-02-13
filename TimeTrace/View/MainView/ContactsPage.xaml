@@ -9,7 +9,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<Pivot>
+		<Pivot Margin="10, 0">
 			<PivotItem Header="Все">
 				<ListBox Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 					<ListBoxItem ToolTipService.Placement="Right">

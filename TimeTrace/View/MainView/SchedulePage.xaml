@@ -25,9 +25,9 @@
 	
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<TextBlock Text="Текущее расписание на неделю" Foreground="SteelBlue" FontSize="25" HorizontalAlignment="Left" Margin="20"/>
+		<TextBlock Text="Текущее расписание на неделю" Foreground="SteelBlue" FontSize="25" HorizontalAlignment="Left" Margin="20, 0, 20, 10"/>
 
-		<Grid Margin="20, 0, 20, 0" HorizontalAlignment="Left" BorderBrush="SteelBlue" BorderThickness="1">
+		<Grid Margin="20, 0" HorizontalAlignment="Left" BorderBrush="SteelBlue" BorderThickness="1">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*"/>
 				<RowDefinition Height="*"/>
@@ -49,10 +49,6 @@
 			<TextBlock Grid.Row="4" Text="Пятница" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
 			<TextBlock Grid.Row="5" Text="Суббота" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
 			<TextBlock Grid.Row="6" Text="Воскресение" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Left"/>
-
-
-			<TextBlock Grid.Column="1" Text="Начать новую жизнь" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Center"/>
-			<TextBlock Grid.Column="1" Grid.Row="6" Text="Паттерны, читать паттерны!" Foreground="SteelBlue" FontSize="18" HorizontalAlignment="Center"/>
 		</Grid>
 
 	</StackPanel>

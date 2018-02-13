@@ -21,9 +21,9 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
     /// <summary>
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
-    public sealed partial class NewEventCreatePage : Page
+    public sealed partial class PersonalEventCreatePage : Page
     {
-        public NewEventCreatePage()
+        public PersonalEventCreatePage()
         {
             this.InitializeComponent();
 			ViewModel = new PersonalEventCreateViewModel();

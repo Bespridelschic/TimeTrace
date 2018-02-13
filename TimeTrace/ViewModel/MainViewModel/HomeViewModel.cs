@@ -10,14 +10,13 @@ using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using static TimeTrace.Model.GlobalProperties;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
 	public class HomeViewModel : BaseViewModel
 	{
 		#region Properties
-
-		public string NullableString = "Unknown";
 
 		private string experience;
 		/// <summary>
@@ -157,7 +156,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void PersonalMapsPageChoice()
 		{
-			Frame.Navigate(typeof(PersonalMapsPage), Frame);
+			Frame.Navigate(typeof(CategorySelectPage), Frame);
 		}
 
 		/// <summary>

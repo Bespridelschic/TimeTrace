@@ -127,7 +127,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <returns>Result of event creation</returns>
 		public async Task EventCreate()
 		{
-			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.EventDate == null)
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.StartEventDate == null)
 			{
 				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
 
@@ -141,7 +141,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 						new XElement("Place", $"{CurrentMapEvent.Place}"),
 						new XElement("User", $"{CurrentMapEvent.UserBind.LastName}"),
 						new XElement("Date", $"{CurrentMapEvent.FullEventDate}"),
-						new XElement("Duration", $"{CurrentMapEvent.EventDuration}"),
+						new XElement("Duration", $"{CurrentMapEvent.EndEventTime}"),
 						new XElement("Interval", $"{CurrentMapEvent.EventInterval}")
 					)
 				)
@@ -154,7 +154,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void CategorySelect()
 		{
-			Frame.Navigate(typeof(NewEventCreatePage), Frame);
+			Frame.Navigate(typeof(PersonalEventCreatePage), Frame);
 		}
 
 		/// <summary>
@@ -162,7 +162,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void BackToCategories()
 		{
-			Frame.Navigate(typeof(PersonalMapsPage), Frame);
+			Frame.Navigate(typeof(CategorySelectPage), Frame);
 		}
 	}
 }

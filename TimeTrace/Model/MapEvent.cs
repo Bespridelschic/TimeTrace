@@ -43,32 +43,63 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private DateTimeOffset? eventDate;
+		private DateTimeOffset? startEventDate;
 		/// <summary>
 		/// Event start date
 		/// </summary>
-		public DateTimeOffset? EventDate
+		public DateTimeOffset? StartEventDate
 		{
-			get { return eventDate; }
+			get { return startEventDate; }
 			set
 			{
-				eventDate = value;
+				startEventDate = value;
 				OnPropertyChanged();
 			}
 		}
 
-		private TimeSpan eventTime;
+		private TimeSpan startEventTime;
 		/// <summary>
 		/// Event start time
 		/// </summary>
-		public TimeSpan EventTime
+		public TimeSpan StartEventTime
 		{
-			get { return eventTime; }
+			get { return startEventTime; }
 			set
 			{
-				if (eventTime != value)
+				if (startEventTime != value)
 				{
-					eventTime = value;
+					startEventTime = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		private DateTimeOffset? endEventDate;
+		/// <summary>
+		/// Event end date
+		/// </summary>
+		public DateTimeOffset? EndEventDate
+		{
+			get { return endEventDate; }
+			set
+			{
+				endEventDate = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private TimeSpan endEventTime;
+		/// <summary>
+		/// Event end time
+		/// </summary>
+		public TimeSpan EndEventTime
+		{
+			get { return endEventTime; }
+			set
+			{
+				if (endEventTime != value)
+				{
+					endEventTime = value;
 					OnPropertyChanged();
 				}
 			}
@@ -81,7 +112,7 @@ namespace TimeTrace.Model
 		{
 			get
 			{
-				return EventDate.Value.Date + EventTime;
+				return StartEventDate.Value.Date + StartEventTime;
 			}
 		}
 
@@ -110,23 +141,6 @@ namespace TimeTrace.Model
 			{
 				userBind = value;
 				OnPropertyChanged();
-			}
-		}
-
-		private TimeSpan eventDuration;
-		/// <summary>
-		/// Event duration
-		/// </summary>
-		public TimeSpan EventDuration
-		{
-			get { return eventDuration; }
-			set
-			{
-				if (eventDuration != value)
-				{
-					eventDuration = value;
-					OnPropertyChanged();
-				}
 			}
 		}
 
@@ -203,12 +217,12 @@ namespace TimeTrace.Model
 		{
 			Name = eventName;
 			Description = description;
-			EventDate = date;
-			EventTime = time;
+			StartEventDate = date;
+			StartEventTime = time;
 			Place = place;
 			UserBind = new User();
 			userBind.LastName = user;
-			EventDuration = eventTimeSpan;
+			EndEventTime = eventTimeSpan;
 			EventInterval = eventInterval;
 			TypeOfEvent = eventType;
 		}

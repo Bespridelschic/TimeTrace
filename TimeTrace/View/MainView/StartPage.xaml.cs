@@ -68,7 +68,7 @@ namespace TimeTrace.View.MainView
 						break;
 
 					case "personalMaps":
-						ContentFrame.Navigate(typeof(PersonalMapsPage), ContentFrame);
+						ContentFrame.Navigate(typeof(CategorySelectPage), ContentFrame);
 						NavHeader.Header = "Интеллект-карты пользователя";
 						break;
 

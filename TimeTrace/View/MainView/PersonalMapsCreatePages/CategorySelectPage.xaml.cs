@@ -22,9 +22,9 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 	/// <summary>
 	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
 	/// </summary>
-	public sealed partial class PersonalMapsPage : Page
+	public sealed partial class CategorySelectPage : Page
 	{
-		public PersonalMapsPage()
+		public CategorySelectPage()
 		{
 			this.InitializeComponent();
 			

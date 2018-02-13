@@ -81,7 +81,7 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Return code from server: 0 - success, 1 - fail</returns>
-		public static async Task<int> PostRequestAsync(PostRequestDestination destination, User user)
+		public static async Task<int> PostRequestAsync(PostRequestDestination destination, User user = null)
 		{
 			string link = string.Empty;
 			string result = string.Empty;

@@ -15,20 +15,6 @@
 	</Page.Resources>
 
 	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="NavView_SelectionChanged" x:Name="NavHeader">
-		
-		<!--<NavigationView.HeaderTemplate>
-			<DataTemplate>
-				<Grid Margin="24, 24, 0, 0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-					<TextBlock Text="Time Tracking" FontSize="30" Foreground="White" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}"/>
-					<TextBlock Grid.Column="1" Text="Добро пожаловать, User!" VerticalAlignment="Center" Foreground="White"
-							   HorizontalAlignment="Right" Margin="0, 0, 15, 0" FontSize="18"/>
-				</Grid>
-			</DataTemplate>
-		</NavigationView.HeaderTemplate>-->
 
 		<NavigationView.HeaderTemplate>
 			<DataTemplate>
@@ -41,15 +27,17 @@
                            FontSize="28"
                            VerticalAlignment="Bottom"
                            Text="Welcome back!"
-							Margin="0, 0, 0, 5"/>
+							Margin="0, 0, 0, 10"/>
 					<CommandBar Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
                             DefaultLabelPosition="Right"
                             Background="{ThemeResource HostBackdropBrush}">
-						<AppBarButton Label="Refresh" Icon="Refresh"/>
-						<AppBarButton Label="Import" Icon="Import"/>
-						<AppBarButton Label="User" Icon="Pictures"/>
+						<AppBarButton Label="Сообщить об ошибке" Icon="Edit"/>
+						<AppBarButton Label="Сменить пользователя" Icon="OtherUser"/>
+						<AppBarButton Label="User">
+							<PersonPicture Initials="C#" Width="20"/>
+						</AppBarButton>
 					</CommandBar>
 				</Grid>
 			</DataTemplate>
