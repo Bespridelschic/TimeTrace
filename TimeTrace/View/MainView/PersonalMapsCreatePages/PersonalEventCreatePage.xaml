@@ -51,49 +51,81 @@
 				<StackPanel>
 
 					<TextBox PlaceholderText="Задайте имя события" Header="Имя события*" Margin="15, 5, 15, 5" MaxLength="100" IsSpellCheckEnabled="True"
-					 ToolTipService.ToolTip="Имя событие, отображаемое в календаре" Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}" Width="350"/>
+					 ToolTipService.ToolTip="Имя событие, отображаемое в календаре" Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}" Width="370"/>
 
 					<TextBox PlaceholderText="Задайте описание событию" Header="Описание события" MaxLength="400" Margin="15, 5, 15, 5" TextWrapping="Wrap"
 						 AcceptsReturn="True" ToolTipService.ToolTip="Описание события" Text="{x:Bind ViewModel.CurrentMapEvent.Description, Mode=TwoWay}"
 						 IsSpellCheckEnabled="True" MaxHeight="130" Height="130"/>
 
-					<CalendarDatePicker PlaceholderText="Установите дату начала события" Header="Дата начала события*" Margin="15, 5, 15, 5"
-							DateFormat="{}{day.integer} {month.full} {year.full}"
-							Date="{x:Bind ViewModel.CurrentMapEvent.StartEventDate, Mode=TwoWay}"
-							MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"/>
-
 				</StackPanel>
 
 				<StackPanel>
 
-					<TimePicker Margin="15, 5, 15, 5" Header="Время начала события" ToolTipService.ToolTip="Время, к которому будет привязано событие"
-							Time="{x:Bind ViewModel.CurrentMapEvent.StartEventTime, Mode=TwoWay}"/>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
 
-					<ToggleSwitch Name="IsAllDayLongToggleSwitch" Header="Весь день" OffContent="Да" OnContent="Нет" Margin="15, 5, 15, 5"/>
+						<CalendarDatePicker PlaceholderText="Дата начала" Header="Дата начала*" Margin="15, 5, 10, 5"
+											DateFormat="{}{day.integer} {month.full} {year.full}"
+											Width="180"
+											Date="{x:Bind ViewModel.CurrentMapEvent.StartDate, Mode=TwoWay}"
+											MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"/>
 
-					<CalendarDatePicker PlaceholderText="Установите дату окончания события" Header="Дата окончания события*" Margin="15, 5, 15, 5"
-							DateFormat="{}{day.integer} {month.full} {year.full}"
-							Date="{x:Bind ViewModel.CurrentMapEvent.EndEventDate, Mode=TwoWay}"
-							MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"
-							IsEnabled="{Binding ElementName=IsAllDayLongToggleSwitch, Path=IsOn}"/>
-					
-					<TimePicker Margin="15, 5, 15, 5" Header="Время окончания события" ToolTipService.ToolTip="Длительность создаваемого события"
-							Time="{x:Bind ViewModel.CurrentMapEvent.EndEventTime, Mode=TwoWay}" IsEnabled="{Binding ElementName=IsAllDayLongToggleSwitch, Path=IsOn}"/>
+						<TimePicker Grid.Column="1" Margin="0, 5, 15, 5" Header="Время начала"
+									ToolTipService.ToolTip="Время, к которому будет привязано событие"
+									HorizontalAlignment="Right" Width="180" MinWidth="180"
+									Time="{x:Bind ViewModel.CurrentMapEvent.StartTime, Mode=TwoWay}"/>
+
+					</Grid>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="205"/>
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<ToggleSwitch Grid.Column="1" FlowDirection="RightToLeft" IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}"
+									  Header="Весь день" OffContent="Да" OnContent="Нет" Margin="0, 5, 10, 5"/>
+
+						<ComboBox Header="Интервал повторения" Margin="15, 5, 10, 5" Grid.Column="0"
+								  HorizontalAlignment="Stretch"
+								  ToolTipService.ToolTip="Как часто будет происходить напоминание">
+							<ComboBoxItem Content="Без повторений"/>
+							<ComboBoxItem Content="Каждый день"/>
+							<ComboBoxItem Content="Через день"/>
+							<ComboBoxItem Content="Раз в неделю"/>
+							<ComboBoxItem Content="Раз в месяц"/>
+							<ComboBoxItem Content="Раз в год"/>
+							<ComboBoxItem Content="Свой вариант"/>
+						</ComboBox>
+
+					</Grid>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<CalendarDatePicker PlaceholderText="Дата окончания" Header="Дата окончания*" Margin="15, 5, 10, 5"
+											DateFormat="{}{day.integer} {month.full} {year.full}" Width="180"
+											Date="{x:Bind ViewModel.CurrentMapEvent.EndDate, Mode=TwoWay}"
+											MinDate="{x:Bind ViewModel.MinDate}" ToolTipService.ToolTip="Дата, к которой будет привязано событие"
+											IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"/>
+
+						<TimePicker Grid.Column="1" Margin="0, 5, 15, 5" Header="Время окончания"
+									ToolTipService.ToolTip="Длительность создаваемого события"
+									Time="{x:Bind ViewModel.CurrentMapEvent.EndTime, Mode=TwoWay}"
+									HorizontalAlignment="Right" Width="180" MinWidth="180"
+									IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"/>
+
+					</Grid>
 
 				</StackPanel>
 
 				<StackPanel>
-
-					<ComboBox Header="Интервал повторения" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Интервал повторения"
-						ToolTipService.ToolTip="Как часто будет происходить напоминание">
-						<ComboBoxItem Content="Без повторений"/>
-						<ComboBoxItem Content="Каждый день"/>
-						<ComboBoxItem Content="Через день"/>
-						<ComboBoxItem Content="Раз в неделю"/>
-						<ComboBoxItem Content="Раз в месяц"/>
-						<ComboBoxItem Content="Раз в год"/>
-						<ComboBoxItem Content="Свой вариант"/>
-					</ComboBox>
 
 					<ComboBox Grid.Column="1" Header="Объект привязки" Margin="15, 5, 15, 5" HorizontalAlignment="Stretch" PlaceholderText="Объект привязки"
 						ToolTipService.ToolTip="Объект привязки" SelectedIndex="{x:Bind ViewModel.BindingObjectIndex, Mode=TwoWay}">
@@ -103,12 +135,12 @@
 					</ComboBox>
 
 					<AutoSuggestBox PlaceholderText="Выберите место события" Header="Место события" Margin="15, 5, 15, 5"
-						ToolTipService.ToolTip="Место, привязываемое к событию" Text="{x:Bind ViewModel.CurrentMapEvent.Place, Mode=TwoWay}"
+						ToolTipService.ToolTip="Место, привязываемое к событию" Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
 						Visibility="{x:Bind ViewModel.IsSelectPlace, Mode=OneWay}" QueryIcon="Globe"/>
 
 					<AutoSuggestBox PlaceholderText="Человек связанный с событием" Header="Имя контакта" Margin="15, 5, 15, 5"
 						ToolTipService.ToolTip="Имя человека, к которому привязывается событие" QueryIcon="Contact"
-						Text="{x:Bind ViewModel.CurrentMapEvent.UserBind.LastName, Mode=TwoWay}"
+						Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
 						Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}"/>
 
 				</StackPanel>

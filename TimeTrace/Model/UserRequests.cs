@@ -74,6 +74,7 @@ namespace TimeTrace.Model
 			SignUp,
 			AccountActivation,
 			PasswordReset,
+			MapEventSending,
 		}
 
 		/// <summary>
@@ -120,6 +121,11 @@ namespace TimeTrace.Model
 					case PostRequestDestination.PasswordReset:
 						link = "https://mindstructuring.ru/customer/sendresetkey";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
+						break;
+
+					case PostRequestDestination.MapEventSending:
+						link = "";
+						result = await BasePostRequestAsync(link, JsonSerialize(user)); // MapEvent!!!
 						break;
 
 					default:
@@ -172,17 +178,17 @@ namespace TimeTrace.Model
 				throw new Exception("Server return null");
 			}
 
-			return JsonDeserialize((string)jsonString["customer"]);
+			return JsonUserDeserialize((string)jsonString["customer"]);
 		}
 
 		#region JSON
 
 		/// <summary>
-		/// Serialize user to json format
+		/// Serialize template object to json format
 		/// </summary>
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Json string</returns>
-		private static string JsonSerialize(User user)
+		public static string JsonSerialize<T>(T user)
 		{
 			if (user != null)
 			{
@@ -196,7 +202,7 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Json string</param>
 		/// <returns>New object of <see cref="User"/></returns>
-		private static ServerUser JsonDeserialize(string jsonString)
+		private static ServerUser JsonUserDeserialize(string jsonString)
 		{
 			if (!string.IsNullOrEmpty(jsonString))
 			{

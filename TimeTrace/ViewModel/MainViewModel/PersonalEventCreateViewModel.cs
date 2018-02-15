@@ -12,6 +12,8 @@ using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.UI.Popups;
 using System.Xml.Linq;
 using System.Diagnostics;
+using System.Runtime.Serialization.Json;
+using System.IO;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -37,7 +39,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Min date - current day
+		/// Min updateAt - current day
 		/// </summary>
 		public DateTime MinDate { get; set; }
 
@@ -57,7 +59,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 		private bool isSelectPlace;
 		/// <summary>
-		/// Enabled of place binding
+		/// Enabled of location binding
 		/// </summary>
 		public bool IsSelectPlace
 		{
@@ -85,23 +87,47 @@ namespace TimeTrace.ViewModel.MainViewModel
 						{
 							IsSelectPlace = true;
 							IsSelectMan = false;
+
 							break;
 						}
 					case 1:
 						{
 							IsSelectMan = true;
 							IsSelectPlace = false;
+
 							break;
 						}
 					case 2:
 						{
 							IsSelectPlace = true;
 							IsSelectMan = true;
+
 							break;
 						}
 					default:
 						throw new Exception("Не определенный индекс привязки события!");
 				}
+				OnPropertyChanged();
+			}
+		}
+
+		private bool isNotAllDay;
+		/// <summary>
+		/// Is all day selected
+		/// </summary>
+		public bool IsNotAllDay
+		{
+			get { return isNotAllDay; }
+			set
+			{
+				isNotAllDay = value;
+
+				if (!isNotAllDay)
+				{
+					CurrentMapEvent.EndDate = null;
+					CurrentMapEvent.EndTime = TimeSpan.Parse("00:00");
+				}
+
 				OnPropertyChanged();
 			}
 		}
@@ -117,6 +143,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			CurrentMapEvent = new MapEvent();
 			MinDate = DateTime.Today;
+			IsNotAllDay = false;
 
 			BindingObjectIndex = 0;
 		}
@@ -127,26 +154,28 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <returns>Result of event creation</returns>
 		public async Task EventCreate()
 		{
-			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.StartEventDate == null)
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.StartDate == null || (CurrentMapEvent.EndDate == null && IsNotAllDay))
 			{
 				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
 
 				return;
 			}
 
-			XDocument doc = new XDocument(
-				new XElement("Events",
-					new XElement("Sport", new XAttribute("Name", $"{CurrentMapEvent.Name}"),
-						new XElement("Description", $"{CurrentMapEvent.Description}"),
-						new XElement("Place", $"{CurrentMapEvent.Place}"),
-						new XElement("User", $"{CurrentMapEvent.UserBind.LastName}"),
-						new XElement("Date", $"{CurrentMapEvent.FullEventDate}"),
-						new XElement("Duration", $"{CurrentMapEvent.EndEventTime}"),
-						new XElement("Interval", $"{CurrentMapEvent.EventInterval}")
-					)
-				)
-			);
-			await (new MessageDialog($"{doc.ToString()}")).ShowAsync();
+			if (!IsNotAllDay)
+			{
+				CurrentMapEvent.EndTime = TimeSpan.Parse("23:59");
+				CurrentMapEvent.EndDate = CurrentMapEvent.StartDate;
+			}
+
+			if (CurrentMapEvent.Start > CurrentMapEvent.End)
+			{
+				await (new MessageDialog("Дата начала не может быть позже даты окончания события", "Ошибка создания нового события")).ShowAsync();
+
+				return;
+			}
+
+			CurrentMapEvent.UpdateAt = DateTime.Now;
+			CurrentMapEvent.IsDelete = false;
 		}
 
 		/// <summary>

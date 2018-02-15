@@ -126,7 +126,7 @@
 			</StackPanel>
 		</ScrollViewer>
 
-		<TextBlock Text="Применение некоторых настроек автоматически перезагрузит приложение!" Foreground="SteelBlue" FontSize="15"
+		<TextBlock Text="Применение некоторых настроек автоматически перезагрузит приложение!" Foreground="IndianRed" FontSize="15"
 				   Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="20, 10, 20, 10"/>
 
 	</Grid>

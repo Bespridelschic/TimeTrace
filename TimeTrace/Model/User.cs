@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace TimeTrace.Model
 {

@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
-using TimeTrace.View;
+using TimeTrace.Model.DBContext;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace TimeTrace
@@ -39,6 +29,11 @@ namespace TimeTrace
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
+
+			using (var db = new MapEventContext())
+			{
+				//db.Database.Migrate();
+			}
 		}
 
 		/// <summary>
@@ -82,8 +77,8 @@ namespace TimeTrace
 					// Если стек навигации не восстанавливается для перехода к первой странице,
 					// настройка новой страницы путем передачи необходимой информации в качестве параметра
 					// параметр
-					//rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
-					rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
+					rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
+					//rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
 				}
 				// Обеспечение активности текущего окна
 				Window.Current.Activate();

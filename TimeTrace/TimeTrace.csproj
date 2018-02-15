@@ -159,7 +159,6 @@
     <PRIResource Include="Strings\en-US\SignInUp.resw" />
     <Content Include="DataBase\MapEvents.db" />
     <None Include="ProjectDiagrams\ClassDiagram1.cd" />
-    <None Include="TimeTrace_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\user-192.png">
@@ -245,7 +244,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.0.6</Version>
+      <Version>6.0.7</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>

@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using TimeTrace.Model;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
-using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
-using static TimeTrace.Model.GlobalProperties;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -100,7 +93,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				CurrentUser = await UserRequests.PostRequestAsync();
 
-				Experience = $"{(int)DateTime.Now.Subtract(DateTime.Parse(CurrentUser.Birthday)).TotalDays} дней";
+				Experience = DateTime.Now.Subtract(CurrentUser.Created_at).Days.ToString() + " дней";
 			}
 			catch (Exception ex)
 			{

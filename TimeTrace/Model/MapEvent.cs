@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace TimeTrace.Model
 {
@@ -15,10 +15,63 @@ namespace TimeTrace.Model
 	{
 		#region Properties
 
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
+		[JsonProperty(PropertyName = "id")]
+		public string Id { get; private set; }
+
+		private string areaId;
+		/// <summary>
+		/// Id of binded area
+		/// </summary>
+		[Required]
+		[JsonProperty(PropertyName = "area_id")]
+		public string AreaId
+		{
+			get { return areaId; }
+			set
+			{
+				areaId = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private DateTime updateAt;
+		/// <summary>
+		/// Last updateAt of update event
+		/// </summary>
+		[JsonProperty(PropertyName = "update_at")]
+		public DateTime UpdateAt
+		{
+			get { return updateAt; }
+			set
+			{
+				updateAt = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private bool isDelete;
+		/// <summary>
+		/// If deleted - remove local event
+		/// </summary>
+		[JsonProperty(PropertyName = "is_delete")]
+		public bool IsDelete
+		{
+			get { return isDelete; }
+			set
+			{
+				isDelete = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private string name;
 		/// <summary>
 		/// Event name
 		/// </summary>
+		[Required]
+		[JsonProperty(PropertyName = "summary")]
 		public string Name
 		{
 			get { return name; }
@@ -33,6 +86,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Event description
 		/// </summary>
+		[JsonProperty(PropertyName = "description")]
 		public string Description
 		{
 			get { return description; }
@@ -43,98 +97,123 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private DateTimeOffset? startEventDate;
+		private DateTimeOffset? startDate;
 		/// <summary>
-		/// Event start date
+		/// Event start updateAt
 		/// </summary>
-		public DateTimeOffset? StartEventDate
+		[JsonIgnore]
+		public DateTimeOffset? StartDate
 		{
-			get { return startEventDate; }
+			get { return startDate; }
 			set
 			{
-				startEventDate = value;
+				startDate = value;
 				OnPropertyChanged();
 			}
 		}
 
-		private TimeSpan startEventTime;
+		private TimeSpan startTime;
 		/// <summary>
 		/// Event start time
 		/// </summary>
-		public TimeSpan StartEventTime
+		[JsonIgnore]
+		public TimeSpan StartTime
 		{
-			get { return startEventTime; }
+			get { return startTime; }
 			set
 			{
-				if (startEventTime != value)
+				if (startTime != value)
 				{
-					startEventTime = value;
+					startTime = value;
 					OnPropertyChanged();
 				}
 			}
 		}
 
-		private DateTimeOffset? endEventDate;
+		private DateTimeOffset? endDate;
 		/// <summary>
-		/// Event end date
+		/// Event end updateAt
 		/// </summary>
-		public DateTimeOffset? EndEventDate
+		[JsonIgnore]
+		public DateTimeOffset? EndDate
 		{
-			get { return endEventDate; }
+			get { return endDate; }
 			set
 			{
-				endEventDate = value;
+				endDate = value;
 				OnPropertyChanged();
 			}
 		}
 
-		private TimeSpan endEventTime;
+		private TimeSpan endTime;
 		/// <summary>
 		/// Event end time
 		/// </summary>
-		public TimeSpan EndEventTime
+		[JsonIgnore]
+		public TimeSpan EndTime
 		{
-			get { return endEventTime; }
+			get { return endTime; }
 			set
 			{
-				if (endEventTime != value)
+				if (endTime != value)
 				{
-					endEventTime = value;
+					endTime = value;
 					OnPropertyChanged();
 				}
 			}
 		}
 
+		private DateTime start;
 		/// <summary>
-		/// Full event date and time
+		/// Full start event updateAt and time
 		/// </summary>
-		public DateTime FullEventDate
+		[Required]
+		[JsonProperty(PropertyName = "start")]
+		public DateTime Start
 		{
+			set { start = value; }
 			get
 			{
-				return StartEventDate.Value.Date + StartEventTime;
+				return StartDate.Value.Date + StartTime;
 			}
 		}
 
-		private string place;
+		private DateTime end;
 		/// <summary>
-		/// Event place
+		/// Full end event updateAt and time
 		/// </summary>
-		public string Place
+		[Required]
+		[JsonProperty(PropertyName = "end")]
+		public DateTime End
 		{
-			get { return place; }
+			set { end = value; }
+			get
+			{
+				return EndDate.Value.Date + EndTime;
+			}
+		}
+
+		private string location;
+		/// <summary>
+		/// Event location
+		/// </summary>
+		[JsonProperty(PropertyName = "location")]
+		public string Location
+		{
+			get { return location; }
 			set
 			{
-				place = value;
+				location = value;
 				OnPropertyChanged();
 			}
 		}
 
-		private User userBind;
+		private string userBind;
 		/// <summary>
 		/// The person associated with the event
 		/// </summary>
-		public User UserBind
+		[JsonProperty(PropertyName = "person")]
+		public string UserBind
 		{
 			get { return userBind; }
 			set
@@ -144,11 +223,12 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private TimeSpan eventInterval;
+		private string eventInterval;
 		/// <summary>
 		/// Repeat the event
 		/// </summary>
-		public TimeSpan EventInterval
+		[JsonProperty(PropertyName = "recurrence")]
+		public string EventInterval
 		{
 			get { return eventInterval; }
 			set
@@ -162,6 +242,7 @@ namespace TimeTrace.Model
 		}
 
 		private EventType typeOfEvent;
+		[JsonIgnore]
 		/// <summary>
 		/// Event type
 		/// </summary>
@@ -200,29 +281,27 @@ namespace TimeTrace.Model
 		public MapEvent()
 		{
 			TypeOfEvent = EventType.NotDefined;
-			UserBind = new User();
+			Id = Guid.NewGuid().ToString();
 		}
 
 		/// <summary>
 		/// Event set
 		/// </summary>
 		/// <param name="eventName">Event name</param>
-		/// <param name="date">Event start date</param>
+		/// <param name="date">Event start updateAt</param>
 		/// <param name="time">Event start time</param>
-		/// <param name="place">Event place</param>
+		/// <param name="place">Event location</param>
 		/// <param name="eventTimeSpan">Event duration</param>
 		/// <param name="eventInterval">Repeat the event</param>
 		/// <param name="eventType">Event type</param>
-		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place, string user, TimeSpan eventTimeSpan, TimeSpan eventInterval, EventType eventType)
+		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place, string user, TimeSpan eventTimeSpan, string eventInterval, EventType eventType)
 		{
 			Name = eventName;
 			Description = description;
-			StartEventDate = date;
-			StartEventTime = time;
-			Place = place;
-			UserBind = new User();
-			userBind.LastName = user;
-			EndEventTime = eventTimeSpan;
+			StartDate = date;
+			StartTime = time;
+			Location = place;
+			EndTime = eventTimeSpan;
 			EventInterval = eventInterval;
 			TypeOfEvent = eventType;
 		}

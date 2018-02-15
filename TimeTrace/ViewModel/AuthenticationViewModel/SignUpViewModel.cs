@@ -73,13 +73,13 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		}
 
 		/// <summary>
-		/// Maximum date - current date
+		/// Maximum updateAt - current updateAt
 		/// </summary>
 		public DateTime MaxDate { get; set; }
 
 		private DateTimeOffset? selectedDate;
 		/// <summary>
-		/// Selected calendar date
+		/// Selected calendar updateAt
 		/// </summary>
 		public DateTimeOffset? SelectedDate
 		{

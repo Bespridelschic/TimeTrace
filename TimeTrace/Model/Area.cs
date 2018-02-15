@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,6 +19,9 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Idenity of area
 		/// </summary>
+		[JsonProperty(PropertyName = "area_id")]
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public string Id
 		{
 			get { return id; }
@@ -30,6 +36,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Area name
 		/// </summary>
+		[JsonProperty(PropertyName = "summary")]
 		public string Name
 		{
 			get { return name; }
@@ -44,6 +51,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Area description
 		/// </summary>
+		[JsonProperty(PropertyName = "description")]
 		public string Description
 		{
 			get { return description; }
@@ -58,6 +66,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Identity of parent area
 		/// </summary>
+		[JsonProperty(PropertyName = "parent_id")]
 		public string ParentId
 		{
 			get { return parentId; }
@@ -72,6 +81,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Identity of child area
 		/// </summary>
+		[JsonProperty(PropertyName = "child_id")]
 		public string ChildId
 		{
 			get { return childId; }
@@ -82,16 +92,17 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private DateTime date;
+		private DateTime updateAt;
 		/// <summary>
-		/// Area creation date
+		/// Area creation or update date
 		/// </summary>
-		public DateTime Date
+		[JsonProperty(PropertyName = "update_at")]
+		public DateTime UpdateAt
 		{
-			get { return date; }
+			get { return updateAt; }
 			set
 			{
-				date = value;
+				updateAt = value;
 				OnPropertyChanged();
 			}
 		}
@@ -100,6 +111,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Is area favorite
 		/// </summary>
+		[JsonProperty(PropertyName = "favourite")]
 		public bool Favorite
 
 		{
@@ -111,11 +123,44 @@ namespace TimeTrace.Model
 			}
 		}
 
+		private bool isDelete;
+		/// <summary>
+		/// If deleted - remove local area
+		/// </summary>
+		[JsonProperty(PropertyName = "is_delete")]
+		public bool IsDelete
+		{
+			get { return isDelete; }
+			set
+			{
+				isDelete = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string color;
+		/// <summary>
+		/// Color of area
+		/// </summary>
+		[JsonProperty(PropertyName = "color")]
+		public string Color
+		{
+			get { return color; }
+			set
+			{
+				color = value;
+				OnPropertyChanged();
+			}
+		}
+
+
 		#endregion
 
 		public Area()
 		{
 			Id = Guid.NewGuid().ToString();
+			IsDelete = false;
+			UpdateAt = DateTime.Now;
 		}
 
 		#region MVVM

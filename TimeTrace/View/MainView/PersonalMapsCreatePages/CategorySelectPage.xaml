@@ -32,7 +32,7 @@
 			<RowDefinition Height="0.7*"/>
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Выберите одно из жизненных направлений" Foreground="SteelBlue" FontSize="35" TextWrapping="WrapWholeWords"
+		<TextBlock Text="Выберите нужную категорию" Foreground="SteelBlue" FontSize="35" TextWrapping="WrapWholeWords"
 				   HorizontalAlignment="Center" Margin="20, 0, 20, 0"/>
 		<Button Grid.Row="1" VerticalAlignment="Top" Content="Спорт" Background="PaleVioletRed" Foreground="White"
 				Click="{x:Bind ViewModel.CategorySelect}"/>
@@ -73,6 +73,12 @@
 		</Grid>
 
 		<Button Grid.Row="3" VerticalAlignment="Bottom" Content="Недоступно" Foreground="White" IsEnabled="False"/>
+
+		<CommandBar Grid.Row="4" VerticalAlignment="Bottom">
+			<AppBarButton Icon="Add" Label="Добавить"/>
+			<AppBarButton Icon="Remove" Label="Удалить"/>
+			<AppBarButton Icon="Edit" Label="Изменить"/>
+		</CommandBar>
 		
 	</Grid>
 </Page>
