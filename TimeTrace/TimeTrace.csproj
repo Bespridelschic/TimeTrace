@@ -102,10 +102,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Area.cs" />
-    <Compile Include="Model\DBContext\MapEventContext.cs" />
+    <Compile Include="Model\Events\Area.cs" />
+    <Compile Include="Model\Events\DBContext\MapEventContext.cs" />
     <Compile Include="Model\GlobalProperties.cs" />
-    <Compile Include="Model\MapEvent.cs" />
+    <Compile Include="Model\Events\MapEvent.cs" />
     <Compile Include="Model\ServerUser.cs" />
     <Compile Include="Model\UserFileWorker.cs" />
     <Compile Include="Model\UserRequests.cs" />
@@ -157,7 +157,6 @@
     </AppxManifest>
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />
-    <Content Include="DataBase\MapEvents.db" />
     <None Include="ProjectDiagrams\ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>

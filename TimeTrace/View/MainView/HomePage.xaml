@@ -1,10 +1,10 @@
 ﻿<Page
-    x:Class="TimeTrace.View.MainView.HomePage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="TimeTrace.View.MainView.HomePage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
 
 	<Page.Resources>
 		<ResourceDictionary>
@@ -12,13 +12,13 @@
 				<Setter Property="Transitions">
 					<Setter.Value>
 						<TransitionCollection>
-							<EntranceThemeTransition/>
+							<EntranceThemeTransition />
 						</TransitionCollection>
 					</Setter.Value>
 				</Setter>
 			</Style>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml"/>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Page.Resources>
@@ -26,99 +26,245 @@
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition />
-			<RowDefinition Height="10"/>
+			<RowDefinition Height="10" />
 		</Grid.RowDefinitions>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto">
 			<StackPanel>
-				<Button HorizontalAlignment="Center" Margin="0, 20, 0, 5" ToolTipService.ToolTip="Изменить аватар" Click="{x:Bind ViewModel.AvatarChange}">
+				<Button
+					Margin="0,20,0,5"
+					HorizontalAlignment="Center"
+					Click="{x:Bind ViewModel.AvatarChange}"
+					ToolTipService.ToolTip="Изменить аватар">
 					<Button.Background>
-						<SolidColorBrush Opacity="0"/>
+						<SolidColorBrush Opacity="0" />
 					</Button.Background>
-					<PersonPicture Width="200" Height="200" PreferSmallImage="True"/>
+					<PersonPicture
+						Width="200"
+						Height="200"
+						PreferSmallImage="True" />
 				</Button>
 
-				<StackPanel Orientation="Horizontal" Margin="0, 0, 0, 20" HorizontalAlignment="Center">
-					<TextBlock Text="Добро пожаловать, " FontSize="25" />
-					<TextBlock Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" FontSize="25" />
-					<TextBlock Text="!" FontSize="25"/>
+				<StackPanel
+					Margin="0,0,0,20"
+					HorizontalAlignment="Center"
+					Orientation="Horizontal">
+					<TextBlock FontSize="25" Text="Добро пожаловать, " />
+					<TextBlock FontSize="25" Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" />
+					<TextBlock FontSize="25" Text="!" />
 				</StackPanel>
 
 
-				<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1" Margin="20, 0, 20, 0">
-					<TextBlock Text="Полезное для вас" FontSize="20"/>
+				<StackPanel
+					Margin="20,0,20,0"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					BorderBrush="SteelBlue"
+					BorderThickness="1">
+					<TextBlock FontSize="20" Text="Полезное для вас" />
 
 					<VariableSizedWrapGrid Orientation="Horizontal">
-						<Button Foreground="White" Background="SteelBlue" Content="Расписание" Width="120" Margin="20" Click="{x:Bind ViewModel.SchedulePageChoice}"/>
-						<Button Foreground="White" Background="SteelBlue" Content="К картам" Width="120" Margin="20" Click="{x:Bind ViewModel.PersonalMapsPageChoice}"/>
-						<Button Foreground="White" Background="SteelBlue" Content="К настройкам" Width="120" Margin="20" Click="{x:Bind ViewModel.SettingsPageChoice}"/>
-						<Button Foreground="White" Background="SteelBlue" Content="Помощь" Width="120" Margin="20"/>
+						<Button
+							Width="120"
+							Margin="20"
+							Background="SteelBlue"
+							Click="{x:Bind ViewModel.SchedulePageChoice}"
+							Content="Расписание"
+							Foreground="White" />
+						<Button
+							Width="120"
+							Margin="20"
+							Background="SteelBlue"
+							Click="{x:Bind ViewModel.PersonalMapsPageChoice}"
+							Content="К картам"
+							Foreground="White" />
+						<Button
+							Width="120"
+							Margin="20"
+							Background="SteelBlue"
+							Click="{x:Bind ViewModel.SettingsPageChoice}"
+							Content="К настройкам"
+							Foreground="White" />
+						<Button
+							Width="120"
+							Margin="20"
+							Background="SteelBlue"
+							Content="Помощь"
+							Foreground="White" />
 					</VariableSizedWrapGrid>
 
-					<Button Content="Сообщить об ошибке или высказать предложение" Grid.Row="1" HorizontalAlignment="Center"
-						Margin="0, 0, 0, 20" Foreground="White" Background="CadetBlue"/>
+					<Button
+						Grid.Row="1"
+						Margin="0,0,0,20"
+						HorizontalAlignment="Center"
+						Background="CadetBlue"
+						Content="Сообщить об ошибке или высказать предложение"
+						Foreground="White" />
 
 				</StackPanel>
 
-				<VariableSizedWrapGrid Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+				<VariableSizedWrapGrid
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Orientation="Horizontal">
 
-					<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
-						<TextBlock Text="Персональные данные" FontSize="20" Margin="20, 10"/>
+					<StackPanel
+						Margin="20"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						BorderBrush="SteelBlue"
+						BorderThickness="1">
+						<TextBlock
+							Margin="20,10"
+							FontSize="20"
+							Text="Персональные данные" />
 
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="150"/>
-								<ColumnDefinition Width="150"/>
+								<ColumnDefinition Width="150" />
+								<ColumnDefinition Width="150" />
 							</Grid.ColumnDefinitions>
 							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
 
-							<TextBlock Text="Фамилия: " FontSize="15" Margin="5, 15" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=OneWay, TargetNullValue=Unknown}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1"/>
+							<TextBlock
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Фамилия: " />
+							<TextBlock
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=OneWay, TargetNullValue=Unknown}" />
 
-							<TextBlock Text="Имя: " FontSize="15" Grid.Row="1" Margin="5, 15" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="1"/>
+							<TextBlock
+								Grid.Row="1"
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Имя: " />
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" />
 
-							<TextBlock Text="Отчество: " FontSize="15" Grid.Row="2" Margin="5, 15" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="2"/>
+							<TextBlock
+								Grid.Row="2"
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Отчество: " />
+							<TextBlock
+								Grid.Row="2"
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=OneWay}" />
 
-							<TextBlock Text="Дата рождения: " FontSize="15" Grid.Row="3" Margin="5, 15" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.CurrentUser.Birthday, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="3"/>
+							<TextBlock
+								Grid.Row="3"
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Дата рождения: " />
+							<TextBlock
+								Grid.Row="3"
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.CurrentUser.Birthday, Mode=OneWay}" />
 
 						</Grid>
 
 					</StackPanel>
 
-					<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="SteelBlue" BorderThickness="1">
-						<TextBlock Text="Личная статистика" FontSize="20" Margin="20, 10"/>
+					<StackPanel
+						Margin="20"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						BorderBrush="SteelBlue"
+						BorderThickness="1">
+						<TextBlock
+							Margin="20,10"
+							FontSize="20"
+							Text="Личная статистика" />
 
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="150"/>
-								<ColumnDefinition Width="150"/>
+								<ColumnDefinition Width="150" />
+								<ColumnDefinition Width="150" />
 							</Grid.ColumnDefinitions>
 							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
 
-							<TextBlock Text="Создано карт: " FontSize="15" Margin="5, 15" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1"/>
+							<TextBlock
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Создано карт: " />
+							<TextBlock
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
 
-							<TextBlock Text="Контактов: " FontSize="15" Margin="5, 15" Grid.Row="1" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.NumContacts, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="1"/>
+							<TextBlock
+								Grid.Row="1"
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Контактов: " />
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.NumContacts, Mode=OneWay}" />
 
-							<TextBlock Text="Зарегистрирован:" FontSize="15" Margin="5, 15" Grid.Row="2" HorizontalAlignment="Right"/>
-							<TextBlock Text="{x:Bind ViewModel.Experience, Mode=OneWay}" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="2"/>
+							<TextBlock
+								Grid.Row="2"
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Зарегистрирован:" />
+							<TextBlock
+								Grid.Row="2"
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="{x:Bind ViewModel.Experience, Mode=OneWay}" />
 
-							<TextBlock Text="Статус:" FontSize="15" Margin="5, 15" Grid.Row="3" HorizontalAlignment="Right"/>
-							<TextBlock Text="1" HorizontalAlignment="Left" Margin="5, 15" FontSize="15" Grid.Column="1" Grid.Row="3"/>
+							<TextBlock
+								Grid.Row="3"
+								Margin="5,15"
+								HorizontalAlignment="Right"
+								FontSize="15"
+								Text="Статус:" />
+							<TextBlock
+								Grid.Row="3"
+								Grid.Column="1"
+								Margin="5,15"
+								HorizontalAlignment="Left"
+								FontSize="15"
+								Text="1" />
 
 						</Grid>
 

@@ -28,7 +28,7 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		{
 			this.InitializeComponent();
 			
-			ViewModel = new PersonalEventCreateViewModel();
+			ViewModel = new PersonalEventCreateViewModel(null);
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)

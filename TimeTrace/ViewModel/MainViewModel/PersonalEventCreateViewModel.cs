@@ -139,9 +139,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public PersonalEventCreateViewModel()
+		public PersonalEventCreateViewModel(string areaId)
 		{
-			CurrentMapEvent = new MapEvent();
+			CurrentMapEvent = new MapEvent(areaId);
 			MinDate = DateTime.Today;
 			IsNotAllDay = false;
 

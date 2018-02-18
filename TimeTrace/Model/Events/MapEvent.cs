@@ -278,10 +278,12 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public MapEvent()
+		public MapEvent(string areaId)
 		{
 			TypeOfEvent = EventType.NotDefined;
 			Id = Guid.NewGuid().ToString();
+
+			AreaId = areaId;
 		}
 
 		/// <summary>
@@ -294,7 +296,8 @@ namespace TimeTrace.Model
 		/// <param name="eventTimeSpan">Event duration</param>
 		/// <param name="eventInterval">Repeat the event</param>
 		/// <param name="eventType">Event type</param>
-		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place, string user, TimeSpan eventTimeSpan, string eventInterval, EventType eventType)
+		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place,
+			string user, TimeSpan eventTimeSpan, string eventInterval, EventType eventType)
 		{
 			Name = eventName;
 			Description = description;

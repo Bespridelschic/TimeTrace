@@ -153,14 +153,15 @@ namespace TimeTrace.Model
 			}
 		}
 
-
 		#endregion
 
-		public Area()
+		public Area(string parentId)
 		{
 			Id = Guid.NewGuid().ToString();
 			IsDelete = false;
 			UpdateAt = DateTime.Now;
+
+			ParentId = parentId;
 		}
 
 		#region MVVM

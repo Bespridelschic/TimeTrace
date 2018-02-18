@@ -32,7 +32,7 @@ namespace TimeTrace
 
 			using (var db = new MapEventContext())
 			{
-				//db.Database.Migrate();
+				db.Database.Migrate();
 			}
 		}
 
@@ -41,15 +41,8 @@ namespace TimeTrace
 		/// например, если приложение запускается для открытия конкретного файла.
 		/// </summary>
 		/// <param name="e">Сведения о запросе и обработке запуска.</param>
-		protected override async void OnLaunched(LaunchActivatedEventArgs e)
+		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-			// Load data base
-			/*if (await ApplicationData.Current.LocalFolder.TryGetItemAsync(@"DataBase\MapEvents.db") == null)
-			{
-				StorageFile databaseFile = await Package.Current.InstalledLocation.GetFileAsync(@"DataBase\MapEvents.db");
-				await databaseFile.CopyAsync(ApplicationData.Current.LocalFolder);
-			}*/
-
 			Frame rootFrame = Window.Current.Content as Frame;
 
 			// Не повторяйте инициализацию приложения, если в окне уже имеется содержимое,

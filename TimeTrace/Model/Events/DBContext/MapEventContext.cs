@@ -13,15 +13,16 @@ namespace TimeTrace.Model.DBContext
 	class MapEventContext : DbContext
 	{
 		public DbSet<MapEvent> MapEvents { get; set; }
+		public DbSet<Area> Areas { get; set; }
 
 		public MapEventContext()
 		{
-			//Database.EnsureCreated();
+			Database.EnsureCreated();
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite("Filename=MapEventDB.db");
+			optionsBuilder.UseSqlite("Filename=MapEventsDB.db");
 		}
 	}
 }

@@ -32,8 +32,11 @@ namespace TimeTrace.View.MainView
 
 			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(650, 800));
 			ContentFrame.Navigate(typeof(HomePage), ContentFrame);
-			
+
+			ViewModel = new ViewModel.MainViewModel.SettingsViewModel();
 		}
+
+		ViewModel.MainViewModel.SettingsViewModel ViewModel;
 
 		/// <summary>
 		/// Навигация по меню приложения

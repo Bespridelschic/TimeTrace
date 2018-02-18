@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -92,9 +94,29 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 		public async void Foo()
 		{
-			if (Windows.UI.Xaml.Window.Current.Content is Windows.UI.Xaml.Controls.Frame frame)
+			if (Window.Current.Content is Frame frame)
 			{
 				await (new Windows.UI.Popups.MessageDialog($"{frame.Language}")).ShowAsync();
+			}
+		}
+
+		public async void SignOut()
+		{
+			ContentDialog dialog = new ContentDialog
+			{
+				Title = "Подтверждение",
+				Content = "Вы уверены что хотите выйти?",
+				PrimaryButtonText = "Выйти",
+				CloseButtonText = "Отмена",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+			{
+				if (Window.Current.Content is Frame frame)
+				{
+					frame.Navigate(typeof(View.AuthenticationView.SignInPage));
+				}
 			}
 		}
 

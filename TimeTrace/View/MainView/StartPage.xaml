@@ -43,6 +43,13 @@
 			</DataTemplate>
 		</NavigationView.HeaderTemplate>
 
+		<NavigationView.Header>
+			<CommandBar>
+				<AppBarButton Content="123"/>
+				<AppBarButton Content="456"/>
+			</CommandBar>
+		</NavigationView.Header>
+		
 		<NavigationView.AutoSuggestBox>
 			<AutoSuggestBox QueryIcon="Find" PlaceholderText="Поиск по картам"/>
 		</NavigationView.AutoSuggestBox>
