@@ -138,12 +138,12 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private string color;
+		private int color;
 		/// <summary>
 		/// Color of area
 		/// </summary>
 		[JsonProperty(PropertyName = "color")]
-		public string Color
+		public int Color
 		{
 			get { return color; }
 			set
@@ -153,15 +153,30 @@ namespace TimeTrace.Model
 			}
 		}
 
+		private bool isProject;
+		/// <summary>
+		/// Is category - project
+		/// </summary>
+		[JsonProperty(PropertyName = "color")]
+		public bool IsProject
+		{
+			get { return isProject; }
+			set { isProject = value; }
+		}
+
 		#endregion
 
-		public Area(string parentId)
+		public Area(string parentId) : base()
+		{
+			ParentId = parentId;
+		}
+
+		public Area()
 		{
 			Id = Guid.NewGuid().ToString();
 			IsDelete = false;
 			UpdateAt = DateTime.Now;
-
-			ParentId = parentId;
+			IsProject = false;
 		}
 
 		#region MVVM

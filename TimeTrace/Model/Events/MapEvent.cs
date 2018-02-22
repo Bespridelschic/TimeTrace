@@ -241,72 +241,49 @@ namespace TimeTrace.Model
 			}
 		}
 
-		private EventType typeOfEvent;
-		[JsonIgnore]
-		/// <summary>
-		/// Event type
-		/// </summary>
-		public EventType TypeOfEvent
-		{
-			get { return typeOfEvent; }
-			set
-			{
-				typeOfEvent = value;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
-
-		#region Enums
-
-		/// <summary>
-		/// Type of event
-		/// </summary>
-		public enum EventType
-		{
-			NotDefined,
-			Health,
-			Sport,
-			Study
-		}
-
 		#endregion
 
 		#region Constructors
 
 		/// <summary>
+		/// Standart constructor with Area ID parameter
+		/// </summary>
+		public MapEvent(string areaId) : this()
+		{
+			AreaId = areaId;
+		}
+
+		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public MapEvent(string areaId)
+		public MapEvent()
 		{
-			TypeOfEvent = EventType.NotDefined;
 			Id = Guid.NewGuid().ToString();
-
-			AreaId = areaId;
 		}
 
 		/// <summary>
 		/// Event set
 		/// </summary>
 		/// <param name="eventName">Event name</param>
-		/// <param name="date">Event start updateAt</param>
-		/// <param name="time">Event start time</param>
+		/// <param name="startDate">Event start updateAt</param>
+		/// <param name="startTime">Event start time</param>
 		/// <param name="place">Event location</param>
 		/// <param name="eventTimeSpan">Event duration</param>
 		/// <param name="eventInterval">Repeat the event</param>
 		/// <param name="eventType">Event type</param>
-		public MapEvent(string eventName, string description, DateTimeOffset? date, TimeSpan time, string place,
-			string user, TimeSpan eventTimeSpan, string eventInterval, EventType eventType)
+		public MapEvent(string eventName, string description, DateTimeOffset? startDate,
+			TimeSpan startTime, DateTimeOffset? endDate, TimeSpan endTime, string place,
+			string user, string eventInterval, string areaId)
 		{
 			Name = eventName;
 			Description = description;
-			StartDate = date;
-			StartTime = time;
+			StartDate = startDate;
+			StartTime = startTime;
+			EndDate = endDate;
+			EndTime = endTime;
 			Location = place;
-			EndTime = eventTimeSpan;
 			EventInterval = eventInterval;
-			TypeOfEvent = eventType;
+			AreaId = areaId;
 		}
 
 		#endregion

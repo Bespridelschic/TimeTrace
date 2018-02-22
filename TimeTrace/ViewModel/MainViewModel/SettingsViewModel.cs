@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
-	internal class SettingsViewModel : BaseViewModel
+	public class SettingsViewModel : BaseViewModel
 	{
 		#region Properties
 

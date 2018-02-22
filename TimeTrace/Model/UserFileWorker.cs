@@ -26,9 +26,7 @@ namespace TimeTrace.Model
 			StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 			StorageFile storageFile = await storageFolder.CreateFileAsync("_psf.bin", CreationCollisionOption.ReplaceExisting);
 
-			// Catalog C:\Users\Bespridelschic\AppData\Local\Packages\c72abfd6-f805-4cdb-8b03-89abadbe4aec_4a9rgd3a66dme\LocalState
-
-			string[] stringToFile = { user.Email, user.Password };
+			string[] stringToFile = { user.Email };
 
 			await FileIO.WriteLinesAsync(storageFile, stringToFile);
 		}

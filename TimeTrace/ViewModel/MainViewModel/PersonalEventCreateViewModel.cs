@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using TimeTrace.Model.DBContext;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -142,6 +143,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public PersonalEventCreateViewModel(string areaId)
 		{
 			CurrentMapEvent = new MapEvent(areaId);
+			CurrentMapEvent.StartDate = DateTime.Now;
 			MinDate = DateTime.Today;
 			IsNotAllDay = false;
 
@@ -176,6 +178,22 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			CurrentMapEvent.UpdateAt = DateTime.Now;
 			CurrentMapEvent.IsDelete = false;
+
+			if (CurrentMapEvent.Location == null)
+			{
+				CurrentMapEvent.Location = string.Empty;
+			}
+
+			if (CurrentMapEvent.UserBind == null)
+			{
+				CurrentMapEvent.UserBind = string.Empty;
+			}
+
+			using (MapEventContext db = new MapEventContext())
+			{
+				db.MapEvents.Add(CurrentMapEvent);
+				db.SaveChanges();
+			}
 		}
 
 		/// <summary>

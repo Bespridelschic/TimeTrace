@@ -24,8 +24,6 @@ namespace TimeTrace.View.MainView
 	/// </summary>
 	public sealed partial class StartPage : Page
 	{
-		public string TitleText { get; private set; } = "Стартовая страница";
-
 		public StartPage()
 		{
 			this.InitializeComponent();
@@ -65,19 +63,9 @@ namespace TimeTrace.View.MainView
 						NavHeader.Header = "Расписание";
 						break;
 
-					case "contacts":
-						ContentFrame.Navigate(typeof(ContactsPage));
-						NavHeader.Header = "Контакты";
-						break;
-
 					case "personalMaps":
 						ContentFrame.Navigate(typeof(CategorySelectPage), ContentFrame);
 						NavHeader.Header = "Интеллект-карты пользователя";
-						break;
-
-					case "groupMaps":
-						ContentFrame.Navigate(typeof(GroupMapsPage));
-						NavHeader.Header = "Интеллект-карты с участием пользователя";
 						break;
 
 					default:

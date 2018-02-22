@@ -1,41 +1,52 @@
 ﻿<Page
-    x:Class="TimeTrace.View.MainView.PersonalMapsCreatePages.CategorySelectPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	x:Class="TimeTrace.View.MainView.PersonalMapsCreatePages.CategorySelectPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:media="using:Windows.UI.Xaml.Media"
 	mc:Ignorable="d">
 
 	<Page.Resources>
 		<Style TargetType="Button">
-			<Setter Property="Height" Value="35"/>
-			<Setter Property="Width" Value="170"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="Height" Value="35" />
+			<Setter Property="Width" Value="170" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
 		</Style>
-		
-		<!--Акриловая кисть-->
-		<media:AcrylicBrush x:Key="HostBackdropBrush"
-						BackgroundSource="HostBackdrop"
-						TintColor="LightBlue"
-						TintOpacity="0.6"
-						FallbackColor="LightSkyBlue"/>
+
+		<!--  Акриловая кисть  -->
+		<media:AcrylicBrush
+			x:Key="HostBackdropBrush"
+			BackgroundSource="HostBackdrop"
+			FallbackColor="LightSkyBlue"
+			TintColor="LightBlue"
+			TintOpacity="0.6" />
 	</Page.Resources>
-	
+
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="0.5*"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="0.5*"/>
-			<RowDefinition Height="0.7*"/>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="0.5*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="0.5*" />
+			<RowDefinition Height="0.7*" />
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Выберите нужную категорию" Foreground="SteelBlue" FontSize="35" TextWrapping="WrapWholeWords"
-				   HorizontalAlignment="Center" Margin="20, 0, 20, 0"/>
-		<Button Grid.Row="1" VerticalAlignment="Top" Content="Спорт" Background="PaleVioletRed" Foreground="White"
-				Click="{x:Bind ViewModel.CategorySelect}"/>
+		<TextBlock
+			Margin="20,0,20,0"
+			HorizontalAlignment="Center"
+			FontSize="35"
+			Foreground="SteelBlue"
+			Text="Выберите нужную категорию"
+			TextWrapping="WrapWholeWords" />
+		<Button
+			Grid.Row="1"
+			VerticalAlignment="Top"
+			Background="PaleVioletRed"
+			Click="{x:Bind ViewModel.CategorySelect}"
+			Content="Спорт"
+			Foreground="White" />
 
 		<Grid Grid.Row="2">
 			<Grid.ColumnDefinitions>
@@ -46,39 +57,73 @@
 
 			<Grid Grid.Column="0">
 				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition/>
+					<RowDefinition />
+					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<Button Grid.Row="0" VerticalAlignment="Top" Content="Учёба" Background="SteelBlue" Foreground="White"/>
-				<Button Grid.Row="1" VerticalAlignment="Bottom" Grid.Column="2" Content="Развлечения" Background="BurlyWood"  Foreground="White"/>
+				<Button
+					Grid.Row="0"
+					VerticalAlignment="Top"
+					Background="SteelBlue"
+					Content="Учёба"
+					Foreground="White" />
+				<Button
+					Grid.Row="1"
+					Grid.Column="2"
+					VerticalAlignment="Bottom"
+					Background="BurlyWood"
+					Content="Развлечения"
+					Foreground="White" />
 
 			</Grid>
 
 			<Grid Grid.Column="1">
-				<TextBlock Text="Life" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="SteelBlue" FontSize="40"/>
+				<TextBlock
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					FontSize="40"
+					Foreground="SteelBlue"
+					Text="Life" />
 			</Grid>
-			
+
 			<Grid Grid.Column="2">
 				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition/>
+					<RowDefinition />
+					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<Button Grid.Row="0" VerticalAlignment="Top" Content="Недоступно" Foreground="White" IsEnabled="False"/>
-				<Button Grid.Row="1" VerticalAlignment="Bottom" Content="Недоступно" Foreground="White" IsEnabled="False"/>
+				<Button
+					Grid.Row="0"
+					VerticalAlignment="Top"
+					Content="Недоступно"
+					Foreground="White"
+					IsEnabled="False" />
+				<Button
+					Grid.Row="1"
+					VerticalAlignment="Bottom"
+					Content="Недоступно"
+					Foreground="White"
+					IsEnabled="False" />
 
 			</Grid>
 
 		</Grid>
 
-		<Button Grid.Row="3" VerticalAlignment="Bottom" Content="Недоступно" Foreground="White" IsEnabled="False"/>
+		<Button
+			Grid.Row="3"
+			VerticalAlignment="Bottom"
+			Content="Недоступно"
+			Foreground="White"
+			IsEnabled="False" />
 
 		<CommandBar Grid.Row="4" VerticalAlignment="Bottom">
-			<AppBarButton Icon="Add" Label="Добавить"/>
-			<AppBarButton Icon="Remove" Label="Удалить"/>
-			<AppBarButton Icon="Edit" Label="Изменить"/>
+			<AppBarButton Icon="Comment" Label="Создать событие" />
+			<AppBarButton Icon="Delete" Label="Удалить событие" />
+			<AppBarSeparator />
+			<AppBarButton Icon="Add" Label="Добавить категорию" />
+			<AppBarButton Icon="Remove" Label="Удалить категорию" />
+			<AppBarButton Icon="Edit" Label="Изменить категорию" />
 		</CommandBar>
-		
+
 	</Grid>
 </Page>

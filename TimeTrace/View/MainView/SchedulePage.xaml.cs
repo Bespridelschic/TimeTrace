@@ -25,6 +25,10 @@ namespace TimeTrace.View.MainView
 		public SchedulePage()
 		{
 			this.InitializeComponent();
+
+			ViewModel = new ViewModel.MainViewModel.ScheduleViewModel();
 		}
+
+		public ViewModel.MainViewModel.ScheduleViewModel ViewModel { get; set; }
 	}
 }

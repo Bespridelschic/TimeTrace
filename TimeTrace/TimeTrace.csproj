@@ -22,6 +22,7 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppxPackageDir>D:\Downloads\</AppxPackageDir>
+    <PackageCertificateThumbprint>63F3D05CA1B1FC08A4233380459489292FC9D4EB</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -114,6 +115,7 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\PersonalEventCreateViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\ScheduleViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
@@ -125,12 +127,6 @@
     </Compile>
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainView\ContactsPage.xaml.cs">
-      <DependentUpon>ContactsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainView\GroupMapsPage.xaml.cs">
-      <DependentUpon>GroupMapsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainView\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -155,6 +151,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />
     <None Include="ProjectDiagrams\ClassDiagram1.cd" />
@@ -199,14 +196,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AuthenticationView\SignUp\SignUpPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MainView\ContactsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MainView\GroupMapsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
