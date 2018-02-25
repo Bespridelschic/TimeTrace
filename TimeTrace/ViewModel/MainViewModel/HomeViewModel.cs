@@ -93,6 +93,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				CurrentUser = await UserRequests.PostRequestAsync();
 
+				System.Diagnostics.Debug.WriteLine(CurrentUser.Created_at);
+
 				Experience = DateTime.Now.Subtract(CurrentUser.Created_at).Days.ToString() + " дней";
 			}
 			catch (Exception ex)
@@ -101,7 +103,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 			finally
 			{
-				if (string.IsNullOrEmpty(CurrentUser.FirstName))
+				if (string.IsNullOrEmpty(CurrentUser.Email))
 				{
 					CurrentUser.FirstName = "Unknown";
 					CurrentUser.LastName = "Unknown";
@@ -129,10 +131,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 			if (file != null)
 			{
 				await (new MessageDialog($"Picked photo: {file.Path}").ShowAsync());
-			}
-			else
-			{
-				await (new MessageDialog("Operation cancelled").ShowAsync());
 			}
 		}
 

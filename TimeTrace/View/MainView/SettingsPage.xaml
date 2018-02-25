@@ -1,10 +1,10 @@
 ﻿<Page
-    x:Class="TimeTrace.View.MainView.SettingsPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="TimeTrace.View.MainView.SettingsPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
 
 	<Page.Resources>
 		<ResourceDictionary>
@@ -12,13 +12,13 @@
 				<Setter Property="Transitions">
 					<Setter.Value>
 						<TransitionCollection>
-							<EntranceThemeTransition/>
+							<EntranceThemeTransition />
 						</TransitionCollection>
 					</Setter.Value>
 				</Setter>
 			</Style>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml"/>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Page.Resources>
@@ -26,108 +26,166 @@
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto" />
 			<RowDefinition />
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.1*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="0.1*"/>
+			<ColumnDefinition Width="0.1*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="0.1*" />
 		</Grid.ColumnDefinitions>
 
-		<TextBlock Text="Глобальные настройки приложения" Margin="20, 20, 20, 0" Grid.ColumnSpan="3"
-				   FontSize="35" Foreground="SteelBlue" TextWrapping="Wrap"/>
+		<TextBlock
+			Grid.ColumnSpan="3"
+			Margin="20,20,20,0"
+			FontSize="35"
+			Text="Глобальные настройки приложения"
+			TextWrapping="Wrap" />
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="0, 10, 0, 10">
+		<MenuFlyoutSeparator
+			Grid.Row="1"
+			Grid.ColumnSpan="3"
+			VerticalAlignment="Top" />
+
+		<ScrollViewer
+			Grid.Row="1"
+			Grid.Column="1"
+			Margin="0,10,0,10"
+			VerticalAlignment="Center"
+			VerticalScrollBarVisibility="Auto">
 			<StackPanel>
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox Header="Язык приложения" Margin="15, 5, 15, 5" SelectedIndex="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}" Width="200">
+					<ComboBox
+						Width="200"
+						Margin="15,5,15,5"
+						Header="Язык приложения"
+						SelectedIndex="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}">
 						<x:String>Текущий</x:String>
 						<x:String>Системный</x:String>
 						<x:String>Русский</x:String>
 						<x:String>Английский</x:String>
 					</ComboBox>
 
-					<TextBlock Text="Используемый язык в рамках приложения" HorizontalAlignment="Right" Grid.Column="1" TextWrapping="WrapWholeWords"/>
+					<TextBlock
+						Grid.Column="1"
+						HorizontalAlignment="Right"
+						Text="Используемый язык в рамках приложения"
+						TextWrapping="WrapWholeWords" />
 
 				</Grid>
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox Header="Цвет приложения" Margin="15, 5, 15, 5" Width="200">
+					<ComboBox
+						Width="200"
+						Margin="15,5,15,5"
+						Header="Цвет приложения">
 						<x:String>Текущий</x:String>
 						<x:String>Стандартный</x:String>
 						<x:String>Системный</x:String>
 						<x:String>Свой</x:String>
 					</ComboBox>
 
-					<TextBlock Text="Настройка цвета иконок, кнопок, а так же рамки приложения" HorizontalAlignment="Right" Grid.Column="1" TextWrapping="WrapWholeWords"/>
+					<TextBlock
+						Grid.Column="1"
+						HorizontalAlignment="Right"
+						Text="Настройка цвета иконок, кнопок, а так же рамки приложения"
+						TextWrapping="WrapWholeWords" />
 
 				</Grid>
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox Header="Цвет надписей" Margin="15, 5, 15, 5" PlaceholderText="Текущий" Width="200">
+					<ComboBox
+						Width="200"
+						Margin="15,5,15,5"
+						Header="Цвет надписей"
+						PlaceholderText="Текущий">
 						<x:String>Текущий</x:String>
 						<x:String>Стандартный</x:String>
 						<x:String>Системный</x:String>
 						<x:String>Свой</x:String>
 					</ComboBox>
 
-					<TextBlock Text="Настройка цвета отображения символов и слов" HorizontalAlignment="Right" Grid.Column="1" TextWrapping="WrapWholeWords"/>
+					<TextBlock
+						Grid.Column="1"
+						HorizontalAlignment="Right"
+						Text="Настройка цвета отображения символов и слов"
+						TextWrapping="WrapWholeWords" />
 
 				</Grid>
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox Header="Размер шрифта" Margin="15, 5, 15, 5" ItemsSource="{x:Bind ViewModel.Fonts}" Width="200"/>
+					<ComboBox
+						Width="200"
+						Margin="15,5,15,5"
+						Header="Размер шрифта"
+						ItemsSource="{x:Bind ViewModel.Fonts}" />
 
-					<TextBlock Text="Установка семейства шрифтов для всего текста в приложении" HorizontalAlignment="Right"
-							   Grid.Column="1" TextWrapping="WrapWholeWords"/>
+					<TextBlock
+						Grid.Column="1"
+						HorizontalAlignment="Right"
+						Text="Установка семейства шрифтов для всего текста в приложении"
+						TextWrapping="WrapWholeWords" />
 
 				</Grid>
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<ComboBox Header="Тема приложения" Margin="15, 5, 15, 5"  Width="200">
+					<ComboBox
+						Width="200"
+						Margin="15,5,15,5"
+						Header="Тема приложения">
 						<x:String>Текущая</x:String>
 						<x:String>Системная</x:String>
 						<x:String>Светлая</x:String>
 						<x:String>Тёмная</x:String>
 					</ComboBox>
 
-					<TextBlock Text="Смена темы приложения на темную или светлую" HorizontalAlignment="Right" Grid.Column="1" TextWrapping="WrapWholeWords"/>
+					<TextBlock
+						Grid.Column="1"
+						HorizontalAlignment="Right"
+						Text="Смена темы приложения на темную или светлую"
+						TextWrapping="WrapWholeWords" />
 
 				</Grid>
 
 			</StackPanel>
 		</ScrollViewer>
 
-		<TextBlock Text="Применение некоторых настроек автоматически перезагрузит приложение!" Foreground="IndianRed" FontSize="15"
-				   Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="20, 10, 20, 10"/>
+		<TextBlock
+			Grid.Row="2"
+			Grid.Column="1"
+			Margin="20,10,20,10"
+			HorizontalAlignment="Center"
+			FontSize="15"
+			Foreground="IndianRed"
+			Text="Применение некоторых настроек автоматически перезагрузит приложение!"
+			TextWrapping="Wrap" />
 
 	</Grid>
 </Page>

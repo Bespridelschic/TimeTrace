@@ -1,80 +1,139 @@
 ﻿<Page
-    x:Class="TimeTrace.View.AuthenticationView.SignInPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="TimeTrace.View.AuthenticationView.SignInPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
 	<Page.Resources>
 		<ResourceDictionary>
-			<!--Animation of Grid-->
-			<Style TargetType="Grid" x:Key="GridAnimation">
+			<!--  Animation of Grid  -->
+			<Style x:Key="GridAnimation" TargetType="Grid">
 				<Setter Property="Transitions">
 					<Setter.Value>
 						<TransitionCollection>
-							<EntranceThemeTransition/>
+							<EntranceThemeTransition />
 						</TransitionCollection>
 					</Setter.Value>
 				</Setter>
 			</Style>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/ResourceDictionaries/AuthenticationDictionary.xaml"/>
+				<ResourceDictionary Source="/ResourceDictionaries/AuthenticationDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
-		
+
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="32"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="0.6*"/>
-			<RowDefinition Height="0.6*"/>
-			<RowDefinition Height="0.4*"/>
-			<RowDefinition Height="0.5*"/>
-			<RowDefinition Height="0.5*"/>
-			<RowDefinition Height="0.1*"/>
+			<RowDefinition Height="32" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="0.6*" />
+			<RowDefinition Height="0.6*" />
+			<RowDefinition Height="0.4*" />
+			<RowDefinition Height="0.5*" />
+			<RowDefinition Height="0.5*" />
+			<RowDefinition Height="0.1*" />
 		</Grid.RowDefinitions>
 
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.2*"/>
-			<ColumnDefinition/>
-			<ColumnDefinition Width="0.2*"/>
+			<ColumnDefinition Width="0.2*" />
+			<ColumnDefinition />
+			<ColumnDefinition Width="0.2*" />
 		</Grid.ColumnDefinitions>
 
-		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="{StaticResource HostBackdropBrush}"/>
+		<Grid
+			Grid.Row="0"
+			Grid.Column="0"
+			Grid.ColumnSpan="3"
+			Background="{StaticResource HostBackdropBrush}" />
 
-		<Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<TextBlock Text="Time Trace" Foreground="{x:Bind SolidBrush}"/>
+		<Grid
+			Grid.Row="1"
+			Grid.Column="0"
+			Grid.ColumnSpan="3"
+			Style="{StaticResource GridAnimation}">
+
+			<MenuFlyoutSeparator Margin="40,0" VerticalAlignment="Bottom" />
 		</Grid>
 
-		<Grid Grid.Row="2" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<TextBox x:Uid="/SignInUp/EmailBox" IsSpellCheckEnabled="False" Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}" InputScope="EmailNameOrAddress"
-					 SelectionStart="{x:Bind ViewModel.SelectionStart, Mode=OneWay}" SelectionLength="0"/>
+
+		<Grid
+			Grid.Row="1"
+			Grid.Column="1"
+			Style="{StaticResource GridAnimation}">
+			<TextBlock Foreground="{x:Bind SolidBrush}" Text="Time Trace" />
 		</Grid>
 
-		<Grid Grid.Row="3" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<PasswordBox x:Uid="/SignInUp/PasswordBox" MaxLength="20" Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}"/>
+		<Grid
+			Grid.Row="2"
+			Grid.Column="1"
+			Style="{StaticResource GridAnimation}">
+			<TextBox
+				x:Uid="/SignInUp/EmailBox"
+				InputScope="EmailNameOrAddress"
+				IsSpellCheckEnabled="False"
+				SelectionLength="0"
+				SelectionStart="{x:Bind ViewModel.SelectionStart, Mode=OneWay}"
+				Text="{x:Bind ViewModel.CurrentUser.Email, Mode=TwoWay}" />
 		</Grid>
 
-		<Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<CheckBox x:Uid="/SignInUp/PasswordSaveChechBox" IsChecked="{x:Bind ViewModel.IsPasswordSave, Mode=TwoWay}" VerticalAlignment="Top"/>
+		<Grid
+			Grid.Row="3"
+			Grid.Column="1"
+			Style="{StaticResource GridAnimation}">
+			<PasswordBox
+				x:Uid="/SignInUp/PasswordBox"
+				MaxLength="20"
+				Password="{x:Bind ViewModel.CurrentUser.Password, Mode=TwoWay}" />
 		</Grid>
 
-		<Grid Grid.Row="5" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<Button x:Uid="/SignInUp/SignInButton" BorderBrush="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.AppSignIn}"
-					VerticalAlignment="Top" IsEnabled="{x:Bind ViewModel.ControlEnable, Mode=OneWay}"/>
+		<Grid
+			Grid.Row="4"
+			Grid.Column="1"
+			Style="{StaticResource GridAnimation}">
+			<CheckBox
+				x:Uid="/SignInUp/PasswordSaveChechBox"
+				VerticalAlignment="Top"
+				IsChecked="{x:Bind ViewModel.IsPasswordSave, Mode=TwoWay}" />
+		</Grid>
 
-			<HyperlinkButton x:Uid="/SignInUp/PasswordForgotLink" VerticalAlignment="Bottom" Foreground="{x:Bind SolidBrush}" Click="{x:Bind ViewModel.UserPasswordRecovery}"/>
+		<Grid
+			Grid.Row="5"
+			Grid.Column="1"
+			Style="{StaticResource GridAnimation}">
+			<Button
+				x:Uid="/SignInUp/SignInButton"
+				VerticalAlignment="Top"
+				BorderBrush="{x:Bind SolidBrush}"
+				Click="{x:Bind ViewModel.AppSignIn}"
+				IsEnabled="{x:Bind ViewModel.ControlEnable, Mode=OneWay}" />
+
+			<HyperlinkButton
+				x:Uid="/SignInUp/PasswordForgotLink"
+				VerticalAlignment="Bottom"
+				Click="{x:Bind ViewModel.UserPasswordRecovery}"
+				Foreground="{x:Bind SolidBrush}" />
 		</Grid>
 
 		<Grid Grid.Row="6" Grid.Column="1">
-			<ProgressRing Visibility="Visible" IsActive="{x:Bind ViewModel.Processing, Mode=TwoWay}" VerticalAlignment="Bottom"/>
+			<ProgressRing
+				VerticalAlignment="Bottom"
+				IsActive="{x:Bind ViewModel.Processing, Mode=TwoWay}"
+				Visibility="Visible" />
 		</Grid>
 
-		<Grid Grid.Row="6" Grid.Column="1" Style="{StaticResource GridAnimation}">
-			<HyperlinkButton x:Uid="/SignInUp/SignUpLink" VerticalAlignment="Top" Padding="-1" Click="{x:Bind ViewModel.SignUp}" Foreground="{x:Bind SolidBrush}"/>
+		<Grid
+			Grid.Row="6"
+			Grid.Column="1"
+			Style="{StaticResource GridAnimation}">
+			<HyperlinkButton
+				x:Uid="/SignInUp/SignUpLink"
+				Padding="-1"
+				VerticalAlignment="Top"
+				Click="{x:Bind ViewModel.SignUp}"
+				Foreground="{x:Bind SolidBrush}" />
 
 		</Grid>
 

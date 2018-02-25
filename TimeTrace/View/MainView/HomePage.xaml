@@ -31,19 +31,25 @@
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto">
 			<StackPanel>
-				<Button
+				<PersonPicture
+					Width="200"
+					Height="200"
 					Margin="0,20,0,5"
 					HorizontalAlignment="Center"
-					Click="{x:Bind ViewModel.AvatarChange}"
+					PreferSmallImage="True"
 					ToolTipService.ToolTip="Изменить аватар">
-					<Button.Background>
-						<SolidColorBrush Opacity="0" />
-					</Button.Background>
-					<PersonPicture
-						Width="200"
-						Height="200"
-						PreferSmallImage="True" />
-				</Button>
+					<PersonPicture.ContextFlyout>
+						<Flyout Placement="Bottom">
+							<Flyout.Content>
+								<Button
+									Background="SteelBlue"
+									Click="{x:Bind ViewModel.AvatarChange}"
+									Content="Изменить аватар"
+									Foreground="White" />
+							</Flyout.Content>
+						</Flyout>
+					</PersonPicture.ContextFlyout>
+				</PersonPicture>
 
 				<StackPanel
 					Margin="0,0,0,20"

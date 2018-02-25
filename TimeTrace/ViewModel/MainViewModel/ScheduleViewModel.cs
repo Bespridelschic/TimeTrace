@@ -45,7 +45,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-
 		/// <summary>
 		/// Selection date trigger
 		/// </summary>
@@ -86,7 +85,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ContentDialog contentDialog = new ContentDialog()
 			{
 				Title = "Подтверждение действия",
-				Content = $"Вы уверены что хотите удалить событие?",
+				Content = $"Вы уверены что хотите удалить событие \"{MapEvents[SelectedMapEvent].Name}\"?",
 				PrimaryButtonText = "Удалить",
 				CloseButtonText = "Отмена",
 				DefaultButton = ContentDialogButton.Close
@@ -106,6 +105,31 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				await (new MessageDialog("Элемент успешно удалён", "Успех")).ShowAsync();
 			}
+		}
+
+		public async void MoreAboutMapEvent()
+		{
+			MapEvent tempEvent = MapEvents[SelectedMapEvent];
+
+			TextBlock contentText = new TextBlock()
+			{
+				Text = $"Имя события: {tempEvent.Name}\n" +
+						$"Описание: {tempEvent.Description ?? "Отсутствует"}\n" +
+						$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToShortTimeString()}\n" +
+						$"Продолжительность: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} ч.\n" +
+						$"Персона, связанная с событием: {tempEvent.UserBind ?? "Отсутствует"}\n" +
+						$"Место, связанное с событием: {tempEvent.Location ?? "Не задано"}\n",
+			};
+
+			ContentDialog contentDialog = new ContentDialog()
+			{
+				Title = "Подробности",
+				Content = contentText,
+				CloseButtonText = "Закрыть",
+				DefaultButton = ContentDialogButton.Close
+			};
+
+			var result = await contentDialog.ShowAsync();
 		}
 	}
 }

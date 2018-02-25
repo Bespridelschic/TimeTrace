@@ -21,7 +21,7 @@
 		SelectionChanged="NavView_SelectionChanged">
 
 		<NavigationView.HeaderTemplate>
-			<DataTemplate>
+			<DataTemplate x:DataType="local:SettingsViewModel">
 				<Grid Margin="24,10,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
@@ -39,8 +39,14 @@
 						VerticalAlignment="Bottom"
 						Background="{ThemeResource HostBackdropBrush}"
 						DefaultLabelPosition="Right">
-						<AppBarButton Icon="Edit" Label="Сообщить об ошибке" />
-						<AppBarButton Icon="OtherUser" Label="Сменить пользователя" />
+						<AppBarButton
+							Click="Feedback"
+							Icon="Edit"
+							Label="Сообщить об ошибке" />
+						<AppBarButton
+							Click="SignOut"
+							Icon="OtherUser"
+							Label="Сменить пользователя" />
 						<AppBarButton Label="User">
 							<PersonPicture Width="20" Initials="C#" />
 						</AppBarButton>
@@ -48,13 +54,6 @@
 				</Grid>
 			</DataTemplate>
 		</NavigationView.HeaderTemplate>
-
-		<NavigationView.Header>
-			<CommandBar>
-				<AppBarButton Content="123" />
-				<AppBarButton Content="456" />
-			</CommandBar>
-		</NavigationView.Header>
 
 		<NavigationView.AutoSuggestBox>
 			<AutoSuggestBox PlaceholderText="Поиск по картам" QueryIcon="Find" />

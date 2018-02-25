@@ -189,6 +189,21 @@ namespace TimeTrace.ViewModel.MainViewModel
 				CurrentMapEvent.UserBind = string.Empty;
 			}
 
+			if (string.IsNullOrEmpty(CurrentMapEvent.Description))
+			{
+				CurrentMapEvent.Description = null;
+			}
+
+			if (string.IsNullOrEmpty(CurrentMapEvent.UserBind))
+			{
+				CurrentMapEvent.UserBind = null;
+			}
+
+			if (string.IsNullOrEmpty(CurrentMapEvent.Location))
+			{
+				CurrentMapEvent.Location = null;
+			}
+
 			using (MapEventContext db = new MapEventContext())
 			{
 				db.MapEvents.Add(CurrentMapEvent);

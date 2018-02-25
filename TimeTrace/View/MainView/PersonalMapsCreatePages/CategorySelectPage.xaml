@@ -104,7 +104,6 @@
 					Content="Недоступно"
 					Foreground="White"
 					IsEnabled="False" />
-
 			</Grid>
 
 		</Grid>
@@ -117,12 +116,19 @@
 			IsEnabled="False" />
 
 		<CommandBar Grid.Row="4" VerticalAlignment="Bottom">
-			<AppBarButton Icon="Comment" Label="Создать событие" />
-			<AppBarButton Icon="Delete" Label="Удалить событие" />
+			<AppBarButton
+				Icon="Add"
+				Label="Добавить"
+				ToolTipService.ToolTip="Создать новую категорию или событие" />
+			<AppBarButton
+				Icon="Remove"
+				Label="Удалить"
+				ToolTipService.ToolTip="Удалить выбранную категорию или событие" />
 			<AppBarSeparator />
-			<AppBarButton Icon="Add" Label="Добавить категорию" />
-			<AppBarButton Icon="Remove" Label="Удалить категорию" />
-			<AppBarButton Icon="Edit" Label="Изменить категорию" />
+			<AppBarButton
+				Icon="Edit"
+				Label="Изменить"
+				ToolTipService.ToolTip="Редактировать выбранную категорию или событие событий" />
 		</CommandBar>
 
 	</Grid>
