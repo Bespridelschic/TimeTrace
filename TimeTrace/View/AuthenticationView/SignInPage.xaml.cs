@@ -28,11 +28,11 @@ namespace TimeTrace.View.AuthenticationView
 			if (e.Parameter != null && e.Parameter.ToString() != "")
 			{
 				ViewModel.CurrentUser = (User)e.Parameter;
+			}
 
-				if (Frame.BackStack.Count > 0)
-				{
-					Frame.BackStack.Clear();
-				}
+			if (Frame.BackStack.Count > 0)
+			{
+				Frame.BackStack.Clear();
 			}
 		}
 

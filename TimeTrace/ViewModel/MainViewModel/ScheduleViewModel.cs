@@ -82,6 +82,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void MapEventRemove()
 		{
+			if (DateTime.Now > MapEvents[SelectedMapEvent].End)
+			{
+				await (new MessageDialog("Прошедшее событие не может быть удалено", "Ошибка")).ShowAsync();
+				return;
+			}
+
 			ContentDialog contentDialog = new ContentDialog()
 			{
 				Title = "Подтверждение действия",
@@ -98,12 +104,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 				using (MapEventContext db = new MapEventContext())
 				{
 					db.MapEvents.Remove(MapEvents[SelectedMapEvent]);
+					MapEvents[SelectedMapEvent].IsDelete = true;
 					MapEvents.RemoveAt(SelectedMapEvent);
 
 					db.SaveChanges();
 				}
 
-				await (new MessageDialog("Элемент успешно удалён", "Успех")).ShowAsync();
+				await (new MessageDialog("Событие успешно удалёно", "Успех")).ShowAsync();
 			}
 		}
 

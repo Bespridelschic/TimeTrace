@@ -51,16 +51,6 @@
 
 		<Grid
 			Grid.Row="1"
-			Grid.Column="0"
-			Grid.ColumnSpan="3"
-			Style="{StaticResource GridAnimation}">
-
-			<MenuFlyoutSeparator Margin="40,0" VerticalAlignment="Bottom" />
-		</Grid>
-
-
-		<Grid
-			Grid.Row="1"
 			Grid.Column="1"
 			Style="{StaticResource GridAnimation}">
 			<TextBlock Foreground="{x:Bind SolidBrush}" Text="Time Trace" />

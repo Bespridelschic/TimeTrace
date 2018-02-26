@@ -8,14 +8,40 @@
 	mc:Ignorable="d">
 
 	<Page.Resources>
-		<Style TargetType="Button">
-			<Setter Property="Height" Value="35" />
-			<Setter Property="Width" Value="170" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-			<Setter Property="HorizontalAlignment" Value="Center" />
+		<Style x:Key="BtnStyle" TargetType="Button">
+			<Setter Property="Width" Value="150" />
+			<Setter Property="Height" Value="150" />
+			<Setter Property="Margin" Value="1.5" />
+			<Setter Property="Background" Value="White" />
+			<Setter Property="BorderThickness" Value="2" />
+			<Setter Property="BorderBrush" Value="Red" />
+			<Setter Property="UseSystemFocusVisuals" Value="True" />
+			<Setter Property="FocusVisualMargin" Value="-3" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<StackPanel>
+							<PersonPicture
+								Width="70"
+								Height="70"
+								Margin="10,0,0,0"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								Initials="Sport" />
+							<TextBlock
+								HorizontalAlignment="Center"
+								FontSize="20"
+								Text="Спорт" />
+							<TextBlock
+								HorizontalAlignment="Center"
+								FontSize="15"
+								Foreground="SlateGray"
+								Text="Спорт" />
+						</StackPanel>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
 		</Style>
-
-		<!--  Акриловая кисть  -->
 		<media:AcrylicBrush
 			x:Key="HostBackdropBrush"
 			BackgroundSource="HostBackdrop"
@@ -26,97 +52,89 @@
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="0.5*" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="0.5*" />
-			<RowDefinition Height="0.7*" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<TextBlock
-			Margin="20,0,20,0"
-			HorizontalAlignment="Center"
-			FontSize="35"
-			Foreground="SteelBlue"
-			Text="Выберите нужную категорию"
-			TextWrapping="WrapWholeWords" />
-		<Button
-			Grid.Row="1"
-			VerticalAlignment="Top"
-			Background="PaleVioletRed"
-			Click="{x:Bind ViewModel.CategorySelect}"
-			Content="Спорт"
-			Foreground="White" />
+		<Grid>
 
-		<Grid Grid.Row="2">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
 
-			<Grid Grid.Column="0">
-				<Grid.RowDefinitions>
-					<RowDefinition />
-					<RowDefinition />
-				</Grid.RowDefinitions>
+			<TextBlock
+				Margin="20,20,20,10"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Top"
+				FontSize="35"
+				Text="Список категорий"
+				TextWrapping="WrapWholeWords" />
 
-				<Button
-					Grid.Row="0"
-					VerticalAlignment="Top"
-					Background="SteelBlue"
-					Content="Учёба"
-					Foreground="White" />
-				<Button
-					Grid.Row="1"
-					Grid.Column="2"
-					VerticalAlignment="Bottom"
-					Background="BurlyWood"
-					Content="Развлечения"
-					Foreground="White" />
-
-			</Grid>
-
-			<Grid Grid.Column="1">
-				<TextBlock
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					FontSize="40"
-					Foreground="SteelBlue"
-					Text="Life" />
-			</Grid>
-
-			<Grid Grid.Column="2">
-				<Grid.RowDefinitions>
-					<RowDefinition />
-					<RowDefinition />
-				</Grid.RowDefinitions>
-
-				<Button
-					Grid.Row="0"
-					VerticalAlignment="Top"
-					Content="Недоступно"
-					Foreground="White"
-					IsEnabled="False" />
-				<Button
-					Grid.Row="1"
-					VerticalAlignment="Bottom"
-					Content="Недоступно"
-					Foreground="White"
-					IsEnabled="False" />
-			</Grid>
+			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
 
 		</Grid>
 
-		<Button
-			Grid.Row="3"
-			VerticalAlignment="Bottom"
-			Content="Недоступно"
-			Foreground="White"
-			IsEnabled="False" />
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+			<VariableSizedWrapGrid
+				Margin="50,20"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Orientation="Horizontal">
 
-		<CommandBar Grid.Row="4" VerticalAlignment="Bottom">
+				<Button Click="{x:Bind ViewModel.CategorySelect}" Style="{StaticResource BtnStyle}" />
+				<Button Click="{x:Bind ViewModel.CategorySelect}" Style="{StaticResource BtnStyle}" />
+				<Button Style="{StaticResource BtnStyle}" />
+				<Button Style="{StaticResource BtnStyle}" />
+				<Button Style="{StaticResource BtnStyle}" />
+
+				<Button
+					Width="150"
+					Height="150"
+					Background="White"
+					BorderBrush="Green"
+					BorderThickness="2"
+					Foreground="Black">
+					<StackPanel>
+						<PersonPicture
+							Width="70"
+							Height="70"
+							Margin="10,0,0,0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Top"
+							Background="White"
+							Initials="Work" />
+						<TextBlock
+							HorizontalAlignment="Center"
+							FontSize="20"
+							Text="Работа" />
+						<TextBlock
+							HorizontalAlignment="Center"
+							FontSize="15"
+							Foreground="SlateGray"
+							Text="Спорт" />
+					</StackPanel>
+				</Button>
+
+			</VariableSizedWrapGrid>
+		</ScrollViewer>
+
+		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
+			<CommandBar.Content>
+				<StackPanel Margin="10,-5" Orientation="Horizontal">
+					<TextBlock Text="Поиск по категориям: " />
+					<AutoSuggestBox
+						Width="250"
+						Margin="10,13,10,10"
+						PlaceholderText="Поиск..."
+						QueryIcon="Find" />
+				</StackPanel>
+
+			</CommandBar.Content>
+
 			<AppBarButton
+				Click="{x:Bind ViewModel.CategoryCreate}"
 				Icon="Add"
 				Label="Добавить"
 				ToolTipService.ToolTip="Создать новую категорию или событие" />
@@ -133,3 +151,33 @@
 
 	</Grid>
 </Page>
+
+
+<!--<Button
+					Grid.Row="1"
+					Width="150"
+					Height="150"
+					Background="White"
+					BorderBrush="Green"
+					BorderThickness="2"
+					Foreground="Black">
+	<StackPanel>
+		<PersonPicture
+							Width="70"
+							Height="70"
+							Margin="10,0,0,0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Top"
+							Background="White"
+							Initials="Work" />
+		<TextBlock
+							HorizontalAlignment="Center"
+							FontSize="20"
+							Text="Работа" />
+		<TextBlock
+							HorizontalAlignment="Center"
+							FontSize="15"
+							Foreground="SlateGray"
+							Text="Спорт" />
+	</StackPanel>
+</Button>-->

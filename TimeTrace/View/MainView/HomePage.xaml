@@ -69,7 +69,7 @@
 					BorderThickness="1">
 					<TextBlock FontSize="20" Text="Полезное для вас" />
 
-					<VariableSizedWrapGrid Orientation="Horizontal">
+					<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
 						<Button
 							Width="120"
 							Margin="20"
@@ -101,10 +101,11 @@
 
 					<Button
 						Grid.Row="1"
+						Width="200"
 						Margin="0,0,0,20"
 						HorizontalAlignment="Center"
 						Background="CadetBlue"
-						Content="Сообщить об ошибке или высказать предложение"
+						Content="Обратная связь"
 						Foreground="White" />
 
 				</StackPanel>
@@ -222,7 +223,7 @@
 								Margin="5,15"
 								HorizontalAlignment="Right"
 								FontSize="15"
-								Text="Создано карт: " />
+								Text="Событий сегодня: " />
 							<TextBlock
 								Grid.Column="1"
 								Margin="5,15"
@@ -235,7 +236,7 @@
 								Margin="5,15"
 								HorizontalAlignment="Right"
 								FontSize="15"
-								Text="Контактов: " />
+								Text="Ближайшее через: " />
 							<TextBlock
 								Grid.Row="1"
 								Grid.Column="1"
@@ -263,7 +264,7 @@
 								Margin="5,15"
 								HorizontalAlignment="Right"
 								FontSize="15"
-								Text="Статус:" />
+								Text="Создано карт:" />
 							<TextBlock
 								Grid.Row="3"
 								Grid.Column="1"

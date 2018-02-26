@@ -1,5 +1,6 @@
 ﻿using System;
 using TimeTrace.Model;
+using TimeTrace.Model.DBContext;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.UI.Popups;
@@ -92,9 +93,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 			try
 			{
 				CurrentUser = await UserRequests.PostRequestAsync();
-
-				System.Diagnostics.Debug.WriteLine(CurrentUser.Created_at);
-
 				Experience = DateTime.Now.Subtract(CurrentUser.Created_at).Days.ToString() + " дней";
 			}
 			catch (Exception ex)
@@ -112,6 +110,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 					currentUser.Created_at = DateTime.Parse("01-01-01");
 				}
 			}
+
+			//using (MapEventContext db = new MapEventContext())
+			//{
+			//	// Get counts of lines
+			//}
 		}
 
 		/// <summary>

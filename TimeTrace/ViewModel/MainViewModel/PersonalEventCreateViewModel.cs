@@ -142,8 +142,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public PersonalEventCreateViewModel(string areaId)
 		{
-			CurrentMapEvent = new MapEvent(areaId);
-			CurrentMapEvent.StartDate = DateTime.Now;
+			CurrentMapEvent = new MapEvent(areaId)
+			{
+				StartDate = DateTime.Now
+			};
+
 			MinDate = DateTime.Today;
 			IsNotAllDay = false;
 
@@ -217,6 +220,66 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void CategorySelect()
 		{
 			Frame.Navigate(typeof(PersonalEventCreatePage), Frame);
+		}
+
+		/// <summary>
+		/// Creation of new category
+		/// </summary>
+		public async void CategoryCreate()
+		{
+			StackPanel panel = new StackPanel();
+
+			TextBox name = new TextBox()
+			{
+				Header = "Название категории",
+				PlaceholderText = "Используемое название",
+				Margin = new Thickness(0, 0, 0, 10),
+				MaxLength = 15,
+			};
+
+			TextBox description = new TextBox()
+			{
+				Header = "Описание категории",
+				PlaceholderText = "Краткое описание",
+				Margin = new Thickness(0, 0, 0, 10),
+				MaxLength = 15,
+			};
+
+			TextBlock colorHeader = new TextBlock()
+			{
+				Text = "Цвет категории",
+				Margin = new Thickness(0, 0, 0, 8),
+			};
+
+			int size = 350;
+
+			ColorPicker color = new ColorPicker()
+			{
+				Width = size,
+				Height = size,
+				MinWidth = size,
+				MinHeight = size,
+				ColorSpectrumShape = ColorSpectrumShape.Ring,
+				IsColorSliderVisible = false,
+				IsColorChannelTextInputVisible = false,
+				IsHexInputVisible = false,
+			};
+
+			panel.Children.Add(name);
+			panel.Children.Add(description);
+			panel.Children.Add(colorHeader);
+			panel.Children.Add(color);
+
+			ContentDialog dialog = new ContentDialog()
+			{
+				Title = "Создание новой категории",
+				Content = panel,
+				PrimaryButtonText = "Создать",
+				CloseButtonText = "Отложить",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			var result = await dialog.ShowAsync();
 		}
 
 		/// <summary>

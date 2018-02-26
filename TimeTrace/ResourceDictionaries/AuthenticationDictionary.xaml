@@ -1,85 +1,86 @@
 ﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:media="using:Windows.UI.Xaml.Media">
 
-	<!--Common Resource-->
-	<Style TargetType="Control" x:Key="CommonAligmentStyle">
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="HorizontalAlignment" Value="Center"/>
+	<!--  Common Resource  -->
+	<Style x:Key="CommonAligmentStyle" TargetType="Control">
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
 	</Style>
 
-	<!--Text Block-->
+	<!--  Text Block  -->
 	<Style TargetType="TextBlock">
-		<Setter Property="FontSize" Value="50"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="FontSize" Value="50" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
 	</Style>
 
-	<!--Text Box-->
-	<Style TargetType="TextBox" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="60"/>
-		<Setter Property="Width" Value="250"/>
-		<Setter Property="PlaceholderText" Value="Введите ваши данные"/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
-		<Setter Property="ToolTipService.ToolTip" Value="Введите ваши данные"/>
+	<!--  Text Box  -->
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="TextBox">
+		<Setter Property="Height" Value="60" />
+		<Setter Property="Width" Value="250" />
+		<Setter Property="PlaceholderText" Value="Введите ваши данные" />
+		<Setter Property="ToolTipService.Placement" Value="Top" />
+		<Setter Property="ToolTipService.ToolTip" Value="Введите ваши данные" />
 	</Style>
 
-	<!--Password Box-->
-	<Style TargetType="PasswordBox" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="60"/>
-		<Setter Property="Width" Value="250"/>
-		<Setter Property="PlaceholderText" Value="Введите ваш пароль..."/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
-		<Setter Property="ToolTipService.ToolTip" Value="Введите ваш пароль"/>
-	</Style>
-	
-	<!--Calendar Picker-->
-	<Style TargetType="CalendarDatePicker" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="60"/>
-		<Setter Property="Width" Value="250"/>
-		<Setter Property="PlaceholderText" Value="Установить дату..."/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
-		<Setter Property="ToolTipService.ToolTip" Value="Установите дату"/>
+	<!--  Password Box  -->
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="PasswordBox">
+		<Setter Property="Height" Value="60" />
+		<Setter Property="Width" Value="250" />
+		<Setter Property="PlaceholderText" Value="Введите ваш пароль..." />
+		<Setter Property="ToolTipService.Placement" Value="Top" />
+		<Setter Property="ToolTipService.ToolTip" Value="Введите ваш пароль" />
 	</Style>
 
-	<!--Button-->
-	<Style TargetType="Button" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="33"/>
-		<Setter Property="Width" Value="160"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="HorizontalAlignment" Value="Center"/>
-		<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
-		<Setter Property="ToolTipService.ToolTip" Value="Использовать"/>
+	<!--  Calendar Picker  -->
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="CalendarDatePicker">
+		<Setter Property="Height" Value="60" />
+		<Setter Property="Width" Value="250" />
+		<Setter Property="PlaceholderText" Value="Установить дату..." />
+		<Setter Property="ToolTipService.Placement" Value="Top" />
+		<Setter Property="ToolTipService.ToolTip" Value="Установите дату" />
 	</Style>
 
-	<!--CheckBox-->
-	<Style TargetType="CheckBox" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="40"/>
-		<Setter Property="Width" Value="250"/>
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
-		<Setter Property="ToolTipService.ToolTip" Value="Выбрать"/>
+	<!--  Button  -->
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="Button">
+		<Setter Property="Height" Value="33" />
+		<Setter Property="Width" Value="160" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+		<Setter Property="ToolTipService.Placement" Value="Top" />
+		<Setter Property="ToolTipService.ToolTip" Value="Использовать" />
 	</Style>
 
-	<!--Acrylic Brush-->
-	<media:AcrylicBrush x:Key="HostBackdropBrush"
-						BackgroundSource="HostBackdrop"
-						TintColor="LightBlue"
-						TintOpacity="0.6"
-						FallbackColor="LightSkyBlue"/>
+	<!--  CheckBox  -->
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="CheckBox">
+		<Setter Property="Height" Value="40" />
+		<Setter Property="Width" Value="250" />
+		<Setter Property="ToolTipService.Placement" Value="Top" />
+		<Setter Property="ToolTipService.ToolTip" Value="Выбрать" />
+	</Style>
 
-	<!--Link-->
+	<!--  Acrylic Brush  -->
+	<media:AcrylicBrush
+		x:Key="HostBackdropBrush"
+		BackgroundSource="HostBackdrop"
+		FallbackColor="LightSkyBlue"
+		TintColor="LightBlue"
+		TintOpacity="0.6" />
+
+	<!--  Link  -->
 	<Style TargetType="HyperlinkButton">
-		<Setter Property="ToolTipService.Placement" Value="Top"/>
-		<Setter Property="HorizontalAlignment" Value="Center"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="ToolTipService.Placement" Value="Top" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
 	</Style>
 
-	<!--Progress Ring-->
-	<Style TargetType="ProgressRing" BasedOn="{StaticResource CommonAligmentStyle}">
-		<Setter Property="Height" Value="30"/>
-		<Setter Property="Width" Value="30"/>
+	<!--  Progress Ring  -->
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="ProgressRing">
+		<Setter Property="Height" Value="30" />
+		<Setter Property="Width" Value="30" />
 	</Style>
 
 </ResourceDictionary>

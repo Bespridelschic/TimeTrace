@@ -38,7 +38,7 @@
 
 		<TextBlock
 			Grid.ColumnSpan="3"
-			Margin="20,20,20,0"
+			Margin="20,20,20,10"
 			FontSize="35"
 			Text="Глобальные настройки приложения"
 			TextWrapping="Wrap" />

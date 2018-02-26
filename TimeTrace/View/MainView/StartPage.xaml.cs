@@ -40,10 +40,10 @@ namespace TimeTrace.View.MainView
 		public ViewModel.MainViewModel.SettingsViewModel ViewModel;
 
 		/// <summary>
-		/// Навигация по меню приложения
+		/// Navigation menu
 		/// </summary>
-		/// <param name="sender">Объект отправитель</param>
-		/// <param name="args">Событие</param>
+		/// <param name="sender">Sender</param>
+		/// <param name="args">Parameter</param>
 		private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			if (args.IsSettingsSelected)
@@ -82,6 +82,9 @@ namespace TimeTrace.View.MainView
 			}
 		}
 
+		/// <summary>
+		/// Send push-notification to windows
+		/// </summary>
 		private void ShowToastNotification()
 		{
 			var toastContent = new ToastContent()
@@ -124,6 +127,11 @@ namespace TimeTrace.View.MainView
 			ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
 		}
 
+		/// <summary>
+		/// Sending message to developer
+		/// </summary>
+		/// <param name="sender">Sender</param>
+		/// <param name="e">Parameter</param>
 		private async void Feedback(object sender, RoutedEventArgs e)
 		{
 			var message = new TextBox()
@@ -161,6 +169,11 @@ namespace TimeTrace.View.MainView
 			}
 		}
 
+		/// <summary>
+		/// Sign out from system
+		/// </summary>
+		/// <param name="sender">Sender</param>
+		/// <param name="e">Parameter</param>
 		private async void SignOut(object sender, RoutedEventArgs e)
 		{
 			ContentDialog dialog = new ContentDialog

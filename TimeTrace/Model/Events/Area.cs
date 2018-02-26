@@ -157,7 +157,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Is category - project
 		/// </summary>
-		[JsonProperty(PropertyName = "color")]
+		[JsonProperty(PropertyName = "is_project")]
 		public bool IsProject
 		{
 			get { return isProject; }
