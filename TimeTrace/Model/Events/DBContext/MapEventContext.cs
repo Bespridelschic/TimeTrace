@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeTrace.Model.Events;
 
-namespace TimeTrace.Model.DBContext
+namespace TimeTrace.Model.Events.DBContext
 {
 	/// <summary>
 	/// Data base map event contet

@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeTrace.Model;
-using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Events;
+using TimeTrace.Model.Events.DBContext;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 
@@ -75,7 +76,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			using (MapEventContext db = new MapEventContext())
 			{
 				//MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.Start.Date == DateTime.Today));
-				MapEvents = new ObservableCollection<MapEvent>(db?.MapEvents?.ToList());
+				MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
 			}
 		}
 

@@ -45,7 +45,7 @@ namespace TimeTrace.View.MainView
 		/// </summary>
 		/// <param name="sender">Sender</param>
 		/// <param name="args">Parameter</param>
-		private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		private async void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			if (args.IsSettingsSelected)
 			{
@@ -72,6 +72,10 @@ namespace TimeTrace.View.MainView
 
 					case "scheduleSync":
 						ShowToastNotification();
+						break;
+
+					case "help":
+						await (new MessageDialog("Помощь пользователя находится в разработке").ShowAsync());
 						break;
 
 					default:

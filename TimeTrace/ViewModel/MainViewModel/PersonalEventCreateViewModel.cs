@@ -14,12 +14,13 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using System.Runtime.Serialization.Json;
 using System.IO;
-using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Events.DBContext;
 using Windows.UI;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Media;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
+using TimeTrace.Model.Events;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -220,14 +221,24 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		/// <summary>
+		/// Local page frame
+		/// </summary>
 		public Frame Frame { get; set; }
+
+		/// <summary>
+		/// Panel of controls
+		/// </summary>
+		public VariableSizedWrapGrid MainGridPanel { get; set; }
 
 		#endregion
 
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public PersonalEventCreateViewModel(string areaId)
+		/// <param name="areaId">ID of parent area</param>
+		/// <param name="mainGridPanel">Owner panel</param>
+		public PersonalEventCreateViewModel(string areaId, VariableSizedWrapGrid mainGridPanel)
 		{
 			CurrentMapEvent = new MapEvent(areaId);
 			StartDate = DateTime.Now;
@@ -236,6 +247,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 			IsNotAllDay = false;
 
 			BindingObjectIndex = 0;
+
+			MainGridPanel = mainGridPanel;
 		}
 
 		/// <summary>
@@ -314,6 +327,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void CategoryCreate()
 		{
+			#region Text boxes
+
 			TextBox name = new TextBox()
 			{
 				Header = "Название",
@@ -329,6 +344,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 50,
 			};
+
+			#endregion
+
+			#region Color box
 
 			ComboBox colors = new ComboBox()
 			{
@@ -354,14 +373,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			// building list of colors for choosing
 			for (int i = 0; i < colorsTable.Count; i++)
 			{
-				var colorString = colorsTable.ElementAt(i).Value.Replace("#", string.Empty);
-
-				var r = byte.Parse(colorString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-				var g = byte.Parse(colorString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-				var b = byte.Parse(colorString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-
-				Color color = Color.FromArgb(255, r, g, b);
-				var brush = new SolidColorBrush(color);
+				var brush = GetColorFromString(colorsTable.ElementAt(i).Value);
 
 				// ring of color
 				Ellipse colorRing = new Ellipse
@@ -397,6 +409,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 				colors.Items.Add(colorBoxItem);
 			}
 
+			#endregion
+
 			// Start selected color is red
 			colors.SelectedIndex = 0;
 
@@ -426,9 +440,45 @@ namespace TimeTrace.ViewModel.MainViewModel
 					return;
 				}
 
-				await (new MessageDialog($"Name: {name.Text}, Desc: {description.Text}," +
-								$"Color: {colorsTable.ElementAt(colors.SelectedIndex).Value}")).ShowAsync();
+				Area newArea = new Area()
+				{
+					Name = name.Text,
+					Description = description.Text,
+					Color = colorsTable.ElementAt(colors.SelectedIndex).Value,
+				};
+
+				using (MapEventContext db = new MapEventContext())
+				{
+					db.Areas.Add(newArea);
+					db.SaveChanges();
+				}
+
+				Button newButton = new Button()
+				{
+					BorderBrush = GetColorFromString(colorsTable.ElementAt(colors.SelectedIndex).Value),
+					Content = newArea,
+					Tag = newArea.Id,
+				};
+
+				MainGridPanel.Children.Add(newButton);
 			}
+		}
+
+		/// <summary>
+		/// Get color from HEX format to SolidColorBrush
+		/// </summary>
+		/// <param name="color">HEX string of color</param>
+		/// <returns><see cref="SolidColorBrush"/> object</returns>
+		private SolidColorBrush GetColorFromString(string color)
+		{
+			var colorString = color.Replace("#", string.Empty);
+
+			var r = byte.Parse(colorString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+			var g = byte.Parse(colorString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+			var b = byte.Parse(colorString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+
+			Color localColor = Color.FromArgb(255, r, g, b);
+			return new SolidColorBrush(localColor);
 		}
 
 		/// <summary>

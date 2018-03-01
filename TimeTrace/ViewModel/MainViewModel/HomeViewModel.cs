@@ -1,6 +1,6 @@
 ﻿using System;
 using TimeTrace.Model;
-using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Events.DBContext;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.Storage;

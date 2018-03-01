@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
-using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Events.DBContext;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;

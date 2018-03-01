@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using TimeTrace.Model.Events;
 
-namespace TimeTrace.Model
+namespace TimeTrace.Model.Events
 {
 	/// <summary>
 	/// Event map class

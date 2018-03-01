@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeTrace.Model.Events;
 
-namespace TimeTrace.Model
+namespace TimeTrace.Model.Events
 {
 	/// <summary>
 	/// Area class. First level of calendar
