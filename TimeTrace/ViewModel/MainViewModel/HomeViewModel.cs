@@ -3,6 +3,7 @@ using TimeTrace.Model;
 using TimeTrace.Model.DBContext;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
+using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 
@@ -26,16 +27,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-		private int numContacts;
+		private string nearEvent;
 		/// <summary>
 		/// Number of contacts
 		/// </summary>
-		public int NumContacts
+		public string NearEvent
 		{
-			get { return numContacts; }
+			get { return nearEvent; }
 			set
 			{
-				numContacts = value;
+				nearEvent = value;
 				OnPropertyChanged();
 			}
 		}
@@ -54,11 +55,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-		private ServerUser currentUser;
+		private User currentUser;
 		/// <summary>
 		/// Current using user
 		/// </summary>
-		public ServerUser CurrentUser
+		public User CurrentUser
 		{
 			get { return currentUser; }
 			set
@@ -77,44 +78,34 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public HomeViewModel()
 		{
-			NumContacts = 0;
+			CurrentUser = GetUserInfo();
+			NearEvent = "Совсем скоро";
 			NumEvents = 0;
-			Experience = "0";
-
-			CurrentUser = new ServerUser();
-			GetUserInfo();
-		}
-
-		/// <summary>
-		/// Deserialize json string to user and read the information
-		/// </summary>
-		public async void GetUserInfo()
-		{
-			try
-			{
-				CurrentUser = await UserRequests.PostRequestAsync();
-				Experience = DateTime.Now.Subtract(CurrentUser.Created_at).Days.ToString() + " дней";
-			}
-			catch (Exception ex)
-			{
-				await (new MessageDialog($"{ex.Message}\nОшибка доступа к серверу", "Проблема соединения")).ShowAsync();
-			}
-			finally
-			{
-				if (string.IsNullOrEmpty(CurrentUser.Email))
-				{
-					CurrentUser.FirstName = "Unknown";
-					CurrentUser.LastName = "Unknown";
-					CurrentUser.MiddleName = "Unknown";
-					CurrentUser.Birthday = "01-01-01";
-					currentUser.Created_at = DateTime.Parse("01-01-01");
-				}
-			}
+			Experience = "Удалить поле";
 
 			//using (MapEventContext db = new MapEventContext())
 			//{
 			//	// Get counts of lines
 			//}
+		}
+
+		/// <summary>
+		/// Read user information from local setting
+		/// </summary>
+		public User GetUserInfo()
+		{
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			return new User(
+				(string)localSettings.Values["email"] ?? "Неизвестный",
+				null,
+				(string)localSettings.Values["firstName"] ?? "Не указано",
+				(string)localSettings.Values["lastName"] ?? "Не указано",
+				(string)localSettings.Values["middleName"] ?? "Не указано",
+				(!string.IsNullOrEmpty((string)localSettings.Values["birthday"]))
+						? DateTime.Parse((string)localSettings.Values["birthday"]).ToLongDateString()
+						: "Не известно"
+				);
 		}
 
 		/// <summary>
@@ -129,7 +120,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			picker.FileTypeFilter.Add(".jpeg");
 			picker.FileTypeFilter.Add(".png");
 
-			Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+			StorageFile file = await picker.PickSingleFileAsync();
 
 			if (file != null)
 			{

@@ -156,10 +156,10 @@ namespace TimeTrace.Model
 		}
 
 		/// <summary>
-		/// Getting user information from server in raw format JSON
+		/// Getting user information from server
 		/// </summary>
-		/// <returns>String in raw format json</returns>
-		public static async Task<ServerUser> PostRequestAsync()
+		/// <returns><see cref="User"/> object</returns>
+		public static async Task<User> PostRequestAsync()
 		{
 			// Get user token and email for request
 			var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
@@ -188,7 +188,7 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Json string</returns>
-		public static string JsonSerialize<T>(T user)
+		private static string JsonSerialize<T>(T user)
 		{
 			if (user != null)
 			{
@@ -202,11 +202,11 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Json string</param>
 		/// <returns>New object of <see cref="User"/></returns>
-		private static ServerUser JsonUserDeserialize(string jsonString)
+		private static User JsonUserDeserialize(string jsonString)
 		{
 			if (!string.IsNullOrEmpty(jsonString))
 			{
-				ServerUser user = JsonConvert.DeserializeObject<ServerUser>(jsonString);
+				User user = JsonConvert.DeserializeObject<User>(jsonString);
 				return user;
 			}
 			return null;

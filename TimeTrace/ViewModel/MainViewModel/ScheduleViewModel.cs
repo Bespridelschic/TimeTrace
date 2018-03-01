@@ -34,7 +34,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		private int selectedMapEvent;
-
+		/// <summary>
+		/// Index of selected event
+		/// </summary>
 		public int SelectedMapEvent
 		{
 			get { return selectedMapEvent; }
@@ -73,7 +75,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			using (MapEventContext db = new MapEventContext())
 			{
 				//MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.Start.Date == DateTime.Today));
-				MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
+				MapEvents = new ObservableCollection<MapEvent>(db?.MapEvents?.ToList());
 			}
 		}
 

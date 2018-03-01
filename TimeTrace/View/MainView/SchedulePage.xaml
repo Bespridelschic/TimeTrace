@@ -42,36 +42,48 @@
 									FontSize="26"
 									Text="{x:Bind Name}"
 									TextWrapping="WrapWholeWords" />
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition />
-									</Grid.ColumnDefinitions>
 
-									<StackPanel Orientation="Horizontal">
-										<TextBlock
-											Margin="10,3,0,5"
-											FontSize="18"
-											Text="Время: " />
-										<TextBlock
-											Margin="7,3,7,5"
-											FontSize="18"
-											Text="{x:Bind Start}" />
-										<TextBlock
-											Margin="0,3,0,5"
-											FontSize="18"
-											Text="-" />
-										<TextBlock
-											Margin="7,3,7,5"
-											FontSize="18"
-											Text="{x:Bind End}" />
-									</StackPanel>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock
+										Margin="10,3,0,2"
+										FontSize="18"
+										Text="Время: " />
+									<TextBlock
+										Margin="7,3,7,2"
+										FontSize="18"
+										Text="{x:Bind Start}" />
+									<TextBlock
+										Margin="0,3,0,2"
+										FontSize="18"
+										Text="-" />
+									<TextBlock
+										Margin="7,3,7,2"
+										FontSize="18"
+										Text="{x:Bind End}" />
+								</StackPanel>
 
-									<RatingControl
-										Grid.Column="1"
-										HorizontalAlignment="Right"
-										IsReadOnly="False" />
-								</Grid>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock
+										Margin="10,0,0,0"
+										FontSize="18"
+										Text="Место: " />
+									<TextBlock
+										Margin="7,0,0,0"
+										FontSize="18"
+										Text="{x:Bind Location, TargetNullValue=Неизвестно}" />
+									<TextBlock
+										Margin="0,0,0,0"
+										FontSize="18"
+										Text=";" />
+									<TextBlock
+										Margin="10,0,0,0"
+										FontSize="18"
+										Text="Контакт: " />
+									<TextBlock
+										Margin="7,0,0,0"
+										FontSize="18"
+										Text="{x:Bind UserBind, TargetNullValue=Неизвестен}" />
+								</StackPanel>
 
 								<StackPanel Orientation="Horizontal">
 									<TextBlock

@@ -22,7 +22,7 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppxPackageDir>D:\Downloads\</AppxPackageDir>
-    <PackageCertificateThumbprint>63F3D05CA1B1FC08A4233380459489292FC9D4EB</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>8ECDFBF63AD35E674C11260EBCE840D5383F5F2D</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -104,10 +104,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Events\Area.cs" />
+    <Compile Include="Model\Events\Category.cs" />
     <Compile Include="Model\Events\DBContext\MapEventContext.cs" />
-    <Compile Include="Model\GlobalProperties.cs" />
+    <Compile Include="Model\Events\Project.cs" />
     <Compile Include="Model\Events\MapEvent.cs" />
-    <Compile Include="Model\ServerUser.cs" />
     <Compile Include="Model\UserFileWorker.cs" />
     <Compile Include="Model\UserRequests.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />

@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Navigation;
 namespace TimeTrace.View.AuthenticationView.SignUp
 {
 	/// <summary>
-	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
+	/// Sign up extend code behind
 	/// </summary>
 	public sealed partial class SignUpExtendPage : Page
 	{
@@ -28,7 +28,7 @@ namespace TimeTrace.View.AuthenticationView.SignUp
 		public ViewModel.AuthenticationViewModel.SignUpViewModel ViewModel { get; private set; }
 
 		/// <summary>
-		/// Получение системного цвета и установка цвета не автоматическим элементам
+		/// System color
 		/// </summary>
 		private SolidColorBrush SolidBrush
 		{

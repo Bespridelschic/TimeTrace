@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeTrace.Model.Events;
 
 namespace TimeTrace.Model.DBContext
 {
@@ -14,6 +15,7 @@ namespace TimeTrace.Model.DBContext
 	{
 		public DbSet<MapEvent> MapEvents { get; set; }
 		public DbSet<Area> Areas { get; set; }
+		public DbSet<Project> Projects { get; set; }
 
 		public MapEventContext()
 		{

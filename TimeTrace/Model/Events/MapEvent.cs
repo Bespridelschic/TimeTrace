@@ -5,48 +5,29 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using TimeTrace.Model.Events;
 
 namespace TimeTrace.Model
 {
 	/// <summary>
 	/// Event map class
 	/// </summary>
-	public class MapEvent : INotifyPropertyChanged
+	public class MapEvent : Category
 	{
 		#region Properties
 
-		[Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.None)]
-		[JsonProperty(PropertyName = "id")]
-		public string Id { get; private set; }
-
-		private string areaId;
+		private string projectId;
 		/// <summary>
 		/// Id of binded area
 		/// </summary>
 		[Required]
-		[JsonProperty(PropertyName = "area_id")]
-		public string AreaId
+		[JsonProperty(PropertyName = "project_id")]
+		public string ProjectId
 		{
-			get { return areaId; }
+			get { return projectId; }
 			set
 			{
-				areaId = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private DateTime updateAt;
-		/// <summary>
-		/// Last updateAt of update event
-		/// </summary>
-		[JsonProperty(PropertyName = "update_at")]
-		public DateTime UpdateAt
-		{
-			get { return updateAt; }
-			set
-			{
-				updateAt = value;
+				projectId = value;
 				OnPropertyChanged();
 			}
 		}
@@ -55,7 +36,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// If deleted - remove local event
 		/// </summary>
-		[JsonProperty(PropertyName = "is_delete")]
+		[JsonIgnore]
 		public bool IsDelete
 		{
 			get { return isDelete; }
@@ -63,103 +44,6 @@ namespace TimeTrace.Model
 			{
 				isDelete = value;
 				OnPropertyChanged();
-			}
-		}
-
-		private string name;
-		/// <summary>
-		/// Event name
-		/// </summary>
-		[Required]
-		[JsonProperty(PropertyName = "summary")]
-		public string Name
-		{
-			get { return name; }
-			set
-			{
-				name = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string description;
-		/// <summary>
-		/// Event description
-		/// </summary>
-		[JsonProperty(PropertyName = "description")]
-		public string Description
-		{
-			get { return description; }
-			set
-			{
-				description = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private DateTimeOffset? startDate;
-		/// <summary>
-		/// Event start updateAt
-		/// </summary>
-		[JsonIgnore]
-		public DateTimeOffset? StartDate
-		{
-			get { return startDate; }
-			set
-			{
-				startDate = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private TimeSpan startTime;
-		/// <summary>
-		/// Event start time
-		/// </summary>
-		[JsonIgnore]
-		public TimeSpan StartTime
-		{
-			get { return startTime; }
-			set
-			{
-				if (startTime != value)
-				{
-					startTime = value;
-					OnPropertyChanged();
-				}
-			}
-		}
-
-		private DateTimeOffset? endDate;
-		/// <summary>
-		/// Event end updateAt
-		/// </summary>
-		[JsonIgnore]
-		public DateTimeOffset? EndDate
-		{
-			get { return endDate; }
-			set
-			{
-				endDate = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private TimeSpan endTime;
-		/// <summary>
-		/// Event end time
-		/// </summary>
-		[JsonIgnore]
-		public TimeSpan EndTime
-		{
-			get { return endTime; }
-			set
-			{
-				if (endTime != value)
-				{
-					endTime = value;
-					OnPropertyChanged();
-				}
 			}
 		}
 
@@ -174,7 +58,7 @@ namespace TimeTrace.Model
 			set { start = value; }
 			get
 			{
-				return StartDate.Value.Date + StartTime;
+				return start;
 			}
 		}
 
@@ -189,7 +73,7 @@ namespace TimeTrace.Model
 			set { end = value; }
 			get
 			{
-				return EndDate.Value.Date + EndTime;
+				return end;
 			}
 		}
 
@@ -246,54 +130,39 @@ namespace TimeTrace.Model
 		#region Constructors
 
 		/// <summary>
-		/// Standart constructor with Area ID parameter
+		/// Standart constructor with Project ID parameter
 		/// </summary>
-		public MapEvent(string areaId) : this()
-		{
-			AreaId = areaId;
-		}
+		public MapEvent(string projectId) : this() => ProjectId = projectId;
 
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
 		public MapEvent()
 		{
-			Id = Guid.NewGuid().ToString();
+			
 		}
 
 		/// <summary>
-		/// Event set
+		/// Event set constructor
 		/// </summary>
-		/// <param name="eventName">Event name</param>
-		/// <param name="startDate">Event start updateAt</param>
-		/// <param name="startTime">Event start time</param>
+		/// <param name="name">Event name</param>
+		/// <param name="description">Event description</param>
+		/// <param name="start">Start event date time</param>
+		/// <param name="end">End event date time</param>
 		/// <param name="place">Event location</param>
-		/// <param name="eventTimeSpan">Event duration</param>
-		/// <param name="eventInterval">Repeat the event</param>
-		/// <param name="eventType">Event type</param>
-		public MapEvent(string eventName, string description, DateTimeOffset? startDate,
-			TimeSpan startTime, DateTimeOffset? endDate, TimeSpan endTime, string place,
-			string user, string eventInterval, string areaId)
+		/// <param name="user">Binded user</param>
+		/// <param name="eventInterval">Repeat of event</param>
+		/// <param name="projectId">ID of map project</param>
+		public MapEvent(string name, string description, DateTime start, DateTime end, string place, string user, string eventInterval, string projectId)
 		{
-			Name = eventName;
+			Name = name;
 			Description = description;
-			StartDate = startDate;
-			StartTime = startTime;
-			EndDate = endDate;
-			EndTime = endTime;
+			Start = start;
+			End = end;
 			Location = place;
 			EventInterval = eventInterval;
-			AreaId = areaId;
-		}
-
-		#endregion
-
-		#region MVVM
-
-		public event PropertyChangedEventHandler PropertyChanged = delegate { };
-		private void OnPropertyChanged([CallerMemberName]string prop = "")
-		{
-			PropertyChanged(this, new PropertyChangedEventArgs(prop));
+			ProjectId = projectId;
+			UserBind = user;
 		}
 
 		#endregion

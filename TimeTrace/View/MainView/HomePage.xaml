@@ -139,55 +139,55 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Фамилия: " />
 							<TextBlock
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=OneWay, TargetNullValue=Unknown}" />
 
 							<TextBlock
 								Grid.Row="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Имя: " />
 							<TextBlock
 								Grid.Row="1"
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" />
 
 							<TextBlock
 								Grid.Row="2"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Отчество: " />
 							<TextBlock
 								Grid.Row="2"
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=OneWay}" />
 
 							<TextBlock
 								Grid.Row="3"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Дата рождения: " />
 							<TextBlock
 								Grid.Row="3"
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="{x:Bind ViewModel.CurrentUser.Birthday, Mode=OneWay}" />
@@ -220,55 +220,55 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Событий сегодня: " />
 							<TextBlock
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
 
 							<TextBlock
 								Grid.Row="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Ближайшее через: " />
 							<TextBlock
 								Grid.Row="1"
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
-								Text="{x:Bind ViewModel.NumContacts, Mode=OneWay}" />
+								Text="{x:Bind ViewModel.NearEvent, Mode=OneWay}" />
 
 							<TextBlock
 								Grid.Row="2"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Зарегистрирован:" />
 							<TextBlock
 								Grid.Row="2"
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="{x:Bind ViewModel.Experience, Mode=OneWay}" />
 
 							<TextBlock
 								Grid.Row="3"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Right"
 								FontSize="15"
 								Text="Создано карт:" />
 							<TextBlock
 								Grid.Row="3"
 								Grid.Column="1"
-								Margin="5,15"
+								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
 								Text="1" />

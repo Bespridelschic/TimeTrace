@@ -15,6 +15,11 @@ using System.Diagnostics;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using TimeTrace.Model.DBContext;
+using Windows.UI;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media;
+using Microsoft.Toolkit.Uwp.Notifications;
+using Windows.UI.Notifications;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -112,6 +117,88 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		private DateTimeOffset? startDate;
+		/// <summary>
+		/// Event start updateAt
+		/// </summary>
+		public DateTimeOffset? StartDate
+		{
+			get { return startDate; }
+			set
+			{
+				startDate = value;
+				if (StartDate != null)
+				{
+					CurrentMapEvent.Start = StartDate.Value.Date + StartTime;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		private TimeSpan startTime;
+		/// <summary>
+		/// Event start time
+		/// </summary>
+		public TimeSpan StartTime
+		{
+			get { return startTime; }
+			set
+			{
+				if (startTime != value)
+				{
+					startTime = value;
+					if (StartDate != null)
+					{
+						CurrentMapEvent.Start = StartDate.Value.Date + StartTime;
+					}
+
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		private DateTimeOffset? endDate;
+		/// <summary>
+		/// Event end updateAt
+		/// </summary>
+		public DateTimeOffset? EndDate
+		{
+			get { return endDate; }
+			set
+			{
+				endDate = value;
+				if (endDate != null)
+				{
+					CurrentMapEvent.End = EndDate.Value.Date + EndTime;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		private TimeSpan endTime;
+		/// <summary>
+		/// Event end time
+		/// </summary>
+		public TimeSpan EndTime
+		{
+			get { return endTime; }
+			set
+			{
+				if (endTime != value)
+				{
+					endTime = value;
+					if (endDate != null)
+					{
+						CurrentMapEvent.End = EndDate.Value.Date + EndTime;
+					}
+
+					OnPropertyChanged();
+				}
+			}
+		}
+
 		private bool isNotAllDay;
 		/// <summary>
 		/// Is all day selected
@@ -125,8 +212,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				if (!isNotAllDay)
 				{
-					CurrentMapEvent.EndDate = null;
-					CurrentMapEvent.EndTime = TimeSpan.Parse("00:00");
+					EndDate = null;
+					EndTime = TimeSpan.Parse("00:00");
 				}
 
 				OnPropertyChanged();
@@ -142,10 +229,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public PersonalEventCreateViewModel(string areaId)
 		{
-			CurrentMapEvent = new MapEvent(areaId)
-			{
-				StartDate = DateTime.Now
-			};
+			CurrentMapEvent = new MapEvent(areaId);
+			StartDate = DateTime.Now;
 
 			MinDate = DateTime.Today;
 			IsNotAllDay = false;
@@ -159,7 +244,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <returns>Result of event creation</returns>
 		public async Task EventCreate()
 		{
-			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || CurrentMapEvent.StartDate == null || (CurrentMapEvent.EndDate == null && IsNotAllDay))
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || StartDate == null || (EndDate == null && IsNotAllDay))
 			{
 				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
 
@@ -168,8 +253,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			if (!IsNotAllDay)
 			{
-				CurrentMapEvent.EndTime = TimeSpan.Parse("23:59");
-				CurrentMapEvent.EndDate = CurrentMapEvent.StartDate;
+				EndTime = TimeSpan.Parse("23:59");
+				EndDate = StartDate;
 			}
 
 			if (CurrentMapEvent.Start > CurrentMapEvent.End)
@@ -212,6 +297,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 				db.MapEvents.Add(CurrentMapEvent);
 				db.SaveChanges();
 			}
+
+			NewMapEventNotification(CurrentMapEvent.Name, CurrentMapEvent.Start);
 		}
 
 		/// <summary>
@@ -227,48 +314,96 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void CategoryCreate()
 		{
-			StackPanel panel = new StackPanel();
-
 			TextBox name = new TextBox()
 			{
-				Header = "Название категории",
-				PlaceholderText = "Используемое название",
+				Header = "Название",
+				PlaceholderText = "Название новой категории",
 				Margin = new Thickness(0, 0, 0, 10),
-				MaxLength = 15,
+				MaxLength = 30,
 			};
 
 			TextBox description = new TextBox()
 			{
-				Header = "Описание категории",
-				PlaceholderText = "Краткое описание",
+				Header = "Описание",
+				PlaceholderText = "Краткое описание категории",
 				Margin = new Thickness(0, 0, 0, 10),
-				MaxLength = 15,
+				MaxLength = 50,
 			};
 
-			TextBlock colorHeader = new TextBlock()
+			ComboBox colors = new ComboBox()
 			{
-				Text = "Цвет категории",
-				Margin = new Thickness(0, 0, 0, 8),
+				Header = "Цвет категории",
+				Width = 300,
 			};
 
-			int size = 350;
-
-			ColorPicker color = new ColorPicker()
+			Dictionary<string, string> colorsTable = new Dictionary<string, string>()
 			{
-				Width = size,
-				Height = size,
-				MinWidth = size,
-				MinHeight = size,
-				ColorSpectrumShape = ColorSpectrumShape.Ring,
-				IsColorSliderVisible = false,
-				IsColorChannelTextInputVisible = false,
-				IsHexInputVisible = false,
+				{ "Красный", "#d50000" },
+				{ "Розовый", "#E67C73" },
+				{ "Оранжевый", "#F4511E"},
+				{ "Жёлтый", "#F6BF26" },
+				{ "Светло-зелёный", "#33B679" },
+				{ "Зелёный", "#0B8043" },
+				{ "Голубой", "#039BE5" },
+				{ "Синий", "#3F51B5" },
+				{ "Светло-фиолетовый", "#7986CB" },
+				{ "Фиолетовый", "#8E24AA" },
+				{ "Чёрный", "#616161" }
 			};
 
+			// building list of colors for choosing
+			for (int i = 0; i < colorsTable.Count; i++)
+			{
+				var colorString = colorsTable.ElementAt(i).Value.Replace("#", string.Empty);
+
+				var r = byte.Parse(colorString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+				var g = byte.Parse(colorString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+				var b = byte.Parse(colorString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+
+				Color color = Color.FromArgb(255, r, g, b);
+				var brush = new SolidColorBrush(color);
+
+				// ring of color
+				Ellipse colorRing = new Ellipse
+				{
+					Fill = brush,
+					Width = 16,
+					Height = 16,
+				};
+
+				Ellipse innerColorRing = new Ellipse
+				{
+					Fill = new SolidColorBrush(new Color() { A = 255, R = 255, G = 255, B = 255 }),
+					Width = 12,
+					Height = 12,
+				};
+
+				// item panel with color & name of color
+				StackPanel colorBoxItem = new StackPanel();
+				colorBoxItem.Orientation = Orientation.Horizontal;
+
+				Grid colorGrid = new Grid();
+				colorGrid.Children.Add(colorRing);
+				colorGrid.Children.Add(innerColorRing);
+
+				colorBoxItem.Children.Add(colorGrid);
+				colorBoxItem.Children.Add(new TextBlock()
+				{
+					Text = $"{colorsTable.ElementAt(i).Key}",
+					Margin = new Thickness(8, 0, 0, 0),
+					VerticalAlignment = VerticalAlignment.Center
+				});
+
+				colors.Items.Add(colorBoxItem);
+			}
+
+			// Start selected color is red
+			colors.SelectedIndex = 0;
+
+			StackPanel panel = new StackPanel();
 			panel.Children.Add(name);
 			panel.Children.Add(description);
-			panel.Children.Add(colorHeader);
-			panel.Children.Add(color);
+			panel.Children.Add(colors);
 
 			ContentDialog dialog = new ContentDialog()
 			{
@@ -280,6 +415,20 @@ namespace TimeTrace.ViewModel.MainViewModel
 			};
 
 			var result = await dialog.ShowAsync();
+
+			if (result == ContentDialogResult.Primary)
+			{
+				if (string.IsNullOrEmpty(name.Text) || string.IsNullOrEmpty(description.Text))
+				{
+					await (new MessageDialog("Заполните все поля", "Ошибка создания категории")).ShowAsync();
+					CategoryCreate();
+
+					return;
+				}
+
+				await (new MessageDialog($"Name: {name.Text}, Desc: {description.Text}," +
+								$"Color: {colorsTable.ElementAt(colors.SelectedIndex).Value}")).ShowAsync();
+			}
 		}
 
 		/// <summary>
@@ -288,6 +437,51 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void BackToCategories()
 		{
 			Frame.Navigate(typeof(CategorySelectPage), Frame);
+		}
+
+		/// <summary>
+		/// Map event create message
+		/// </summary>
+		private void NewMapEventNotification(string name, DateTime start)
+		{
+			var toastContent = new ToastContent()
+			{
+				Visual = new ToastVisual()
+				{
+					BindingGeneric = new ToastBindingGeneric()
+					{
+						Children =
+						{
+							new AdaptiveText()
+							{
+								Text = "Создано новое событие",
+								HintMaxLines = 1
+							},
+							new AdaptiveText()
+							{
+								Text = name,
+							},
+							new AdaptiveText()
+							{
+								Text = $"Начало в {start.ToShortTimeString()}"
+							}
+						},
+						AppLogoOverride = new ToastGenericAppLogo()
+						{
+							//Source = "https://picsum.photos/48?image=883",
+							Source = @"Assets/user-48.png",
+							HintCrop = ToastGenericAppLogoCrop.Circle
+						}
+					}
+				},
+				Launch = "app-defined-string"
+			};
+
+			// Create the toast notification
+			var toastNotif = new ToastNotification(toastContent.GetXml());
+
+			// And send the notification
+			ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
 		}
 	}
 }

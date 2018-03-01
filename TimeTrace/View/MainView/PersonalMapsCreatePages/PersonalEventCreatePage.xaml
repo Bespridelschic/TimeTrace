@@ -32,7 +32,8 @@
 		</Grid.RowDefinitions>
 
 		<Button
-			VerticalAlignment="Stretch"
+			Height="40"
+			VerticalAlignment="Top"
 			Click="{x:Bind ViewModel.BackToCategories}"
 			ToolTipService.ToolTip="Вернуться к выбору категорий">
 			<FontIcon Glyph="&#xe72b;" />
@@ -70,7 +71,7 @@
 						Margin="15,5,15,5"
 						Header="Имя события*"
 						IsSpellCheckEnabled="True"
-						MaxLength="100"
+						MaxLength="50"
 						PlaceholderText="Задайте имя события"
 						Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}"
 						ToolTipService.ToolTip="Имя событие, отображаемое в календаре" />
@@ -82,7 +83,7 @@
 						AcceptsReturn="True"
 						Header="Описание события"
 						IsSpellCheckEnabled="True"
-						MaxLength="400"
+						MaxLength="200"
 						PlaceholderText="Задайте описание событию"
 						Text="{x:Bind ViewModel.CurrentMapEvent.Description, Mode=TwoWay}"
 						TextWrapping="Wrap"
@@ -99,7 +100,7 @@
 						<CalendarDatePicker
 							Width="180"
 							Margin="15,5,10,5"
-							Date="{x:Bind ViewModel.CurrentMapEvent.StartDate, Mode=TwoWay}"
+							Date="{x:Bind ViewModel.StartDate, Mode=TwoWay}"
 							DateFormat="{}{day.integer} {month.full} {year.full}"
 							Header="Дата начала*"
 							MinDate="{x:Bind ViewModel.MinDate}"
@@ -113,7 +114,7 @@
 							Margin="0,5,15,5"
 							HorizontalAlignment="Right"
 							Header="Время начала"
-							Time="{x:Bind ViewModel.CurrentMapEvent.StartTime, Mode=TwoWay}"
+							Time="{x:Bind ViewModel.StartTime, Mode=TwoWay}"
 							ToolTipService.ToolTip="Время, к которому будет привязано событие" />
 					</Grid>
 
@@ -156,7 +157,7 @@
 						<CalendarDatePicker
 							Width="180"
 							Margin="15,5,10,5"
-							Date="{x:Bind ViewModel.CurrentMapEvent.EndDate, Mode=TwoWay}"
+							Date="{x:Bind ViewModel.EndDate, Mode=TwoWay}"
 							DateFormat="{}{day.integer} {month.full} {year.full}"
 							Header="Дата окончания*"
 							IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
@@ -172,7 +173,7 @@
 							HorizontalAlignment="Right"
 							Header="Время окончания"
 							IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
-							Time="{x:Bind ViewModel.CurrentMapEvent.EndTime, Mode=TwoWay}"
+							Time="{x:Bind ViewModel.EndTime, Mode=TwoWay}"
 							ToolTipService.ToolTip="Длительность создаваемого события" />
 					</Grid>
 				</StackPanel>

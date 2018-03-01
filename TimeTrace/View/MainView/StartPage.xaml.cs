@@ -17,13 +17,14 @@ using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using TimeTrace.View.AuthenticationView;
 using Windows.UI.Notifications;
 using Microsoft.Toolkit.Uwp.Notifications;
-
-// Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.Storage;
 
 namespace TimeTrace.View.MainView
 {
 	/// <summary>
-	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
+	/// Start page code behind
 	/// </summary>
 	public sealed partial class StartPage : Page
 	{
@@ -50,6 +51,7 @@ namespace TimeTrace.View.MainView
 			{
 				ContentFrame.Navigate(typeof(SettingsPage));
 			}
+
 			else
 			{
 				NavigationViewItem item = args.SelectedItem as NavigationViewItem;
@@ -58,17 +60,14 @@ namespace TimeTrace.View.MainView
 				{
 					case "home":
 						ContentFrame.Navigate(typeof(HomePage), ContentFrame);
-						NavHeader.Header = "Домашняя страница";
 						break;
 
 					case "schedule":
 						ContentFrame.Navigate(typeof(SchedulePage));
-						NavHeader.Header = "Расписание";
 						break;
 
 					case "personalMaps":
 						ContentFrame.Navigate(typeof(CategorySelectPage), ContentFrame);
-						NavHeader.Header = "Интеллект-карты пользователя";
 						break;
 
 					case "scheduleSync":
@@ -76,7 +75,6 @@ namespace TimeTrace.View.MainView
 						break;
 
 					default:
-						NavHeader.Header = "Time Tracking";
 						break;
 				}
 			}
@@ -187,6 +185,14 @@ namespace TimeTrace.View.MainView
 
 			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
 			{
+				// Remove local user data settings
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+				localSettings.Values.Remove("email");
+				localSettings.Values.Remove("lastName");
+				localSettings.Values.Remove("firstName");
+				localSettings.Values.Remove("middleName");
+				localSettings.Values.Remove("birthday");
+
 				if (Window.Current.Content is Frame frame)
 				{
 					frame.Navigate(typeof(SignInPage));

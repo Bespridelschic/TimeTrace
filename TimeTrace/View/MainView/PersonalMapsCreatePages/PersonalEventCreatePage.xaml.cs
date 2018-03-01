@@ -14,14 +14,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 {
-    /// <summary>
-    /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
-    /// </summary>
-    public sealed partial class PersonalEventCreatePage : Page
+	/// <summary>
+	/// Event create code behind
+	/// </summary>
+	public sealed partial class PersonalEventCreatePage : Page
     {
         public PersonalEventCreatePage()
         {

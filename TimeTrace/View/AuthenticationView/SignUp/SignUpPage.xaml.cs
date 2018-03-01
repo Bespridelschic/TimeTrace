@@ -17,12 +17,10 @@ using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 using TimeTrace.Model;
 
-// Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace TimeTrace.View.AuthenticationView.SignUp
 {
 	/// <summary>
-	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
+	/// Sign up code behind
 	/// </summary>
 	public sealed partial class SignUpPage : Page
 	{
@@ -44,7 +42,7 @@ namespace TimeTrace.View.AuthenticationView.SignUp
 		}
 
 		/// <summary>
-		/// Получение системного цвета и установка цвета не автоматическим элементам
+		/// System color
 		/// </summary>
 		private SolidColorBrush SolidBrush
 		{

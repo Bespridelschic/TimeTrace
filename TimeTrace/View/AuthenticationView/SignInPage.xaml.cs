@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Navigation;
 namespace TimeTrace.View.AuthenticationView
 {
 	/// <summary>
-	/// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
+	/// Sign in code behind
 	/// </summary>
 	public sealed partial class SignInPage : Page
 	{
@@ -17,7 +17,7 @@ namespace TimeTrace.View.AuthenticationView
 		{
 			this.InitializeComponent();
 
-			// Установка размеров начального окна
+			// Size of page
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(385, 800));
 
 			ViewModel = new SignInViewModel();
@@ -39,7 +39,7 @@ namespace TimeTrace.View.AuthenticationView
 		public SignInViewModel ViewModel { get; private set; }
 
 		/// <summary>
-		/// Получение системного цвета и установка цвета не автоматическим элементам
+		/// System color
 		/// </summary>
 		private SolidColorBrush SolidBrush
 		{

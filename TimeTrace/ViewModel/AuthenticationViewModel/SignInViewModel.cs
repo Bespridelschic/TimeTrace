@@ -9,6 +9,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.ApplicationModel.Resources;
+using Windows.Storage;
 
 namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
@@ -115,7 +116,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// <summary>
 		/// Check fields correct
 		/// </summary>
-		/// <returns>Удовлетворяют ли поля бизнес-логике</returns>
+		/// <returns>Do the fields satisfy business logic</returns>
 		private async Task<bool> CanAppSignIn()
 		{
 			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
@@ -168,6 +169,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				{
 					case 0:
 						{
+							// Save login to file
 							if (IsPasswordSave)
 							{
 								await UserFileWorker.SaveUserToFileAsync(CurrentUser);
@@ -175,6 +177,23 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							else
 							{
 								await UserFileWorker.RemoveUserDataFromFilesAsync();
+							}
+
+							try
+							{
+								CurrentUser = await UserRequests.PostRequestAsync();
+
+								// Save user local data for using after sign in
+								ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+								localSettings.Values["email"] = CurrentUser.Email;
+								localSettings.Values["lastName"] = CurrentUser.LastName;
+								localSettings.Values["firstName"] = CurrentUser.FirstName;
+								localSettings.Values["middleName"] = CurrentUser.MiddleName;
+								localSettings.Values["birthday"] = CurrentUser.Birthday;
+							}
+							catch(Exception)
+							{
+								throw;
 							}
 
 							if (Window.Current.Content is Frame frame)
