@@ -65,12 +65,12 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
-		private string color;
+		private int color;
 		/// <summary>
 		/// Color of calendar
 		/// </summary>
 		[JsonProperty(PropertyName = "color")]
-		public string Color
+		public int Color
 		{
 			get { return color; }
 			set

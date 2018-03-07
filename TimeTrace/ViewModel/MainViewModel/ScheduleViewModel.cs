@@ -53,7 +53,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		/// <param name="sender">Calendar dates</param>
 		/// <param name="args">Args</param>
-		public async void DateSelection(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
+		public void DateSelection(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
 		{
 			/*FilterDates = sender.SelectedDates.ToList();
 			if (MapEvents == null)

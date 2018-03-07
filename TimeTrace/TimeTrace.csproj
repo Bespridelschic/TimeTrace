@@ -114,7 +114,10 @@
     <Compile Include="ViewModel\AuthenticationViewModel\SignUpViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel\PersonalEventCreateViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\ProjectViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\TransitionData.cs" />
     <Compile Include="ViewModel\MainViewModel\ScheduleViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
@@ -137,6 +140,9 @@
     <Compile Include="View\MainView\PersonalMapsCreatePages\PersonalEventCreatePage.xaml.cs">
       <DependentUpon>PersonalEventCreatePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MainView\PersonalMapsCreatePages\ProjectListPage.xaml.cs">
+      <DependentUpon>ProjectListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainView\SchedulePage.xaml.cs">
       <DependentUpon>SchedulePage.xaml</DependentUpon>
     </Compile>
@@ -154,7 +160,6 @@
     <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />
-    <None Include="ProjectDiagrams\ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\user-192.png">
@@ -211,6 +216,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\MainView\PersonalMapsCreatePages\ProjectListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainView\SchedulePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,7 +250,9 @@
       <Version>11.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ProjectDiagrams\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

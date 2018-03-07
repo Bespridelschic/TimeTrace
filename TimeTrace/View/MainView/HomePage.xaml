@@ -99,14 +99,25 @@
 							Foreground="White" />
 					</VariableSizedWrapGrid>
 
-					<Button
-						Grid.Row="1"
-						Width="200"
-						Margin="0,0,0,20"
-						HorizontalAlignment="Center"
-						Background="CadetBlue"
-						Content="Обратная связь"
-						Foreground="White" />
+					<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
+						<Button
+							Grid.Row="1"
+							Width="200"
+							Margin="20,0,20,20"
+							HorizontalAlignment="Center"
+							Background="CadetBlue"
+							Content="Сменить пароль"
+							Foreground="White" />
+
+						<Button
+							Grid.Row="1"
+							Width="200"
+							Margin="20,0,20,20"
+							HorizontalAlignment="Center"
+							Background="CadetBlue"
+							Content="Обратная связь"
+							Foreground="White" />
+					</VariableSizedWrapGrid>
 
 				</StackPanel>
 

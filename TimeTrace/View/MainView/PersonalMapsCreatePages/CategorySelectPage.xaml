@@ -17,10 +17,43 @@
 			<Setter Property="BorderThickness" Value="1.5" />
 			<Setter Property="Foreground" Value="Black" />
 			<Setter Property="Margin" Value="1.5" />
+			<Setter Property="ContextFlyout">
+				<Setter.Value>
+					<MenuFlyout>
+						<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
+						<MenuFlyoutItem Icon="Delete" Text="Удалить" />
+					</MenuFlyout>
+				</Setter.Value>
+			</Setter>
 			<Setter Property="ContentTemplate">
 				<Setter.Value>
 					<DataTemplate x:DataType="local:Area">
-						<StackPanel>
+						<StackPanel ToolTipService.Placement="Top">
+							<ToolTipService.ToolTip>
+								<StackPanel>
+									<StackPanel Margin="10,2" Orientation="Horizontal">
+										<TextBlock
+											Margin="0,0,5,0"
+											FontSize="15"
+											Text="Календарь: " />
+										<TextBlock FontSize="15" Text="{Binding Name}" />
+									</StackPanel>
+									<StackPanel Margin="10,2" Orientation="Horizontal">
+										<TextBlock
+											Margin="0,0,5,0"
+											FontSize="15"
+											Text="Описание: " />
+										<TextBlock FontSize="15" Text="{Binding Description}" />
+									</StackPanel>
+									<StackPanel Margin="10,2" Orientation="Horizontal">
+										<TextBlock
+											Margin="0,0,5,0"
+											FontSize="15"
+											Text="Обновлено: " />
+										<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
+									</StackPanel>
+								</StackPanel>
+							</ToolTipService.ToolTip>
 							<PersonPicture
 								Width="70"
 								Height="70"
@@ -28,7 +61,7 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Top"
 								Background="White"
-								Initials="{Binding Name}" />
+								Initials="C#" />
 							<TextBlock
 								HorizontalAlignment="Center"
 								FontSize="20"
@@ -70,7 +103,7 @@
 				HorizontalAlignment="Center"
 				VerticalAlignment="Top"
 				FontSize="35"
-				Text="Список категорий"
+				Text="Календари"
 				TextWrapping="WrapWholeWords" />
 
 			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
@@ -83,12 +116,7 @@
 				Margin="50,20"
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
-				Orientation="Horizontal">
-
-				<Button Click="{x:Bind ViewModel.CategorySelect}" />
-				<Button Click="{x:Bind ViewModel.CategorySelect}" />
-
-			</VariableSizedWrapGrid>
+				Orientation="Horizontal" />
 		</ScrollViewer>
 
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
@@ -107,17 +135,12 @@
 			<AppBarButton
 				Click="{x:Bind ViewModel.CategoryCreate}"
 				Icon="Add"
-				Label="Добавить"
-				ToolTipService.ToolTip="Создать новую категорию или событие" />
+				Label="Добавить календарь"
+				ToolTipService.ToolTip="Создать новый календарь" />
 			<AppBarButton
 				Icon="Remove"
-				Label="Удалить"
-				ToolTipService.ToolTip="Удалить выбранную категорию или событие" />
-			<AppBarSeparator />
-			<AppBarButton
-				Icon="Edit"
-				Label="Изменить"
-				ToolTipService.ToolTip="Редактировать выбранную категорию или событие событий" />
+				Label="Удалить выбранные"
+				ToolTipService.ToolTip="Удалить выбранные календари" />
 		</CommandBar>
 
 	</Grid>

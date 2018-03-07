@@ -34,8 +34,8 @@
 		<Button
 			Height="40"
 			VerticalAlignment="Top"
-			Click="{x:Bind ViewModel.BackToCategories}"
-			ToolTipService.ToolTip="Вернуться к выбору категорий">
+			Click="{x:Bind ViewModel.BackToProjects}"
+			ToolTipService.ToolTip="Вернуться к проектам">
 			<FontIcon Glyph="&#xe72b;" />
 		</Button>
 
@@ -51,7 +51,7 @@
 				HorizontalAlignment="Center"
 				VerticalAlignment="Top"
 				FontSize="35"
-				Text="Установка нового события календаря"
+				Text="Создание события календаря"
 				TextWrapping="WrapWholeWords" />
 
 			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
