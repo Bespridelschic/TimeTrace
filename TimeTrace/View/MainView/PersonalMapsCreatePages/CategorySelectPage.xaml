@@ -17,14 +17,6 @@
 			<Setter Property="BorderThickness" Value="1.5" />
 			<Setter Property="Foreground" Value="Black" />
 			<Setter Property="Margin" Value="1.5" />
-			<Setter Property="ContextFlyout">
-				<Setter.Value>
-					<MenuFlyout>
-						<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
-						<MenuFlyoutItem Icon="Delete" Text="Удалить" />
-					</MenuFlyout>
-				</Setter.Value>
-			</Setter>
 			<Setter Property="ContentTemplate">
 				<Setter.Value>
 					<DataTemplate x:DataType="local:Area">
@@ -145,33 +137,3 @@
 
 	</Grid>
 </Page>
-
-
-<!--<Button
-					Grid.Row="1"
-					Width="150"
-					Height="150"
-					Background="White"
-					BorderBrush="Green"
-					BorderThickness="2"
-					Foreground="Black">
-	<StackPanel>
-		<PersonPicture
-							Width="70"
-							Height="70"
-							Margin="10,0,0,0"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Top"
-							Background="White"
-							Initials="Work" />
-		<TextBlock
-							HorizontalAlignment="Center"
-							FontSize="20"
-							Text="Работа" />
-		<TextBlock
-							HorizontalAlignment="Center"
-							FontSize="15"
-							Foreground="SlateGray"
-							Text="Спорт" />
-	</StackPanel>
-</Button>-->

@@ -176,7 +176,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							}
 							else
 							{
-								await UserFileWorker.RemoveUserDataFromFilesAsync();
+								await CurrentUser.RemoveUserDataFromFilesAsync();
 							}
 
 							try
@@ -221,7 +221,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							}
 							else
 							{
-								await UserFileWorker.RemoveUserDataFromFilesAsync();
+								await CurrentUser.RemoveUserDataFromFilesAsync();
 							}
 
 							break;

@@ -222,7 +222,7 @@ namespace TimeTrace.Model
 		{
 			if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(token))
 			{
-				var res = new { email = email, _csrf = token };
+				var res = new { email, _csrf = token };
 				return JsonConvert.SerializeObject(res);
 			}
 			return null;

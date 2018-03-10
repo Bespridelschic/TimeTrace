@@ -21,8 +21,13 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Saving object <see cref="User"/></param>
 		/// <returns>Success of saving</returns>
-		public static async Task SaveUserToFileAsync(User user)
+		public static async Task SaveUserToFileAsync(this User user)
 		{
+			if (!ArgumentIsNotNull(user))
+			{
+				throw new ArgumentNullException($"{nameof(User)} is null");
+			}
+
 			StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
 			StorageFile storageFile = await storageFolder.CreateFileAsync("_psf.bin", CreationCollisionOption.ReplaceExisting);
 
@@ -36,8 +41,13 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Success of loading</returns>
-		public static async Task LoadUserFromFileAsync(User user)
+		public static async Task LoadUserFromFileAsync(this User user)
 		{
+			if (!ArgumentIsNotNull(user))
+			{
+				throw new ArgumentNullException($"{nameof(User)} is null");
+			}
+
 			try
 			{
 				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
@@ -92,8 +102,13 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Remove all confidential files
 		/// </summary>Результат удаления файлов</returns>
-		public static async Task RemoveUserDataFromFilesAsync()
+		public static async Task RemoveUserDataFromFilesAsync(this User user)
 		{
+			if (!ArgumentIsNotNull(user))
+			{
+				throw new ArgumentNullException($"{nameof(User)} is null");
+			}
+
 			try
 			{
 				var storageFile = await ApplicationData.Current.LocalFolder.TryGetItemAsync("_psf.bin");
@@ -159,6 +174,17 @@ namespace TimeTrace.Model
 			{
 				return (null, null);
 			}
+		}
+
+		/// <summary>
+		/// Cheking input argument
+		/// </summary>
+		/// <typeparam name="T">Type of argument</typeparam>
+		/// <param name="param">Sender parameter</param>
+		/// <returns>Is param null</returns>
+		private static bool ArgumentIsNotNull<T>(T param)
+		{
+			return param == null;
 		}
 
 		/// <summary>
