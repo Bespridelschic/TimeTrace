@@ -31,16 +31,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Button
-			Height="40"
-			VerticalAlignment="Top"
-			Click="{x:Bind ViewModel.BackToProjects}"
-			ToolTipService.ToolTip="Вернуться к проектам">
-			<FontIcon Glyph="&#xe72b;" />
-		</Button>
-
 		<Grid>
-
 			<Grid.RowDefinitions>
 				<RowDefinition />
 				<RowDefinition Height="Auto" />

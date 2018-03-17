@@ -18,8 +18,11 @@ using TimeTrace.View.AuthenticationView;
 using Windows.UI.Notifications;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Windows.ApplicationModel.Activation;
 using Windows.Storage;
+using Windows.UI.Core;
 
 namespace TimeTrace.View.MainView
 {
@@ -33,12 +36,28 @@ namespace TimeTrace.View.MainView
 			this.InitializeComponent();
 
 			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(650, 800));
-			ContentFrame.Navigate(typeof(HomePage), ContentFrame);
-
-			ViewModel = new ViewModel.MainViewModel.SettingsViewModel();
 		}
 
-		public ViewModel.MainViewModel.SettingsViewModel ViewModel;
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			(Application.Current as App).AppFrame = ContentFrame;
+			(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
+			(Application.Current as App).AppFrame.BackStack.Clear();
+
+			(Application.Current as App).AppFrame.Navigated += (s, args) =>
+			{
+				if ((Application.Current as App).AppFrame.CanGoBack)
+				{
+					SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+						AppViewBackButtonVisibility.Visible;
+				}
+				else
+				{
+					SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+						AppViewBackButtonVisibility.Collapsed;
+				}
+			};
+		}
 
 		/// <summary>
 		/// Navigation menu
@@ -49,7 +68,7 @@ namespace TimeTrace.View.MainView
 		{
 			if (args.IsSettingsSelected)
 			{
-				ContentFrame.Navigate(typeof(SettingsPage));
+				(Application.Current as App).AppFrame.Navigate(typeof(SettingsPage));
 			}
 
 			else
@@ -59,15 +78,15 @@ namespace TimeTrace.View.MainView
 				switch (item.Tag)
 				{
 					case "home":
-						ContentFrame.Navigate(typeof(HomePage), ContentFrame);
+						(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
 						break;
 
 					case "schedule":
-						ContentFrame.Navigate(typeof(SchedulePage));
+						(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage));
 						break;
 
 					case "personalMaps":
-						ContentFrame.Navigate(typeof(CategorySelectPage), ContentFrame);
+						(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 						break;
 
 					case "scheduleSync":
@@ -197,6 +216,7 @@ namespace TimeTrace.View.MainView
 				localSettings.Values.Remove("middleName");
 				localSettings.Values.Remove("birthday");
 
+				//(Application.Current as App).AppFrame.Navigate(typeof(SignInPage));
 				if (Window.Current.Content is Frame frame)
 				{
 					frame.Navigate(typeof(SignInPage));

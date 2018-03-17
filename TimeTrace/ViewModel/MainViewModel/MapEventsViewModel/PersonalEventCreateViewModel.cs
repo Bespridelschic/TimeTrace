@@ -37,7 +37,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public MapEvent CurrentMapEvent
 		{
-			get { return currentMapEvent; }
+			get => currentMapEvent;
 			set
 			{
 				currentMapEvent = value;
@@ -48,7 +48,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <summary>
 		/// Min updateAt - current day
 		/// </summary>
-		public DateTime MinDate { get; set; }
+		public DateTime MinDate { get; }
 
 		private bool isSelectMan;
 		/// <summary>
@@ -56,7 +56,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public bool IsSelectMan
 		{
-			get { return isSelectMan; }
+			get => isSelectMan;
 			set
 			{
 				isSelectMan = value;
@@ -70,7 +70,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public bool IsSelectPlace
 		{
-			get { return isSelectPlace; }
+			get => isSelectPlace;
 			set
 			{
 				isSelectPlace = value;
@@ -84,7 +84,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public int BindingObjectIndex
 		{
-			get { return bindingObjectIndex; }
+			get => bindingObjectIndex;
 			set
 			{
 				bindingObjectIndex = value;
@@ -124,7 +124,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public DateTimeOffset? StartDate
 		{
-			get { return startDate; }
+			get => startDate;
 			set
 			{
 				startDate = value;
@@ -143,7 +143,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public TimeSpan StartTime
 		{
-			get { return startTime; }
+			get => startTime;
 			set
 			{
 				if (startTime != value)
@@ -165,7 +165,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public DateTimeOffset? EndDate
 		{
-			get { return endDate; }
+			get => endDate;
 			set
 			{
 				endDate = value;
@@ -184,7 +184,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public TimeSpan EndTime
 		{
-			get { return endTime; }
+			get => endTime;
 			set
 			{
 				if (endTime != value)
@@ -206,7 +206,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public bool IsNotAllDay
 		{
-			get { return isNotAllDay; }
+			get => isNotAllDay;
 			set
 			{
 				isNotAllDay = value;
@@ -221,21 +221,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		/// <summary>
-		/// Local page frame
-		/// </summary>
-		public Frame Frame { get; set; }
-
 		#endregion
 
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		/// <param name="areaId">ID of parent area</param>
-		/// <param name="mainGridPanel">Owner panel</param>
-		public PersonalEventCreateViewModel(string projectId)
+		public PersonalEventCreateViewModel()
 		{
-			CurrentMapEvent = new MapEvent(projectId);
+			CurrentMapEvent = new MapEvent();
 			StartDate = DateTime.Now;
 
 			MinDate = DateTime.Today;
@@ -300,11 +293,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			BindingEventToWindowsCalendar();
 
-			/*using (MapEventContext db = new MapEventContext())
+			using (MapEventContext db = new MapEventContext())
 			{
 				db.MapEvents.Add(CurrentMapEvent);
 				db.SaveChanges();
-			}*/
+			}
 
 			NewMapEventNotification(CurrentMapEvent.Name, CurrentMapEvent.Start);
 		}
@@ -367,14 +360,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			Color localColor = Color.FromArgb(255, r, g, b);
 			return new SolidColorBrush(localColor);
-		}
-
-		/// <summary>
-		/// Cancel event creation and back to projects
-		/// </summary>
-		public void BackToProjects()
-		{
-			Frame.Navigate(typeof(ProjectListPage), Frame);
 		}
 
 		/// <summary>

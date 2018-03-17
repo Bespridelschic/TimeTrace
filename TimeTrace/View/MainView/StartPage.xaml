@@ -21,7 +21,7 @@
 		SelectionChanged="NavView_SelectionChanged">
 
 		<NavigationView.HeaderTemplate>
-			<DataTemplate x:DataType="local:StartPage">
+			<DataTemplate>
 				<Grid Margin="24,10,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />

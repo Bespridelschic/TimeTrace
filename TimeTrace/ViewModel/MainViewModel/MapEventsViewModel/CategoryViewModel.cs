@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,24 +20,28 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 	/// <summary>
 	/// View model of category (calendar) creation
 	/// </summary>
-	public class CategoryViewModel
+	public class CategoryViewModel : BaseViewModel
 	{
 		#region Properties
-
-		/// <summary>
-		/// Local page frame
-		/// </summary>
-		public Frame Frame { get; set; }
-
-		/// <summary>
-		/// Panel of controls
-		/// </summary>
-		public VariableSizedWrapGrid MainGridPanel { get; set; }
 
 		/// <summary>
 		/// Available colors for choosing
 		/// </summary>
 		private Dictionary<string, string> ColorsTable { get; set; }
+
+		private ObservableCollection<Button> buttonCollection;
+		/// <summary>
+		/// Binded collection of buttons
+		/// </summary>
+		public ObservableCollection<Button> ButtonCollection
+		{
+			get => buttonCollection;
+			set
+			{
+				buttonCollection = value;
+				OnPropertyChanged();
+			}
+		}
 
 		#endregion
 
@@ -43,10 +49,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// Standart constructor
 		/// </summary>
 		/// <param name="mainPanel">Panel of frame</param>
-		public CategoryViewModel(VariableSizedWrapGrid mainPanel)
+		public CategoryViewModel()
 		{
-			MainGridPanel = mainPanel;
-
 			ColorsTable = new Dictionary<string, string>()
 			{
 				{ "Красный", "#d50000" },
@@ -61,12 +65,15 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{ "Фиолетовый", "#8E24AA" },
 				{ "Чёрный", "#616161" }
 			};
-
+			ButtonCollection = new ObservableCollection<Button>();
+			AreaSuggestList = new List<string>();
 			using (MapEventContext db = new MapEventContext())
 			{
 				foreach (var i in db.Areas.Select(i => i))
 				{
-					MainGridPanel.Children.Add(NewCategoryButtonCreate(i));
+					//AreaSuggestList.Add(i.Name);
+
+					ButtonCollection.Add(NewCategoryButtonCreate(i));
 				}
 			}
 		}
@@ -81,13 +88,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			if (newArea != null)
 			{
 				// Adding area into DB
-				using (MapEventContext db = new MapEventContext())
+				using (var db = new MapEventContext())
 				{
 					db.Areas.Add(newArea);
 					db.SaveChanges();
 				}
 
-				MainGridPanel.Children.Add(NewCategoryButtonCreate(newArea));
+				ButtonCollection.Add(NewCategoryButtonCreate(newArea));
 			}
 		}
 
@@ -98,10 +105,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			using (MapEventContext db = new MapEventContext())
 			{
-				var selectedArea = db.Areas.First(i => i.Id == (string)(sender as Button).Tag);
-				TransitionData<Area> data = new TransitionData<Area>(Frame, selectedArea);
-
-				Frame.Navigate(typeof(ProjectListPage), data);
+				(Application.Current as App).AppFrame.Navigate(typeof(ProjectListPage), db.Areas.First(i => i.Id == (string)(sender as Button).Tag));
 			}
 		}
 
@@ -130,7 +134,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				if (result == ContentDialogResult.Primary)
 				{
 					// Remove Area from UI panel
-					MainGridPanel.Children.Remove(MainGridPanel.Children.First(i => (string)(i as Button).Tag == selectedArea.Id));
+					ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedArea.Id));
+
 					// Remove Area from Database
 					db.Areas.Remove(selectedArea);
 					db.SaveChanges();
@@ -150,16 +155,64 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				// Get edited Area object
 				var editedArea = await CategoryCreationDialogAsync(selectedArea);
-				selectedArea.Name = editedArea.Name;
-				selectedArea.Description = editedArea.Description;
-				selectedArea.Color = editedArea.Color;
 
-				if (selectedArea.GetHashCode() != editedArea.GetHashCode())
+				// If area was edit
+				if (editedArea.Name != selectedArea.Name || editedArea.Description != selectedArea.Description || editedArea.Color != selectedArea.Color)
 				{
+
+					selectedArea.Name = editedArea.Name;
+					selectedArea.Description = editedArea.Description;
+					selectedArea.Color = editedArea.Color;
+
+					// Update area in database
 					db.Areas.Update(selectedArea);
 					db.SaveChanges();
 
-					MainGridPanel.Children.First(i => (string)(i as Button).Tag == selectedArea.Id).InvalidateMeasure(); // TODO: Not work
+					// Update current button
+					var index = ButtonCollection.IndexOf(ButtonCollection.First(i => (string)i.Tag == selectedArea.Id));
+					ButtonCollection.RemoveAt(index);
+					ButtonCollection.Insert(index, NewCategoryButtonCreate(selectedArea));
+				}
+			}
+		}
+
+		private List<string> areaSuggestList;
+
+		public List<string> AreaSuggestList
+		{
+			get => areaSuggestList;
+			set
+			{
+				areaSuggestList = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public void CategoryFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (ButtonCollection == null) return;
+
+			ButtonCollection.Clear();
+
+			if (string.IsNullOrEmpty(sender.Text))
+			{
+				using (MapEventContext db = new MapEventContext())
+				{
+					foreach (var i in db.Areas.Select(i => i))
+					{
+						ButtonCollection.Add(NewCategoryButtonCreate(i));
+					}
+				}
+			}
+
+			else
+			{
+				using (MapEventContext db = new MapEventContext())
+				{
+					foreach (var i in db.Areas.Where(i => i.Name.Contains(sender.Text)).Select(i => i))
+					{
+						ButtonCollection.Add(NewCategoryButtonCreate(i));
+					}
 				}
 			}
 		}
@@ -180,6 +233,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				Text = area?.Name ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 30,
+				SelectionStart = area?.Name?.Length ?? 0,
 			};
 
 			TextBox description = new TextBox()

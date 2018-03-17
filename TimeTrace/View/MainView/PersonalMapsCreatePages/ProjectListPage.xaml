@@ -22,16 +22,7 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<Button
-				Height="40"
-				VerticalAlignment="Top"
-				Click="{x:Bind ViewModel.BackToCategories}"
-				ToolTipService.ToolTip="Вернуться к выбору календарей">
-				<FontIcon Glyph="&#xe72b;" />
-			</Button>
-
 			<StackPanel
-				Grid.Column="1"
 				HorizontalAlignment="Center"
 				VerticalAlignment="Top"
 				Orientation="Horizontal">
@@ -53,19 +44,13 @@
 		</Grid>
 
 		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-			<!--<VariableSizedWrapGrid
-				Name="mainGridPanel"
-				Margin="50,20"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Center"
-				Orientation="Horizontal" />-->
 
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 				<TextBlock Text="Proj.Id" />
 				<TextBlock Text="{x:Bind ViewModel.Proj.Id}" />
 
 				<TextBlock Text="Proj.AreaId" />
-				<TextBlock Text="{x:Bind ViewModel.Proj.AreaId}" />
+				<TextBlock Text="{x:Bind ViewModel.Proj.AreaId, Mode=OneWay}" />
 
 				<TextBlock Text="Proj.Name" />
 				<TextBlock Text="{x:Bind ViewModel.Proj.Name}" />
@@ -76,7 +61,11 @@
 				<TextBlock Text="CurrentArea.Id" />
 				<TextBlock Text="{x:Bind ViewModel.CurrentArea.Id}" />
 
-				<Button Content="Create event" Background="SteelBlue" Foreground="White" Click="{x:Bind ViewModel.ProjectSelect}"/>
+				<Button
+					Background="SteelBlue"
+					Click="{x:Bind ViewModel.ProjectSelect}"
+					Content="Create event"
+					Foreground="White" />
 			</StackPanel>
 
 		</ScrollViewer>

@@ -68,12 +68,6 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
-		<media:AcrylicBrush
-			x:Key="HostBackdropBrush"
-			BackgroundSource="HostBackdrop"
-			FallbackColor="LightSkyBlue"
-			TintColor="LightBlue"
-			TintOpacity="0.6" />
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -103,12 +97,17 @@
 		</Grid>
 
 		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-			<VariableSizedWrapGrid
-				Name="mainGridPanel"
-				Margin="50,20"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Center"
-				Orientation="Horizontal" />
+			<ItemsControl ItemsSource="{x:Bind ViewModel.ButtonCollection, Mode=TwoWay}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VariableSizedWrapGrid
+							Margin="50,20"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
 		</ScrollViewer>
 
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
@@ -118,8 +117,10 @@
 					<AutoSuggestBox
 						Width="250"
 						Margin="10,13,10,10"
+						ItemsSource="{x:Bind ViewModel.AreaSuggestList, Mode=OneWay}"
 						PlaceholderText="Поиск..."
-						QueryIcon="Find" />
+						QueryIcon="Find"
+						TextChanged="{x:Bind ViewModel.CategoryFilter}" />
 				</StackPanel>
 
 			</CommandBar.Content>

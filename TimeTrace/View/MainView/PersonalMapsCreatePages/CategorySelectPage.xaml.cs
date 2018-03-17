@@ -17,6 +17,8 @@ using TimeTrace.ViewModel.MainViewModel;
 using TimeTrace.Model.Events.DBContext;
 using Windows.UI;
 using TimeTrace.ViewModel.MainViewModel.MapEventsViewModel;
+using Windows.UI.Popups;
+using System.Diagnostics;
 
 namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 {
@@ -29,17 +31,9 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		{
 			this.InitializeComponent();
 
-			ViewModel = new CategoryViewModel(mainGridPanel);
+			ViewModel = new CategoryViewModel();
 		}
 
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			if (e != null)
-			{
-				ViewModel.Frame = (Frame)e.Parameter;
-			}
-		}
-
-		CategoryViewModel ViewModel { get; set; }
+		private CategoryViewModel ViewModel { get; set; }
 	}
 }

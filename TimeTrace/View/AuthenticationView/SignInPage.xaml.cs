@@ -1,8 +1,11 @@
-﻿using Windows.UI.ViewManagement;
+﻿using Windows.ApplicationModel.Activation;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using TimeTrace.Model;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
 using TimeTrace.ViewModel.AuthenticationViewModel;
 using Windows.UI.Xaml.Navigation;
 
@@ -30,9 +33,24 @@ namespace TimeTrace.View.AuthenticationView
 				ViewModel.CurrentUser = (User)e.Parameter;
 			}
 
-			if (Frame.BackStack.Count > 0)
+			if (Window.Current.Content is Frame frame)
 			{
-				Frame.BackStack.Clear();
+				(Application.Current as App).AppFrame = frame;
+				(Application.Current as App).AppFrame.BackStack.Clear();
+
+				(Application.Current as App).AppFrame.Navigated += (s, args) =>
+				{
+					if ((Application.Current as App).AppFrame.CanGoBack)
+					{
+						SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+							AppViewBackButtonVisibility.Visible;
+					}
+					else
+					{
+						SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+							AppViewBackButtonVisibility.Collapsed;
+					}
+				};
 			}
 		}
 

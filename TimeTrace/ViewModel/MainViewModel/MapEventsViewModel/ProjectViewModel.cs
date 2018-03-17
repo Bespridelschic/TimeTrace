@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,16 +18,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 	public class ProjectViewModel : BaseViewModel
 	{
 		#region Properties
-
-		/// <summary>
-		/// Local page frame
-		/// </summary>
-		public Frame Frame { get; set; }
-
-		/// <summary>
-		/// Panel of controls
-		/// </summary>
-		public VariableSizedWrapGrid MainGridPanel { get; set; }
 
 		/// <summary>
 		/// Reseived area
@@ -55,8 +46,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				Name = "Random name",
 			};
-
-			//Proj.AreaId = CurrentArea.Id;
 		}
 
 		/// <summary>
@@ -71,16 +60,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				//var selectedProject = db.Projects.First(i => i.Id == (string)(sender as Button).Tag);
 				//TransitionData<Project> data = new TransitionData<Project>(Frame, selectedProject);
 
-				Frame.Navigate(typeof(PersonalEventCreatePage), Frame); // , data
+				(Application.Current as App).AppFrame.Navigate(typeof(PersonalEventCreatePage));
 			}
-		}
-
-		/// <summary>
-		/// Back to categories
-		/// </summary>
-		public void BackToCategories()
-		{
-			Frame.Navigate(typeof(CategorySelectPage), Frame);
 		}
 	}
 }

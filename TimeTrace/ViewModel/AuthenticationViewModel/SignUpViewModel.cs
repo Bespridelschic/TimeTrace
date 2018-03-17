@@ -135,7 +135,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			SelectedDate = null;
 			MaxDate = DateTime.Today;
 			ControlEnable = true;
-	}
+		}
 
 		/// <summary>
 		/// Navigate to page of registration ending
@@ -144,7 +144,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		{
 			if (Window.Current.Content is Frame frame)
 			{
-				frame.Navigate(typeof(SignUpPage), CurrentUser);
+				frame.Navigate(typeof(SignUpPage));
 			}
 		}
 
@@ -211,42 +211,44 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				switch (requestResult)
 				{
 					case 0:
-						{
-							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/AccountSuccessRegistredText"),
-								ResourceLoader.GetString("/SignInUp/SuccessText"))).ShowAsync();
-							await UserFileWorker.SaveUserToFileAsync(CurrentUser);
+					{
+						await (new MessageDialog(ResourceLoader.GetString("/SignInUp/AccountSuccessRegistredText"),
+							ResourceLoader.GetString("/SignInUp/SuccessText"))).ShowAsync();
+						await CurrentUser.SaveUserToFileAsync();
 
-							break;
-						}
+						break;
+					}
 					case 1:
-						{
-							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/EmailAlreadyRegisteredText"),
-								ResourceLoader.GetString("/SignInUp/RegistrationError"))).ShowAsync();
+					{
+						await (new MessageDialog(ResourceLoader.GetString("/SignInUp/EmailAlreadyRegisteredText"),
+							ResourceLoader.GetString("/SignInUp/RegistrationError"))).ShowAsync();
 
-							ControlEnable = true;
-							Processing = false;
-							return;
-						}
+						return;
+					}
 					default:
-						{
-							await (new MessageDialog(ResourceLoader.GetString("/SignInUp/ServerConnectionProblemBadRegistrationText"),
-								ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
+					{
+						await (new MessageDialog(ResourceLoader.GetString("/SignInUp/ServerConnectionProblemBadRegistrationText"),
+							ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
 
-							break;
-						}
+						break;
+					}
 				}
 			}
 			catch (Exception ex)
 			{
 				await (new MessageDialog($"{ex.Message}\n" +
-					$"{ResourceLoader.GetString("/SignInUp/ServerConnectionProblemBadRegistrationText")}",
+				                         $"{ResourceLoader.GetString("/SignInUp/ServerConnectionProblemBadRegistrationText")}",
 					ResourceLoader.GetString("/SignInUp/SignInErrorText"))).ShowAsync();
+			}
+			finally
+			{
+				ControlEnable = true;
+				Processing = false;
 			}
 
 			if (Window.Current.Content is Frame frame)
 			{
-				Processing = false;
-				frame.Navigate(typeof(SignInPage), CurrentUser);
+				frame.Navigate(typeof(SignInPage));
 			}
 		}
 	}

@@ -5,6 +5,7 @@ using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.Storage;
 using Windows.UI.Popups;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace TimeTrace.ViewModel.MainViewModel
@@ -141,7 +142,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void PersonalMapsPageChoice()
 		{
-			Frame.Navigate(typeof(CategorySelectPage), Frame);
+			(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 		}
 
 		/// <summary>
@@ -149,7 +150,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void SettingsPageChoice()
 		{
-			Frame.Navigate(typeof(SettingsPage));
+			(Application.Current as App).AppFrame.Navigate(typeof(SettingsPage));
 		}
 	}
 }

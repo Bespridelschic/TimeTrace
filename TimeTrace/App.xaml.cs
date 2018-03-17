@@ -5,12 +5,15 @@ using TimeTrace.Model.Events.DBContext;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using TimeTrace.Model;
+using TimeTrace.View.MainView;
 
 namespace TimeTrace
 {
@@ -37,41 +40,37 @@ namespace TimeTrace
 		}
 
 		/// <summary>
+		/// Global application frame
+		/// </summary>
+		public Frame AppFrame { get; set; }
+
+		/// <summary>
 		/// Вызывается при обычном запуске приложения пользователем.  Будут использоваться другие точки входа,
 		/// например, если приложение запускается для открытия конкретного файла.
 		/// </summary>
 		/// <param name="e">Сведения о запросе и обработке запуска.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-			Frame rootFrame = Window.Current.Content as Frame;
-
-			// Не повторяйте инициализацию приложения, если в окне уже имеется содержимое,
-			// только обеспечьте активность окна
-			if (rootFrame == null)
+			if (!(Window.Current.Content is Frame))
 			{
-				// Создание фрейма, который станет контекстом навигации, и переход к первой странице
-				rootFrame = new Frame();
+				AppFrame = new Frame();
 
-				rootFrame.NavigationFailed += OnNavigationFailed;
+				AppFrame.NavigationFailed += OnNavigationFailed;
 
 				if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
 				{
-					//TODO: Загрузить состояние из ранее приостановленного приложения
+
 				}
 
-				// Размещение фрейма в текущем окне
-				Window.Current.Content = rootFrame;
+				Window.Current.Content = AppFrame;
 			}
 
 			if (e.PrelaunchActivated == false)
 			{
-				if (rootFrame.Content == null)
+				if (AppFrame.Content == null)
 				{
-					// Если стек навигации не восстанавливается для перехода к первой странице,
-					// настройка новой страницы путем передачи необходимой информации в качестве параметра
-					// параметр
-					rootFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
-					//rootFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
+					AppFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
+					//AppFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
 				}
 				// Обеспечение активности текущего окна
 				Window.Current.Activate();
@@ -82,19 +81,17 @@ namespace TimeTrace
 				// Активация навигации
 				SystemNavigationManager.GetForCurrentView().BackRequested += ((sender, args) =>
 				{
-					Frame frame = Window.Current.Content as Frame;
-
-					if (frame.CanGoBack)
+					if (AppFrame.CanGoBack)
 					{
-						frame.GoBack();
+						AppFrame.GoBack();
 						args.Handled = true;
 					}
 				});
 
 				// Лямбда для навигации
-				rootFrame.Navigated += (s, args) =>
+				AppFrame.Navigated += (s, args) =>
 				{
-					if (rootFrame.CanGoBack) // если можно перейти назад, показываем кнопку
+					if (AppFrame.CanGoBack) // если можно перейти назад, показываем кнопку
 					{
 						SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
 												AppViewBackButtonVisibility.Visible;
@@ -102,9 +99,8 @@ namespace TimeTrace
 					else
 					{
 						SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-							AppViewBackButtonVisibility.Collapsed;
+												AppViewBackButtonVisibility.Collapsed;
 					}
-
 				};
 			}
 		}
@@ -158,13 +154,23 @@ namespace TimeTrace
 
 			try
 			{
-				var requestResult = await Model.UserRequests.PostRequestAsync(Model.UserRequests.PostRequestDestination.SignInWithToken, null);
+				var requestResult = await Model.UserRequests.PostRequestAsync(Model.UserRequests.PostRequestDestination.SignInWithToken);
 
 				if (requestResult == 0)
 				{
+					var CurrentUser = await UserRequests.PostRequestAsync();
+
+					// Save user local data for using after sign in
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+					localSettings.Values["email"] = CurrentUser.Email;
+					localSettings.Values["lastName"] = CurrentUser.LastName;
+					localSettings.Values["firstName"] = CurrentUser.FirstName;
+					localSettings.Values["middleName"] = CurrentUser.MiddleName;
+					localSettings.Values["birthday"] = CurrentUser.Birthday;
+
 					if (Window.Current.Content is Frame frame)
 					{
-						frame.Navigate(typeof(View.MainView.StartPage));
+						frame.Navigate(typeof(StartPage));
 					}
 				}
 			}

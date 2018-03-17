@@ -49,7 +49,7 @@ namespace TimeTrace.Model
 				WebResponse response = await request.GetResponseAsync();
 				using (Stream stream = response.GetResponseStream())
 				{
-					using (StreamReader reader = new StreamReader(stream))
+					using (StreamReader reader = new StreamReader(stream ?? throw new InvalidOperationException()))
 					{
 						result += reader.ReadToEnd();
 					}
@@ -80,6 +80,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Sending data to server
 		/// </summary>
+		/// <param name="destination">Send request to</param>
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Return code from server: 0 - success, 1 - fail</returns>
 		public static async Task<int> PostRequestAsync(PostRequestDestination destination, User user = null)

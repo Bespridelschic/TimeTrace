@@ -125,11 +125,6 @@ namespace TimeTrace.Model.Events
 		#region Constructors
 
 		/// <summary>
-		/// Standart constructor with Project ID parameter
-		/// </summary>
-		public MapEvent(string projectId) : this() => ProjectId = projectId;
-
-		/// <summary>
 		/// Standart constructor
 		/// </summary>
 		public MapEvent()

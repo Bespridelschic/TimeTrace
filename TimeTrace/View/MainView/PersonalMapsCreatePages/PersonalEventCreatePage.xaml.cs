@@ -22,29 +22,21 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 	/// Event create code behind
 	/// </summary>
 	public sealed partial class PersonalEventCreatePage : Page
-    {
-        public PersonalEventCreatePage()
-        {
-            this.InitializeComponent();
-			ViewModel = new PersonalEventCreateViewModel(string.Empty);
+	{
+		public PersonalEventCreatePage()
+		{
+			this.InitializeComponent();
+			ViewModel = new PersonalEventCreateViewModel();
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 			if (e != null)
 			{
-				if (e.Parameter is TransitionData<Project> reseivedData)
-				{
-					ViewModel.CurrentMapEvent.ProjectId = reseivedData.Data.Id;
-					ViewModel.Frame = reseivedData.Frame;
-				}
-				else
-				{
-					ViewModel.Frame = (Frame)e.Parameter;
-				}
+				ViewModel.CurrentMapEvent.ProjectId = (string)e.Parameter;
 			}
 		}
 
-		PersonalEventCreateViewModel ViewModel { get; set; }
+		private PersonalEventCreateViewModel ViewModel { get; set; }
 	}
 }

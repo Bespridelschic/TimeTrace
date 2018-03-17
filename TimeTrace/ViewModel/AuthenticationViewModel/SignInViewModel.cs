@@ -104,7 +104,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		{
 			CurrentUser = new User();
 			ResourceLoader = ResourceLoader.GetForCurrentView("SignInUp");
-			UserFileWorker.LoadUserFromFileAsync(CurrentUser).GetAwaiter();
+			CurrentUser.LoadUserFromFileAsync().GetAwaiter();
 
 			Processing = false;
 			IsPasswordSave = true;
@@ -151,9 +151,9 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public async void AppSignIn()
 		{
-			var CanAppSignInResult = await CanAppSignIn();
+			var canAppSignInResult = await CanAppSignIn();
 
-			if (!CanAppSignInResult)
+			if (!canAppSignInResult)
 			{
 				return;
 			}
@@ -172,7 +172,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							// Save login to file
 							if (IsPasswordSave)
 							{
-								await UserFileWorker.SaveUserToFileAsync(CurrentUser);
+								await CurrentUser.SaveUserToFileAsync();
 							}
 							else
 							{
@@ -217,7 +217,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 							if (IsPasswordSave)
 							{
-								await UserFileWorker.SaveUserToFileAsync(CurrentUser);
+								await CurrentUser.SaveUserToFileAsync();
 							}
 							else
 							{
@@ -255,7 +255,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		{
 			if (Window.Current.Content is Frame frame)
 			{
-				frame.Navigate(typeof(SignUpExtendPage), CurrentUser.Email);
+				frame.Navigate(typeof(SignUpExtendPage));
 			}
 		}
 

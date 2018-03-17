@@ -23,7 +23,7 @@ namespace TimeTrace.Model
 		/// <returns>Success of saving</returns>
 		public static async Task SaveUserToFileAsync(this User user)
 		{
-			if (!ArgumentIsNotNull(user))
+			if (ArgumentIsNull(user))
 			{
 				throw new ArgumentNullException($"{nameof(User)} is null");
 			}
@@ -43,7 +43,7 @@ namespace TimeTrace.Model
 		/// <returns>Success of loading</returns>
 		public static async Task LoadUserFromFileAsync(this User user)
 		{
-			if (!ArgumentIsNotNull(user))
+			if (ArgumentIsNull(user))
 			{
 				throw new ArgumentNullException($"{nameof(User)} is null");
 			}
@@ -104,7 +104,7 @@ namespace TimeTrace.Model
 		/// </summary>Результат удаления файлов</returns>
 		public static async Task RemoveUserDataFromFilesAsync(this User user)
 		{
-			if (!ArgumentIsNotNull(user))
+			if (ArgumentIsNull(user))
 			{
 				throw new ArgumentNullException($"{nameof(User)} is null");
 			}
@@ -182,7 +182,7 @@ namespace TimeTrace.Model
 		/// <typeparam name="T">Type of argument</typeparam>
 		/// <param name="param">Sender parameter</param>
 		/// <returns>Is param null</returns>
-		private static bool ArgumentIsNotNull<T>(T param)
+		private static bool ArgumentIsNull<T>(T param)
 		{
 			return param == null;
 		}

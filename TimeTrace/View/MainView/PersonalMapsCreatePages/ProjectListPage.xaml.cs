@@ -35,19 +35,11 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		{
 			if (e != null)
 			{
-				if (e.Parameter is TransitionData<Area> reseivedData)
-				{
-					ViewModel.CurrentArea = reseivedData.Data;
-					ViewModel.Proj.AreaId = reseivedData.Data.Id;
-					ViewModel.Frame = reseivedData.Frame;
-				}
-				else
-				{
-					ViewModel.Frame = (Frame)e.Parameter;
-				}
+				ViewModel.CurrentArea = (Area)e.Parameter;
+				ViewModel.Proj.AreaId = ViewModel.CurrentArea.Id;
 			}
 		}
 
-		ProjectViewModel ViewModel { get; set; }
+		private ProjectViewModel ViewModel { get; set; }
 	}
 }
