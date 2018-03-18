@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using TimeTrace.ViewModel.MainViewModel;
 
 namespace TimeTrace.View.MainView
 {
@@ -20,20 +21,14 @@ namespace TimeTrace.View.MainView
 	/// </summary>
 	public sealed partial class HomePage : Page
 	{
+		public HomeViewModel ViewModel { get; private set; }
+
 		public HomePage()
 		{
 			this.InitializeComponent();
-			ViewModel = new ViewModel.MainViewModel.HomeViewModel();
+			ViewModel = new HomeViewModel();
 		}
 
-		ViewModel.MainViewModel.HomeViewModel ViewModel { get; set; }
-
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			if (e != null)
-			{
-				ViewModel.Frame = (Frame)e.Parameter;
-			}
-		}
+		
 	}
 }

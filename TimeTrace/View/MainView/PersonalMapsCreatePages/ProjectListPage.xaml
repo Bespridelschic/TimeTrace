@@ -3,9 +3,71 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="using:TimeTrace.View.MainView.PersonalMapsCreatePages"
+	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
+
+	<Page.Resources>
+		<Style TargetType="Button">
+			<Setter Property="Width" Value="150" />
+			<Setter Property="Height" Value="150" />
+			<Setter Property="Background" Value="White" />
+			<Setter Property="BorderThickness" Value="1.5" />
+			<Setter Property="Foreground" Value="Black" />
+			<Setter Property="CanDrag" Value="True" />
+			<Setter Property="Margin" Value="1.5" />
+			<Setter Property="ContentTemplate">
+				<Setter.Value>
+					<DataTemplate x:DataType="local:Project">
+						<StackPanel ToolTipService.Placement="Top">
+							<ToolTipService.ToolTip>
+								<StackPanel>
+									<StackPanel Margin="10,2" Orientation="Horizontal">
+										<TextBlock
+											Margin="0,0,5,0"
+											FontSize="15"
+											Text="Календарь: " />
+										<TextBlock FontSize="15" Text="{Binding Name}" />
+									</StackPanel>
+									<StackPanel Margin="10,2" Orientation="Horizontal">
+										<TextBlock
+											Margin="0,0,5,0"
+											FontSize="15"
+											Text="Описание: " />
+										<TextBlock FontSize="15" Text="{Binding Description}" />
+									</StackPanel>
+									<StackPanel Margin="10,2" Orientation="Horizontal">
+										<TextBlock
+											Margin="0,0,5,0"
+											FontSize="15"
+											Text="Обновлено: " />
+										<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
+									</StackPanel>
+								</StackPanel>
+							</ToolTipService.ToolTip>
+							<PersonPicture
+								Width="70"
+								Height="70"
+								Margin="10,0,0,0"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								Background="White"
+								Initials="C#" />
+							<TextBlock
+								HorizontalAlignment="Center"
+								FontSize="20"
+								Text="{Binding Name}" />
+							<TextBlock
+								HorizontalAlignment="Center"
+								FontSize="15"
+								Foreground="SlateGray"
+								Text="{Binding Description}" />
+						</StackPanel>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -44,30 +106,17 @@
 		</Grid>
 
 		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-
-			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-				<TextBlock Text="Proj.Id" />
-				<TextBlock Text="{x:Bind ViewModel.Proj.Id}" />
-
-				<TextBlock Text="Proj.AreaId" />
-				<TextBlock Text="{x:Bind ViewModel.Proj.AreaId, Mode=OneWay}" />
-
-				<TextBlock Text="Proj.Name" />
-				<TextBlock Text="{x:Bind ViewModel.Proj.Name}" />
-
-				<TextBlock Text="CurrentArea.Name" />
-				<TextBlock Text="{x:Bind ViewModel.CurrentArea.Name}" />
-
-				<TextBlock Text="CurrentArea.Id" />
-				<TextBlock Text="{x:Bind ViewModel.CurrentArea.Id}" />
-
-				<Button
-					Background="SteelBlue"
-					Click="{x:Bind ViewModel.ProjectSelect}"
-					Content="Create event"
-					Foreground="White" />
-			</StackPanel>
-
+			<ItemsControl ItemsSource="{x:Bind ViewModel.ButtonCollection, Mode=TwoWay}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VariableSizedWrapGrid
+							Margin="50,20"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
 		</ScrollViewer>
 
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
@@ -77,18 +126,23 @@
 					<AutoSuggestBox
 						Width="250"
 						Margin="10,13,10,10"
+						ItemsSource="{x:Bind ViewModel.ProjectSuggestList, Mode=TwoWay}"
 						PlaceholderText="Поиск..."
-						QueryIcon="Find" />
+						QueryIcon="Find"
+						QuerySubmitted="{x:Bind ViewModel.ProjectFilterQuerySubmitted}"
+						TextChanged="{x:Bind ViewModel.ProjectFilter}" />
 				</StackPanel>
 			</CommandBar.Content>
 
 			<AppBarButton
+				Click="{x:Bind ViewModel.ProjectCreate}"
 				Icon="Add"
-				Label="Добавить проект"
-				ToolTipService.ToolTip="Создать новый проект в текущем календаре" />
+				Label="Добавить календарь"
+				ToolTipService.ToolTip="Создать новый проект" />
 			<AppBarButton
+				Click="{x:Bind ViewModel.ProjectsBulkRemoval}"
 				Icon="Remove"
-				Label="Удалить проекты"
+				Label="Удалить выбранные"
 				ToolTipService.ToolTip="Удалить выбранные проекты" />
 		</CommandBar>
 

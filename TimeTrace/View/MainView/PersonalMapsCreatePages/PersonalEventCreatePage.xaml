@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
@@ -26,198 +27,306 @@
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
 			<RowDefinition />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
+		<Pivot Title="События" Margin="20,10">
+			<Pivot.TitleTemplate>
+				<DataTemplate>
+					<TextBlock
+						FontSize="35"
+						Text="События календаря"
+						TextWrapping="WrapWholeWords" />
+				</DataTemplate>
+			</Pivot.TitleTemplate>
 
-			<TextBlock
-				Margin="20,20,20,10"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top"
-				FontSize="35"
-				Text="Создание события календаря"
-				TextWrapping="WrapWholeWords" />
+			<PivotItem Header="Просмотр">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
-			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
+					<ScrollViewer VerticalScrollBarVisibility="Auto">
+						<StackPanel Margin="0, 10">
+							<ListView ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}" SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay}">
+								<ListView.ItemTemplate>
+									<DataTemplate x:DataType="local:MapEvent">
+										<StackPanel>
+											<TextBlock
+												Margin="10,5,10,0"
+												FontSize="26"
+												Text="{x:Bind Name}"
+												TextWrapping="WrapWholeWords" />
 
-		</Grid>
+											<StackPanel Orientation="Horizontal">
+												<TextBlock
+													Margin="10,3,0,2"
+													FontSize="18"
+													Text="Время: " />
+												<TextBlock
+													Margin="7,3,7,2"
+													FontSize="18"
+													Text="{x:Bind Start}" />
+												<TextBlock
+													Margin="0,3,0,2"
+													FontSize="18"
+													Text="-" />
+												<TextBlock
+													Margin="7,3,7,2"
+													FontSize="18"
+													Text="{x:Bind End}" />
+											</StackPanel>
 
-		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+											<StackPanel Orientation="Horizontal">
+												<TextBlock
+													Margin="10,0,0,0"
+													FontSize="18"
+													Text="Место: " />
+												<TextBlock
+													Margin="7,0,0,0"
+													FontSize="18"
+													Text="{x:Bind Location, TargetNullValue=Неизвестно}" />
+												<TextBlock
+													Margin="0,0,0,0"
+													FontSize="18"
+													Text=";" />
+												<TextBlock
+													Margin="10,0,0,0"
+													FontSize="18"
+													Text="Контакт: " />
+												<TextBlock
+													Margin="7,0,0,0"
+													FontSize="18"
+													Text="{x:Bind UserBind, TargetNullValue=Неизвестен}" />
+											</StackPanel>
 
-			<VariableSizedWrapGrid
-				Margin="35,20"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Center"
-				Orientation="Horizontal">
-				<StackPanel>
-					<TextBox
-						Width="370"
-						Margin="15,5,15,5"
-						Header="Имя события*"
-						IsSpellCheckEnabled="True"
-						MaxLength="50"
-						PlaceholderText="Задайте имя события"
-						Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}"
-						ToolTipService.ToolTip="Имя событие, отображаемое в календаре" />
+											<StackPanel Orientation="Horizontal">
+												<TextBlock
+													Margin="10,5,0,5"
+													FontSize="18"
+													Text="Описание: " />
+												<TextBlock
+													Margin="7,5"
+													FontSize="18"
+													Text="{x:Bind Description, TargetNullValue=Отсутствует}" />
+											</StackPanel>
+										</StackPanel>
+									</DataTemplate>
+								</ListView.ItemTemplate>
+								<ListView.ContextFlyout>
+									<MenuFlyout Placement="Bottom">
+										<MenuFlyoutItem
+											Click="{x:Bind ScheduleViewModel.MoreAboutMapEvent}"
+											Icon="Page"
+											Text="Подробней" />
+										<MenuFlyoutSeparator />
+										<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
+										<MenuFlyoutItem
+											Click="{x:Bind ScheduleViewModel.MapEventRemove}"
+											Icon="Delete"
+											Text="Удалить" />
+									</MenuFlyout>
+								</ListView.ContextFlyout>
+							</ListView>
+						</StackPanel>
+					</ScrollViewer>
 
-					<TextBox
-						Height="130"
-						MaxHeight="130"
-						Margin="15,5,15,5"
-						AcceptsReturn="True"
-						Header="Описание события"
-						IsSpellCheckEnabled="True"
-						MaxLength="200"
-						PlaceholderText="Задайте описание событию"
-						Text="{x:Bind ViewModel.CurrentMapEvent.Description, Mode=TwoWay}"
-						TextWrapping="Wrap"
-						ToolTipService.ToolTip="Описание события" />
-				</StackPanel>
-
-				<StackPanel>
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<CalendarDatePicker
-							Width="180"
-							Margin="15,5,10,5"
-							Date="{x:Bind ViewModel.StartDate, Mode=TwoWay}"
-							DateFormat="{}{day.integer} {month.full} {year.full}"
-							Header="Дата начала*"
-							MinDate="{x:Bind ViewModel.MinDate}"
-							PlaceholderText="Дата начала"
-							ToolTipService.ToolTip="Дата, к которой будет привязано событие" />
-
-						<TimePicker
-							Grid.Column="1"
-							Width="180"
-							MinWidth="180"
-							Margin="0,5,15,5"
-							HorizontalAlignment="Right"
-							Header="Время начала"
-							Time="{x:Bind ViewModel.StartTime, Mode=TwoWay}"
-							ToolTipService.ToolTip="Время, к которому будет привязано событие" />
-					</Grid>
-
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="205" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<ToggleSwitch
-							Grid.Column="1"
-							Margin="15,5,10,5"
-							Header="Весь день"
-							IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}"
-							OffContent="Да"
-							OnContent="Нет" />
-
-						<ComboBox
-							Grid.Column="0"
-							Margin="15,5,10,5"
-							HorizontalAlignment="Stretch"
-							Header="Повторение события"
-							ToolTipService.ToolTip="Как часто будет происходить напоминание">
-							<ComboBoxItem Content="Без повторений" />
-							<ComboBoxItem Content="Каждый день" />
-							<ComboBoxItem Content="Через день" />
-							<ComboBoxItem Content="Раз в неделю" />
-							<ComboBoxItem Content="Раз в месяц" />
-							<ComboBoxItem Content="Раз в год" />
-							<ComboBoxItem Content="Свой вариант" />
-						</ComboBox>
-					</Grid>
-
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<CalendarDatePicker
-							Width="180"
-							Margin="15,5,10,5"
-							Date="{x:Bind ViewModel.EndDate, Mode=TwoWay}"
-							DateFormat="{}{day.integer} {month.full} {year.full}"
-							Header="Дата окончания*"
-							IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
-							MinDate="{x:Bind ViewModel.MinDate}"
-							PlaceholderText="Дата окончания"
-							ToolTipService.ToolTip="Дата, к которой будет привязано событие" />
-
-						<TimePicker
-							Grid.Column="1"
-							Width="180"
-							MinWidth="180"
-							Margin="0,5,15,5"
-							HorizontalAlignment="Right"
-							Header="Время окончания"
-							IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
-							Time="{x:Bind ViewModel.EndTime, Mode=TwoWay}"
-							ToolTipService.ToolTip="Длительность создаваемого события" />
-					</Grid>
-				</StackPanel>
-
-				<StackPanel>
 					<ComboBox
-						Margin="15,5,15,5"
+						Grid.Row="1"
 						HorizontalAlignment="Stretch"
-						Header="Объект привязки"
-						PlaceholderText="Объект привязки"
-						SelectedIndex="{x:Bind ViewModel.BindingObjectIndex, Mode=TwoWay}"
-						ToolTipService.ToolTip="Объект привязки">
-						<ComboBoxItem Content="Место" />
-						<ComboBoxItem Content="Человек" />
-						<ComboBoxItem Content="Человек и место" />
+						VerticalAlignment="Center">
+						<x:String>Сегодня</x:String>
+						<x:String>Завтра</x:String>
+						<x:String>Было</x:String>
+						<x:String>Вчера</x:String>
 					</ComboBox>
 
-					<AutoSuggestBox
-						Margin="15,5,15,5"
-						Header="Место события"
-						PlaceholderText="Выберите место события"
-						QueryIcon="Globe"
-						Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
-						ToolTipService.ToolTip="Место, привязываемое к событию"
-						Visibility="{x:Bind ViewModel.IsSelectPlace, Mode=OneWay}" />
+				</Grid>
+			</PivotItem>
 
-					<AutoSuggestBox
-						Margin="15,5,15,5"
-						Header="Имя контакта"
-						PlaceholderText="Человек связанный с событием"
-						QueryIcon="Contact"
-						Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
-						ToolTipService.ToolTip="Имя человека, к которому привязывается событие"
-						Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}" />
-				</StackPanel>
-			</VariableSizedWrapGrid>
-		</ScrollViewer>
+			<PivotItem Header="Создание">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
-		<StackPanel
-			Grid.Row="2"
-			Margin="0,0,0,25"
-			HorizontalAlignment="Center">
-			<TextBlock
-				Margin="0,0,0,10"
-				FontSize="10"
-				Foreground="Gray"
-				Text="* - обязательные поля" />
-			<Button
-				Background="SteelBlue"
-				Click="{x:Bind ViewModel.EventCreate}"
-				Content="Создать событие"
-				Foreground="White" />
-		</StackPanel>
+					<ScrollViewer VerticalScrollBarVisibility="Auto">
+
+						<VariableSizedWrapGrid
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Orientation="Horizontal">
+							<StackPanel>
+								<TextBox
+									Width="370"
+									Margin="15,5,15,5"
+									HorizontalAlignment="Center"
+									Header="Имя события*"
+									IsSpellCheckEnabled="True"
+									MaxLength="50"
+									PlaceholderText="Задайте имя события"
+									Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}"
+									ToolTipService.ToolTip="Имя событие, отображаемое в календаре" />
+
+								<TextBox
+									Height="130"
+									MaxHeight="130"
+									Margin="15,5,15,5"
+									AcceptsReturn="True"
+									Header="Описание события"
+									IsSpellCheckEnabled="True"
+									MaxLength="200"
+									PlaceholderText="Задайте описание событию"
+									Text="{x:Bind ViewModel.CurrentMapEvent.Description, Mode=TwoWay}"
+									TextWrapping="Wrap"
+									ToolTipService.ToolTip="Описание события" />
+							</StackPanel>
+
+							<StackPanel>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<CalendarDatePicker
+										Width="180"
+										Margin="15,5,10,5"
+										Date="{x:Bind ViewModel.StartDate, Mode=TwoWay}"
+										DateFormat="{}{day.integer} {month.full} {year.full}"
+										Header="Дата начала*"
+										MinDate="{x:Bind ViewModel.MinDate}"
+										PlaceholderText="Дата начала"
+										ToolTipService.ToolTip="Дата, к которой будет привязано событие" />
+
+									<TimePicker
+										Grid.Column="1"
+										Width="180"
+										MinWidth="180"
+										Margin="0,5,15,5"
+										HorizontalAlignment="Right"
+										Header="Время начала"
+										Time="{x:Bind ViewModel.StartTime, Mode=TwoWay}"
+										ToolTipService.ToolTip="Время, к которому будет привязано событие" />
+								</Grid>
+
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="205" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<ToggleSwitch
+										Grid.Column="1"
+										Margin="15,5,10,5"
+										Header="Весь день"
+										IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}"
+										OffContent="Да"
+										OnContent="Нет" />
+
+									<ComboBox
+										Grid.Column="0"
+										Margin="15,5,10,5"
+										HorizontalAlignment="Stretch"
+										Header="Повторение события"
+										ToolTipService.ToolTip="Как часто будет происходить напоминание">
+										<ComboBoxItem Content="Без повторений" />
+										<ComboBoxItem Content="Каждый день" />
+										<ComboBoxItem Content="Через день" />
+										<ComboBoxItem Content="Раз в неделю" />
+										<ComboBoxItem Content="Раз в месяц" />
+										<ComboBoxItem Content="Раз в год" />
+										<ComboBoxItem Content="Свой вариант" />
+									</ComboBox>
+								</Grid>
+
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<CalendarDatePicker
+										Width="180"
+										Margin="15,5,10,5"
+										Date="{x:Bind ViewModel.EndDate, Mode=TwoWay}"
+										DateFormat="{}{day.integer} {month.full} {year.full}"
+										Header="Дата окончания*"
+										IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
+										MinDate="{x:Bind ViewModel.MinDate}"
+										PlaceholderText="Дата окончания"
+										ToolTipService.ToolTip="Дата, к которой будет привязано событие" />
+
+									<TimePicker
+										Grid.Column="1"
+										Width="180"
+										MinWidth="180"
+										Margin="0,5,15,5"
+										HorizontalAlignment="Right"
+										Header="Время окончания"
+										IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
+										Time="{x:Bind ViewModel.EndTime, Mode=TwoWay}"
+										ToolTipService.ToolTip="Длительность создаваемого события" />
+								</Grid>
+							</StackPanel>
+
+							<StackPanel>
+								<ComboBox
+									Margin="15,5,15,5"
+									HorizontalAlignment="Stretch"
+									Header="Объект привязки"
+									PlaceholderText="Объект привязки"
+									SelectedIndex="{x:Bind ViewModel.BindingObjectIndex, Mode=TwoWay}"
+									ToolTipService.ToolTip="Объект привязки">
+									<ComboBoxItem Content="Место" />
+									<ComboBoxItem Content="Человек" />
+									<ComboBoxItem Content="Человек и место" />
+								</ComboBox>
+
+								<AutoSuggestBox
+									Margin="15,5,15,5"
+									Header="Место события"
+									PlaceholderText="Выберите место события"
+									QueryIcon="Globe"
+									Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
+									ToolTipService.ToolTip="Место, привязываемое к событию"
+									Visibility="{x:Bind ViewModel.IsSelectPlace, Mode=OneWay}" />
+
+								<AutoSuggestBox
+									Margin="15,5,15,5"
+									Header="Имя контакта"
+									PlaceholderText="Человек связанный с событием"
+									QueryIcon="Contact"
+									Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
+									ToolTipService.ToolTip="Имя человека, к которому привязывается событие"
+									Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}" />
+							</StackPanel>
+
+						</VariableSizedWrapGrid>
+					</ScrollViewer>
+
+					<StackPanel
+						Grid.Row="1"
+						Margin="0,0,0,5"
+						HorizontalAlignment="Center">
+						<TextBlock
+							Margin="0,0,0,10"
+							FontSize="10"
+							Foreground="Gray"
+							Text="* - обязательные поля" />
+						<Button
+							HorizontalAlignment="Center"
+							Background="SteelBlue"
+							Click="{x:Bind ViewModel.EventCreate}"
+							Content="Создать событие"
+							Foreground="White" />
+					</StackPanel>
+				</Grid>
+			</PivotItem>
+		</Pivot>
 
 	</Grid>
 </Page>

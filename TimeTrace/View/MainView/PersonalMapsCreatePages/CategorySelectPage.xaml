@@ -13,9 +13,9 @@
 			<Setter Property="Width" Value="150" />
 			<Setter Property="Height" Value="150" />
 			<Setter Property="Background" Value="White" />
-			<Setter Property="BorderBrush" Value="Green" />
 			<Setter Property="BorderThickness" Value="1.5" />
 			<Setter Property="Foreground" Value="Black" />
+			<Setter Property="CanDrag" Value="True" />
 			<Setter Property="Margin" Value="1.5" />
 			<Setter Property="ContentTemplate">
 				<Setter.Value>
@@ -118,9 +118,9 @@
 						Width="250"
 						Margin="10,13,10,10"
 						ItemsSource="{x:Bind ViewModel.AreaSuggestList, Mode=TwoWay}"
-						QuerySubmitted="{x:Bind ViewModel.CategoryFilterQuerySubmitted}"
 						PlaceholderText="Поиск..."
 						QueryIcon="Find"
+						QuerySubmitted="{x:Bind ViewModel.CategoryFilterQuerySubmitted}"
 						TextChanged="{x:Bind ViewModel.CategoryFilter}" />
 				</StackPanel>
 
@@ -132,10 +132,10 @@
 				Label="Добавить календарь"
 				ToolTipService.ToolTip="Создать новый календарь" />
 			<AppBarButton
+				Click="{x:Bind ViewModel.CategoriesBulkRemoval}"
 				Icon="Remove"
 				Label="Удалить выбранные"
-				ToolTipService.ToolTip="Удалить выбранные календари"
-				Click="{x:Bind ViewModel.CategoriesBulkRemoval}"/>
+				ToolTipService.ToolTip="Удалить выбранные календари" />
 		</CommandBar>
 
 	</Grid>

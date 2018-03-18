@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -23,20 +24,23 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 	/// </summary>
 	public sealed partial class PersonalEventCreatePage : Page
 	{
+		private PersonalEventCreateViewModel ViewModel { get; set; }
+		private ScheduleViewModel ScheduleViewModel { get; set; }
+
 		public PersonalEventCreatePage()
 		{
 			this.InitializeComponent();
-			ViewModel = new PersonalEventCreateViewModel();
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 			if (e != null)
 			{
+				ViewModel = new PersonalEventCreateViewModel();
+				ScheduleViewModel = new ScheduleViewModel((string)e.Parameter);
+
 				ViewModel.CurrentMapEvent.ProjectId = (string)e.Parameter;
 			}
 		}
-
-		private PersonalEventCreateViewModel ViewModel { get; set; }
 	}
 }

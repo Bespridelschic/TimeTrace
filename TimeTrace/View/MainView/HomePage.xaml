@@ -240,7 +240,7 @@
 								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
-								Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
+								Text="{x:Bind ViewModel.NumEventsToday, Mode=OneWay}" />
 
 							<TextBlock
 								Grid.Row="1"
@@ -282,7 +282,7 @@
 								Margin="5,10"
 								HorizontalAlignment="Left"
 								FontSize="15"
-								Text="1" />
+								Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
 
 						</Grid>
 

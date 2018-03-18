@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using TimeTrace.Model;
 using TimeTrace.Model.Events.DBContext;
 using TimeTrace.View.MainView;
@@ -56,6 +58,20 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		private int numEventsToday;
+		/// <summary>
+		/// Number of events today
+		/// </summary>
+		public int NumEventsToday
+		{
+			get => numEventsToday;
+			set
+			{
+				numEventsToday = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private User currentUser;
 		/// <summary>
 		/// Current using user
@@ -70,8 +86,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-		public Frame Frame { get; set; }
-
 		#endregion
 
 		/// <summary>
@@ -81,13 +95,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			CurrentUser = GetUserInfo();
 			NearEvent = "Совсем скоро";
-			NumEvents = 0;
 			Experience = "Удалить поле";
 
-			//using (MapEventContext db = new MapEventContext())
-			//{
-			//	// Get counts of lines
-			//}
+			using (MapEventContext db = new MapEventContext())
+			{
+				NumEvents = db.MapEvents.Count();
+				NumEventsToday = db.MapEvents.Count(mapEvent => mapEvent.Start.Date <= DateTime.Today && mapEvent.End.Date >= DateTime.Today);
+				NearEvent = 
+					db.MapEvents.FirstOrDefault(i => i.Start >= DateTime.Now)?.Start.Subtract(DateTime.Now).ToString("g").Split(',')[0]
+					?? "Нет ближайших";
+			}
 		}
 
 		/// <summary>

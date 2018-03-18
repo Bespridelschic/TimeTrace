@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -27,16 +28,13 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		public ProjectListPage()
 		{
 			this.InitializeComponent();
-
-			ViewModel = new ProjectViewModel();
 		}
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 			if (e != null)
 			{
-				ViewModel.CurrentArea = (Area)e.Parameter;
-				ViewModel.Proj.AreaId = ViewModel.CurrentArea.Id;
+				ViewModel = new ProjectViewModel((Area)e.Parameter);
 			}
 		}
 

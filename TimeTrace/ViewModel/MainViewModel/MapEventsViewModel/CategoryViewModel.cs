@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using TimeTrace.Model.Events;
 using TimeTrace.Model.Events.DBContext;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;

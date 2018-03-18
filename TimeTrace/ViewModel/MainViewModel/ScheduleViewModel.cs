@@ -71,13 +71,23 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public ScheduleViewModel()
+		public ScheduleViewModel(string projectId = null)
 		{
 			using (MapEventContext db = new MapEventContext())
 			{
 				//MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.Start.Date == DateTime.Today)) ??
-				var list = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
-							
+
+				ObservableCollection<MapEvent> list;
+
+				if (projectId == null)
+				{
+					list = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
+				}
+				else
+				{
+					list = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.ProjectId == projectId).ToList());
+				}
+				
 				if (list.Count == 0)
 				{
 					list = new ObservableCollection<MapEvent>(
