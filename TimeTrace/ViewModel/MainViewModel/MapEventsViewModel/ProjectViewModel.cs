@@ -60,7 +60,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				//var selectedProject = db.Projects.First(i => i.Id == (string)(sender as Button).Tag);
 				//TransitionData<Project> data = new TransitionData<Project>(Frame, selectedProject);
 
-				(Application.Current as App).AppFrame.Navigate(typeof(PersonalEventCreatePage));
+				(Application.Current as App).AppFrame.Navigate(typeof(PersonalEventCreatePage), Proj.Id);
 			}
 		}
 	}

@@ -317,7 +317,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			appointment.Subject = CurrentMapEvent.Name;
 
 			// Location
-			appointment.Location = CurrentMapEvent.Location;
+			appointment.Location = CurrentMapEvent.Location ?? "Default";
 
 			// Details
 			appointment.Details = CurrentMapEvent.Description;

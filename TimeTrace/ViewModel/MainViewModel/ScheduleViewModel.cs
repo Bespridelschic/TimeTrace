@@ -20,11 +20,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public ObservableCollection<MapEvent> MapEvents { get; set; }
 
-		private List<DateTimeOffset> filterDates;
+		private ObservableCollection<DateTimeOffset> filterDates;
 		/// <summary>
 		/// Current filtered date
 		/// </summary>
-		public List<DateTimeOffset> FilterDates
+		public ObservableCollection<DateTimeOffset> FilterDates
 		{
 			get => filterDates;
 			set
@@ -75,8 +75,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			using (MapEventContext db = new MapEventContext())
 			{
-				//MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.Start.Date == DateTime.Today));
-				MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
+				//MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.Start.Date == DateTime.Today)) ??
+				var list = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
+							
+				if (list.Count == 0)
+				{
+					list = new ObservableCollection<MapEvent>(
+						new List<MapEvent> { new MapEvent("Пример события", "Пример события", DateTime.Today, DateTime.Today, "Дом", "Я", "str", "123415") });
+				}
+
+				MapEvents = list;
 			}
 		}
 

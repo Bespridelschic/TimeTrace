@@ -28,7 +28,7 @@ namespace TimeTrace
 		/// </summary>
 		public App()
 		{
-			AppSignInWithToken().GetAwaiter();
+			//AppSignInWithToken().GetAwaiter();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;

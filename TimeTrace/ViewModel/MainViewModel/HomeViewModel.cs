@@ -134,7 +134,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void SchedulePageChoice()
 		{
-			Frame.Navigate(typeof(SchedulePage));
+			(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage));
 		}
 
 		/// <summary>

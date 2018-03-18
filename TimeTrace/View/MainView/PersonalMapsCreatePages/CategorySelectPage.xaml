@@ -117,7 +117,8 @@
 					<AutoSuggestBox
 						Width="250"
 						Margin="10,13,10,10"
-						ItemsSource="{x:Bind ViewModel.AreaSuggestList, Mode=OneWay}"
+						ItemsSource="{x:Bind ViewModel.AreaSuggestList, Mode=TwoWay}"
+						QuerySubmitted="{x:Bind ViewModel.CategoryFilterQuerySubmitted}"
 						PlaceholderText="Поиск..."
 						QueryIcon="Find"
 						TextChanged="{x:Bind ViewModel.CategoryFilter}" />
@@ -133,7 +134,8 @@
 			<AppBarButton
 				Icon="Remove"
 				Label="Удалить выбранные"
-				ToolTipService.ToolTip="Удалить выбранные календари" />
+				ToolTipService.ToolTip="Удалить выбранные календари"
+				Click="{x:Bind ViewModel.CategoriesBulkRemoval}"/>
 		</CommandBar>
 
 	</Grid>

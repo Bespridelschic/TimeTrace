@@ -43,6 +43,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private ObservableCollection<string> areaSuggestList;
+		/// <summary>
+		/// Filter tips
+		/// </summary>
+		public ObservableCollection<string> AreaSuggestList
+		{
+			get => areaSuggestList;
+			set
+			{
+				areaSuggestList = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -65,14 +79,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{ "Фиолетовый", "#8E24AA" },
 				{ "Чёрный", "#616161" }
 			};
+
 			ButtonCollection = new ObservableCollection<Button>();
-			AreaSuggestList = new List<string>();
+			AreaSuggestList = new ObservableCollection<string>();
+
 			using (MapEventContext db = new MapEventContext())
 			{
 				foreach (var i in db.Areas.Select(i => i))
 				{
-					//AreaSuggestList.Add(i.Name);
-
 					ButtonCollection.Add(NewCategoryButtonCreate(i));
 				}
 			}
@@ -96,6 +110,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				ButtonCollection.Add(NewCategoryButtonCreate(newArea));
 			}
+			else
+			{
+				await new MessageDialog("Не заполнено имя для нового календаря", "Ошибка добавления нового календаря").ShowAsync();
+			}
 		}
 
 		/// <summary>
@@ -107,6 +125,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				(Application.Current as App).AppFrame.Navigate(typeof(ProjectListPage), db.Areas.First(i => i.Id == (string)(sender as Button).Tag));
 			}
+		}
+
+		public void CategoriesBulkRemoval()
+		{
+
 		}
 
 		/// <summary>
@@ -159,7 +182,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// If area was edit
 				if (editedArea.Name != selectedArea.Name || editedArea.Description != selectedArea.Description || editedArea.Color != selectedArea.Color)
 				{
-
 					selectedArea.Name = editedArea.Name;
 					selectedArea.Description = editedArea.Description;
 					selectedArea.Color = editedArea.Color;
@@ -176,26 +198,28 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		private List<string> areaSuggestList;
-
-		public List<string> AreaSuggestList
-		{
-			get => areaSuggestList;
-			set
-			{
-				areaSuggestList = value;
-				OnPropertyChanged();
-			}
-		}
-
+		/// <summary>
+		/// Filtration of input filters
+		/// </summary>
+		/// <param name="sender">Input filter</param>
+		/// <param name="args">Event args</param>
 		public void CategoryFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
 			if (ButtonCollection == null) return;
 
+			if (args.CheckCurrent())
+			{
+				AreaSuggestList.Clear();
+			}
+
+			// Remove all buttons for adding relevant filter
 			ButtonCollection.Clear();
 
+			// Select all calendars
 			if (string.IsNullOrEmpty(sender.Text))
 			{
+				AreaSuggestList.Clear();
+
 				using (MapEventContext db = new MapEventContext())
 				{
 					foreach (var i in db.Areas.Select(i => i))
@@ -209,7 +233,34 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				using (MapEventContext db = new MapEventContext())
 				{
-					foreach (var i in db.Areas.Where(i => i.Name.Contains(sender.Text)).Select(i => i))
+					foreach (var i in db.Areas.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())).Select(i => i))
+					{
+						if (!AreaSuggestList.Contains(i.Name))
+						{
+							AreaSuggestList.Add(i.Name);
+						}
+
+						ButtonCollection.Add(NewCategoryButtonCreate(i));
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Click on Find button
+		/// </summary>
+		/// <param name="sender">Object</param>
+		/// <param name="args">Args</param>
+		public void CategoryFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		{
+			AreaSuggestList.Clear();
+
+			if (ButtonCollection != null)
+			{
+				using (MapEventContext db = new MapEventContext())
+				{
+					var term = args.QueryText.ToLower();
+					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term)).Select(i => i))
 					{
 						ButtonCollection.Add(NewCategoryButtonCreate(i));
 					}
@@ -318,6 +369,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			if (result == ContentDialogResult.Primary)
 			{
+				if (area == null && string.IsNullOrEmpty(name.Text))
+				{
+					return null;
+				}
+
 				// New area object for adding into Database
 				return new Area()
 				{
