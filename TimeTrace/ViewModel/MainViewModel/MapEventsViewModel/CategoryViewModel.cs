@@ -160,9 +160,22 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					// Remove Area from UI panel
 					ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedArea.Id));
 
+					// Projects of the deleted calendar
+					foreach (var innerProject in db.Projects.Where(i => i.AreaId == selectedArea.Id))
+					{
+						// Remove all events in this project
+						db.MapEvents.RemoveRange(db.MapEvents.Where(i => i.ProjectId == innerProject.Id));
+					}
+
+					// Remove all projects in selected calendar
+					db.Projects.RemoveRange(db.Projects.Where(i => i.AreaId == selectedArea.Id));
+
 					// Remove Area from Database
 					db.Areas.Remove(selectedArea);
 					db.SaveChanges();
+
+					await new MessageDialog($"Календарь {selectedArea.Name} со всеми проектами и событиями внутри был удалён",
+						"Операция завершена успешно").ShowAsync();
 				}
 			}
 		}

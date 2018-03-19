@@ -154,7 +154,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					Title = "Подтверждение удаления",
 					Content = $"Вы уверены что хотите удалить проект {selectedProject.Name}?\n" +
-					          $"Удаление приведен к потере всех событий внутри календаря!",
+							  $"Удаление приведен к потере всех событий внутри календаря!",
 					PrimaryButtonText = "Удалить",
 					CloseButtonText = "Отмена",
 					DefaultButton = ContentDialogButton.Close,
@@ -167,9 +167,15 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					// Remove Area from UI panel
 					ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedProject.Id));
 
-					// Remove Area from Database
+					// Remove all events in this project
+					db.MapEvents.RemoveRange(db.MapEvents.Where(i => i.ProjectId == selectedProject.Id));
+
+					// Remove Project from Database
 					db.Projects.Remove(selectedProject);
 					db.SaveChanges();
+
+					await new MessageDialog($"Проект {selectedProject.Name} со всеми событиями внутри был удалён",
+						"Операция завершена успешно").ShowAsync();
 				}
 			}
 		}
