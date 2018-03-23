@@ -26,7 +26,7 @@
 										<TextBlock
 											Margin="0,0,5,0"
 											FontSize="15"
-											Text="Календарь: " />
+											Text="Проект: " />
 										<TextBlock FontSize="15" Text="{Binding Name}" />
 									</StackPanel>
 									<StackPanel Margin="10,2" Orientation="Horizontal">
@@ -137,7 +137,7 @@
 			<AppBarButton
 				Click="{x:Bind ViewModel.ProjectCreate}"
 				Icon="Add"
-				Label="Добавить календарь"
+				Label="Добавить проект"
 				ToolTipService.ToolTip="Создать новый проект" />
 			<AppBarButton
 				Click="{x:Bind ViewModel.ProjectsBulkRemoval}"

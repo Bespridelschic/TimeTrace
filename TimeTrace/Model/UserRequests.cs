@@ -1,10 +1,20 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using TimeTrace.Model.Events.DBContext;
+using Windows.Devices.Bluetooth;
+using Windows.Networking.Vpn;
+using Windows.Storage;
+using Newtonsoft.Json.Serialization;
+using TimeTrace.Model.Events;
 
 namespace TimeTrace.Model
 {
@@ -164,7 +174,7 @@ namespace TimeTrace.Model
 		{
 			// Get user token and email for request
 			var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
-			
+
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
 				throw new Exception("File with email and token not fount");
@@ -172,7 +182,7 @@ namespace TimeTrace.Model
 
 			// Get user json string from server
 			string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/getcustomer", TokenJsonSerialize(res.email, res.token));
-			
+
 			JObject jsonString = JObject.Parse(result);
 			if ((int)jsonString["answer"] != 0)
 			{
@@ -182,18 +192,342 @@ namespace TimeTrace.Model
 			return JsonUserDeserialize((string)jsonString["customer"]);
 		}
 
+		/// <summary>
+		/// Synchronizing local calendars to server
+		/// </summary>
+		/// <returns>Result of operation: 0 - synchronization is success, 1 - synchrozination problems</returns>
+		public static async Task<int> SynchronizationRequestAsync()
+		{
+			int resultOfSynchronization = 1;
+
+			string receivedlink = "https://mindstructuring.ru/data/synchronization";
+			string token = (await UserFileWorker.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			using (MapEventContext db = new MapEventContext())
+			{
+				#region Create anonymous types for sending to server
+
+				// is_delete - list of local deleted items
+				// story_list - list of local elements of the current user and not deleted from the local database
+
+				var areas = new
+				{
+					is_delete = db.Areas.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i.Id).ToList(),
+					story_list = db.Areas.
+						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
+						Select(i => new
+						{
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							id = i.Id,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+
+						}).ToList()
+				};
+
+				var projects = new
+				{
+					is_delete = db.Projects.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i.Id).ToList(),
+					story_list = db.Projects.
+						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
+						Select(i => new
+						{
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							id = i.Id,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+
+						}).ToList()
+				};
+
+				var events = new
+				{
+					is_delete = db.MapEvents.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i.Id).ToList(),
+					story_list = db.MapEvents.
+						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
+						Select(i => new
+						{
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							id = i.Id,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+
+						}).ToList()
+				};
+
+				#endregion
+
+				Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId, areas, projects, events })}");
+				var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId, areas, projects, events }));
+
+				JObject jsonString = JObject.Parse(resultOfRequest);
+
+				Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+				// Save new token
+				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+
+				#region Areas processing
+
+				#region Adding new to database
+
+				// Get areas items for adding to local database
+				IList<Area> receivedAreas = new List<Area>();
+				foreach (var result in jsonString["areas"]["item"].Children().ToList())
+				{
+					var searchResult = result.ToObject<Area>();
+					receivedAreas.Add(searchResult);
+				}
+
+				// Add received areas to local database
+				db.Areas.AddRange(receivedAreas);
+
+				Debug.WriteLine($"Добавляем: {receivedAreas.Count} зон");
+
+				#endregion
+
+				#region Remove from database
+
+				// Get removed areas, for removing from local database
+				IList<string> removedAreas = new List<string>();
+				foreach (var result in jsonString["areas"]["is_delete"].Children().ToList())
+				{
+					removedAreas.Add(result.ToObject<string>());
+				}
+
+				// Removing areas from local database
+				foreach (var removedArea in removedAreas)
+				{
+					db.Areas.Remove(db.Areas.FirstOrDefault(i => i.Id == removedArea));
+				}
+
+				Debug.WriteLine($"Удаляем: {removedAreas.Count} зон");
+
+				#endregion
+
+				#region Seding to server
+
+				// Create sending areas
+				IList<string> sendedAreas = new List<string>();
+				foreach (var result in jsonString["areas"]["requires"].Children().ToList())
+				{
+					sendedAreas.Add(result.ToObject<string>());
+				}
+
+				Debug.WriteLine($"Отправляемых: {sendedAreas.Count} зон");
+
+				#endregion
+
+				#endregion
+
+				#region Projects processing
+
+				#region Adding new to database
+
+				// Get projects items for adding to local database
+				IList<Project> receivedProjects = new List<Project>();
+				foreach (var result in jsonString["projects"]["item"].Children().ToList())
+				{
+					var searchResult = result.ToObject<Project>();
+					receivedProjects.Add(searchResult);
+				}
+
+				// Add received projects to local database
+				db.Projects.AddRange(receivedProjects);
+
+				Debug.WriteLine($"Добавляем: {receivedProjects.Count} проектов");
+
+				#endregion
+
+				#region Remove from database
+
+				// Get removed projects, for removing from local database
+				IList<string> removedProjects = new List<string>();
+				foreach (var result in jsonString["projects"]["is_delete"].Children().ToList())
+				{
+					removedProjects.Add(result.ToObject<string>());
+				}
+
+				// Removing projects from local database
+				foreach (var removedProject in removedProjects)
+				{
+					db.Projects.Remove(db.Projects.FirstOrDefault(i => i.Id == removedProject));
+				}
+
+				Debug.WriteLine($"Удаляем: {removedProjects.Count} проектов");
+
+				#endregion
+
+				#region Sending to server
+
+				// Create sending projects
+				IList<string> sendedProjects = new List<string>();
+				foreach (var result in jsonString["projects"]["requires"].Children().ToList())
+				{
+					sendedProjects.Add(result.ToObject<string>());
+				}
+
+				Debug.WriteLine($"Отправляемых: {sendedProjects.Count} проектов");
+
+				#endregion
+
+				#endregion
+
+				#region MapEvents processing
+
+				#region Adding to database
+
+				// Get map events items for adding to local database
+				IList<MapEvent> receivedMapEvents = new List<MapEvent>();
+				foreach (var result in jsonString["events"]["item"].Children().ToList())
+				{
+					var searchResult = result.ToObject<MapEvent>();
+					receivedMapEvents.Add(searchResult);
+				}
+
+				// Add received map events to local database
+				db.MapEvents.AddRange(receivedMapEvents);
+
+				Debug.WriteLine($"Добавляем: {receivedMapEvents.Count} событий");
+
+				#endregion
+
+				#region Remove from database
+
+				// Get removed map events, for removing from local database
+				IList<string> removedMapEvents = new List<string>();
+				foreach (var result in jsonString["events"]["is_delete"].Children().ToList())
+				{
+					removedMapEvents.Add(result.ToObject<string>());
+				}
+
+				// Removing map events from local database
+				foreach (var removedMapEvent in removedMapEvents)
+				{
+					db.MapEvents.Remove(db.MapEvents.FirstOrDefault(i => i.Id == removedMapEvent));
+				}
+
+				Debug.WriteLine($"Удаляем: {removedMapEvents.Count} событий");
+
+				#endregion
+
+				#region Sending to server
+
+				// Create sending map events
+				IList<string> sendedMapEvents = new List<string>();
+				foreach (var result in jsonString["events"]["requires"].Children().ToList())
+				{
+					sendedMapEvents.Add(result.ToObject<string>());
+				}
+
+				Debug.WriteLine($"Отправляемых: {sendedMapEvents.Count} событий");
+
+				#endregion
+
+				#endregion
+
+				var sendingData = new
+				{
+					areas = db.Areas.Join
+					(
+						sendedAreas,
+						i => i.Id,
+						w => w,
+						(i, w) => new
+						{
+							id = i.Id,
+							summary = i.Name,
+							description = i.Description,
+							color = i.Color,
+							favourite = i.Favorite,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							personEmail = i.EmailOfOwner
+						}
+					),
+					projects = db.Projects.Join
+					(
+						sendedProjects,
+						i => i.Id,
+						w => w,
+						(i, w) => new
+						{
+							id = i.Id,
+							summary = i.Name,
+							description = i.Description,
+							color = i.Color,
+							area_id = i.AreaId,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+						}
+					),
+					events = db.MapEvents.Join
+					(
+						sendedMapEvents,
+						i => i.Id,
+						w => w,
+						(i, w) => new
+						{
+							id = i.Id,
+							start = i.Start.ToString("yyyy-MM-dd hh:mm:ss"),
+							end = i.End.ToString("yyyy-MM-dd hh:mm:ss"),
+							location = i.Location,
+							summary = i.Name,
+							description = i.Description,
+							color = i.Color,
+							recurrence = i.EventInterval,
+							project_id = i.ProjectId,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+						}
+					)
+				};
+
+				string departureAddress = "https://mindstructuring.ru/data/save";
+				var completeSendingData = new
+				{
+					_csrf = (string)jsonString["_csrf"],
+					idDevice = deviceId,
+					areas = sendingData.areas,
+					projects = sendingData.projects,
+					events = sendingData.events
+				};
+
+				Debug.WriteLine($"Отправляем данные:\n{JsonSerialize(completeSendingData)}");
+
+				var finalResult = await BasePostRequestAsync(departureAddress, JsonSerialize(completeSendingData));
+
+				jsonString = JObject.Parse(finalResult);
+
+				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+				resultOfSynchronization = (int)jsonString["answer"];
+
+
+				if (resultOfSynchronization == 0)
+				{
+					db.Areas.RemoveRange(db.Areas.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
+					db.Projects.RemoveRange(db.Projects.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
+					db.MapEvents.RemoveRange(db.MapEvents.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
+				}
+
+				db.SaveChanges();
+			}
+
+			return resultOfSynchronization;
+		}
+
 		#region JSON
 
 		/// <summary>
 		/// Serialize template object to json format
 		/// </summary>
-		/// <param name="user">Object of <see cref="User"/></param>
+		/// <param name="obj">Serialized object</param>
 		/// <returns>Json string</returns>
-		private static string JsonSerialize<T>(T user)
+		private static string JsonSerialize<T>(T obj)
 		{
-			if (user != null)
+			if (obj != null)
 			{
-				return JsonConvert.SerializeObject(user);
+				return JsonConvert.SerializeObject(obj);
 			}
 			return null;
 		}
@@ -201,7 +535,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Deserialize user from json
 		/// </summary>
-		/// <param name="user">Json string</param>
+		/// <param name="jsonString">Json string</param>
 		/// <returns>New object of <see cref="User"/></returns>
 		private static User JsonUserDeserialize(string jsonString)
 		{
@@ -216,7 +550,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Serialize token and email
 		/// </summary>
-		/// <param name="user">Object of <see cref="User"/></param>
+		/// <param name="email">Serializable email</param>
 		/// <param name="token">Token</param>
 		/// <returns>Строка в формате Json</returns>
 		private static string TokenJsonSerialize(string email, string token)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using TimeTrace.Model.Events.DBContext;
 using Windows.ApplicationModel;
@@ -28,6 +29,7 @@ namespace TimeTrace
 		/// </summary>
 		public App()
 		{
+			IsIdDeviceAvailable();
 			//AppSignInWithToken().GetAwaiter();
 
 			this.InitializeComponent();
@@ -178,6 +180,37 @@ namespace TimeTrace
 			{
 				await (new Windows.UI.Popups.MessageDialog($"{ex.Message}\n" +
 					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+			}
+		}
+
+		private async void IsIdDeviceAvailable()
+		{
+			try
+			{
+				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+
+				var tryGetFile = await ApplicationData.Current.LocalFolder.TryGetItemAsync("_dif.bin");
+				if (tryGetFile == null)
+				{
+					StorageFile storageFile = await storageFolder.CreateFileAsync("_dif.bin", CreationCollisionOption.ReplaceExisting);
+
+					string[] stringToFile = {Guid.NewGuid().ToString()};
+
+					await FileIO.WriteLinesAsync(storageFile, stringToFile);
+				}
+
+				StorageFile deviceIdFile = await storageFolder.GetFileAsync("_dif.bin");
+				var fileLines = await (FileIO.ReadLinesAsync(deviceIdFile));
+
+				if (fileLines.Count <= 2)
+				{
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+					localSettings.Values["DeviceId"] = fileLines[0];
+				}
+			}
+			catch (Exception)
+			{
+				throw;
 			}
 		}
 	}

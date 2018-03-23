@@ -91,7 +91,7 @@ namespace TimeTrace.Model.Events
 		/// <summary>
 		/// The person associated with the event
 		/// </summary>
-		[JsonProperty(PropertyName = "person")]
+		[JsonProperty(PropertyName = "people")]
 		public string UserBind
 		{
 			get { return userBind; }

@@ -6,8 +6,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace TimeTrace.Model.Events
 {
@@ -80,17 +82,65 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
-		private DateTime updateAt;
+		private DateTime? createAt;
 		/// <summary>
-		/// Calendar creation or last update date
+		/// Calendar creation date
+		/// </summary>
+		[JsonProperty(PropertyName = "create_at")]
+		public DateTime? CreateAt
+		{
+			get => createAt;
+			set
+			{
+				if (value != null)
+				{
+					createAt = value;
+				}
+				OnPropertyChanged();
+			}
+		}
+
+		private DateTime? updateAt;
+		/// <summary>
+		/// Calendar last update date
 		/// </summary>
 		[JsonProperty(PropertyName = "update_at")]
-		public DateTime UpdateAt
+		public DateTime? UpdateAt
 		{
 			get { return updateAt; }
 			set
 			{
 				updateAt = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private bool isDelete;
+		/// <summary>
+		/// If deleted - remove local area
+		/// </summary>
+		[JsonIgnore]
+		public bool IsDelete
+		{
+			get => isDelete;
+			set
+			{
+				isDelete = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string emailOfOwner;
+		/// <summary>
+		/// E-mail address of category owner
+		/// </summary>
+		[JsonProperty(PropertyName = "personEmail")]
+		public string EmailOfOwner
+		{
+			get => emailOfOwner;
+			set
+			{
+				emailOfOwner = value;
 				OnPropertyChanged();
 			}
 		}
@@ -103,7 +153,11 @@ namespace TimeTrace.Model.Events
 		public Category()
 		{
 			Id = Guid.NewGuid().ToString();
-			UpdateAt = DateTime.Now;
+			UpdateAt = CreateAt = DateTime.Now.ToUniversalTime();
+			IsDelete = false;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			EmailOfOwner = (string)localSettings.Values["email"];
 		}
 
 		#region MVVM

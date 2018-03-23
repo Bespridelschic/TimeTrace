@@ -27,25 +27,10 @@ namespace TimeTrace.Model.Events
 		public bool Favorite
 
 		{
-			get { return favorite; }
+			get => favorite;
 			set
 			{
 				favorite = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private bool isDelete;
-		/// <summary>
-		/// If deleted - remove local area
-		/// </summary>
-		[JsonIgnore]
-		public bool IsDelete
-		{
-			get { return isDelete; }
-			set
-			{
-				isDelete = value;
 				OnPropertyChanged();
 			}
 		}
@@ -54,7 +39,7 @@ namespace TimeTrace.Model.Events
 
 		public Area()
 		{
-			IsDelete = Favorite = false;
+			Favorite = false;
 		}
 	}
 }

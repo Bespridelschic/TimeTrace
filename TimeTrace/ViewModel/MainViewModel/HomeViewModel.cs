@@ -99,11 +99,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			using (MapEventContext db = new MapEventContext())
 			{
-				NumEvents = db.MapEvents.Count();
-				NumEventsToday = db.MapEvents.Count(mapEvent => mapEvent.Start.Date <= DateTime.Today && mapEvent.End.Date >= DateTime.Today);
+				NumEvents = db.MapEvents.Count(mapEvent => !mapEvent.IsDelete && mapEvent.EmailOfOwner == CurrentUser.Email);
+				NumEventsToday = db.MapEvents.
+					Count(mapEvent => mapEvent.Start.Date <= DateTime.Today && mapEvent.End.Date >= DateTime.Today && !mapEvent.IsDelete && mapEvent.EmailOfOwner == CurrentUser.Email);
+
 				NearEvent = 
-					db.MapEvents.FirstOrDefault(i => i.Start >= DateTime.Now)?.Start.Subtract(DateTime.Now).ToString("g").Split(',')[0]
-					?? "Нет ближайших";
+					db.MapEvents.
+						Where(i => !i.IsDelete && i.EmailOfOwner == CurrentUser.Email).
+						FirstOrDefault(i => i.Start >= DateTime.Now)?.Start.Subtract(DateTime.Now).ToString("g").Split(',')[0]
+						?? "Нет ближайших";
 			}
 		}
 

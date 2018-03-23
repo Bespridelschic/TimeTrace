@@ -23,6 +23,7 @@ using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.UI.Core;
+using Newtonsoft.Json;
 
 namespace TimeTrace.View.MainView
 {
@@ -90,11 +91,28 @@ namespace TimeTrace.View.MainView
 						break;
 
 					case "scheduleSync":
-						ShowToastNotification();
+						try
+						{
+							var resultOfSynchronization = await Model.UserRequests.SynchronizationRequestAsync();
+							if (resultOfSynchronization == 0)
+							{
+								ShowToastNotification(0);
+							}
+
+							if (resultOfSynchronization == 1)
+							{
+								ShowToastNotification(1);
+							}
+						}
+						catch (Exception)
+						{
+							ShowToastNotification(1);
+						}
+
 						break;
 
 					case "help":
-						await (new MessageDialog("Помощь пользователя находится в разработке").ShowAsync());
+						await new MessageDialog("Помощь пользователя находится в разработке").ShowAsync();
 						break;
 
 					default:
@@ -106,8 +124,10 @@ namespace TimeTrace.View.MainView
 		/// <summary>
 		/// Send push-notification to windows
 		/// </summary>
-		private void ShowToastNotification()
+		private void ShowToastNotification(int res)
 		{
+			string message = res == 0 ? "Синхронизация завершена успешно" : "Ошибка во время синхронизации";
+
 			var toastContent = new ToastContent()
 			{
 				Visual = new ToastVisual()
@@ -118,16 +138,16 @@ namespace TimeTrace.View.MainView
 						{
 							new AdaptiveText()
 							{
-								Text = "Напоминание о событии",
+								Text = "Синхронизация событий",
 								HintMaxLines = 1
 							},
 							new AdaptiveText()
 							{
-								Text = "Имя события"
+								Text = $"Начало синхронизации: {DateTime.Now.ToShortTimeString()}"
 							},
 							new AdaptiveText()
 							{
-								Text = $"Начало в {DateTime.Now.ToShortTimeString()}"
+								Text = message
 							}
 						},
 						AppLogoOverride = new ToastGenericAppLogo()

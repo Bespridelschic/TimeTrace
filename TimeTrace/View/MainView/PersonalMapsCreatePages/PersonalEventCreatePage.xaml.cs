@@ -36,10 +36,13 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		{
 			if (e != null)
 			{
-				ViewModel = new PersonalEventCreateViewModel();
-				ScheduleViewModel = new ScheduleViewModel((string)e.Parameter);
+				Project proj = (Project) e.Parameter;
 
-				ViewModel.CurrentMapEvent.ProjectId = (string)e.Parameter;
+				ViewModel = new PersonalEventCreateViewModel();
+				ScheduleViewModel = new ScheduleViewModel(proj.Id);
+
+				ViewModel.CurrentMapEvent.ProjectId = proj.Id;
+				ViewModel.CurrentMapEvent.Color = proj.Color;
 			}
 		}
 	}

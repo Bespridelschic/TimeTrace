@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 using TimeTrace.Model;
 using TimeTrace.Model.Events;
 using TimeTrace.Model.Events.DBContext;
@@ -40,7 +41,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public int SelectedMapEvent
 		{
-			get { return selectedMapEvent; }
+			get => selectedMapEvent;
 			set
 			{
 				selectedMapEvent = value;
@@ -75,19 +76,22 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			using (MapEventContext db = new MapEventContext())
 			{
-				//MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.Start.Date == DateTime.Today)) ??
-
 				ObservableCollection<MapEvent> list;
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 				if (projectId == null)
 				{
-					list = new ObservableCollection<MapEvent>(db.MapEvents.ToList());
+					list = new ObservableCollection<MapEvent>(db.MapEvents.
+						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
+						ToList());
 				}
 				else
 				{
-					list = new ObservableCollection<MapEvent>(db.MapEvents.Where(i => i.ProjectId == projectId).ToList());
+					list = new ObservableCollection<MapEvent>(db.MapEvents.
+						Where(i => i.ProjectId == projectId && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
+						ToList());
 				}
-				
+
 				if (list.Count == 0)
 				{
 					list = new ObservableCollection<MapEvent>(
@@ -124,8 +128,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				using (MapEventContext db = new MapEventContext())
 				{
-					db.MapEvents.Remove(MapEvents[SelectedMapEvent]);
-					MapEvents[SelectedMapEvent].IsDelete = true;
+					db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent].Id).IsDelete = true;
 					MapEvents.RemoveAt(SelectedMapEvent);
 
 					db.SaveChanges();
@@ -143,7 +146,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				Text = $"Имя события: {tempEvent.Name}\n" +
 						$"Описание: {tempEvent.Description ?? "Отсутствует"}\n" +
-						$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToShortTimeString()}\n" +
+						$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
 						$"Продолжительность: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} ч.\n" +
 						$"Персона, связанная с событием: {tempEvent.UserBind ?? "Отсутствует"}\n" +
 						$"Место, связанное с событием: {tempEvent.Location ?? "Не задано"}\n",

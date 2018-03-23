@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Popups;
 using TimeTrace.Model.Events;
@@ -89,9 +90,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			ButtonCollection = new ObservableCollection<Button>();
 			ProjectSuggestList = new ObservableCollection<string>();
 
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
 			using (MapEventContext db = new MapEventContext())
 			{
-				foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id).Select(i => i))
+				foreach (var i in db.Projects.
+					Where(i => i.AreaId == CurrentArea.Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).
+					Select(i => i))
 				{
 					ButtonCollection.Add(NewProjectButtonCreate(i));
 				}
@@ -116,10 +121,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				ButtonCollection.Add(NewProjectButtonCreate(newProject));
 			}
-			else
-			{
-				await new MessageDialog("Не заполнено имя для нового календаря", "Ошибка добавления нового календаря").ShowAsync();
-			}
 		}
 
 		/// <summary>
@@ -131,7 +132,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			using (MapEventContext db = new MapEventContext())
 			{
-				(Application.Current as App).AppFrame.Navigate(typeof(PersonalEventCreatePage), (string)(sender as Button).Tag);
+				(Application.Current as App).AppFrame.Navigate(typeof(PersonalEventCreatePage), db.Projects.FirstOrDefault(i => i.Id == (string)(sender as Button).Tag));
 			}
 		}
 
@@ -154,7 +155,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					Title = "Подтверждение удаления",
 					Content = $"Вы уверены что хотите удалить проект {selectedProject.Name}?\n" +
-							  $"Удаление приведен к потере всех событий внутри календаря!",
+							  $"Удаление приведен к потере всех событий внутри проекта!",
 					PrimaryButtonText = "Удалить",
 					CloseButtonText = "Отмена",
 					DefaultButton = ContentDialogButton.Close,
@@ -168,10 +169,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedProject.Id));
 
 					// Remove all events in this project
-					db.MapEvents.RemoveRange(db.MapEvents.Where(i => i.ProjectId == selectedProject.Id));
+					foreach (var mapEvent in db.MapEvents.Where(i => i.Id == selectedProject.Id))
+					{
+						db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+					}
 
-					// Remove Project from Database
-					db.Projects.Remove(selectedProject);
+					// Remove Project from UI
+					db.Projects.FirstOrDefault(i => i.Id == selectedProject.Id).IsDelete = true;
+
 					db.SaveChanges();
 
 					await new MessageDialog($"Проект {selectedProject.Name} со всеми событиями внутри был удалён",
@@ -193,12 +198,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// Get edited Project object
 				var editedProject = await ProjectCreationDialogAsync(selectedProject);
 
+				if (editedProject == null)
+				{
+					return;
+				}
+
 				// If project was edit
 				if (editedProject.Name != selectedProject.Name || editedProject.Description != selectedProject.Description || editedProject.Color != selectedProject.Color)
 				{
 					selectedProject.Name = editedProject.Name;
 					selectedProject.Description = editedProject.Description;
 					selectedProject.Color = editedProject.Color;
+
+					selectedProject.UpdateAt = DateTime.UtcNow;
 
 					// Update project in database
 					db.Projects.Update(selectedProject);
@@ -387,7 +399,18 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				if (project == null && string.IsNullOrEmpty(name.Text))
 				{
+					await new MessageDialog("Не заполнено имя для нового проекта", "Ошибка добавления нового проекта").ShowAsync();
+
 					return null;
+				}
+				else
+				{
+					if (string.IsNullOrEmpty(name.Text))
+					{
+						await new MessageDialog("Не заполнено имя изменяемого проекта", "Ошибка изменения проекта").ShowAsync();
+
+						return null;
+					}
 				}
 
 				// New area object for adding into Database

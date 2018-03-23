@@ -117,7 +117,6 @@
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\ProjectViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\TransitionData.cs" />
     <Compile Include="ViewModel\MainViewModel\ScheduleViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">

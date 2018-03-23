@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using TimeTrace.Model.Events;
 using TimeTrace.Model.Events.DBContext;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
@@ -84,9 +85,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			ButtonCollection = new ObservableCollection<Button>();
 			AreaSuggestList = new ObservableCollection<string>();
 
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
 			using (MapEventContext db = new MapEventContext())
 			{
-				foreach (var i in db.Areas.Select(i => i))
+				foreach (var i in db.Areas.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 				{
 					ButtonCollection.Add(NewCategoryButtonCreate(i));
 				}
@@ -111,10 +114,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				ButtonCollection.Add(NewCategoryButtonCreate(newArea));
 			}
-			else
-			{
-				await new MessageDialog("Не заполнено имя для нового календаря", "Ошибка добавления нового календаря").ShowAsync();
-			}
 		}
 
 		/// <summary>
@@ -130,7 +129,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 		public void CategoriesBulkRemoval()
 		{
-
+			
 		}
 
 		/// <summary>
@@ -163,15 +162,17 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					// Projects of the deleted calendar
 					foreach (var innerProject in db.Projects.Where(i => i.AreaId == selectedArea.Id))
 					{
-						// Remove all events in this project
-						db.MapEvents.RemoveRange(db.MapEvents.Where(i => i.ProjectId == innerProject.Id));
+						foreach (var mapEvent in db.MapEvents.Where(i => i.ProjectId == innerProject.Id))
+						{
+							db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+						}
+
+						db.Projects.FirstOrDefault(i => i.Id == innerProject.Id).IsDelete = true;
 					}
 
-					// Remove all projects in selected calendar
-					db.Projects.RemoveRange(db.Projects.Where(i => i.AreaId == selectedArea.Id));
+					// Remove Area from UI
+					db.Areas.FirstOrDefault(i => i.Id == selectedArea.Id).IsDelete = true;
 
-					// Remove Area from Database
-					db.Areas.Remove(selectedArea);
 					db.SaveChanges();
 
 					await new MessageDialog($"Календарь {selectedArea.Name} со всеми проектами и событиями внутри был удалён",
@@ -193,12 +194,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// Get edited Area object
 				var editedArea = await CategoryCreationDialogAsync(selectedArea);
 
+				if (editedArea == null)
+				{
+					return;
+				}
+
 				// If area was edit
 				if (editedArea.Name != selectedArea.Name || editedArea.Description != selectedArea.Description || editedArea.Color != selectedArea.Color)
 				{
 					selectedArea.Name = editedArea.Name;
 					selectedArea.Description = editedArea.Description;
 					selectedArea.Color = editedArea.Color;
+
+					selectedArea.UpdateAt = DateTime.UtcNow;
 
 					// Update area in database
 					db.Areas.Update(selectedArea);
@@ -385,8 +393,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				if (area == null && string.IsNullOrEmpty(name.Text))
 				{
+					await new MessageDialog("Не заполнено имя для нового календаря", "Ошибка добавления нового календаря").ShowAsync();
+
 					return null;
 				}
+				else
+				{
+					if (string.IsNullOrEmpty(name.Text))
+					{
+						await new MessageDialog("Не заполнено имя изменяемого календаря", "Ошибка изменения календаря").ShowAsync();
+
+						return null;
+					}
+				}			
 
 				// New area object for adding into Database
 				return new Area()

@@ -263,33 +263,29 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				return;
 			}
 
-			CurrentMapEvent.UpdateAt = DateTime.Now;
+			CurrentMapEvent.UpdateAt = DateTime.UtcNow;
 			CurrentMapEvent.IsDelete = false;
 
-			if (CurrentMapEvent.Location == null)
-			{
-				CurrentMapEvent.Location = string.Empty;
-			}
-
-			if (CurrentMapEvent.UserBind == null)
-			{
-				CurrentMapEvent.UserBind = string.Empty;
-			}
+			// Convert dates to UTC
+			CurrentMapEvent.Start = CurrentMapEvent.Start.ToUniversalTime();
+			CurrentMapEvent.End = CurrentMapEvent.End.ToUniversalTime();
 
 			if (string.IsNullOrEmpty(CurrentMapEvent.Description))
 			{
-				CurrentMapEvent.Description = null;
+				CurrentMapEvent.Description = string.Empty;
 			}
 
 			if (string.IsNullOrEmpty(CurrentMapEvent.UserBind))
 			{
-				CurrentMapEvent.UserBind = null;
+				CurrentMapEvent.UserBind = string.Empty;
 			}
 
 			if (string.IsNullOrEmpty(CurrentMapEvent.Location))
 			{
-				CurrentMapEvent.Location = null;
+				CurrentMapEvent.Location = string.Empty;
 			}
+
+			CurrentMapEvent.EventInterval = "Не повторяется";
 
 			BindingEventToWindowsCalendar();
 
@@ -299,9 +295,12 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				db.SaveChanges();
 			}
 
-			NewMapEventNotification(CurrentMapEvent.Name, CurrentMapEvent.Start);
+			NewMapEventNotification(CurrentMapEvent.Name, CurrentMapEvent.Start.ToLocalTime());
 		}
 
+		/// <summary>
+		/// Open Windows 10 calendar
+		/// </summary>
 		private async void BindingEventToWindowsCalendar()
 		{
 			var appointment = new Windows.ApplicationModel.Appointments.Appointment();
