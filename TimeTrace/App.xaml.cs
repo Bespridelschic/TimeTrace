@@ -183,6 +183,9 @@ namespace TimeTrace
 			}
 		}
 
+		/// <summary>
+		/// Create id if not found
+		/// </summary>
 		private async void IsIdDeviceAvailable()
 		{
 			try

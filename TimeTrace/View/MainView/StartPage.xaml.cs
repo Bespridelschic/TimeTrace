@@ -180,7 +180,7 @@ namespace TimeTrace.View.MainView
 				Header = "Расскажите, с какими проблемами вы столкнулись ?",
 				PlaceholderText = "Опишите проблему...",
 				Height = 200,
-				Width = 400,
+				Width = 350,
 				TextWrapping = TextWrapping.Wrap,
 				AcceptsReturn = true,
 				IsSpellCheckEnabled = true

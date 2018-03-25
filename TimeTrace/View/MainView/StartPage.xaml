@@ -47,8 +47,8 @@
 							Click="SignOut"
 							Icon="OtherUser"
 							Label="Сменить пользователя" />
-						<AppBarButton Label="User">
-							<PersonPicture Width="20" Initials="C#" />
+						<AppBarButton Label="User" Icon="Contact">
+							<!--<PersonPicture Width="20" Initials="C#" />-->
 						</AppBarButton>
 					</CommandBar>
 				</Grid>

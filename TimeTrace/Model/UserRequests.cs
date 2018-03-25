@@ -220,9 +220,9 @@ namespace TimeTrace.Model
 						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
 						Select(i => new
 						{
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							id = i.Id,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
 
 						}).ToList()
 				};
@@ -234,9 +234,9 @@ namespace TimeTrace.Model
 						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
 						Select(i => new
 						{
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							id = i.Id,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
 
 						}).ToList()
 				};
@@ -248,9 +248,9 @@ namespace TimeTrace.Model
 						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
 						Select(i => new
 						{
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							id = i.Id,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
 
 						}).ToList()
 				};
@@ -440,8 +440,8 @@ namespace TimeTrace.Model
 							description = i.Description,
 							color = i.Color,
 							favourite = i.Favorite,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							personEmail = i.EmailOfOwner
 						}
 					),
@@ -457,8 +457,8 @@ namespace TimeTrace.Model
 							description = i.Description,
 							color = i.Color,
 							area_id = i.AreaId,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
 						}
 					),
 					events = db.MapEvents.Join
@@ -469,16 +469,16 @@ namespace TimeTrace.Model
 						(i, w) => new
 						{
 							id = i.Id,
-							start = i.Start.ToString("yyyy-MM-dd hh:mm:ss"),
-							end = i.End.ToString("yyyy-MM-dd hh:mm:ss"),
+							start = i.Start.ToString("yyyy-MM-dd HH:mm:ss"),
+							end = i.End.ToString("yyyy-MM-dd HH:mm:ss"),
 							location = i.Location,
 							summary = i.Name,
 							description = i.Description,
 							color = i.Color,
 							recurrence = i.EventInterval,
 							project_id = i.ProjectId,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd hh:mm:ss"),
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd hh:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
 						}
 					)
 				};
