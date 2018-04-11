@@ -35,6 +35,7 @@
 						Text="PreAlpha version 1.0.0.0x" />
 					<CommandBar
 						Grid.Column="1"
+						Margin="0,0,10,0"
 						HorizontalAlignment="Right"
 						VerticalAlignment="Bottom"
 						Background="{ThemeResource HostBackdropBrush}"
@@ -47,7 +48,7 @@
 							Click="SignOut"
 							Icon="OtherUser"
 							Label="Сменить пользователя" />
-						<AppBarButton Label="User" Icon="Contact">
+						<AppBarButton Icon="Contact" Label="User">
 							<!--<PersonPicture Width="20" Initials="C#" />-->
 						</AppBarButton>
 					</CommandBar>
@@ -71,6 +72,13 @@
 				Content="Расписание"
 				Icon="Calendar"
 				Tag="schedule"
+				ToolTipService.Placement="Right"
+				ToolTipService.ToolTip="Посмотреть текущее расписание" />
+
+			<NavigationViewItem
+				Content="Контакты"
+				Icon="phone"
+				Tag="contacts"
 				ToolTipService.Placement="Right"
 				ToolTipService.ToolTip="Посмотреть текущее расписание" />
 

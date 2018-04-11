@@ -16,6 +16,7 @@ namespace TimeTrace.Model.Events.DBContext
 		public DbSet<MapEvent> MapEvents { get; set; }
 		public DbSet<Area> Areas { get; set; }
 		public DbSet<Project> Projects { get; set; }
+		public DbSet<Contact> Contacts { get; set; }
 
 		public MapEventContext()
 		{
@@ -24,7 +25,7 @@ namespace TimeTrace.Model.Events.DBContext
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite("Filename=MapEventsDB.db");
+			optionsBuilder.UseSqlite("Filename=local.db");
 		}
 	}
 }

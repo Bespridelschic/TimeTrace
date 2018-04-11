@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
+	/// <summary>
+	/// Schedule view model
+	/// </summary>
 	public class ScheduleViewModel : BaseViewModel
 	{
 		/// <summary>
@@ -138,6 +141,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		/// <summary>
+		/// Show info about map event
+		/// </summary>
 		public async void MoreAboutMapEvent()
 		{
 			MapEvent tempEvent = MapEvents[SelectedMapEvent];

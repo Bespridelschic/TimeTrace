@@ -84,7 +84,6 @@ namespace TimeTrace.Model
 			SignUp,
 			AccountActivation,
 			PasswordReset,
-			MapEventSending,
 		}
 
 		/// <summary>
@@ -132,11 +131,6 @@ namespace TimeTrace.Model
 					case PostRequestDestination.PasswordReset:
 						link = "https://mindstructuring.ru/customer/sendresetkey";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
-						break;
-
-					case PostRequestDestination.MapEventSending:
-						link = "";
-						result = await BasePostRequestAsync(link, JsonSerialize(user)); // MapEvent!!!
 						break;
 
 					default:
@@ -490,7 +484,7 @@ namespace TimeTrace.Model
 					idDevice = deviceId,
 					areas = sendingData.areas,
 					projects = sendingData.projects,
-					events = sendingData.events
+					events = sendingData.events,
 				};
 
 				Debug.WriteLine($"Отправляем данные:\n{JsonSerialize(completeSendingData)}");
@@ -508,6 +502,153 @@ namespace TimeTrace.Model
 					db.Areas.RemoveRange(db.Areas.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
 					db.Projects.RemoveRange(db.Projects.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
 					db.MapEvents.RemoveRange(db.MapEvents.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
+				}
+
+				db.SaveChanges();
+			}
+
+			return resultOfSynchronization;
+		}
+
+		/// <summary>
+		/// Synchronizing local contacts to server
+		/// </summary>
+		/// <returns>Result of operation: 0 - synchronization is success, 1 - synchrozination problems</returns>
+		public static async Task<int> ContactsSynchronizationRequestAsync()
+		{
+			int resultOfSynchronization = 1;
+
+			string receivedlink = "https://mindstructuring.ru/contacts/synchronization";
+			string token = (await UserFileWorker.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			using (MapEventContext db = new MapEventContext())
+			{
+				#region Create anonymous types for sending to server
+
+				// is_delete - list of local deleted items
+				// story_list - list of local elements of the current user and not deleted from the local database
+
+				var contacts = new
+				{
+					is_delete = db.Contacts.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i.Id).ToList(),
+					story_list = db.Contacts.
+						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
+						Select(i => new
+						{
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							id = i.Id,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+
+						}).ToList()
+				};
+
+				#endregion
+
+				Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId, contacts })}");
+				var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId, contacts }));
+
+				JObject jsonString = JObject.Parse(resultOfRequest);
+
+				Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+				// Save new token
+				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+
+				#region Contacts processing
+
+				#region Adding new to database
+
+				// Get contacts items for adding to local database
+				IList<Contact> receivedContacts = new List<Contact>();
+				foreach (var result in jsonString["contacts"]["item"].Children().ToList())
+				{
+					var searchResult = result.ToObject<Contact>();
+					receivedContacts.Add(searchResult);
+				}
+
+				// Add received contacts to local database
+				db.Contacts.AddRange(receivedContacts);
+
+				Debug.WriteLine($"Добавляем: {receivedContacts.Count} контактов");
+
+				#endregion
+
+				#region Remove from database
+
+				// Get removed contacts, for removing from local database
+				IList<string> removedContacts = new List<string>();
+				foreach (var result in jsonString["contacts"]["is_delete"].Children().ToList())
+				{
+					removedContacts.Add(result.ToObject<string>());
+				}
+
+				// Removing contacts from local database
+				foreach (var removedContact in removedContacts)
+				{
+					db.Contacts.Remove(db.Contacts.FirstOrDefault(i => i.Id == removedContact));
+				}
+
+				Debug.WriteLine($"Удаляем: {removedContacts.Count} контактов");
+
+				#endregion
+
+				#region Seding to server
+
+				// Create sending contacts
+				IList<string> sendedContacts = new List<string>();
+				foreach (var result in jsonString["contacts"]["requires"].Children().ToList())
+				{
+					sendedContacts.Add(result.ToObject<string>());
+				}
+
+				Debug.WriteLine($"Отправляемых: {sendedContacts.Count} контактов");
+
+				#endregion
+
+				#endregion
+
+				var sendingData = new
+				{
+					contacts = db.Contacts.Join
+					(
+						sendedContacts,
+						i => i.Id,
+						w => w,
+						(i, w) => new
+						{
+							id = i.Id,
+							email = i.Email,
+							name = i.Name,
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+						}
+					)
+				};
+
+				string departureAddress = "https://mindstructuring.ru/data/save";
+				var completeSendingData = new
+				{
+					_csrf = (string)jsonString["_csrf"],
+					idDevice = deviceId,
+					contacts = sendingData.contacts
+				};
+
+				Debug.WriteLine($"Отправляем данные:\n{JsonSerialize(completeSendingData)}");
+
+				var finalResult = await BasePostRequestAsync(departureAddress, JsonSerialize(completeSendingData));
+
+				jsonString = JObject.Parse(finalResult);
+
+				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+				resultOfSynchronization = (int)jsonString["answer"];
+
+
+				if (resultOfSynchronization == 0)
+				{
+					db.Contacts.RemoveRange(db.Contacts.Where(i => i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]));
 				}
 
 				db.SaveChanges();

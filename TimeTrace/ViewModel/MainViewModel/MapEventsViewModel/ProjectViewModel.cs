@@ -35,11 +35,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		private Dictionary<string, string> ColorsTable { get; set; }
 
-		private ObservableCollection<Button> buttonCollection;
+		private ObservableCollection<Project> buttonCollection;
 		/// <summary>
 		/// Binded collection of buttons
 		/// </summary>
-		public ObservableCollection<Button> ButtonCollection
+		public ObservableCollection<Project> ButtonCollection
 		{
 			get => buttonCollection;
 			set
@@ -65,6 +65,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 		#endregion
 
+		public SolidColorBrush GetCurrentColor { get => GetColorFromString(CurrentArea.Color.ToString()); }
+
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
@@ -87,18 +89,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{ "Чёрный", "#616161" }
 			};
 
-			ButtonCollection = new ObservableCollection<Button>();
+			ButtonCollection = new ObservableCollection<Project>();
 			ProjectSuggestList = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			using (MapEventContext db = new MapEventContext())
 			{
-				foreach (var i in db.Projects.
-					Where(i => i.AreaId == CurrentArea.Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).
-					Select(i => i))
+				foreach (var i in db.Projects
+					.Where(i => i.AreaId == CurrentArea.Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+					.Select(i => i))
 				{
-					ButtonCollection.Add(NewProjectButtonCreate(i));
+					ButtonCollection.Add(i);
+					//ButtonCollection.Add(NewProjectButtonCreate(i));
 				}
 			}
 		}
@@ -119,7 +122,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					db.SaveChanges();
 				}
 
-				ButtonCollection.Add(NewProjectButtonCreate(newProject));
+				ButtonCollection.Add(newProject);
+				//ButtonCollection.Add(NewProjectButtonCreate(newProject));
 			}
 		}
 
@@ -132,7 +136,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			using (MapEventContext db = new MapEventContext())
 			{
-				(Application.Current as App).AppFrame.Navigate(typeof(PersonalEventCreatePage), db.Projects.FirstOrDefault(i => i.Id == (string)(sender as Button).Tag));
+				(Application.Current as App)?.AppFrame.Navigate(typeof(PersonalEventCreatePage), db.Projects.FirstOrDefault(i => i.Id == (string)(sender as Button).Tag));
 			}
 		}
 
@@ -166,7 +170,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				if (result == ContentDialogResult.Primary)
 				{
 					// Remove Area from UI panel
-					ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedProject.Id));
+					//ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedProject.Id));
 
 					// Remove all events in this project
 					foreach (var mapEvent in db.MapEvents.Where(i => i.Id == selectedProject.Id))
@@ -217,9 +221,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					db.SaveChanges();
 
 					// Update current button
-					var index = ButtonCollection.IndexOf(ButtonCollection.First(i => (string)i.Tag == selectedProject.Id));
+					/*var index = ButtonCollection.IndexOf(ButtonCollection.First(i => (string)i.Tag == selectedProject.Id));
 					ButtonCollection.RemoveAt(index);
-					ButtonCollection.Insert(index, NewProjectButtonCreate(selectedProject));
+					ButtonCollection.Insert(index, NewProjectButtonCreate(selectedProject));*/
 				}
 			}
 		}
@@ -250,7 +254,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id).Select(i => i))
 					{
-						ButtonCollection.Add(NewProjectButtonCreate(i));
+						//ButtonCollection.Add(NewProjectButtonCreate(i));
 					}
 				}
 			}
@@ -268,7 +272,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							ProjectSuggestList.Add(i.Name);
 						}
 
-						ButtonCollection.Add(NewProjectButtonCreate(i));
+						//ButtonCollection.Add(NewProjectButtonCreate(i));
 					}
 				}
 			}
@@ -290,7 +294,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					var term = args.QueryText.ToLower();
 					foreach (var i in db.Projects.Where(i => i.Name.ToLower().Contains(term) && i.AreaId == CurrentArea.Id).Select(i => i))
 					{
-						ButtonCollection.Add(NewProjectButtonCreate(i));
+						//ButtonCollection.Add(NewProjectButtonCreate(i));
 					}
 				}
 			}

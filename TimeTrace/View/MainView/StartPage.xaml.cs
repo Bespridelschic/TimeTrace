@@ -86,6 +86,10 @@ namespace TimeTrace.View.MainView
 						(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage));
 						break;
 
+					case "contacts":
+						(Application.Current as App).AppFrame.Navigate(typeof(ContactsPage));
+						break;
+
 					case "personalMaps":
 						(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 						break;

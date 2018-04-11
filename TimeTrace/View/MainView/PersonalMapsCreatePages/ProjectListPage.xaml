@@ -2,71 +2,95 @@
 	x:Class="TimeTrace.View.MainView.PersonalMapsCreatePages.ProjectListPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:advancedViews="using:TimeTrace.View.AdvancedViews"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
 	<Page.Resources>
-		<Style TargetType="Button">
-			<Setter Property="Width" Value="150" />
-			<Setter Property="Height" Value="150" />
-			<Setter Property="Background" Value="White" />
-			<Setter Property="BorderThickness" Value="1.5" />
-			<Setter Property="Foreground" Value="Black" />
-			<Setter Property="CanDrag" Value="True" />
-			<Setter Property="Margin" Value="1.5" />
-			<Setter Property="ContentTemplate">
-				<Setter.Value>
-					<DataTemplate x:DataType="local:Project">
-						<StackPanel ToolTipService.Placement="Top">
-							<ToolTipService.ToolTip>
-								<StackPanel>
-									<StackPanel Margin="10,2" Orientation="Horizontal">
-										<TextBlock
-											Margin="0,0,5,0"
-											FontSize="15"
-											Text="Проект: " />
-										<TextBlock FontSize="15" Text="{Binding Name}" />
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			<Style TargetType="Button">
+				<Setter Property="Width" Value="150" />
+				<Setter Property="Height" Value="150" />
+				<Setter Property="Background" Value="White" />
+				<Setter Property="BorderThickness" Value="1.5" />
+				<Setter Property="Foreground" Value="Black" />
+				<Setter Property="CanDrag" Value="True" />
+				<Setter Property="Margin" Value="1.5" />
+				<Setter Property="ContentTemplate">
+					<Setter.Value>
+						<DataTemplate x:DataType="local:Project">
+							<StackPanel ToolTipService.Placement="Top">
+								<ToolTipService.ToolTip>
+									<StackPanel>
+										<StackPanel Margin="10,2" Orientation="Horizontal">
+											<TextBlock
+												Margin="0,0,5,0"
+												FontSize="15"
+												Text="Проект: " />
+											<TextBlock FontSize="15" Text="{Binding Name}" />
+										</StackPanel>
+										<StackPanel Margin="10,2" Orientation="Horizontal">
+											<TextBlock
+												Margin="0,0,5,0"
+												FontSize="15"
+												Text="Описание: " />
+											<TextBlock FontSize="15" Text="{Binding Description}" />
+										</StackPanel>
+										<StackPanel Margin="10,2" Orientation="Horizontal">
+											<TextBlock
+												Margin="0,0,5,0"
+												FontSize="15"
+												Text="Обновлено: " />
+											<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
+										</StackPanel>
 									</StackPanel>
-									<StackPanel Margin="10,2" Orientation="Horizontal">
-										<TextBlock
-											Margin="0,0,5,0"
-											FontSize="15"
-											Text="Описание: " />
-										<TextBlock FontSize="15" Text="{Binding Description}" />
-									</StackPanel>
-									<StackPanel Margin="10,2" Orientation="Horizontal">
-										<TextBlock
-											Margin="0,0,5,0"
-											FontSize="15"
-											Text="Обновлено: " />
-										<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
-									</StackPanel>
-								</StackPanel>
-							</ToolTipService.ToolTip>
-							<PersonPicture
-								Width="70"
-								Height="70"
-								Margin="10,0,0,0"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Top"
-								Background="White"
-								Initials="C#" />
-							<TextBlock
-								HorizontalAlignment="Center"
-								FontSize="20"
-								Text="{Binding Name}" />
-							<TextBlock
-								HorizontalAlignment="Center"
-								FontSize="15"
-								Foreground="SlateGray"
-								Text="{Binding Description}" />
-						</StackPanel>
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+								</ToolTipService.ToolTip>
+								<PersonPicture
+									Width="70"
+									Height="70"
+									Margin="10,0,0,0"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"
+									Background="White"
+									Initials="C#" />
+								<TextBlock
+									HorizontalAlignment="Center"
+									FontSize="20"
+									Text="{Binding Name}" />
+								<TextBlock
+									HorizontalAlignment="Center"
+									FontSize="15"
+									Foreground="SlateGray"
+									Text="{Binding Description}" />
+							</StackPanel>
+						</DataTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<DataTemplate x:Key="CustomerItemTemplate" x:DataType="local:Project">
+				<Border
+					Width="170"
+					Padding="10"
+					HorizontalAlignment="Stretch"
+					Background="{StaticResource HostBackdropBrush}"
+					CornerRadius="5">
+					<StackPanel
+						Width="Auto"
+						HorizontalAlignment="Stretch"
+						Orientation="Horizontal">
+						<TextBlock
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Text="{x:Bind Name}" />
+					</StackPanel>
+				</Border>
+			</DataTemplate>
+		</ResourceDictionary>
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -78,7 +102,6 @@
 		</Grid.RowDefinitions>
 
 		<Grid>
-
 			<Grid.RowDefinitions>
 				<RowDefinition />
 				<RowDefinition Height="Auto" />
@@ -100,24 +123,78 @@
 					Text="{x:Bind ViewModel.CurrentArea.Name}"
 					TextWrapping="WrapWholeWords" />
 			</StackPanel>
-
 			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
-
 		</Grid>
 
-		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-			<ItemsControl ItemsSource="{x:Bind ViewModel.ButtonCollection, Mode=TwoWay}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<VariableSizedWrapGrid
-							Margin="50,20"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Orientation="Horizontal" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-		</ScrollViewer>
+		<Grid Grid.Row="1" Margin="12,5,12,2">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition Height="75" />
+			</Grid.RowDefinitions>
+
+			<FlipView
+				x:Name="flipView"
+				Padding="4"
+				BorderBrush="Red"
+				BorderThickness="1.4"
+				ItemsSource="{x:Bind ViewModel.ButtonCollection}">
+				<FlipView.ItemTemplate>
+					<DataTemplate x:Key="CustomerItemTemplate" x:DataType="local:Project">
+						<Grid Background="White">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<TextBlock
+								Margin="20,5"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								FontSize="35"
+								Text="{Binding Name}" />
+							<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+								<StackPanel>
+									<TextBlock Margin="20,5" Text="Количество событий" />
+									<TextBlock Margin="20,5" Text="Ближайшее через" />
+									<TextBlock Margin="20,5" Text="Событий на сегодня" />
+									<TextBlock Margin="20,5" Text="Событий завершено" />
+								</StackPanel>
+							</ScrollViewer>
+							<Border
+								Grid.Row="2"
+								Height="80"
+								VerticalAlignment="Bottom"
+								Background="#A5000000">
+								<TextBlock
+									Padding="15,20"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									FontFamily="Segoe UI"
+									FontSize="26.667"
+									Foreground="#CCFFFFFF"
+									Text="{Binding Description}" />
+							</Border>
+						</Grid>
+					</DataTemplate>
+				</FlipView.ItemTemplate>
+			</FlipView>
+
+			<ScrollViewer
+				Grid.Row="1"
+				Padding="0,5,0,10"
+				HorizontalAlignment="Center"
+				HorizontalContentAlignment="Left"
+				HorizontalScrollBarVisibility="Auto"
+				VerticalScrollBarVisibility="Disabled">
+				<advancedViews:FlipViewIndicator FlipView="{Binding ElementName=flipView}" ItemTemplate="{StaticResource CustomerItemTemplate}">
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+				</advancedViews:FlipViewIndicator>
+			</ScrollViewer>
+		</Grid>
 
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
 			<CommandBar.Content>

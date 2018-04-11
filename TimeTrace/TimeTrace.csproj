@@ -103,6 +103,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\BasicEntity.cs" />
+    <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Events\Area.cs" />
     <Compile Include="Model\Events\Category.cs" />
     <Compile Include="Model\Events\DBContext\MapEventContext.cs" />
@@ -114,12 +116,14 @@
     <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignUpViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\ContactsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ScheduleViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
+    <Compile Include="View\AdvancedViews\FlipViewIndicator.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
     </Compile>
@@ -130,6 +134,9 @@
     </Compile>
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\ContactsPage.xaml.cs">
+      <DependentUpon>ContactsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainView\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -241,6 +248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AuthenticationView\SignUp\SignUpPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\ContactsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

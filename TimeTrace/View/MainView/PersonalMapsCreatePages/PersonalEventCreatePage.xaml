@@ -49,7 +49,7 @@
 					</Grid.RowDefinitions>
 
 					<ScrollViewer VerticalScrollBarVisibility="Auto">
-						<StackPanel Margin="0, 10">
+						<StackPanel Margin="0,10">
 							<ListView ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}" SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay}">
 								<ListView.ItemTemplate>
 									<DataTemplate x:DataType="local:MapEvent">

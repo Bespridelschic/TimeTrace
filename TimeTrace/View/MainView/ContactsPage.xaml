@@ -1,0 +1,120 @@
+﻿<Page
+	x:Class="TimeTrace.View.MainView.ContactsPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:TimeTrace.Model"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+
+	<Page.Resources>
+		<ResourceDictionary>
+			<Style TargetType="StackPanel">
+				<Setter Property="Transitions">
+					<Setter.Value>
+						<TransitionCollection>
+							<EntranceThemeTransition />
+						</TransitionCollection>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<ScrollViewer VerticalScrollBarVisibility="Auto">
+			<Pivot Margin="10">
+				<Pivot.TitleTemplate>
+					<DataTemplate>
+						<TextBlock
+							FontSize="35"
+							Text="Контакты"
+							TextWrapping="WrapWholeWords" />
+					</DataTemplate>
+				</Pivot.TitleTemplate>
+
+				<PivotItem Margin="0,5" Header="Все">
+					<StackPanel>
+						<ListView ItemsSource="{x:Bind ViewModel.Contacts, Mode=TwoWay}" SelectedIndex="{x:Bind ViewModel.SelectedContact, Mode=TwoWay}">
+							<ListView.ItemTemplate>
+								<DataTemplate x:DataType="local:Contact">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
+										<PersonPicture
+											Width="80"
+											Height="80"
+											Margin="10" />
+
+										<StackPanel Grid.Column="1" VerticalAlignment="Center">
+											<TextBlock
+												Margin="10,0,10,0"
+												FontSize="26"
+												Text="{x:Bind Name}"
+												TextWrapping="WrapWholeWords" />
+											<StackPanel Orientation="Horizontal">
+												<TextBlock
+													Margin="10,0,0,0"
+													FontSize="18"
+													Text="Контактный адрес: " />
+												<TextBlock
+													Margin="5,0,10,0"
+													FontSize="18"
+													Text="{x:Bind Email}" />
+											</StackPanel>
+										</StackPanel>
+									</Grid>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+							<ListView.ContextFlyout>
+								<MenuFlyout Placement="Bottom">
+									<MenuFlyoutItem Icon="Page" Text="Подробней" />
+									<MenuFlyoutSeparator />
+									<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
+									<MenuFlyoutItem Icon="Delete" Text="Удалить" />
+								</MenuFlyout>
+							</ListView.ContextFlyout>
+						</ListView>
+					</StackPanel>
+				</PivotItem>
+
+				<PivotItem Margin="0,5" Header="Участники календарей" />
+			</Pivot>
+		</ScrollViewer>
+
+		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">
+			<CommandBar.Content>
+				<StackPanel Margin="10,-5" Orientation="Horizontal">
+					<TextBlock Text="Поиск по контактам: " />
+					<AutoSuggestBox
+						Width="250"
+						Margin="10,13,10,10"
+						PlaceholderText="Поиск..."
+						QueryIcon="Find" />
+				</StackPanel>
+
+			</CommandBar.Content>
+
+			<AppBarButton
+				Icon="Add"
+				Label="Добавить контакт"
+				ToolTipService.ToolTip="Создать новый контакт" />
+			<AppBarButton
+				Icon="Remove"
+				Label="Удалить выбранные контакты"
+				ToolTipService.ToolTip="Удалить выбранные контакты" />
+		</CommandBar>
+
+	</Grid>
+</Page>
