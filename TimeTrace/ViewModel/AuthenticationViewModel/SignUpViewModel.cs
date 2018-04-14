@@ -9,6 +9,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using TimeTrace.Model.Requests;
 
 namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
@@ -206,7 +207,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			try
 			{
-				var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.SignUp, CurrentUser);
+				var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.SignUp, CurrentUser);
 
 				switch (requestResult)
 				{

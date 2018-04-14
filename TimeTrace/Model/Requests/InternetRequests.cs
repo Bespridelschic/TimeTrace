@@ -16,12 +16,12 @@ using Windows.Storage;
 using Newtonsoft.Json.Serialization;
 using TimeTrace.Model.Events;
 
-namespace TimeTrace.Model
+namespace TimeTrace.Model.Requests
 {
 	/// <summary>
 	/// Static class to work with the server
 	/// </summary>
-	public static class UserRequests
+	public static class InternetRequests
 	{
 		/// <summary>
 		/// Base method for sending POST requests
@@ -108,7 +108,7 @@ namespace TimeTrace.Model
 
 					case PostRequestDestination.SignInWithToken:
 						link = "https://mindstructuring.ru/customer/login";
-						var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
+						var res = await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
 
 						if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 						{
@@ -149,7 +149,7 @@ namespace TimeTrace.Model
 				if ((destination == PostRequestDestination.SignIn || destination == PostRequestDestination.SignInWithToken) && answerCode == 0)
 				{
 					string token = (string)JsonString["_csrf"];
-					await UserFileWorker.SaveUserTokenToFileAsync(token);
+					await FileSystemRequests.SaveUserTokenToFileAsync(token);
 				}
 
 				return answerCode;
@@ -167,7 +167,7 @@ namespace TimeTrace.Model
 		public static async Task<User> PostRequestAsync()
 		{
 			// Get user token and email for request
-			var res = await UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
+			var res = await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
 
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
@@ -195,7 +195,7 @@ namespace TimeTrace.Model
 			int resultOfSynchronization = 1;
 
 			string receivedlink = "https://mindstructuring.ru/data/synchronization";
-			string token = (await UserFileWorker.LoadUserEmailAndTokenFromFileAsync()).token;
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			string deviceId = (string)localSettings.Values["DeviceId"];
@@ -259,7 +259,7 @@ namespace TimeTrace.Model
 				Debug.WriteLine($"Получаемые данные \n{jsonString}");
 
 				// Save new token
-				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 
 				#region Areas processing
 
@@ -493,7 +493,7 @@ namespace TimeTrace.Model
 
 				jsonString = JObject.Parse(finalResult);
 
-				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 				resultOfSynchronization = (int)jsonString["answer"];
 
 
@@ -519,7 +519,7 @@ namespace TimeTrace.Model
 			int resultOfSynchronization = 1;
 
 			string receivedlink = "https://mindstructuring.ru/contacts/synchronization";
-			string token = (await UserFileWorker.LoadUserEmailAndTokenFromFileAsync()).token;
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			string deviceId = (string)localSettings.Values["DeviceId"];
@@ -555,7 +555,7 @@ namespace TimeTrace.Model
 				Debug.WriteLine($"Получаемые данные \n{jsonString}");
 
 				// Save new token
-				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 
 				#region Contacts processing
 
@@ -642,7 +642,7 @@ namespace TimeTrace.Model
 
 				jsonString = JObject.Parse(finalResult);
 
-				await UserFileWorker.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 				resultOfSynchronization = (int)jsonString["answer"];
 
 

@@ -9,12 +9,12 @@ using Windows.Security.Cryptography.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
-namespace TimeTrace.Model
+namespace TimeTrace.Model.Requests
 {
 	/// <summary>
 	/// Class for working with files and directories
 	/// </summary>
-	public static class UserFileWorker
+	public static class FileSystemRequests
 	{
 		/// <summary>
 		/// Save user to file

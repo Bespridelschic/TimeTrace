@@ -77,7 +77,7 @@
 
 			<NavigationViewItem
 				Content="Контакты"
-				Icon="phone"
+				Icon="Phone"
 				Tag="contacts"
 				ToolTipService.Placement="Right"
 				ToolTipService.ToolTip="Посмотреть текущее расписание" />

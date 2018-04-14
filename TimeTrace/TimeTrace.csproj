@@ -110,13 +110,14 @@
     <Compile Include="Model\Events\DBContext\MapEventContext.cs" />
     <Compile Include="Model\Events\Project.cs" />
     <Compile Include="Model\Events\MapEvent.cs" />
-    <Compile Include="Model\UserFileWorker.cs" />
-    <Compile Include="Model\UserRequests.cs" />
+    <Compile Include="Model\Requests\FileSystemRequests.cs" />
+    <Compile Include="Model\Requests\InternetRequests.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignUpViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel\ContactsViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ChatViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ContactsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs" />
@@ -135,7 +136,10 @@
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MainView\ContactsPage.xaml.cs">
+    <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
+      <DependentUpon>ChatPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\ContactPages\ContactsPage.xaml.cs">
       <DependentUpon>ContactsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainView\HomePage.xaml.cs">
@@ -175,6 +179,7 @@
     <Content Include="Assets\LargeTile.scale-150.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
+    <Content Include="Assets\logo_Win.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-125.png" />
     <Content Include="Assets\SmallTile.scale-150.png" />
@@ -251,7 +256,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainView\ContactsPage.xaml">
+    <Page Include="View\MainView\ContactPages\ChatPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\ContactPages\ContactsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

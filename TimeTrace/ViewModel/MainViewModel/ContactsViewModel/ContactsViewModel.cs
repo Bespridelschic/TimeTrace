@@ -5,13 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Input;
 using Windows.UI.Popups;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using TimeTrace.Model;
 using TimeTrace.Model.Events;
 using TimeTrace.Model.Events.DBContext;
+using TimeTrace.View.MainView.ContactPages;
 
-namespace TimeTrace.ViewModel.MainViewModel
+namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 {
 	/// <summary>
 	/// Contacts view model
@@ -69,9 +73,17 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}*/
 		}
 
-		public async void ShowMessage()
+		public async void ShowMessage(object sender, RightTappedRoutedEventArgs e)
 		{
-			await new MessageDialog("Вызвал").ShowAsync();
+			var s = (FrameworkElement)sender;
+			var d = s.DataContext;
+
+			await new MessageDialog($"Вызвал ").ShowAsync();
+		}
+
+		public void StartChat()
+		{
+			(Application.Current as App).AppFrame.Navigate(typeof(ChatPage));
 		}
 
 		/// <summary>

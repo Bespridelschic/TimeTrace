@@ -10,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
+using TimeTrace.Model.Requests;
 
 namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
@@ -163,7 +164,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			try
 			{
-				var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.SignIn, CurrentUser);
+				var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.SignIn, CurrentUser);
 
 				switch (requestResult)
 				{
@@ -181,7 +182,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 							try
 							{
-								CurrentUser = await UserRequests.PostRequestAsync();
+								CurrentUser = await InternetRequests.PostRequestAsync();
 
 								// Save user local data for using after sign in
 								ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -328,7 +329,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						return;
 					}
 
-					var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.PasswordReset, CurrentUser);
+					var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.PasswordReset, CurrentUser);
 
 					switch (requestResult)
 					{
@@ -387,7 +388,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			{
 				try
 				{
-					var requestResult = await UserRequests.PostRequestAsync(UserRequests.PostRequestDestination.AccountActivation, CurrentUser);
+					var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.AccountActivation, CurrentUser);
 
 					switch (requestResult)
 					{

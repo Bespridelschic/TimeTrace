@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using TimeTrace.Model;
+using TimeTrace.Model.Requests;
 using TimeTrace.View.MainView;
 
 namespace TimeTrace
@@ -147,7 +148,7 @@ namespace TimeTrace
 		/// </summary>
 		private async Task AppSignInWithToken()
 		{
-			var res = await Model.UserFileWorker.LoadUserEmailAndTokenFromFileAsync();
+			var res = await Model.Requests.FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
 
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
@@ -156,11 +157,11 @@ namespace TimeTrace
 
 			try
 			{
-				var requestResult = await Model.UserRequests.PostRequestAsync(Model.UserRequests.PostRequestDestination.SignInWithToken);
+				var requestResult = await Model.Requests.InternetRequests.PostRequestAsync(Model.Requests.InternetRequests.PostRequestDestination.SignInWithToken);
 
 				if (requestResult == 0)
 				{
-					var CurrentUser = await UserRequests.PostRequestAsync();
+					var CurrentUser = await InternetRequests.PostRequestAsync();
 
 					// Save user local data for using after sign in
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;

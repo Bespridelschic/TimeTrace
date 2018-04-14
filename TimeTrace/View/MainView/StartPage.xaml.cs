@@ -87,7 +87,7 @@ namespace TimeTrace.View.MainView
 						break;
 
 					case "contacts":
-						(Application.Current as App).AppFrame.Navigate(typeof(ContactsPage));
+						(Application.Current as App).AppFrame.Navigate(typeof(ContactPages.ContactsPage));
 						break;
 
 					case "personalMaps":
@@ -97,7 +97,7 @@ namespace TimeTrace.View.MainView
 					case "scheduleSync":
 						try
 						{
-							var resultOfSynchronization = await Model.UserRequests.SynchronizationRequestAsync();
+							var resultOfSynchronization = await Model.Requests.InternetRequests.SynchronizationRequestAsync();
 							if (resultOfSynchronization == 0)
 							{
 								ShowToastNotification(0);
@@ -130,7 +130,7 @@ namespace TimeTrace.View.MainView
 		/// </summary>
 		private void ShowToastNotification(int res)
 		{
-			string message = res == 0 ? "Синхронизация завершена успешно" : "Ошибка во время синхронизации";
+			string message = res == 0 ? "Синхронизация завершена успешно" : "Ошибка во время синхронизации. Попробуйте перезайти в аккаунт";
 
 			var toastContent = new ToastContent()
 			{
