@@ -16,7 +16,7 @@ namespace TimeTrace.Model
 	/// <summary>
 	/// Contact class
 	/// </summary>
-	public class Contact : BasicEntity
+	public class Contact : BaseEntity
 	{
 		#region Properties
 
@@ -24,7 +24,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Name of contact
 		/// </summary>
-		[JsonProperty(PropertyName = "summary")]
+		[JsonProperty(PropertyName = "name")]
 		public string Name
 		{
 			get => name;

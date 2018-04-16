@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using TimeTrace.ViewModel.MainViewModel;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using Windows.UI;
 using TimeTrace.ViewModel.MainViewModel.MapEventsViewModel;
 using Windows.UI.Popups;

@@ -9,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using Windows.Devices.Bluetooth;
 using Windows.Networking.Vpn;
 using Windows.Storage;
@@ -200,7 +200,7 @@ namespace TimeTrace.Model.Requests
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			string deviceId = (string)localSettings.Values["DeviceId"];
 
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				#region Create anonymous types for sending to server
 
@@ -518,13 +518,13 @@ namespace TimeTrace.Model.Requests
 		{
 			int resultOfSynchronization = 1;
 
-			string receivedlink = "https://mindstructuring.ru/contacts/synchronization";
+			string receivedlink = "https://mindstructuring.ru/contact/synchronization";
 			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			string deviceId = (string)localSettings.Values["DeviceId"];
 
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				#region Create anonymous types for sending to server
 
@@ -628,7 +628,7 @@ namespace TimeTrace.Model.Requests
 					)
 				};
 
-				string departureAddress = "https://mindstructuring.ru/data/save";
+				string departureAddress = "https://mindstructuring.ru/contact/save";
 				var completeSendingData = new
 				{
 					_csrf = (string)jsonString["_csrf"],

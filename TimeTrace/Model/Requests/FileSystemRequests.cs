@@ -100,6 +100,28 @@ namespace TimeTrace.Model.Requests
 		}
 
 		/// <summary>
+		/// Save hash of email and password
+		/// </summary>
+		/// <param name="user">User account</param>
+		/// <returns>Result of saving</returns>
+		public static async Task SaveUserHashAsync(this User user)
+		{
+			try
+			{
+				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+				StorageFile storageFile = await storageFolder.CreateFileAsync("_epf.bin", CreationCollisionOption.ReplaceExisting);
+
+				string[] stringToFile = { user.Email, ":", user.Password };
+
+				await FileIO.WriteLinesAsync(storageFile, stringToFile);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		/// <summary>
 		/// Remove all confidential files
 		/// </summary>Результат удаления файлов</returns>
 		public static async Task RemoveUserDataFromFilesAsync(this User user)

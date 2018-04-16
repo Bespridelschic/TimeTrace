@@ -37,7 +37,7 @@
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
 				FontSize="25"
-				Text="User1"
+				Text="{x:Bind ViewModel.Interlocutor.Name}"
 				TextWrapping="WrapWholeWords" />
 
 			<MenuFlyoutSeparator Background="{StaticResource HostBackdropBrush}" />
@@ -75,7 +75,7 @@
 					Grid.Column="1"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
-					Click="{x:Bind ViewModel.SendMessage}">
+					Click="{x:Bind ViewModel.SendMessageAsync}">
 					<Button.Template>
 						<ControlTemplate>
 							<Border

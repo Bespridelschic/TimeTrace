@@ -103,11 +103,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\BasicEntity.cs" />
+    <Compile Include="Model\BaseEntity.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Events\Area.cs" />
     <Compile Include="Model\Events\Category.cs" />
-    <Compile Include="Model\Events\DBContext\MapEventContext.cs" />
+    <Compile Include="Model\DBContext\MainDatabaseContext.cs" />
     <Compile Include="Model\Events\Project.cs" />
     <Compile Include="Model\Events\MapEvent.cs" />
     <Compile Include="Model\Requests\FileSystemRequests.cs" />
@@ -124,7 +124,7 @@
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ScheduleViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
-    <Compile Include="View\AdvancedViews\FlipViewIndicator.cs" />
+    <Compile Include="View\AdvancedControls\FlipViewIndicator.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
     </Compile>
@@ -136,6 +136,7 @@
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
     <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>

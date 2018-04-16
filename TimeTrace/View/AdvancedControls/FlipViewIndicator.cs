@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
-namespace TimeTrace.View.AdvancedViews
+namespace TimeTrace.View.AdvancedControls
 {
 	internal class FlipViewIndicator : ListBox
 	{

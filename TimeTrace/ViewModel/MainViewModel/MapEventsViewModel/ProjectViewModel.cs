@@ -9,7 +9,7 @@ using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Popups;
 using TimeTrace.Model.Events;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -94,7 +94,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				foreach (var i in db.Projects
 					.Where(i => i.AreaId == CurrentArea.Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
@@ -116,7 +116,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			if (newProject != null)
 			{
 				// Adding area into DB
-				using (var db = new MapEventContext())
+				using (var db = new MainDatabaseContext())
 				{
 					db.Projects.Add(newProject);
 					db.SaveChanges();
@@ -134,7 +134,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="e">Parameters</param>
 		public void ProjectSelect(object sender, RoutedEventArgs e)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				(Application.Current as App)?.AppFrame.Navigate(typeof(PersonalEventCreatePage), db.Projects.FirstOrDefault(i => i.Id == (string)(sender as Button).Tag));
 			}
@@ -150,7 +150,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public async void ProjectRemoveAsync(object sender, RoutedEventArgs e)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				// Get selected Area
 				var selectedProject = db.Projects.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
@@ -194,7 +194,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public async void ProjectEditAsync(object sender, RoutedEventArgs e)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				// Get selected Project
 				var selectedProject = db.Projects.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
@@ -250,7 +250,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				ProjectSuggestList.Clear();
 
-				using (MapEventContext db = new MapEventContext())
+				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id).Select(i => i))
 					{
@@ -261,7 +261,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			else
 			{
-				using (MapEventContext db = new MapEventContext())
+				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.Projects.
 										Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) && i.AreaId == CurrentArea.Id).
@@ -289,7 +289,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			if (ButtonCollection != null)
 			{
-				using (MapEventContext db = new MapEventContext())
+				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					var term = args.QueryText.ToLower();
 					foreach (var i in db.Projects.Where(i => i.Name.ToLower().Contains(term) && i.AreaId == CurrentArea.Id).Select(i => i))

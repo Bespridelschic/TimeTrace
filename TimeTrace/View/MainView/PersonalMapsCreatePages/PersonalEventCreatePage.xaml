@@ -2,6 +2,7 @@
 	x:Class="TimeTrace.View.MainView.PersonalMapsCreatePages.PersonalEventCreatePage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="using:TimeTrace.View.Converters"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,6 +10,7 @@
 
 	<Page.Resources>
 		<ResourceDictionary>
+			<converters:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -50,7 +52,7 @@
 
 					<ScrollViewer VerticalScrollBarVisibility="Auto">
 						<StackPanel Margin="0,10">
-							<ListView ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}" SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay}">
+							<ListView ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}" SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
 								<ListView.ItemTemplate>
 									<DataTemplate x:DataType="local:MapEvent">
 										<StackPanel>

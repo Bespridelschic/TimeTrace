@@ -14,7 +14,7 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using System.Runtime.Serialization.Json;
 using System.IO;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using Windows.UI;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Media;
@@ -289,7 +289,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			BindingEventToWindowsCalendar();
 
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				db.MapEvents.Add(CurrentMapEvent);
 				db.SaveChanges();

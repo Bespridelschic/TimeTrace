@@ -4,12 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
+using TimeTrace.Model;
 
 namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 {
+	/// <summary>
+	/// Chat view model
+	/// </summary>
 	public class ChatViewModel : BaseViewModel
 	{
 		#region Properties
+
+		private Contact interlocutor;
+		/// <summary>
+		/// Interlocutor object
+		/// </summary>
+		public Contact Interlocutor
+		{
+			get => interlocutor;
+			set
+			{
+				interlocutor = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private string currentMessage { get; set; }
 		/// <summary>
@@ -38,7 +56,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// <summary>
 		/// Sending message
 		/// </summary>
-		public async void SendMessage()
+		public async void SendMessageAsync()
 		{
 			if (string.IsNullOrEmpty(CurrentMessage))
 			{

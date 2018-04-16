@@ -16,7 +16,7 @@ namespace TimeTrace.Model.Events
 	/// <summary>
 	/// Abstract base class for Area, Project and EventMap classes
 	/// </summary>
-	public abstract class Category : BasicEntity
+	public abstract class Category : BaseEntity
 	{
 		#region Properties
 

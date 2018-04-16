@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using TimeTrace.Model;
 using TimeTrace.ViewModel.MainViewModel.ContactsViewModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -32,5 +33,10 @@ namespace TimeTrace.View.MainView.ContactPages
 		}
 
 		public ChatViewModel ViewModel { get; set; }
+
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			ViewModel.Interlocutor = (Contact) e.Parameter;
+		}
 	}
 }

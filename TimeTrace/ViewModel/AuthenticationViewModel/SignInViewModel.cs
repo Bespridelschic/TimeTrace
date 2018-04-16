@@ -174,6 +174,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							if (IsPasswordSave)
 							{
 								await CurrentUser.SaveUserToFileAsync();
+								await CurrentUser.SaveUserHashAsync();
 							}
 							else
 							{
@@ -186,7 +187,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 								// Save user local data for using after sign in
 								ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-								localSettings.Values["email"] = CurrentUser.Email;
+								localSettings.Values["email"] = CurrentUser.Email.ToLower();
 								localSettings.Values["lastName"] = CurrentUser.LastName;
 								localSettings.Values["firstName"] = CurrentUser.FirstName;
 								localSettings.Values["middleName"] = CurrentUser.MiddleName;

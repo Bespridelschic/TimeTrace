@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Input;
@@ -12,8 +15,11 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using TimeTrace.Model;
 using TimeTrace.Model.Events;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Requests;
+using TimeTrace.View.Converters;
 using TimeTrace.View.MainView.ContactPages;
+using TimeTrace.View.MainView.PersonalMapsCreatePages;
 
 namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 {
@@ -24,21 +30,72 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 	{
 		#region Properties
 
+		private ObservableCollection<Contact> contacts;
 		/// <summary>
 		/// Collection of viewed contacts
 		/// </summary>
-		public ObservableCollection<Contact> Contacts { get; set; }
+		public ObservableCollection<Contact> Contacts
+		{
+			get => contacts;
+			set
+			{
+				contacts = value;
+				OnPropertyChanged();
+			}
+		}
 
-		private int selectedContact;
+		private List<Contact> selectedContacts;
+		/// <summary>
+		/// Collection of multiple contacts selection
+		/// </summary>
+		public List<Contact> SelectedContacts
+		{
+			get => selectedContacts;
+			set
+			{
+				selectedContacts = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> contactsSuggestList;
+		/// <summary>
+		/// Filter tips
+		/// </summary>
+		public ObservableCollection<string> ContactsSuggestList
+		{
+			get => contactsSuggestList;
+			set
+			{
+				contactsSuggestList = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int? selectedContact;
 		/// <summary>
 		/// Index of selected contact
 		/// </summary>
-		public int SelectedContact
+		public int? SelectedContact
 		{
 			get => selectedContact;
 			set
 			{
 				selectedContact = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ListViewSelectionMode multipleSelection;
+		/// <summary>
+		/// Is multiple selection enable
+		/// </summary>
+		public ListViewSelectionMode MultipleSelection
+		{
+			get => multipleSelection;
+			set
+			{
+				multipleSelection = value;
 				OnPropertyChanged();
 			}
 		}
@@ -50,93 +107,395 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// </summary>
 		public ContactsViewModel()
 		{
-			Contacts = new ObservableCollection<Contact>()
-			{
-				new Contact()
-				{
-					Name = "Name1", Email = "Email1"
-				},
-				new Contact()
-				{
-					Name = "Name2", Email = "Email3"
-				},
-				new Contact()
-				{
-					Name = "Name2", Email = "Email3"
-				},
-			};
+			MultipleSelection = ListViewSelectionMode.Single;
+			RefreshContactsAsync().GetAwaiter();
 
-			/*using (MapEventContext db = new MapEventContext())
+			ContactsSuggestList = new ObservableCollection<string>();
+
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
-				ObservableCollection<Contact> list;
 				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-			}*/
+
+				Contacts = new ObservableCollection<Contact>(db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList());
+			}
 		}
 
-		public async void ShowMessage(object sender, RightTappedRoutedEventArgs e)
+		/// <summary>
+		/// Selecting item of list with right click
+		/// </summary>
+		/// <param name="sender">Sender list</param>
+		/// <param name="e">Parameter</param>
+		public void SelectItemOnRightClick(object sender, RightTappedRoutedEventArgs e)
 		{
-			var s = (FrameworkElement)sender;
-			var d = s.DataContext;
-
-			await new MessageDialog($"Вызвал ").ShowAsync();
+			ListView listView = (ListView)sender;
+			if (((FrameworkElement)e.OriginalSource).DataContext is Contact selectedItem)
+			{
+				SelectedContact = Contacts.IndexOf(selectedItem);
+			}
 		}
 
+		/// <summary>
+		/// Select several contacts
+		/// </summary>
+		/// <param name="sender">ListView</param>
+		/// <param name="e">Parameters</param>
+		public void MultipleContactsSelection(object sender, SelectionChangedEventArgs e)
+		{
+			ListView listView = sender as ListView;
+			SelectedContacts = new List<Contact>();
+
+			foreach (Contact item in listView.SelectedItems)
+			{
+				SelectedContacts.Add(item);
+			};
+		}
+
+		/// <summary>
+		/// Navigate to chat page
+		/// </summary>
 		public void StartChat()
 		{
-			(Application.Current as App).AppFrame.Navigate(typeof(ChatPage));
+			if (SelectedContact.HasValue)
+			{
+				(Application.Current as App).AppFrame.Navigate(typeof(ChatPage), Contacts[SelectedContact.Value]);
+			}
+		}
+
+		/// <summary>
+		/// Add new contact
+		/// </summary>
+		public async void AddContactAsync()
+		{
+			#region Text boxes
+
+			TextBox email = new TextBox()
+			{
+				Header = "Электронная почта",
+				PlaceholderText = "example@gmail.com",
+				Margin = new Thickness(0, 0, 0, 10),
+				MaxLength = 30,
+			};
+
+			TextBox name = new TextBox()
+			{
+				Header = "Используемое имя",
+				PlaceholderText = "Псевдоним контакта",
+				Margin = new Thickness(0, 0, 0, 10),
+				MaxLength = 50,
+			};
+
+			#endregion
+
+			StackPanel panel = new StackPanel();
+			panel.Children.Add(email);
+			panel.Children.Add(name);
+
+			ContentDialog dialog = new ContentDialog()
+			{
+				Title = "Добавление нового контакта",
+				Content = panel,
+				PrimaryButtonText = "Добавить",
+				CloseButtonText = "Отложить",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			var result = await dialog.ShowAsync();
+
+			if (result == ContentDialogResult.Primary)
+			{
+				if (string.IsNullOrEmpty(email.Text) || string.IsNullOrEmpty(name.Text))
+				{
+					await new MessageDialog("Не заполнено одно из полей", "Ошибка добавления нового контакта").ShowAsync();
+
+					return;
+				}
+
+				string pattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
+				var res = Regex.Match(email.Text, pattern);
+
+				if (res.Success)
+				{
+					Contact newContact = new Contact()
+					{
+						Email = email.Text,
+						Name = name.Text
+					};
+
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						db.Contacts.Add(newContact);
+						db.SaveChanges();
+					}
+
+					Contacts.Add(newContact);
+
+					await RefreshContactsAsync();
+
+					await new MessageDialog($"Ваше приглашение для {newContact.Email} успешно отправлено", "Успех").ShowAsync();
+
+				}
+				else
+				{
+					await new MessageDialog("Не корректно введенный адрес электронной почты", "Ошибка добавления нового контакта").ShowAsync();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sending added contacts and get actuals from server
+		/// </summary>
+		/// <returns>Refresh result</returns>
+		public async Task RefreshContactsAsync()
+		{
+			try
+			{
+				var contactsSynchResult = await InternetRequests.ContactsSynchronizationRequestAsync();
+				if (contactsSynchResult == 1)
+				{
+					throw new HttpRequestException("Internet connection problem or bad token");
+				}
+			}
+			catch (Exception)
+			{
+				new MessageDialog("Не удаётся синхронизировать контакты. Проверьте своё подключение к интернету, а так же попробуйте перезайти в аккаунт",
+					"Ошибка синхронизации контактов");
+			}
+
+			//using (MainDatabaseContext db = new MainDatabaseContext())
+			//{
+			//	ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			//	var tempList = new ObservableCollection<Contact>(db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList());
+			//	Contacts = tempList;
+			//}
 		}
 
 		/// <summary>
 		/// Remove of selected contact
 		/// </summary>
-		public async void ContactRemove()
+		public async void ContactRemoveAsync()
 		{
-			ContentDialog contentDialog = new ContentDialog()
+			if (SelectedContact.HasValue)
 			{
-				Title = "Подтверждение действия",
-				//Content = $"Вы уверены что хотите удалить контакт \"{MapEvents[SelectedMapEvent].Name}\"?",
-				PrimaryButtonText = "Удалить",
-				CloseButtonText = "Отмена",
-				DefaultButton = ContentDialogButton.Close
-			};
-
-			var result = await contentDialog.ShowAsync();
-
-			if (result == ContentDialogResult.Primary)
-			{
-				using (MapEventContext db = new MapEventContext())
+				ContentDialog contentDialog = new ContentDialog()
 				{
-					/*db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent].Id).IsDelete = true;
-					MapEvents.RemoveAt(SelectedMapEvent);*/
+					Title = "Подтверждение действия",
+					Content = $"Вы уверены что хотите удалить контакт \"{Contacts[SelectedContact.Value].Name}\"?",
+					PrimaryButtonText = "Удалить",
+					CloseButtonText = "Отмена",
+					DefaultButton = ContentDialogButton.Close
+				};
 
-					db.SaveChanges();
+				var result = await contentDialog.ShowAsync();
+
+				if (result == ContentDialogResult.Primary)
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						db.Contacts.FirstOrDefault(i => i.Id == Contacts[SelectedContact.Value].Id).IsDelete = true;
+						Contacts.RemoveAt(SelectedContact.Value);
+
+						db.SaveChanges();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Remove of several contacts
+		/// </summary>
+		public async void ContactsRemoveAsync()
+		{
+			if (MultipleSelection == ListViewSelectionMode.Single)
+			{
+				MultipleSelection = ListViewSelectionMode.Multiple;
+			}
+			else
+			{
+				if (SelectedContacts == null || SelectedContacts.Count <= 0)
+				{
+					MultipleSelection = ListViewSelectionMode.Single;
+					return;
 				}
 
-				await (new MessageDialog("Контакт успешно удалён", "Успех")).ShowAsync();
+				string removedContacts = string.Empty;
+
+				foreach (var contact in SelectedContacts)
+				{
+					removedContacts += $"{contact.Email}\n";
+				}
+
+				removedContacts += "123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n234\n234\n234\n234\n234\n234\n234\n234\n234\n234\n777\n";
+				ScrollViewer scrollViewer = new ScrollViewer()
+				{
+					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+					Content = new TextBlock() { Text = removedContacts },
+				};
+
+				StackPanel mainPanel = new StackPanel()
+				{
+					Margin = new Thickness(0, 0, 0, 10),
+				};
+				mainPanel.Children.Add(new TextBlock() { Text = "Вы уверены что хотите удалить контакты:" });
+				mainPanel.Children.Add(scrollViewer);
+
+				ContentDialog contentDialog = new ContentDialog()
+				{
+					Title = "Подтверждение действия",
+					Content = mainPanel,
+					PrimaryButtonText = "Удалить",
+					CloseButtonText = "Отмена",
+					DefaultButton = ContentDialogButton.Close
+				};
+
+				var result = await contentDialog.ShowAsync();
+
+				if (result == ContentDialogResult.Primary)
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						foreach (var contact in SelectedContacts)
+						{
+							contact.IsDelete = true;
+						}
+
+						db.Contacts.UpdateRange(SelectedContacts);
+						db.SaveChanges();
+
+						foreach (var contact in SelectedContacts)
+						{
+							Contacts.Remove(contact);
+						}
+					}
+				}
+
+				MultipleSelection = ListViewSelectionMode.Single;
 			}
 		}
 
 		/// <summary>
 		/// Show info about contact
 		/// </summary>
-		public async void MoreAboutContact()
+		public async void MoreAboutContactAsync()
 		{
-			//MapEvent tempEvent = MapEvents[SelectedMapEvent];
-
-			TextBlock contentText = new TextBlock()
+			if (SelectedContact.HasValue)
 			{
-				
-			};
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					TextBlock email = new TextBlock()
+					{
+						Text = $"Контактный адрес: {Contacts[selectedContact.Value].Email}",
+					};
 
-			ContentDialog contentDialog = new ContentDialog()
-			{
-				Title = "Подробности",
-				Content = contentText,
-				CloseButtonText = "Закрыть",
-				DefaultButton = ContentDialogButton.Close
-			};
+					TextBlock name = new TextBlock()
+					{
+						Text = $"Псевдоним: {Contacts[selectedContact.Value].Name}",
+					};
 
-			var result = await contentDialog.ShowAsync();
+					TextBlock addedAt = new TextBlock()
+					{
+						Text = $"Добавлен: {Contacts[selectedContact.Value].CreateAt.Value.ToLocalTime()}",
+					};
+
+					StackPanel mainPanel = new StackPanel();
+					mainPanel.Children.Add(email);
+					mainPanel.Children.Add(name);
+					mainPanel.Children.Add(addedAt);
+
+					ContentDialog contentDialog = new ContentDialog()
+					{
+						Title = "Подробности",
+						Content = mainPanel,
+						CloseButtonText = "Закрыть",
+						DefaultButton = ContentDialogButton.Close
+					};
+
+					var result = await contentDialog.ShowAsync();
+				}
+			}
 		}
+
+		#region Searching contacts
+
+		/// <summary>
+		/// Filtration of input filters
+		/// </summary>
+		/// <param name="sender">Input filter</param>
+		/// <param name="args">Event args</param>
+		public void ContactsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (Contacts == null || Contacts.Count <= 0) return;
+
+			if (args.CheckCurrent())
+			{
+				ContactsSuggestList.Clear();
+			}
+
+			// Remove all contacts for adding relevant filter
+			Contacts.Clear();
+
+			// Select all contacts
+			if (string.IsNullOrEmpty(sender.Text))
+			{
+				ContactsSuggestList.Clear();
+
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Contacts.Select(i => i))
+					{
+						Contacts.Add(i);
+					}
+				}
+			}
+
+			else
+			{
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Contacts
+						.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) || i.Email.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()))
+						.Select(i => i))
+					{
+						if (!ContactsSuggestList.Contains(i.Name))
+						{
+							ContactsSuggestList.Add(i.Name);
+						}
+
+						Contacts.Add(i);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Click on Find contact
+		/// </summary>
+		/// <param name="sender">Object</param>
+		/// <param name="args">Args</param>
+		public void ContactsFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		{
+			ContactsSuggestList.Clear();
+
+			if (string.IsNullOrEmpty(args.QueryText))
+			{
+				return;
+			}
+			
+			if (Contacts != null)
+			{
+				Contacts.Clear();
+
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					var term = args.QueryText.ToLower();
+					foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(term)).Select(i => i))
+					{
+						Contacts.Add(i);
+					}
+				}
+			}
+		}
+
+		#endregion
 	}
 }

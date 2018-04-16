@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using TimeTrace.Model.Events;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.UI;
 using Windows.UI.Popups;
@@ -87,7 +87,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				foreach (var i in db.Areas.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 				{
@@ -106,7 +106,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			if (newArea != null)
 			{
 				// Adding area into DB
-				using (var db = new MapEventContext())
+				using (var db = new MainDatabaseContext())
 				{
 					db.Areas.Add(newArea);
 					db.SaveChanges();
@@ -121,7 +121,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public void CategorySelect(object sender, RoutedEventArgs e)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				(Application.Current as App).AppFrame.Navigate(typeof(ProjectListPage), db.Areas.First(i => i.Id == (string)(sender as Button).Tag));
 			}
@@ -137,7 +137,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public async void CategoryRemoveAsync(object sender, RoutedEventArgs e)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				// Get selected Area
 				var selectedArea = db.Areas.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
@@ -186,7 +186,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public async void CategoryEditAsync(object sender, RoutedEventArgs e)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				// Get selected Area
 				var selectedArea = db.Areas.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
@@ -216,76 +216,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					var index = ButtonCollection.IndexOf(ButtonCollection.First(i => (string)i.Tag == selectedArea.Id));
 					ButtonCollection.RemoveAt(index);
 					ButtonCollection.Insert(index, NewCategoryButtonCreate(selectedArea));
-				}
-			}
-		}
-
-		/// <summary>
-		/// Filtration of input filters
-		/// </summary>
-		/// <param name="sender">Input filter</param>
-		/// <param name="args">Event args</param>
-		public void CategoryFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-		{
-			if (ButtonCollection == null) return;
-
-			if (args.CheckCurrent())
-			{
-				AreaSuggestList.Clear();
-			}
-
-			// Remove all buttons for adding relevant filter
-			ButtonCollection.Clear();
-
-			// Select all calendars
-			if (string.IsNullOrEmpty(sender.Text))
-			{
-				AreaSuggestList.Clear();
-
-				using (MapEventContext db = new MapEventContext())
-				{
-					foreach (var i in db.Areas.Select(i => i))
-					{
-						ButtonCollection.Add(NewCategoryButtonCreate(i));
-					}
-				}
-			}
-
-			else
-			{
-				using (MapEventContext db = new MapEventContext())
-				{
-					foreach (var i in db.Areas.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())).Select(i => i))
-					{
-						if (!AreaSuggestList.Contains(i.Name))
-						{
-							AreaSuggestList.Add(i.Name);
-						}
-
-						ButtonCollection.Add(NewCategoryButtonCreate(i));
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Click on Find button
-		/// </summary>
-		/// <param name="sender">Object</param>
-		/// <param name="args">Args</param>
-		public void CategoryFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-		{
-			AreaSuggestList.Clear();
-
-			if (ButtonCollection != null)
-			{
-				using (MapEventContext db = new MapEventContext())
-				{
-					var term = args.QueryText.ToLower();
-					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term)).Select(i => i))
-					{
-						ButtonCollection.Add(NewCategoryButtonCreate(i));
-					}
 				}
 			}
 		}
@@ -480,5 +410,79 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			Color localColor = Color.FromArgb(255, r, g, b);
 			return new SolidColorBrush(localColor);
 		}
+
+		#region Searching contacts
+
+		/// <summary>
+		/// Filtration of input filters
+		/// </summary>
+		/// <param name="sender">Input filter</param>
+		/// <param name="args">Event args</param>
+		public void CategoryFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (ButtonCollection == null) return;
+
+			if (args.CheckCurrent())
+			{
+				AreaSuggestList.Clear();
+			}
+
+			// Remove all buttons for adding relevant filter
+			ButtonCollection.Clear();
+
+			// Select all calendars
+			if (string.IsNullOrEmpty(sender.Text))
+			{
+				AreaSuggestList.Clear();
+
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Areas.Select(i => i))
+					{
+						ButtonCollection.Add(NewCategoryButtonCreate(i));
+					}
+				}
+			}
+
+			else
+			{
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Areas.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())).Select(i => i))
+					{
+						if (!AreaSuggestList.Contains(i.Name))
+						{
+							AreaSuggestList.Add(i.Name);
+						}
+
+						ButtonCollection.Add(NewCategoryButtonCreate(i));
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Click on Find button
+		/// </summary>
+		/// <param name="sender">Object</param>
+		/// <param name="args">Args</param>
+		public void CategoryFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		{
+			AreaSuggestList.Clear();
+
+			if (ButtonCollection != null)
+			{
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					var term = args.QueryText.ToLower();
+					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term)).Select(i => i))
+					{
+						ButtonCollection.Add(NewCategoryButtonCreate(i));
+					}
+				}
+			}
+		}
+
+		#endregion
 	}
 }

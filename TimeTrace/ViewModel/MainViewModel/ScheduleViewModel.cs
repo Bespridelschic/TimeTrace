@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using TimeTrace.Model;
 using TimeTrace.Model.Events;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 
@@ -38,11 +38,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-		private int selectedMapEvent;
+		private int? selectedMapEvent;
 		/// <summary>
 		/// Index of selected event
 		/// </summary>
-		public int SelectedMapEvent
+		public int? SelectedMapEvent
 		{
 			get => selectedMapEvent;
 			set
@@ -59,17 +59,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <param name="args">Args</param>
 		public void DateSelection(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
 		{
-			/*FilterDates = sender.SelectedDates.ToList();
-			if (MapEvents == null)
-			{
-				MapEvents = new ObservableCollection<MapEvent>();
-			}*/
-
-			/*using (MapEventContext db = new MapEventContext())
-			{
-				var tmp = db.MapEvents.Where(i => i.Start.Date == args.AddedDates.Last().Date).Last();
-				if (tmp != null) MapEvents.Add(tmp);
-			}*/
+			
 		}
 
 		/// <summary>
@@ -77,31 +67,22 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public ScheduleViewModel(string projectId = null)
 		{
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
-				ObservableCollection<MapEvent> list;
 				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 				if (projectId == null)
 				{
-					list = new ObservableCollection<MapEvent>(db.MapEvents.
+					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.
 						Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
 						ToList());
 				}
 				else
 				{
-					list = new ObservableCollection<MapEvent>(db.MapEvents.
+					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents.
 						Where(i => i.ProjectId == projectId && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).
 						ToList());
 				}
-
-				if (list.Count == 0)
-				{
-					list = new ObservableCollection<MapEvent>(
-						new List<MapEvent> { new MapEvent("Пример события", "Пример события", DateTime.Today, DateTime.Today, "Дом", "Я", "str", "123415") });
-				}
-
-				MapEvents = list;
 			}
 		}
 
@@ -110,34 +91,37 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void MapEventRemove()
 		{
-			if (DateTime.Now > MapEvents[SelectedMapEvent].End)
+			if (SelectedMapEvent.HasValue)
 			{
-				await (new MessageDialog("Прошедшее событие не может быть удалено", "Ошибка")).ShowAsync();
-				return;
-			}
-
-			ContentDialog contentDialog = new ContentDialog()
-			{
-				Title = "Подтверждение действия",
-				Content = $"Вы уверены что хотите удалить событие \"{MapEvents[SelectedMapEvent].Name}\"?",
-				PrimaryButtonText = "Удалить",
-				CloseButtonText = "Отмена",
-				DefaultButton = ContentDialogButton.Close
-			};
-
-			var result = await contentDialog.ShowAsync();
-
-			if (result == ContentDialogResult.Primary)
-			{
-				using (MapEventContext db = new MapEventContext())
+				if (DateTime.Now > MapEvents[SelectedMapEvent.Value].End)
 				{
-					db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent].Id).IsDelete = true;
-					MapEvents.RemoveAt(SelectedMapEvent);
-
-					db.SaveChanges();
+					await (new MessageDialog("Прошедшее событие не может быть удалено", "Ошибка")).ShowAsync();
+					return;
 				}
 
-				await (new MessageDialog("Событие успешно удалёно", "Успех")).ShowAsync();
+				ContentDialog contentDialog = new ContentDialog()
+				{
+					Title = "Подтверждение действия",
+					Content = $"Вы уверены что хотите удалить событие \"{MapEvents[SelectedMapEvent.Value].Name}\"?",
+					PrimaryButtonText = "Удалить",
+					CloseButtonText = "Отмена",
+					DefaultButton = ContentDialogButton.Close
+				};
+
+				var result = await contentDialog.ShowAsync();
+
+				if (result == ContentDialogResult.Primary)
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent.Value].Id).IsDelete = true;
+						MapEvents.RemoveAt(SelectedMapEvent.Value);
+
+						db.SaveChanges();
+					}
+
+					await (new MessageDialog("Событие успешно удалёно", "Успех")).ShowAsync();
+				}
 			}
 		}
 
@@ -146,27 +130,30 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void MoreAboutMapEvent()
 		{
-			MapEvent tempEvent = MapEvents[SelectedMapEvent];
-
-			TextBlock contentText = new TextBlock()
+			if (SelectedMapEvent.HasValue)
 			{
-				Text = $"Имя события: {tempEvent.Name}\n" +
-						$"Описание: {tempEvent.Description ?? "Отсутствует"}\n" +
-						$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
-						$"Продолжительность: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} ч.\n" +
-						$"Персона, связанная с событием: {tempEvent.UserBind ?? "Отсутствует"}\n" +
-						$"Место, связанное с событием: {tempEvent.Location ?? "Не задано"}\n",
-			};
+				MapEvent tempEvent = MapEvents[SelectedMapEvent.Value];
 
-			ContentDialog contentDialog = new ContentDialog()
-			{
-				Title = "Подробности",
-				Content = contentText,
-				CloseButtonText = "Закрыть",
-				DefaultButton = ContentDialogButton.Close
-			};
+				TextBlock contentText = new TextBlock()
+				{
+					Text = $"Имя события: {tempEvent.Name}\n" +
+							$"Описание: {tempEvent.Description ?? "Отсутствует"}\n" +
+							$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
+							$"Продолжительность: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} ч.\n" +
+							$"Персона, связанная с событием: {tempEvent.UserBind ?? "Отсутствует"}\n" +
+							$"Место, связанное с событием: {tempEvent.Location ?? "Не задано"}\n",
+				};
 
-			var result = await contentDialog.ShowAsync();
+				ContentDialog contentDialog = new ContentDialog()
+				{
+					Title = "Подробности",
+					Content = contentText,
+					CloseButtonText = "Закрыть",
+					DefaultButton = ContentDialogButton.Close
+				};
+
+				var result = await contentDialog.ShowAsync();
+			}
 		}
 	}
 }

@@ -6,19 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeTrace.Model.Events;
 
-namespace TimeTrace.Model.Events.DBContext
+namespace TimeTrace.Model.DBContext
 {
 	/// <summary>
-	/// Data base map event contet
+	/// Main database context
 	/// </summary>
-	class MapEventContext : DbContext
+	class MainDatabaseContext : DbContext
 	{
 		public DbSet<MapEvent> MapEvents { get; set; }
 		public DbSet<Area> Areas { get; set; }
 		public DbSet<Project> Projects { get; set; }
 		public DbSet<Contact> Contacts { get; set; }
 
-		public MapEventContext()
+		public MainDatabaseContext()
 		{
 			Database.EnsureCreated();
 		}

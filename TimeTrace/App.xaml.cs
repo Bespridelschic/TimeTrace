@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
@@ -36,7 +36,7 @@ namespace TimeTrace
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
 
-			using (var db = new MapEventContext())
+			using (var db = new MainDatabaseContext())
 			{
 				db.Database.Migrate();
 			}
@@ -124,7 +124,7 @@ namespace TimeTrace
 		/// </summary>
 		/// <param name="sender">Фрейм, для которого произошел сбой навигации</param>
 		/// <param name="e">Сведения о сбое навигации</param>
-		void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+		private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
 		{
 			throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
 		}
@@ -161,11 +161,13 @@ namespace TimeTrace
 
 				if (requestResult == 0)
 				{
+					await InternetRequests.ContactsSynchronizationRequestAsync();
+
 					var CurrentUser = await InternetRequests.PostRequestAsync();
 
 					// Save user local data for using after sign in
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-					localSettings.Values["email"] = CurrentUser.Email;
+					localSettings.Values["email"] = CurrentUser.Email.ToLower();
 					localSettings.Values["lastName"] = CurrentUser.LastName;
 					localSettings.Values["firstName"] = CurrentUser.FirstName;
 					localSettings.Values["middleName"] = CurrentUser.MiddleName;

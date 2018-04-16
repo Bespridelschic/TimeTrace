@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using TimeTrace.Model;
-using TimeTrace.Model.Events.DBContext;
+using TimeTrace.Model.DBContext;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.Storage;
@@ -97,7 +97,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			NearEvent = "Совсем скоро";
 			Experience = "Удалить поле";
 
-			using (MapEventContext db = new MapEventContext())
+			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
 				NumEvents = db.MapEvents.Count(mapEvent => !mapEvent.IsDelete && mapEvent.EmailOfOwner == CurrentUser.Email);
 				NumEventsToday = db.MapEvents.

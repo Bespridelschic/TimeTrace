@@ -15,7 +15,7 @@ namespace TimeTrace.Model
 	/// <summary>
 	/// Abstract class for basic entities in database
 	/// </summary>
-	public abstract class BasicEntity : INotifyPropertyChanged
+	public abstract class BaseEntity : INotifyPropertyChanged
 	{
 		#region Properties
 
@@ -104,7 +104,7 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Base standart constructor
 		/// </summary>
-		public BasicEntity()
+		public BaseEntity()
 		{
 			Id = Guid.NewGuid().ToString();
 			UpdateAt = CreateAt = DateTime.Now.ToUniversalTime();
