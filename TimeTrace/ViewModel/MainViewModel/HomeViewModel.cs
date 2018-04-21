@@ -16,27 +16,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 	{
 		#region Properties
 
-		private string experience;
-		/// <summary>
-		/// Total user experience time
-		/// </summary>
-		public string Experience
-		{
-			get { return experience; }
-			set
-			{
-				experience = value;
-				OnPropertyChanged();
-			}
-		}
-
 		private string nearEvent;
 		/// <summary>
 		/// Number of contacts
 		/// </summary>
 		public string NearEvent
 		{
-			get { return nearEvent; }
+			get => nearEvent;
 			set
 			{
 				nearEvent = value;
@@ -50,7 +36,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public int NumEvents
 		{
-			get { return numEvents; }
+			get => numEvents;
 			set
 			{
 				numEvents = value;
@@ -78,13 +64,18 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public User CurrentUser
 		{
-			get { return currentUser; }
+			get => currentUser;
 			set
 			{
 				currentUser = value;
 				OnPropertyChanged();
 			}
 		}
+
+		/// <summary>
+		/// Current user email for home page without '@' char
+		/// </summary>
+		public string CurrentUserEmail { get; set; }
 
 		#endregion
 
@@ -94,8 +85,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public HomeViewModel()
 		{
 			CurrentUser = GetUserInfo();
+			CurrentUserEmail = CurrentUser.Email[0].ToString().ToUpper() + CurrentUser.Email.Substring(1, CurrentUser.Email.IndexOf('@') - 1);
+
 			NearEvent = "Совсем скоро";
-			Experience = "Удалить поле";
 
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
@@ -120,13 +112,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			return new User(
 				(string)localSettings.Values["email"] ?? "Неизвестный",
-				null,
-				(string)localSettings.Values["firstName"] ?? "Не указано",
-				(string)localSettings.Values["lastName"] ?? "Не указано",
-				(string)localSettings.Values["middleName"] ?? "Не указано",
-				(!string.IsNullOrEmpty((string)localSettings.Values["birthday"]))
-						? DateTime.Parse((string)localSettings.Values["birthday"]).ToLongDateString()
-						: "Не известно"
+				null
 				);
 		}
 

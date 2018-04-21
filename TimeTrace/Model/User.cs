@@ -19,11 +19,11 @@ namespace TimeTrace.Model
 		[JsonProperty(PropertyName = "email")]
 		public string Email
 		{
-			get { return email; }
+			get => email;
 			set
 			{
 				email = value;
-				OnPropertyChanged("Email");
+				OnPropertyChanged();
 			}
 		}
 
@@ -31,59 +31,11 @@ namespace TimeTrace.Model
 		[JsonProperty(PropertyName = "password")]
 		public string Password
 		{
-			get { return password; }
+			get => password;
 			set
 			{
 				password = value;
-				OnPropertyChanged("Password");
-			}
-		}
-
-		private string lastName;
-		[JsonProperty(PropertyName = "lastName")]
-		public string LastName
-		{
-			get { return lastName; }
-			set
-			{
-				lastName = value;
-				OnPropertyChanged("LastName");
-			}
-		}
-
-		private string firstName;
-		[JsonProperty(PropertyName = "firstName")]
-		public string FirstName
-		{
-			get { return firstName; }
-			set
-			{
-				firstName = value;
-				OnPropertyChanged("FirstName");
-			}
-		}
-
-		private string middleName;
-		[JsonProperty(PropertyName = "middleName")]
-		public string MiddleName
-		{
-			get { return middleName; }
-			set
-			{
-				middleName = value;
-				OnPropertyChanged("MiddleName");
-			}
-		}
-
-		private string birthday;
-		[JsonProperty(PropertyName = "birthday")]
-		public string Birthday
-		{
-			get { return birthday; }
-			set
-			{
-				birthday = value;
-				OnPropertyChanged("Birthday");
+				OnPropertyChanged();
 			}
 		}
 
@@ -157,11 +109,6 @@ namespace TimeTrace.Model
 		{
 			Email = string.Empty;
 			Password = string.Empty;
-
-			LastName = string.Empty;
-			FirstName = string.Empty;
-			MiddleName = string.Empty;
-			Birthday = string.Empty;
 		}
 
 		/// <summary>
@@ -169,19 +116,10 @@ namespace TimeTrace.Model
 		/// </summary>
 		/// <param name="email">Email</param>
 		/// <param name="password">Password</param>
-		/// <param name="firstName">Name</param>
-		/// <param name="lastName">Last name</param>
-		/// <param name="middleName">Middle name</param>
-		/// <param name="birthday">Birthday</param>
-		public User(string email, string password, string firstName = "", string lastName = "", string middleName = "", string birthday = "")
+		public User(string email, string password)
 		{
 			Email = email;
 			Password = password;
-
-			LastName = lastName;
-			FirstName = firstName;
-			MiddleName = middleName;
-			Birthday = birthday;
 		}
 
 		#endregion

@@ -129,7 +129,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 		public void CategoriesBulkRemoval()
 		{
-			
+
 		}
 
 		/// <summary>
@@ -335,7 +335,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 						return null;
 					}
-				}			
+				}
 
 				// New area object for adding into Database
 				return new Area()
@@ -430,6 +430,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			// Remove all buttons for adding relevant filter
 			ButtonCollection.Clear();
 
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
 			// Select all calendars
 			if (string.IsNullOrEmpty(sender.Text))
 			{
@@ -437,7 +439,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Areas.Select(i => i))
+					foreach (var i in db.Areas.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
 					{
 						ButtonCollection.Add(NewCategoryButtonCreate(i));
 					}
@@ -448,7 +450,12 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Areas.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())).Select(i => i))
+					foreach (var i in db.Areas
+						.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
+							i.Description.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) &&
+							i.EmailOfOwner == (string)localSettings.Values["email"] &&
+							!i.IsDelete)
+						.Select(i => i))
 					{
 						if (!AreaSuggestList.Contains(i.Name))
 						{
@@ -470,12 +477,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			AreaSuggestList.Clear();
 
+			if (string.IsNullOrEmpty(args.QueryText))
+			{
+				return;
+			}
+
 			if (ButtonCollection != null)
 			{
+				ButtonCollection.Clear();
+
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
-					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term)).Select(i => i))
+					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 					{
 						ButtonCollection.Add(NewCategoryButtonCreate(i));
 					}

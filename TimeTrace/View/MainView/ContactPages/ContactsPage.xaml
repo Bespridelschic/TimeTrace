@@ -97,13 +97,19 @@
 						</ListView.ItemTemplate>
 						<ListView.ContextFlyout>
 							<MenuFlyout Placement="Bottom">
-								<MenuFlyoutItem Icon="Message" Text="Отправить сообщение" />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.StartChat}"
+									Icon="Message"
+									Text="Отправить сообщение" />
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
 									Icon="Page"
 									Text="Подробней" />
 								<MenuFlyoutSeparator />
-								<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.EditContactAsync}"
+									Icon="Edit"
+									Text="Редактировать" />
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.ContactRemoveAsync}"
 									Icon="Delete"

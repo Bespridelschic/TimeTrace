@@ -53,7 +53,11 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			Style="{StaticResource GridAnimation}">
-			<TextBlock Foreground="{x:Bind SolidBrush}" Text="Time Trace" />
+			<!--<TextBlock Foreground="{x:Bind SolidBrush}" Text="Time Trace" />-->
+			<Image
+				VerticalAlignment="Bottom"
+				Source="../../Assets/logo_Win.png"
+				Stretch="Uniform" />
 		</Grid>
 
 		<Grid

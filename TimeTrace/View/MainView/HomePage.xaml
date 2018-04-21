@@ -17,278 +17,239 @@
 					</Setter.Value>
 				</Setter>
 			</Style>
+			<Style TargetType="Button">
+				<Setter Property="BorderBrush" Value="{StaticResource HostBackdropBrush}" />
+				<Setter Property="Background" Value="White" />
+				<Setter Property="Width" Value="200" />
+				<Setter Property="Height" Value="150" />
+			</Style>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Page.Resources>
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition Height="10" />
-		</Grid.RowDefinitions>
+	<ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" VerticalScrollBarVisibility="Auto">
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
-			<StackPanel>
-				<PersonPicture
-					Width="200"
-					Height="200"
-					Margin="0,20,0,5"
-					HorizontalAlignment="Center"
-					PreferSmallImage="True"
-					ToolTipService.ToolTip="Изменить аватар">
-					<PersonPicture.ContextFlyout>
-						<Flyout Placement="Bottom">
-							<Flyout.Content>
-								<Button
-									Background="SteelBlue"
-									Click="{x:Bind ViewModel.AvatarChange}"
-									Content="Изменить аватар"
-									Foreground="White" />
-							</Flyout.Content>
-						</Flyout>
-					</PersonPicture.ContextFlyout>
-				</PersonPicture>
+		<StackPanel VerticalAlignment="Center">
 
-				<StackPanel
-					Margin="0,0,0,20"
-					HorizontalAlignment="Center"
-					Orientation="Horizontal">
-					<TextBlock FontSize="25" Text="Добро пожаловать, " />
-					<TextBlock FontSize="25" Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" />
-					<TextBlock FontSize="25" Text="!" />
-				</StackPanel>
-
-
-				<StackPanel
-					Margin="20,0,20,0"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					BorderBrush="SteelBlue"
-					BorderThickness="1">
-					<TextBlock FontSize="20" Text="Полезное для вас" />
-
-					<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
-						<Button
-							Width="120"
-							Margin="20"
-							Background="SteelBlue"
-							Click="{x:Bind ViewModel.SchedulePageChoice}"
-							Content="Расписание"
-							Foreground="White" />
-						<Button
-							Width="120"
-							Margin="20"
-							Background="SteelBlue"
-							Click="{x:Bind ViewModel.PersonalMapsPageChoice}"
-							Content="К картам"
-							Foreground="White" />
-						<Button
-							Width="120"
-							Margin="20"
-							Background="SteelBlue"
-							Click="{x:Bind ViewModel.SettingsPageChoice}"
-							Content="К настройкам"
-							Foreground="White" />
-						<Button
-							Width="120"
-							Margin="20"
-							Background="SteelBlue"
-							Content="Помощь"
-							Foreground="White" />
-					</VariableSizedWrapGrid>
-
-					<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
-						<Button
-							Grid.Row="1"
-							Width="200"
-							Margin="20,0,20,20"
-							HorizontalAlignment="Center"
-							Background="CadetBlue"
-							Content="Сменить пароль"
-							Foreground="White" />
-
-						<Button
-							Grid.Row="1"
-							Width="200"
-							Margin="20,0,20,20"
-							HorizontalAlignment="Center"
-							Background="CadetBlue"
-							Content="Обратная связь"
-							Foreground="White" />
-					</VariableSizedWrapGrid>
-
-				</StackPanel>
-
-				<VariableSizedWrapGrid
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					Orientation="Horizontal">
-
-					<StackPanel
-						Margin="20"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						BorderBrush="SteelBlue"
-						BorderThickness="1">
-						<TextBlock
-							Margin="20,10"
-							FontSize="20"
-							Text="Персональные данные" />
-
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="150" />
-								<ColumnDefinition Width="150" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<TextBlock
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Фамилия: " />
-							<TextBlock
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.CurrentUser.LastName, Mode=OneWay, TargetNullValue=Unknown}" />
-
-							<TextBlock
-								Grid.Row="1"
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Имя: " />
-							<TextBlock
-								Grid.Row="1"
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.CurrentUser.FirstName, Mode=OneWay}" />
-
-							<TextBlock
-								Grid.Row="2"
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Отчество: " />
-							<TextBlock
-								Grid.Row="2"
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.CurrentUser.MiddleName, Mode=OneWay}" />
-
-							<TextBlock
-								Grid.Row="3"
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Дата рождения: " />
-							<TextBlock
-								Grid.Row="3"
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.CurrentUser.Birthday, Mode=OneWay}" />
-
-						</Grid>
-
-					</StackPanel>
-
-					<StackPanel
-						Margin="20"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						BorderBrush="SteelBlue"
-						BorderThickness="1">
-						<TextBlock
-							Margin="20,10"
-							FontSize="20"
-							Text="Личная статистика" />
-
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="150" />
-								<ColumnDefinition Width="150" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<TextBlock
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Событий сегодня: " />
-							<TextBlock
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.NumEventsToday, Mode=OneWay}" />
-
-							<TextBlock
-								Grid.Row="1"
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Ближайшее через: " />
-							<TextBlock
-								Grid.Row="1"
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.NearEvent, Mode=OneWay}" />
-
-							<TextBlock
-								Grid.Row="2"
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Зарегистрирован:" />
-							<TextBlock
-								Grid.Row="2"
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.Experience, Mode=OneWay}" />
-
-							<TextBlock
-								Grid.Row="3"
-								Margin="5,10"
-								HorizontalAlignment="Right"
-								FontSize="15"
-								Text="Создано карт:" />
-							<TextBlock
-								Grid.Row="3"
-								Grid.Column="1"
-								Margin="5,10"
-								HorizontalAlignment="Left"
-								FontSize="15"
-								Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
-
-						</Grid>
-
-					</StackPanel>
-				</VariableSizedWrapGrid>
+			<StackPanel
+				Margin="20"
+				HorizontalAlignment="Center"
+				Orientation="Horizontal">
+				<TextBlock FontSize="25" Text="Добро пожаловать, " />
+				<TextBlock FontSize="25" Text="{x:Bind ViewModel.CurrentUserEmail, Mode=OneWay}" />
+				<TextBlock FontSize="25" Text="!" />
 			</StackPanel>
-		</ScrollViewer>
-	</Grid>
+
+			<StackPanel
+				Margin="20,5"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center">
+
+				<MenuFlyoutSeparator />
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<TextBlock
+						Margin="5"
+						HorizontalAlignment="Right"
+						FontSize="19"
+						Text="Событий сегодня: " />
+					<TextBlock
+						Grid.Column="1"
+						Margin="5"
+						HorizontalAlignment="Left"
+						FontSize="19"
+						Text="{x:Bind ViewModel.NumEventsToday, Mode=OneWay}" />
+
+					<TextBlock
+						Grid.Row="1"
+						Margin="5"
+						HorizontalAlignment="Right"
+						FontSize="19"
+						Text="Ближайшее через: " />
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="1"
+						Margin="5"
+						HorizontalAlignment="Left"
+						FontSize="19"
+						Text="{x:Bind ViewModel.NearEvent, Mode=OneWay}" />
+
+					<TextBlock
+						Grid.Row="3"
+						Margin="5"
+						HorizontalAlignment="Right"
+						FontSize="19"
+						Text="Создано карт:" />
+					<TextBlock
+						Grid.Row="3"
+						Grid.Column="1"
+						Margin="5"
+						HorizontalAlignment="Left"
+						FontSize="19"
+						Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
+
+				</Grid>
+
+				<MenuFlyoutSeparator />
+
+			</StackPanel>
+
+			<StackPanel
+				Margin="20,10,20,20"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center">
+				<TextBlock
+					Margin="0,0,0,10"
+					FontSize="20"
+					Text="Полезное для вас" />
+
+				<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
+					<Button Margin="5" Click="{x:Bind ViewModel.SchedulePageChoice}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="50" />
+								<RowDefinition Height="10" />
+								<RowDefinition Height="90" />
+							</Grid.RowDefinitions>
+
+							<TextBlock FontSize="20" Text="Расписание" />
+							<MenuFlyoutSeparator Grid.Row="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
+								Text="Узнать расписание на текущее время, или применить фильтры"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+						</Grid>
+					</Button>
+					<Button Margin="5" Click="{x:Bind ViewModel.PersonalMapsPageChoice}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="50" />
+								<RowDefinition Height="10" />
+								<RowDefinition Height="90" />
+							</Grid.RowDefinitions>
+
+							<TextBlock FontSize="20" Text="Карты" />
+							<MenuFlyoutSeparator Grid.Row="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
+								Text="Перейти к созданию интеллект-карт или редактированию"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+						</Grid>
+					</Button>
+					<Button Margin="5" Click="{x:Bind ViewModel.SettingsPageChoice}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="50" />
+								<RowDefinition Height="10" />
+								<RowDefinition Height="90" />
+							</Grid.RowDefinitions>
+
+							<TextBlock FontSize="20" Text="Настройки" />
+							<MenuFlyoutSeparator Grid.Row="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
+								Text="Изменить конфигурацию приложения"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+						</Grid>
+					</Button>
+					<Button Margin="5">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="50" />
+								<RowDefinition Height="10" />
+								<RowDefinition Height="90" />
+							</Grid.RowDefinitions>
+
+							<TextBlock FontSize="20" Text="Помощь" />
+							<MenuFlyoutSeparator Grid.Row="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
+								Text="Видео-инструкции по работе с приложением"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+						</Grid>
+					</Button>
+
+					<Button Margin="5" HorizontalAlignment="Center">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="50" />
+								<RowDefinition Height="10" />
+								<RowDefinition Height="90" />
+							</Grid.RowDefinitions>
+
+							<TextBlock FontSize="20" Text="Сменить пароль" />
+							<MenuFlyoutSeparator Grid.Row="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
+								Text="Изменить пароль. Никому не сообщайте свой пароль!"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+						</Grid>
+					</Button>
+
+					<Button Margin="5" HorizontalAlignment="Center">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="50" />
+								<RowDefinition Height="10" />
+								<RowDefinition Height="90" />
+							</Grid.RowDefinitions>
+
+							<TextBlock FontSize="20" Text="Обратная связь" />
+							<MenuFlyoutSeparator Grid.Row="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
+								Text="Сообщите нам об ошибках, или предложите новшество!"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+						</Grid>
+					</Button>
+
+				</VariableSizedWrapGrid>
+
+			</StackPanel>
+
+		</StackPanel>
+	</ScrollViewer>
 </Page>

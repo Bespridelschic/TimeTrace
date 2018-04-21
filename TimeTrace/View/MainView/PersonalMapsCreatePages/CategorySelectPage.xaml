@@ -5,12 +5,11 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:media="using:Windows.UI.Xaml.Media"
 	mc:Ignorable="d">
 
 	<Page.Resources>
 		<Style TargetType="Button">
-			<Setter Property="Width" Value="150" />
+			<Setter Property="Width" Value="200" />
 			<Setter Property="Height" Value="150" />
 			<Setter Property="Background" Value="White" />
 			<Setter Property="BorderThickness" Value="1.5" />
@@ -20,7 +19,8 @@
 			<Setter Property="ContentTemplate">
 				<Setter.Value>
 					<DataTemplate x:DataType="local:Area">
-						<StackPanel ToolTipService.Placement="Top">
+						<Grid ToolTipService.Placement="Top">
+
 							<ToolTipService.ToolTip>
 								<StackPanel>
 									<StackPanel Margin="10,2" Orientation="Horizontal">
@@ -46,24 +46,36 @@
 									</StackPanel>
 								</StackPanel>
 							</ToolTipService.ToolTip>
-							<PersonPicture
-								Width="70"
-								Height="70"
-								Margin="10,0,0,0"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Top"
-								Background="White"
-								Initials="C#" />
-							<TextBlock
-								HorizontalAlignment="Center"
-								FontSize="20"
-								Text="{Binding Name}" />
-							<TextBlock
-								HorizontalAlignment="Center"
-								FontSize="15"
-								Foreground="SlateGray"
-								Text="{Binding Description}" />
-						</StackPanel>
+
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="10" />
+									<RowDefinition Height="50" />
+									<RowDefinition Height="10" />
+									<RowDefinition Height="80" />
+								</Grid.RowDefinitions>
+
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									FontSize="20"
+									Text="{Binding Name}"
+									TextAlignment="Center"
+									TextWrapping="WrapWholeWords" />
+
+								<MenuFlyoutSeparator Grid.Row="2" />
+
+								<TextBlock
+									Grid.Row="3"
+									HorizontalAlignment="Center"
+									FontSize="14"
+									Foreground="SlateGray"
+									Text="{Binding Description}"
+									TextAlignment="Center"
+									TextWrapping="WrapWholeWords" />
+							</Grid>
+						</Grid>
 					</DataTemplate>
 				</Setter.Value>
 			</Setter>
@@ -101,7 +113,7 @@
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<VariableSizedWrapGrid
-							Margin="50,20"
+							Margin="40,20"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center"
 							Orientation="Horizontal" />
@@ -113,7 +125,7 @@
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
 			<CommandBar.Content>
 				<StackPanel Margin="10,-5" Orientation="Horizontal">
-					<TextBlock Text="Поиск по категориям: " />
+					<TextBlock Text="Поиск по календарям: " />
 					<AutoSuggestBox
 						Width="250"
 						Margin="10,13,10,10"

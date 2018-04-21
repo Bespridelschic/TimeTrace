@@ -27,21 +27,21 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public User CurrentUser
 		{
-			get { return currentUser; }
+			get => currentUser;
 			set
 			{
 				currentUser = value;
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private bool processing;
 		/// <summary>
 		/// ProgressRing
 		/// </summary>
 		public bool Processing
 		{
-			get { return processing; }
+			get => processing;
 			set
 			{
 				processing = value;
@@ -55,7 +55,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public int SelectionStart
 		{
-			get { return selectionStart; }
+			get => selectionStart;
 			set
 			{
 				selectionStart = value;
@@ -69,7 +69,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public bool IsPasswordSave
 		{
-			get { return isPasswordSave; }
+			get => isPasswordSave;
 			set
 			{
 				isPasswordSave = value;
@@ -83,7 +83,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public bool ControlEnable
 		{
-			get { return controlEnable; }
+			get => controlEnable;
 			set
 			{
 				controlEnable = value;
@@ -181,22 +181,9 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 								await CurrentUser.RemoveUserDataFromFilesAsync();
 							}
 
-							try
-							{
-								CurrentUser = await InternetRequests.PostRequestAsync();
-
-								// Save user local data for using after sign in
-								ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-								localSettings.Values["email"] = CurrentUser.Email.ToLower();
-								localSettings.Values["lastName"] = CurrentUser.LastName;
-								localSettings.Values["firstName"] = CurrentUser.FirstName;
-								localSettings.Values["middleName"] = CurrentUser.MiddleName;
-								localSettings.Values["birthday"] = CurrentUser.Birthday;
-							}
-							catch(Exception)
-							{
-								throw;
-							}
+							// Save user local data for using after sign in
+							ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+							localSettings.Values["email"] = CurrentUser.Email.ToLower();
 
 							if (Window.Current.Content is Frame frame)
 							{
@@ -257,7 +244,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		{
 			if (Window.Current.Content is Frame frame)
 			{
-				frame.Navigate(typeof(SignUpExtendPage));
+				frame.Navigate(typeof(SignUpPage), CurrentUser);
 			}
 		}
 
@@ -395,7 +382,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					{
 						case 0:
 							{
-								await (new MessageDialog("ActivationInstructionText",
+								await (new MessageDialog(ResourceLoader.GetString("/SignInUp/ActivationInstructionText"),
 									ResourceLoader.GetString("/SignInUp/AccountVerificationText"))).ShowAsync();
 								break;
 							}

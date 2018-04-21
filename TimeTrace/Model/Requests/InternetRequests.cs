@@ -161,32 +161,6 @@ namespace TimeTrace.Model.Requests
 		}
 
 		/// <summary>
-		/// Getting user information from server
-		/// </summary>
-		/// <returns><see cref="User"/> object</returns>
-		public static async Task<User> PostRequestAsync()
-		{
-			// Get user token and email for request
-			var res = await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
-
-			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
-			{
-				throw new Exception("File with email and token not fount");
-			}
-
-			// Get user json string from server
-			string result = await BasePostRequestAsync("https://mindstructuring.ru/customer/getcustomer", TokenJsonSerialize(res.email, res.token));
-
-			JObject jsonString = JObject.Parse(result);
-			if ((int)jsonString["answer"] != 0)
-			{
-				throw new Exception("Server return null");
-			}
-
-			return JsonUserDeserialize((string)jsonString["customer"]);
-		}
-
-		/// <summary>
 		/// Synchronizing local calendars to server
 		/// </summary>
 		/// <returns>Result of operation: 0 - synchronization is success, 1 - synchrozination problems</returns>
@@ -216,7 +190,8 @@ namespace TimeTrace.Model.Requests
 						{
 							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							id = i.Id,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							personEmail = i.EmailOfOwner
 
 						}).ToList()
 				};
@@ -540,7 +515,7 @@ namespace TimeTrace.Model.Requests
 						{
 							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							id = i.Id,
-							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 
 						}).ToList()
 				};
@@ -623,7 +598,8 @@ namespace TimeTrace.Model.Requests
 							email = i.Email,
 							name = i.Name,
 							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							personEmail = i.EmailOfOwner
 						}
 					)
 				};
@@ -669,21 +645,6 @@ namespace TimeTrace.Model.Requests
 			if (obj != null)
 			{
 				return JsonConvert.SerializeObject(obj);
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Deserialize user from json
-		/// </summary>
-		/// <param name="jsonString">Json string</param>
-		/// <returns>New object of <see cref="User"/></returns>
-		private static User JsonUserDeserialize(string jsonString)
-		{
-			if (!string.IsNullOrEmpty(jsonString))
-			{
-				User user = JsonConvert.DeserializeObject<User>(jsonString);
-				return user;
 			}
 			return null;
 		}

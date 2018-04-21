@@ -31,6 +31,7 @@ namespace TimeTrace.Model
 			set
 			{
 				name = value;
+				UpdateAt = DateTime.UtcNow;
 				OnPropertyChanged();
 			}
 		}

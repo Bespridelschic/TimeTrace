@@ -161,10 +161,32 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			}
 		}
 
+		#region Adding and editing contacts
+
 		/// <summary>
 		/// Add new contact
 		/// </summary>
 		public async void AddContactAsync()
+		{
+			await ContactDialog();
+		}
+
+		/// <summary>
+		/// Edit selected contact
+		/// </summary>
+		public async void EditContactAsync()
+		{
+			if (SelectedContact.HasValue)
+			{
+				await ContactDialog(Contacts[SelectedContact.Value]);
+			}
+		}
+
+		/// <summary>
+		/// Dialog for adding new contact or edit selected
+		/// </summary>
+		/// <param name="contact">Sended contact. If null - create new</param>
+		private async Task ContactDialog(Contact contact = null)
 		{
 			#region Text boxes
 
@@ -174,6 +196,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				PlaceholderText = "example@gmail.com",
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 30,
+				Text = (contact == null) ? string.Empty : contact.Email,
+				IsReadOnly = (contact != null),
 			};
 
 			TextBox name = new TextBox()
@@ -182,6 +206,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				PlaceholderText = "Псевдоним контакта",
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 50,
+				Text = (contact == null) ? string.Empty : contact.Name,
 			};
 
 			#endregion
@@ -192,9 +217,9 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 			ContentDialog dialog = new ContentDialog()
 			{
-				Title = "Добавление нового контакта",
+				Title = (contact == null) ? "Добавление нового контакта" : "Изменение контакта",
 				Content = panel,
-				PrimaryButtonText = "Добавить",
+				PrimaryButtonText = (contact == null) ? "Добавить" : "Изменить",
 				CloseButtonText = "Отложить",
 				DefaultButton = ContentDialogButton.Primary,
 			};
@@ -205,7 +230,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			{
 				if (string.IsNullOrEmpty(email.Text) || string.IsNullOrEmpty(name.Text))
 				{
-					await new MessageDialog("Не заполнено одно из полей", "Ошибка добавления нового контакта").ShowAsync();
+					await new MessageDialog("Не заполнено одно из полей", (contact == null) ? "Ошибка добавления нового контакта" : "Ошибка изменения контакта").ShowAsync();
 
 					return;
 				}
@@ -215,31 +240,60 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 				if (res.Success)
 				{
-					Contact newContact = new Contact()
+					// Adding new contact
+					if (contact == null)
 					{
-						Email = email.Text,
-						Name = name.Text
-					};
+						Contact newContact = new Contact()
+						{
+							Email = email.Text,
+							Name = name.Text
+						};
 
-					using (MainDatabaseContext db = new MainDatabaseContext())
-					{
-						db.Contacts.Add(newContact);
-						db.SaveChanges();
+						using (MainDatabaseContext db = new MainDatabaseContext())
+						{
+							db.Contacts.Add(newContact);
+							db.SaveChanges();
+						}
+
+						Contacts.Add(newContact);
+
+						await RefreshContactsAsync();
+
+						await new MessageDialog($"Ваше приглашение для {newContact.Email} успешно отправлено", "Успех").ShowAsync();
+
+						return;
 					}
 
-					Contacts.Add(newContact);
+					// Edit contact
+					if (Contacts[SelectedContact.Value].Name != name.Text)
+					{
+						int tempSelectedContact = SelectedContact.Value;
+						var temp = Contacts[tempSelectedContact];
+						temp.Name = name.Text;
+						Contacts[tempSelectedContact] = temp;
 
-					await RefreshContactsAsync();
+						Contacts[tempSelectedContact].Name = name.Text;
 
-					await new MessageDialog($"Ваше приглашение для {newContact.Email} успешно отправлено", "Успех").ShowAsync();
+						using (MainDatabaseContext db = new MainDatabaseContext())
+						{
+							db.Contacts.Update(Contacts[tempSelectedContact]);
+							db.SaveChanges();
+						}
+
+						await RefreshContactsAsync();
+
+						await new MessageDialog($"Контакт {Contacts[tempSelectedContact].Email} успешно изменен", "Успех").ShowAsync();
+					}
 
 				}
 				else
 				{
-					await new MessageDialog("Не корректно введенный адрес электронной почты", "Ошибка добавления нового контакта").ShowAsync();
+					await new MessageDialog("Не корректно введенный адрес электронной почты", (contact == null) ? "Ошибка добавления нового контакта" : "Ошибка изменения контакта").ShowAsync();
 				}
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Sending added contacts and get actuals from server
@@ -265,10 +319,11 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			//{
 			//	ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-			//	var tempList = new ObservableCollection<Contact>(db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList());
-			//	Contacts = tempList;
+			//	Contacts = new ObservableCollection<Contact>(db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList());
 			//}
 		}
+
+		#region Contacts removing
 
 		/// <summary>
 		/// Remove of selected contact
@@ -325,7 +380,6 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 					removedContacts += $"{contact.Email}\n";
 				}
 
-				removedContacts += "123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n123\n234\n234\n234\n234\n234\n234\n234\n234\n234\n234\n777\n";
 				ScrollViewer scrollViewer = new ScrollViewer()
 				{
 					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -372,6 +426,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				MultipleSelection = ListViewSelectionMode.Single;
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Show info about contact
@@ -424,7 +480,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// <param name="args">Event args</param>
 		public void ContactsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
-			if (Contacts == null || Contacts.Count <= 0) return;
+			if (Contacts == null) return;
 
 			if (args.CheckCurrent())
 			{
@@ -434,6 +490,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			// Remove all contacts for adding relevant filter
 			Contacts.Clear();
 
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
 			// Select all contacts
 			if (string.IsNullOrEmpty(sender.Text))
 			{
@@ -441,7 +499,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Contacts.Select(i => i))
+					foreach (var i in db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
 					{
 						Contacts.Add(i);
 					}
@@ -453,7 +511,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.Contacts
-						.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) || i.Email.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()))
+						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
+									i.Email.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
 						.Select(i => i))
 					{
 						if (!ContactsSuggestList.Contains(i.Name))
@@ -480,15 +541,16 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			{
 				return;
 			}
-			
+
 			if (Contacts != null)
 			{
 				Contacts.Clear();
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
-					foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(term)).Select(i => i))
+					foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 					{
 						Contacts.Add(i);
 					}

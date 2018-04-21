@@ -130,9 +130,6 @@
     </Compile>
     <Compile Include="Model\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\AuthenticationView\SignUp\SignUpExtendPage.xaml.cs">
-      <DependentUpon>SignUpExtendPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
@@ -248,10 +245,6 @@
     <Page Include="View\AuthenticationView\SignInPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\AuthenticationView\SignUp\SignUpExtendPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AuthenticationView\SignUp\SignUpPage.xaml">
       <SubType>Designer</SubType>

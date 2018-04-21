@@ -23,7 +23,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public User CurrentUser
 		{
-			get { return currentUser; }
+			get => currentUser;
 			set
 			{
 				currentUser = value;
@@ -37,7 +37,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public bool Processing
 		{
-			get { return processing; }
+			get => processing;
 			set
 			{
 				processing = value;
@@ -51,7 +51,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public string ConfirmPassword
 		{
-			get { return confirmPassword; }
+			get => confirmPassword;
 			set
 			{
 				confirmPassword = value;
@@ -65,38 +65,11 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public int SelectionStart
 		{
-			get { return selectionStart; }
+			get => selectionStart;
 			set
 			{
 				selectionStart = value;
 				OnPropertyChanged();
-			}
-		}
-
-		/// <summary>
-		/// Maximum updateAt - current updateAt
-		/// </summary>
-		public DateTime MaxDate { get; set; }
-
-		private DateTimeOffset? selectedDate;
-		/// <summary>
-		/// Selected calendar updateAt
-		/// </summary>
-		public DateTimeOffset? SelectedDate
-		{
-			get { return selectedDate; }
-			set
-			{
-				if (value != null)
-				{
-					selectedDate = value;
-					CurrentUser.Birthday = $"{selectedDate.Value.Year}-{selectedDate.Value.Month}-{selectedDate.Value.Day}";
-					OnPropertyChanged();
-				}
-				else
-				{
-					CurrentUser.Birthday = string.Empty;
-				}
 			}
 		}
 
@@ -106,7 +79,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public bool ControlEnable
 		{
-			get { return controlEnable; }
+			get => controlEnable;
 			set
 			{
 				controlEnable = value;
@@ -133,20 +106,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			Processing = false;
 			ConfirmPassword = "";
 			SelectionStart = CurrentUser.Email.Length;
-			SelectedDate = null;
-			MaxDate = DateTime.Today;
 			ControlEnable = true;
-		}
-
-		/// <summary>
-		/// Navigate to page of registration ending
-		/// </summary>
-		public void SignUpContinue()
-		{
-			if (Window.Current.Content is Frame frame)
-			{
-				frame.Navigate(typeof(SignUpPage));
-			}
 		}
 
 		/// <summary>

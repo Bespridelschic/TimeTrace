@@ -72,7 +72,7 @@ namespace TimeTrace
 			{
 				if (AppFrame.Content == null)
 				{
-					AppFrame.Navigate(typeof(View.MainView.StartPage), e.Arguments);
+					AppFrame.Navigate(typeof(StartPage), e.Arguments);
 					//AppFrame.Navigate(typeof(View.AuthenticationView.SignInPage), e.Arguments);
 				}
 				// Обеспечение активности текущего окна
@@ -148,7 +148,7 @@ namespace TimeTrace
 		/// </summary>
 		private async Task AppSignInWithToken()
 		{
-			var res = await Model.Requests.FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
+			var res = await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
 
 			if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
 			{
@@ -157,21 +157,17 @@ namespace TimeTrace
 
 			try
 			{
-				var requestResult = await Model.Requests.InternetRequests.PostRequestAsync(Model.Requests.InternetRequests.PostRequestDestination.SignInWithToken);
+				var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.SignInWithToken);
 
 				if (requestResult == 0)
 				{
 					await InternetRequests.ContactsSynchronizationRequestAsync();
 
-					var CurrentUser = await InternetRequests.PostRequestAsync();
-
 					// Save user local data for using after sign in
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-					localSettings.Values["email"] = CurrentUser.Email.ToLower();
-					localSettings.Values["lastName"] = CurrentUser.LastName;
-					localSettings.Values["firstName"] = CurrentUser.FirstName;
-					localSettings.Values["middleName"] = CurrentUser.MiddleName;
-					localSettings.Values["birthday"] = CurrentUser.Birthday;
+					User currentUser = new User();
+					await currentUser.LoadUserFromFileAsync();
+					localSettings.Values["email"] = currentUser.Email.ToLower() ?? "Неизвестный";
 
 					if (Window.Current.Content is Frame frame)
 					{
