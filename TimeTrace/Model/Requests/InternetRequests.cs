@@ -7,13 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using TimeTrace.Model.DBContext;
-using Windows.Devices.Bluetooth;
-using Windows.Networking.Vpn;
 using Windows.Storage;
-using Newtonsoft.Json.Serialization;
 using TimeTrace.Model.Events;
 
 namespace TimeTrace.Model.Requests
@@ -631,6 +627,15 @@ namespace TimeTrace.Model.Requests
 			}
 
 			return resultOfSynchronization;
+		}
+
+		/// <summary>
+		/// Get public map events from added contacts
+		/// </summary>
+		/// <returns>Result of getting</returns>
+		public static async Task<int> GetPublicMapEventsAsync()
+		{
+			throw new NotImplementedException();
 		}
 
 		#region JSON

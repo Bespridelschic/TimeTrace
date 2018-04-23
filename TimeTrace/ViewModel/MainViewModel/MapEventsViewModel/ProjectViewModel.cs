@@ -30,21 +30,16 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public Area CurrentArea { get; set; }
 
-		/// <summary>
-		/// Available colors for choosing
-		/// </summary>
-		private Dictionary<string, string> ColorsTable { get; set; }
-
-		private ObservableCollection<Project> buttonCollection;
+		private ObservableCollection<Project> currentProjects;
 		/// <summary>
 		/// Binded collection of buttons
 		/// </summary>
-		public ObservableCollection<Project> ButtonCollection
+		public ObservableCollection<Project> CurrentProjects
 		{
-			get => buttonCollection;
+			get => currentProjects;
 			set
 			{
-				buttonCollection = value;
+				currentProjects = value;
 				OnPropertyChanged();
 			}
 		}
@@ -63,9 +58,21 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		#endregion
+		private int? selectedProject;
+		/// <summary>
+		/// Index of selected project
+		/// </summary>
+		public int? SelectedProject
+		{
+			get => selectedProject;
+			set
+			{
+				selectedProject = value;
+				OnPropertyChanged();
+			}
+		}
 
-		public SolidColorBrush GetCurrentColor { get => GetColorFromString(CurrentArea.Color.ToString()); }
+		#endregion
 
 		/// <summary>
 		/// Standart constructor
@@ -74,22 +81,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			CurrentArea = area;
 
-			ColorsTable = new Dictionary<string, string>()
-			{
-				{ "Красный", "#d50000" },
-				{ "Розовый", "#E67C73" },
-				{ "Оранжевый", "#F4511E"},
-				{ "Жёлтый", "#F6BF26" },
-				{ "Светло-зелёный", "#33B679" },
-				{ "Зелёный", "#0B8043" },
-				{ "Голубой", "#039BE5" },
-				{ "Синий", "#3F51B5" },
-				{ "Светло-фиолетовый", "#7986CB" },
-				{ "Фиолетовый", "#8E24AA" },
-				{ "Чёрный", "#616161" }
-			};
-
-			ButtonCollection = new ObservableCollection<Project>();
+			CurrentProjects = new ObservableCollection<Project>();
 			ProjectSuggestList = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -100,14 +92,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					.Where(i => i.AreaId == CurrentArea.Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
 					.Select(i => i))
 				{
-					ButtonCollection.Add(i);
-					//ButtonCollection.Add(NewProjectButtonCreate(i));
+					CurrentProjects.Add(i);
 				}
 			}
 		}
 
 		/// <summary>
-		/// Creation of new category
+		/// Creation of new project
 		/// </summary>
 		public async void ProjectCreate()
 		{
@@ -115,15 +106,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			if (newProject != null)
 			{
-				// Adding area into DB
+				// Adding project into database
 				using (var db = new MainDatabaseContext())
 				{
 					db.Projects.Add(newProject);
 					db.SaveChanges();
 				}
 
-				ButtonCollection.Add(newProject);
-				//ButtonCollection.Add(NewProjectButtonCreate(newProject));
+				CurrentProjects.Add(newProject);
 			}
 		}
 
@@ -132,17 +122,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		/// <param name="sender">Object sender</param>
 		/// <param name="e">Parameters</param>
-		public void ProjectSelect(object sender, RoutedEventArgs e)
+		public void ProjectSelect()
 		{
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			if (SelectedProject.HasValue)
 			{
-				(Application.Current as App)?.AppFrame.Navigate(typeof(PersonalEventCreatePage), db.Projects.FirstOrDefault(i => i.Id == (string)(sender as Button).Tag));
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					(Application.Current as App)?.AppFrame.Navigate(typeof(PersonalEventCreatePage), CurrentProjects[SelectedProject.Value]);
+				}
 			}
 		}
 
 		public void ProjectsBulkRemoval()
 		{
-
+			
 		}
 
 		/// <summary>
@@ -169,16 +162,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				if (result == ContentDialogResult.Primary)
 				{
-					// Remove Area from UI panel
-					//ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedProject.Id));
-
 					// Remove all events in this project
 					foreach (var mapEvent in db.MapEvents.Where(i => i.Id == selectedProject.Id))
 					{
 						db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
 					}
 
-					// Remove Project from UI
+					// Remove Project from database
 					db.Projects.FirstOrDefault(i => i.Id == selectedProject.Id).IsDelete = true;
 
 					db.SaveChanges();
@@ -221,9 +211,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					db.SaveChanges();
 
 					// Update current button
-					/*var index = ButtonCollection.IndexOf(ButtonCollection.First(i => (string)i.Tag == selectedProject.Id));
-					ButtonCollection.RemoveAt(index);
-					ButtonCollection.Insert(index, NewProjectButtonCreate(selectedProject));*/
+					/*var index = CurrentProjects.IndexOf(CurrentProjects.First(i => (string)i.Tag == selectedProject.Id));
+					CurrentProjects.RemoveAt(index);
+					CurrentProjects.Insert(index, NewProjectButtonCreate(selectedProject));*/
 				}
 			}
 		}
@@ -235,7 +225,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="args">Event args</param>
 		public void ProjectFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
-			if (ButtonCollection == null) return;
+			if (CurrentProjects == null) return;
 
 			if (args.CheckCurrent())
 			{
@@ -243,7 +233,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 
 			// Remove all buttons for adding relevant filter
-			ButtonCollection.Clear();
+			CurrentProjects.Clear();
 
 			// Select all calendars
 			if (string.IsNullOrEmpty(sender.Text))
@@ -254,7 +244,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id).Select(i => i))
 					{
-						//ButtonCollection.Add(NewProjectButtonCreate(i));
+						//CurrentProjects.Add(NewProjectButtonCreate(i));
 					}
 				}
 			}
@@ -272,7 +262,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							ProjectSuggestList.Add(i.Name);
 						}
 
-						//ButtonCollection.Add(NewProjectButtonCreate(i));
+						//CurrentProjects.Add(NewProjectButtonCreate(i));
 					}
 				}
 			}
@@ -287,14 +277,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			ProjectSuggestList.Clear();
 
-			if (ButtonCollection != null)
+			if (CurrentProjects != null)
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					var term = args.QueryText.ToLower();
 					foreach (var i in db.Projects.Where(i => i.Name.ToLower().Contains(term) && i.AreaId == CurrentArea.Id).Select(i => i))
 					{
-						//ButtonCollection.Add(NewProjectButtonCreate(i));
+						//CurrentProjects.Add(NewProjectButtonCreate(i));
 					}
 				}
 			}
@@ -330,63 +320,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			#endregion
 
-			#region Color box
-
-			ComboBox colors = new ComboBox()
-			{
-				Header = "Цвет проекта",
-				Width = 300,
-			};
-
-			// Building list of colors for choosing
-			for (int i = 0; i < ColorsTable.Count; i++)
-			{
-				var brush = GetColorFromString(ColorsTable.ElementAt(i).Value);
-
-				// Ring of color
-				Ellipse colorRing = new Ellipse
-				{
-					Fill = brush,
-					Width = 16,
-					Height = 16,
-				};
-
-				// Center ring with white color
-				Ellipse innerColorRing = new Ellipse
-				{
-					Fill = new SolidColorBrush(new Color() { A = 255, R = 255, G = 255, B = 255 }),
-					Width = 12,
-					Height = 12,
-				};
-
-				// Item panel with color & name of color
-				StackPanel colorBoxItem = new StackPanel();
-				colorBoxItem.Orientation = Orientation.Horizontal;
-
-				Grid colorGrid = new Grid();
-				colorGrid.Children.Add(colorRing);
-				colorGrid.Children.Add(innerColorRing);
-
-				colorBoxItem.Children.Add(colorGrid);
-				colorBoxItem.Children.Add(new TextBlock()
-				{
-					Text = $"{ColorsTable.ElementAt(i).Key}",
-					Margin = new Thickness(8, 0, 0, 0),
-					VerticalAlignment = VerticalAlignment.Center
-				});
-
-				colors.Items.Add(colorBoxItem);
-			}
-
-			#endregion
-
-			// Start selected color or default red
-			colors.SelectedIndex = (project == null) ? 0 : project.Color - 1;
-
 			StackPanel panel = new StackPanel();
 			panel.Children.Add(name);
 			panel.Children.Add(description);
-			panel.Children.Add(colors);
 
 			ContentDialog dialog = new ContentDialog()
 			{
@@ -422,7 +358,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					Name = name.Text,
 					Description = description.Text,
-					Color = colors.SelectedIndex + 1,
 					AreaId = CurrentArea.Id,
 				};
 			}
@@ -430,66 +365,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				return project;
 			}
-		}
-
-		/// <summary>
-		/// Factory of buttons
-		/// </summary>
-		/// <param name="project"></param>
-		/// <returns>New button object</returns>
-		private Button NewProjectButtonCreate(Project project)
-		{
-			// Edit menu item
-			MenuFlyoutItem editItem = new MenuFlyoutItem()
-			{
-				Text = "Редактировать",
-				Icon = new SymbolIcon(Symbol.Edit),
-				Tag = project.Id,
-			};
-			editItem.Click += ProjectEditAsync;
-
-			// Remove menu item
-			MenuFlyoutItem removeItem = new MenuFlyoutItem()
-			{
-				Text = "Удалить",
-				Icon = new SymbolIcon(Symbol.Delete),
-				Tag = project.Id,
-			};
-			removeItem.Click += ProjectRemoveAsync;
-
-			// Main menu for button
-			MenuFlyout menuForButton = new MenuFlyout();
-			menuForButton.Items.Add(editItem);
-			menuForButton.Items.Add(removeItem);
-
-			// Creating area button for adding in page
-			Button newButton = new Button()
-			{
-				BorderBrush = GetColorFromString(ColorsTable.ElementAt(project.Color - 1).Value),
-				Content = project,
-				Tag = project.Id,
-				ContextFlyout = menuForButton
-			};
-			newButton.Click += ProjectSelect;
-
-			return newButton;
-		}
-
-		/// <summary>
-		/// Get the color brush from string
-		/// </summary>
-		/// <param name="color">Input string color</param>
-		/// <returns>New color <see cref="Brush"/></returns>
-		private SolidColorBrush GetColorFromString(string color)
-		{
-			var colorString = color.Replace("#", string.Empty);
-
-			var r = byte.Parse(colorString.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-			var g = byte.Parse(colorString.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-			var b = byte.Parse(colorString.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-
-			Color localColor = Color.FromArgb(255, r, g, b);
-			return new SolidColorBrush(localColor);
 		}
 	}
 }

@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:advancedViews="using:TimeTrace.View.AdvancedControls"
+	xmlns:converter="using:TimeTrace.View.Converters"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,10 +11,12 @@
 
 	<Page.Resources>
 		<ResourceDictionary>
+			<converter:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
+			<converter:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-			<Style TargetType="Button">
+			<!--<Style TargetType="Button">
 				<Setter Property="Width" Value="150" />
 				<Setter Property="Height" Value="150" />
 				<Setter Property="Background" Value="White" />
@@ -71,25 +74,7 @@
 						</DataTemplate>
 					</Setter.Value>
 				</Setter>
-			</Style>
-			<DataTemplate x:Key="CustomerItemTemplate" x:DataType="local:Project">
-				<Border
-					Width="170"
-					Padding="10"
-					HorizontalAlignment="Stretch"
-					Background="{StaticResource HostBackdropBrush}"
-					CornerRadius="5">
-					<StackPanel
-						Width="Auto"
-						HorizontalAlignment="Stretch"
-						Orientation="Horizontal">
-						<TextBlock
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Text="{x:Bind Name}" />
-					</StackPanel>
-				</Border>
-			</DataTemplate>
+			</Style>-->
 		</ResourceDictionary>
 	</Page.Resources>
 
@@ -129,17 +114,19 @@
 		<Grid Grid.Row="1" Margin="12,5,12,2">
 			<Grid.RowDefinitions>
 				<RowDefinition />
+				<RowDefinition Height="82" />
 				<RowDefinition Height="75" />
 			</Grid.RowDefinitions>
 
 			<FlipView
 				x:Name="flipView"
 				Padding="4"
-				BorderBrush="Red"
+				BorderBrush="{x:Bind ViewModel.CurrentArea.Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
 				BorderThickness="1.4"
-				ItemsSource="{x:Bind ViewModel.ButtonCollection}">
+				ItemsSource="{x:Bind ViewModel.CurrentProjects}">
+
 				<FlipView.ItemTemplate>
-					<DataTemplate x:Key="CustomerItemTemplate" x:DataType="local:Project">
+					<DataTemplate x:Name="CustomerItemTemplate" x:DataType="local:Project">
 						<Grid Background="White">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
@@ -160,33 +147,53 @@
 									<TextBlock Margin="20,5" Text="Событий завершено" />
 								</StackPanel>
 							</ScrollViewer>
-							<Border
-								Grid.Row="2"
-								Height="80"
-								VerticalAlignment="Bottom"
-								Background="#A5000000">
-								<TextBlock
-									Padding="15,20"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									FontFamily="Segoe UI"
-									FontSize="26.667"
-									Foreground="#CCFFFFFF"
-									Text="{Binding Description}" />
-							</Border>
+
 						</Grid>
 					</DataTemplate>
 				</FlipView.ItemTemplate>
 			</FlipView>
 
-			<ScrollViewer
+			<Button
 				Grid.Row="1"
+				Height="80"
+				MaxWidth="9999999"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Bottom"
+				Background="#A5000000"
+				Click="{x:Bind ViewModel.ProjectSelect}"
+				Content="Перейти"
+				FontFamily="Segoe UI"
+				FontSize="26.667"
+				Foreground="#CCFFFFFF" />
+
+			<ScrollViewer
+				Grid.Row="2"
 				Padding="0,5,0,10"
 				HorizontalAlignment="Center"
 				HorizontalContentAlignment="Left"
 				HorizontalScrollBarVisibility="Auto"
 				VerticalScrollBarVisibility="Disabled">
-				<advancedViews:FlipViewIndicator FlipView="{Binding ElementName=flipView}" ItemTemplate="{StaticResource CustomerItemTemplate}">
+				<advancedViews:FlipViewIndicator FlipView="{Binding ElementName=flipView}" SelectedIndex="{x:Bind ViewModel.SelectedProject, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
+					<advancedViews:FlipViewIndicator.ItemTemplate>
+						<DataTemplate x:DataType="local:Project">
+							<Border
+								Width="170"
+								Padding="10"
+								HorizontalAlignment="Stretch"
+								Background="{StaticResource HostBackdropBrush}"
+								CornerRadius="5">
+								<StackPanel
+									Width="Auto"
+									HorizontalAlignment="Stretch"
+									Orientation="Horizontal">
+									<TextBlock
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										Text="{x:Bind Name}" />
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</advancedViews:FlipViewIndicator.ItemTemplate>
 					<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
 							<StackPanel Orientation="Horizontal" />

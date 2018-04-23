@@ -38,6 +38,6 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 			}
 		}
 
-		private ProjectViewModel ViewModel { get; set; }
+		public ProjectViewModel ViewModel { get; set; }
 	}
 }

@@ -204,7 +204,23 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					selectedArea.Name = editedArea.Name;
 					selectedArea.Description = editedArea.Description;
-					selectedArea.Color = editedArea.Color;
+
+					if (editedArea.Color != selectedArea.Color)
+					{
+						selectedArea.Color = editedArea.Color;
+
+						foreach (var innerProjects in db.Projects.Where(i => i.AreaId == selectedArea.Id))
+						{
+							foreach (var innerMaps in db.MapEvents.Where(i => i.ProjectId == innerProjects.Id))
+							{
+								innerMaps.Color = selectedArea.Color;
+								db.MapEvents.Update(innerMaps);
+							}
+
+							innerProjects.Color = selectedArea.Color;
+							db.Projects.Update(innerProjects);
+						}
+					}
 
 					selectedArea.UpdateAt = DateTime.UtcNow;
 

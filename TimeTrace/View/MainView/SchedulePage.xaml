@@ -11,6 +11,7 @@
 	<Page.Resources>
 		<ResourceDictionary>
 			<converters:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
+			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -27,139 +28,270 @@
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
+		<SplitView
+			Background="White"
+			IsPaneOpen="{x:Bind ViewModel.IsFilterExpanded, Mode=TwoWay}"
+			OpenPaneLength="400">
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
-			<StackPanel Margin="10">
-				<ListView ItemsSource="{x:Bind ViewModel.MapEvents, Mode=TwoWay}" SelectedIndex="{x:Bind ViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
-					<ListView.ItemTemplate>
-						<DataTemplate x:DataType="local:MapEvent">
-							<StackPanel>
-								<TextBlock
-									Margin="10,5,10,0"
-									FontSize="26"
-									Text="{x:Bind Name}"
-									TextWrapping="WrapWholeWords" />
+			<SplitView.Pane>
+				<Grid
+					Background="White"
+					BorderBrush="{StaticResource HostBackdropBrush}"
+					BorderThickness="2">
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
-								<StackPanel Orientation="Horizontal">
-									<TextBlock
-										Margin="10,3,0,2"
-										FontSize="18"
-										Text="Время: " />
-									<TextBlock
-										Margin="7,3,7,2"
-										FontSize="18"
-										Text="{x:Bind Start}" />
-									<TextBlock
-										Margin="0,3,0,2"
-										FontSize="18"
-										Text="-" />
-									<TextBlock
-										Margin="7,3,7,2"
-										FontSize="18"
-										Text="{x:Bind End}" />
-								</StackPanel>
+					<ScrollViewer VerticalScrollBarVisibility="Auto">
+						<StackPanel Margin="5,10">
+							<TextBlock
+								Margin="0,0,0,20"
+								FontSize="25"
+								Text="Фильтрация по датам"
+								TextWrapping="WrapWholeWords" />
+							<CalendarView
+								HorizontalAlignment="Center"
+								SelectedBorderBrush="Red"
+								SelectedDatesChanged="{x:Bind ViewModel.DateSelection}"
+								SelectedForeground="Red"
+								SelectionMode="Multiple" />
+							<Button
+								Width="200"
+								Margin="14"
+								HorizontalAlignment="Center"
+								BorderBrush="{StaticResource HostBackdropBrush}"
+								BorderThickness="2"
+								Click="{x:Bind ViewModel.ResetSelectedDates}"
+								Content="Сбросить выбранные" />
 
-								<StackPanel Orientation="Horizontal">
-									<TextBlock
-										Margin="10,0,0,0"
-										FontSize="18"
-										Text="Место: " />
-									<TextBlock
-										Margin="7,0,0,0"
-										FontSize="18"
-										Text="{x:Bind Location, TargetNullValue=Неизвестно}" />
-									<TextBlock
-										Margin="0,0,0,0"
-										FontSize="18"
-										Text=";" />
-									<TextBlock
-										Margin="10,0,0,0"
-										FontSize="18"
-										Text="Контакт: " />
-									<TextBlock
-										Margin="7,0,0,0"
-										FontSize="18"
-										Text="{x:Bind UserBind, TargetNullValue=Неизвестен}" />
-								</StackPanel>
-
-								<StackPanel Orientation="Horizontal">
-									<TextBlock
-										Margin="10,5,0,5"
-										FontSize="18"
-										Text="Описание: " />
-									<TextBlock
-										Margin="7,5"
-										FontSize="18"
-										Text="{x:Bind Description, TargetNullValue=Отсутствует}" />
-								</StackPanel>
-							</StackPanel>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-					<ListView.ContextFlyout>
-						<MenuFlyout Placement="Bottom">
-							<MenuFlyoutItem
-								Click="{x:Bind ViewModel.MoreAboutMapEvent}"
-								Icon="Page"
-								Text="Подробней" />
 							<MenuFlyoutSeparator />
-							<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
-							<MenuFlyoutItem
-								Click="{x:Bind ViewModel.MapEventRemove}"
-								Icon="Delete"
-								Text="Удалить" />
-						</MenuFlyout>
-					</ListView.ContextFlyout>
-				</ListView>
-			</StackPanel>
-		</ScrollViewer>
 
-		<Grid Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
+							<TextBlock
+								Margin="0,0,0,20"
+								FontSize="25"
+								Text="Фильтрация по времени"
+								TextWrapping="WrapWholeWords" />
 
-			<StackPanel Margin="15,20,35,20">
-				<TextBlock
-					Margin="0,0,0,20"
-					FontSize="28"
-					Text="Укажите дату"
-					TextWrapping="WrapWholeWords" />
-				<CalendarView
-					HorizontalAlignment="Center"
-					SelectedDatesChanged="{x:Bind ViewModel.DateSelection}"
-					SelectionMode="Single" />
-				<Button
-					Margin="14"
-					HorizontalAlignment="Stretch"
-					Background="SteelBlue"
-					Content="Сбросить даты"
-					Foreground="White" />
-			</StackPanel>
+							<CheckBox
+								Name="IsTimeFilterEnable"
+								Margin="45,0,45,5"
+								Content="Фильтровать по времени" />
 
-			<Button
-				Grid.Row="1"
-				Margin="50,0,50,40"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Bottom"
-				Background="SteelBlue"
-				Content="Создать событие"
-				Foreground="White">
-				<Button.Flyout>
-					<Flyout>
-						<Flyout.Content>
-							<TextBlock Text="Вы уверены?" />
-						</Flyout.Content>
-					</Flyout>
-				</Button.Flyout>
-			</Button>
 
-		</Grid>
+							<StackPanel
+								Margin="0,0,0,10"
+								HorizontalAlignment="Center"
+								Orientation="Horizontal">
+								<TimePicker
+									MinWidth="150"
+									HorizontalAlignment="Center"
+									Header="Начало"
+									IsEnabled="{Binding ElementName=IsTimeFilterEnable, Path=IsChecked, Mode=TwoWay}" />
+
+								<TextBlock
+									Margin="5,10"
+									VerticalAlignment="Bottom"
+									Text="-" />
+
+								<TimePicker
+									MinWidth="150"
+									HorizontalAlignment="Center"
+									Header="Окончание"
+									IsEnabled="{Binding ElementName=IsTimeFilterEnable, Path=IsChecked, Mode=TwoWay}" />
+
+							</StackPanel>
+
+							<MenuFlyoutSeparator />
+
+							<TextBlock
+								Margin="20,0,20,20"
+								FontSize="25"
+								Text="Фильтрация по публичным событиям"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+
+							<CheckBox Margin="45,0" Content="Только публичные события" />
+
+							<MenuFlyoutSeparator Margin="0,5,0,0" />
+
+							<TextBlock
+								Margin="20,0,20,5"
+								FontSize="25"
+								Text="Фильтрация по объектам привязки"
+								TextAlignment="Center"
+								TextWrapping="WrapWholeWords" />
+
+							<AutoSuggestBox
+								Margin="45,5"
+								Header="Имя контакта"
+								PlaceholderText="Имя связанного с событием контакта"
+								QueryIcon="Contact" />
+
+							<AutoSuggestBox
+								Margin="45,5"
+								Header="Место события"
+								PlaceholderText="Место связанное с событием"
+								QueryIcon="Globe" />
+
+							<MenuFlyoutSeparator Margin="0,5,0,0" />
+
+						</StackPanel>
+					</ScrollViewer>
+
+					<Grid Grid.Row="1">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+
+						<MenuFlyoutSeparator />
+
+						<Button
+							Grid.Row="1"
+							HorizontalAlignment="Stretch"
+							Content="Сбросить все фильтры"
+							FontSize="18"
+							Foreground="Red" />
+
+					</Grid>
+
+				</Grid>
+			</SplitView.Pane>
+
+			<SplitView.Content>
+				<Grid>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<TextBlock
+						Grid.Row="0"
+						Margin="25,10,15,5"
+						HorizontalAlignment="Left"
+						FontSize="30"
+						Text="Текущее расписание" />
+
+					<ParallaxView
+						Grid.Row="1"
+						Opacity="0.5"
+						Source="{x:Bind MapEventsList}"
+						VerticalShift="200">
+						<Image Source="../../Assets/logo_Win.png" Stretch="UniformToFill" />
+					</ParallaxView>
+
+					<ListView
+						x:Name="MapEventsList"
+						Grid.Row="1"
+						Padding="8"
+						DoubleTapped="{x:Bind ViewModel.MoreAboutMapEvent}"
+						ItemsSource="{x:Bind ViewModel.MapEvents, Mode=TwoWay}"
+						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
+						SelectedIndex="{x:Bind ViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
+						<ListView.ItemTemplate>
+							<DataTemplate x:DataType="local:MapEvent">
+								<StackPanel>
+									<StackPanel Margin="10,5,10,0" Orientation="Horizontal">
+
+										<Ellipse
+											Width="15"
+											Height="15"
+											VerticalAlignment="Center"
+											Fill="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}" />
+
+										<TextBlock
+											Margin="5,0,0,0"
+											VerticalAlignment="Center"
+											FontSize="26"
+											Text="{x:Bind Name}"
+											TextWrapping="WrapWholeWords" />
+
+									</StackPanel>
+
+									<StackPanel Orientation="Horizontal">
+										<TextBlock
+											Margin="10,3,0,2"
+											FontSize="18"
+											Text="Время: " />
+										<TextBlock
+											Margin="7,3,7,2"
+											FontSize="18"
+											Text="{x:Bind Start}" />
+										<TextBlock
+											Margin="0,3,0,1"
+											FontSize="18"
+											Text="-" />
+										<TextBlock
+											Margin="7,3,7,1"
+											FontSize="18"
+											Text="{x:Bind End}" />
+									</StackPanel>
+
+									<StackPanel Orientation="Horizontal">
+										<TextBlock
+											Margin="10,0,0,5"
+											FontSize="18"
+											Text="Описание: " />
+										<TextBlock
+											Margin="7,0,0,5"
+											FontSize="18"
+											Text="{x:Bind Description, TargetNullValue=Отсутствует}" />
+									</StackPanel>
+								</StackPanel>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+						<ListView.ContextFlyout>
+							<MenuFlyout Placement="Bottom">
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.MoreAboutMapEvent}"
+									Icon="Page"
+									Text="Подробней" />
+								<MenuFlyoutSeparator />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.MapEventEditAsync}"
+									Icon="Edit"
+									Text="Редактировать" />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.MapEventRemove}"
+									Icon="Delete"
+									Text="Удалить" />
+							</MenuFlyout>
+						</ListView.ContextFlyout>
+					</ListView>
+				</Grid>
+			</SplitView.Content>
+
+		</SplitView>
+
+		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">
+			<CommandBar.Content>
+				<StackPanel Margin="10,-5" Orientation="Horizontal">
+					<TextBlock Text="Поиск событий: " />
+					<AutoSuggestBox
+						Width="250"
+						Margin="10,13,10,10"
+						ItemsSource="{x:Bind ViewModel.MapEventsSuggestList, Mode=TwoWay}"
+						PlaceholderText="Поиск..."
+						QueryIcon="Find"
+						QuerySubmitted="{x:Bind ViewModel.MapEventsFilterQuerySubmitted}"
+						Text="{x:Bind ViewModel.RequiredFilter, Mode=TwoWay}"
+						TextChanged="{x:Bind ViewModel.MapEventsFilter}" />
+				</StackPanel>
+			</CommandBar.Content>
+
+			<AppBarButton
+				Click="{x:Bind ViewModel.ExpandFilterPage}"
+				Icon="Filter"
+				Label="Фильтрация событий"
+				ToolTipService.ToolTip="Применить фильтры для событий" />
+		</CommandBar>
 
 	</Grid>
 </Page>

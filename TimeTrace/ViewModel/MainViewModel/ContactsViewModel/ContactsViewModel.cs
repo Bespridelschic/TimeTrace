@@ -168,7 +168,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// </summary>
 		public async void AddContactAsync()
 		{
-			await ContactDialog();
+			await ContactDialogAsync();
 		}
 
 		/// <summary>
@@ -178,7 +178,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		{
 			if (SelectedContact.HasValue)
 			{
-				await ContactDialog(Contacts[SelectedContact.Value]);
+				await ContactDialogAsync(Contacts[SelectedContact.Value]);
 			}
 		}
 
@@ -186,7 +186,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// Dialog for adding new contact or edit selected
 		/// </summary>
 		/// <param name="contact">Sended contact. If null - create new</param>
-		private async Task ContactDialog(Contact contact = null)
+		private async Task ContactDialogAsync(Contact contact = null)
 		{
 			#region Text boxes
 

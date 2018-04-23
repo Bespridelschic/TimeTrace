@@ -50,74 +50,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public DateTime MinDate { get; }
 
-		private bool isSelectMan;
-		/// <summary>
-		/// Enabled of man binding
-		/// </summary>
-		public bool IsSelectMan
-		{
-			get => isSelectMan;
-			set
-			{
-				isSelectMan = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private bool isSelectPlace;
-		/// <summary>
-		/// Enabled of location binding
-		/// </summary>
-		public bool IsSelectPlace
-		{
-			get => isSelectPlace;
-			set
-			{
-				isSelectPlace = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private int bindingObjectIndex;
-		/// <summary>
-		/// Binding object of event
-		/// </summary>
-		public int BindingObjectIndex
-		{
-			get => bindingObjectIndex;
-			set
-			{
-				bindingObjectIndex = value;
-				switch (value)
-				{
-					case 0:
-						{
-							IsSelectPlace = true;
-							IsSelectMan = false;
-
-							break;
-						}
-					case 1:
-						{
-							IsSelectMan = true;
-							IsSelectPlace = false;
-
-							break;
-						}
-					case 2:
-						{
-							IsSelectPlace = true;
-							IsSelectMan = true;
-
-							break;
-						}
-					default:
-						throw new Exception("Не определенный индекс привязки события!");
-				}
-				OnPropertyChanged();
-			}
-		}
-
 		private DateTimeOffset? startDate;
 		/// <summary>
 		/// Event start updateAt
@@ -131,6 +63,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				if (StartDate != null)
 				{
 					CurrentMapEvent.Start = StartDate.Value.Date + StartTime;
+				}
+
+				if (!isNotAllDay)
+				{
+					EndDate = value;
 				}
 
 				OnPropertyChanged();
@@ -213,8 +150,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				if (!isNotAllDay)
 				{
-					EndDate = null;
-					EndTime = TimeSpan.Parse("00:00");
+					StartTime = TimeSpan.Parse("00:00");
+					EndTime = TimeSpan.Parse("23:59");
+					EndDate = StartDate;
 				}
 
 				OnPropertyChanged();
@@ -233,8 +171,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			MinDate = DateTime.Today;
 			IsNotAllDay = false;
-
-			BindingObjectIndex = 0;
 		}
 
 		/// <summary>
@@ -304,7 +240,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		private async void BindingEventToWindowsCalendar()
 		{
 			var appointment = new Windows.ApplicationModel.Appointments.Appointment();
-			
+
 			// StartTime
 			var date = StartDate;
 			var time = StartTime;

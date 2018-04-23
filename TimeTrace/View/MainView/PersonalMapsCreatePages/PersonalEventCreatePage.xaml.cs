@@ -39,7 +39,7 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 				Project proj = (Project) e.Parameter;
 
 				ViewModel = new PersonalEventCreateViewModel();
-				ScheduleViewModel = new ScheduleViewModel(proj.Id);
+				ScheduleViewModel = new ScheduleViewModel(proj);
 
 				ViewModel.CurrentMapEvent.ProjectId = proj.Id;
 				ViewModel.CurrentMapEvent.Color = proj.Color;

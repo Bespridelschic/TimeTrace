@@ -19,7 +19,7 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "project_id")]
 		public string ProjectId
 		{
-			get { return projectId; }
+			get => projectId;
 			set
 			{
 				projectId = value;
@@ -27,17 +27,17 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
-		private bool isDelete;
+		private bool isPublic;
 		/// <summary>
-		/// If deleted - remove local event
+		/// Is public event
 		/// </summary>
-		[JsonIgnore]
-		public bool IsDelete
+		[JsonProperty(PropertyName = "isPublic")]
+		public bool IsPublic
 		{
-			get { return isDelete; }
+			get => isPublic;
 			set
 			{
-				isDelete = value;
+				isPublic = value;
 				OnPropertyChanged();
 			}
 		}
@@ -50,11 +50,8 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "start")]
 		public DateTime Start
 		{
-			set { start = value; }
-			get
-			{
-				return start;
-			}
+			set => start = value;
+			get => start;
 		}
 
 		private DateTime end;
@@ -65,11 +62,8 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "end")]
 		public DateTime End
 		{
-			set { end = value; }
-			get
-			{
-				return end;
-			}
+			set => end = value;
+			get => end;
 		}
 
 		private string location;
@@ -79,7 +73,7 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "location")]
 		public string Location
 		{
-			get { return location; }
+			get => location;
 			set
 			{
 				location = value;
@@ -94,7 +88,7 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "people")]
 		public string UserBind
 		{
-			get { return userBind; }
+			get => userBind;
 			set
 			{
 				userBind = value;
@@ -109,7 +103,7 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "recurrence")]
 		public string EventInterval
 		{
-			get { return eventInterval; }
+			get => eventInterval;
 			set
 			{
 				if (eventInterval != value)
@@ -117,6 +111,21 @@ namespace TimeTrace.Model.Events
 					eventInterval = value;
 					OnPropertyChanged();
 				}
+			}
+		}
+
+		private string projectOwnerEmail;
+		/// <summary>
+		/// Email of creators event
+		/// </summary>
+		[JsonProperty(PropertyName = "projectPersonEmail")]
+		public string ProjectOwnerEmail
+		{
+			get { return projectOwnerEmail; }
+			set
+			{
+				projectOwnerEmail = value;
+				OnPropertyChanged();
 			}
 		}
 
@@ -129,7 +138,8 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public MapEvent()
 		{
-			
+			ProjectOwnerEmail = string.Empty;
+			IsPublic = false;
 		}
 
 		/// <summary>
@@ -143,7 +153,7 @@ namespace TimeTrace.Model.Events
 		/// <param name="user">Binded user</param>
 		/// <param name="eventInterval">Repeat of event</param>
 		/// <param name="projectId">ID of map project</param>
-		public MapEvent(string name, string description, DateTime start, DateTime end, string place, string user, string eventInterval, string projectId)
+		public MapEvent(string name, string description, DateTime start, DateTime end, string place, string user, string eventInterval, string projectId, bool isPublic) : this()
 		{
 			Name = name;
 			Description = description;
@@ -153,6 +163,7 @@ namespace TimeTrace.Model.Events
 			EventInterval = eventInterval;
 			ProjectId = projectId;
 			UserBind = user;
+			IsPublic = isPublic;
 		}
 
 		#endregion

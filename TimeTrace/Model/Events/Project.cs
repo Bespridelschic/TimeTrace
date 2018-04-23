@@ -21,10 +21,25 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "area_id")]
 		public string AreaId
 		{
-			get { return areaId; }
+			get => areaId;
 			set
 			{
 				areaId = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string projectSource;
+		/// <summary>
+		/// The owner of project
+		/// </summary>
+		[JsonProperty(PropertyName = "from")]
+		public string ProjectSource
+		{
+			get { return projectSource; }
+			set
+			{
+				projectSource = value;
 				OnPropertyChanged();
 			}
 		}
@@ -38,7 +53,7 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public Project()
 		{
-			
+
 		}
 
 		/// <summary>

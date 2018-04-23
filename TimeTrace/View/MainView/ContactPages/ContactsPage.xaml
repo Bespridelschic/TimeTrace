@@ -44,7 +44,6 @@
 
 			<PivotItem Margin="0,5" Header="Все">
 				<Grid>
-
 					<ParallaxView
 						Opacity="0.5"
 						Source="{x:Bind ContactsList}"

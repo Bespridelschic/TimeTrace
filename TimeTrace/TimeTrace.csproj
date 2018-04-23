@@ -119,6 +119,7 @@
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ChatViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ContactsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\StartPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\ProjectViewModel.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
     <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>

@@ -211,38 +211,9 @@
 										Margin="0,5,15,5"
 										HorizontalAlignment="Right"
 										Header="Время начала"
+										IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
 										Time="{x:Bind ViewModel.StartTime, Mode=TwoWay}"
 										ToolTipService.ToolTip="Время, к которому будет привязано событие" />
-								</Grid>
-
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="205" />
-										<ColumnDefinition />
-									</Grid.ColumnDefinitions>
-
-									<ToggleSwitch
-										Grid.Column="1"
-										Margin="15,5,10,5"
-										Header="Весь день"
-										IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}"
-										OffContent="Да"
-										OnContent="Нет" />
-
-									<ComboBox
-										Grid.Column="0"
-										Margin="15,5,10,5"
-										HorizontalAlignment="Stretch"
-										Header="Повторение события"
-										ToolTipService.ToolTip="Как часто будет происходить напоминание">
-										<ComboBoxItem Content="Без повторений" />
-										<ComboBoxItem Content="Каждый день" />
-										<ComboBoxItem Content="Через день" />
-										<ComboBoxItem Content="Раз в неделю" />
-										<ComboBoxItem Content="Раз в месяц" />
-										<ComboBoxItem Content="Раз в год" />
-										<ComboBoxItem Content="Свой вариант" />
-									</ComboBox>
 								</Grid>
 
 								<Grid>
@@ -273,20 +244,42 @@
 										Time="{x:Bind ViewModel.EndTime, Mode=TwoWay}"
 										ToolTipService.ToolTip="Длительность создаваемого события" />
 								</Grid>
+
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="205" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<ComboBox
+										Grid.Column="0"
+										Margin="15,5,10,5"
+										HorizontalAlignment="Stretch"
+										Header="Повторение события"
+										PlaceholderText="Без повторений"
+										ToolTipService.ToolTip="Как часто будет происходить напоминание">
+										<ComboBoxItem Content="Без повторений" />
+										<ComboBoxItem Content="Каждый день" />
+										<ComboBoxItem Content="Через день" />
+										<ComboBoxItem Content="Раз в неделю" />
+										<ComboBoxItem Content="Раз в месяц" />
+										<ComboBoxItem Content="Раз в год" />
+										<ComboBoxItem Content="Свой вариант" />
+									</ComboBox>
+
+									<ToggleSwitch
+										Grid.Column="1"
+										Margin="15,5,10,5"
+										Header="Весь день"
+										IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}"
+										OffContent="Да"
+										OnContent="Нет" />
+
+								</Grid>
+
 							</StackPanel>
 
 							<StackPanel>
-								<ComboBox
-									Margin="15,5,15,5"
-									HorizontalAlignment="Stretch"
-									Header="Объект привязки"
-									PlaceholderText="Объект привязки"
-									SelectedIndex="{x:Bind ViewModel.BindingObjectIndex, Mode=TwoWay}"
-									ToolTipService.ToolTip="Объект привязки">
-									<ComboBoxItem Content="Место" />
-									<ComboBoxItem Content="Человек" />
-									<ComboBoxItem Content="Человек и место" />
-								</ComboBox>
 
 								<AutoSuggestBox
 									Margin="15,5,15,5"
@@ -294,8 +287,7 @@
 									PlaceholderText="Выберите место события"
 									QueryIcon="Globe"
 									Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
-									ToolTipService.ToolTip="Место, привязываемое к событию"
-									Visibility="{x:Bind ViewModel.IsSelectPlace, Mode=OneWay}" />
+									ToolTipService.ToolTip="Место, привязываемое к событию" />
 
 								<AutoSuggestBox
 									Margin="15,5,15,5"
@@ -303,8 +295,15 @@
 									PlaceholderText="Человек связанный с событием"
 									QueryIcon="Contact"
 									Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
-									ToolTipService.ToolTip="Имя человека, к которому привязывается событие"
-									Visibility="{x:Bind ViewModel.IsSelectMan, Mode=OneWay}" />
+									ToolTipService.ToolTip="Имя человека, к которому привязывается событие" />
+
+								<CheckBox
+									Margin="15,5,15,5"
+									VerticalAlignment="Center"
+									Content="Доступно для моих контактов"
+									IsChecked="{x:Bind ViewModel.CurrentMapEvent.IsPublic, Mode=TwoWay}"
+									ToolTipService.ToolTip="При выборе, все люди из списка контактов смогут видеть создаваемое событие" />
+
 							</StackPanel>
 
 						</VariableSizedWrapGrid>

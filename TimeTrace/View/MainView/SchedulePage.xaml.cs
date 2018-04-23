@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TimeTrace.Model.Events;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -23,8 +24,18 @@ namespace TimeTrace.View.MainView
 		public SchedulePage()
 		{
 			this.InitializeComponent();
+		}
 
-			ViewModel = new ViewModel.MainViewModel.ScheduleViewModel();
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			if (e.Parameter is string requestedMapEvents)
+			{
+				ViewModel = new ViewModel.MainViewModel.ScheduleViewModel(requestedMapEvents);
+			}
+			else
+			{
+				ViewModel = new ViewModel.MainViewModel.ScheduleViewModel();
+			}
 		}
 
 		public ViewModel.MainViewModel.ScheduleViewModel ViewModel { get; set; }
