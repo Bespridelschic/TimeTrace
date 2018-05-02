@@ -32,17 +32,19 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Pivot Margin="10,10,0,2">
+		<Pivot Padding="10,0,0,0">
 			<Pivot.TitleTemplate>
 				<DataTemplate>
 					<TextBlock
+						Margin="6,0,0,-15"
 						FontSize="35"
+						FontWeight="SemiLight"
 						Text="Контакты"
 						TextWrapping="WrapWholeWords" />
 				</DataTemplate>
 			</Pivot.TitleTemplate>
 
-			<PivotItem Margin="0,5" Header="Все">
+			<PivotItem Padding="-15,0,0,0" Header="Все">
 				<Grid>
 					<ParallaxView
 						Opacity="0.5"
@@ -53,7 +55,7 @@
 
 					<ListView
 						x:Name="ContactsList"
-						Padding="0,0,10,0"
+						Padding="0,0,5,0"
 						DoubleTapped="{x:Bind ViewModel.StartChat}"
 						ItemsSource="{x:Bind ViewModel.Contacts, Mode=TwoWay}"
 						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
@@ -72,21 +74,21 @@
 										Grid.Column="0"
 										Width="80"
 										Height="80"
-										Margin="10" />
+										Margin="10"
+										Initials="{x:Bind Name.Substring(0, 1)}"/>
 
-									<StackPanel Grid.Column="1" VerticalAlignment="Center">
+									<StackPanel
+										Grid.Column="1"
+										Margin="10,0,0,0"
+										VerticalAlignment="Center">
 										<TextBlock
-											Margin="10,0"
 											FontSize="26"
 											Text="{x:Bind Name}"
 											TextWrapping="WrapWholeWords" />
 										<StackPanel Orientation="Horizontal">
+											<TextBlock FontSize="18" Text="Контактный адрес: " />
 											<TextBlock
-												Margin="10,0,0,0"
-												FontSize="18"
-												Text="Контактный адрес: " />
-											<TextBlock
-												Margin="5,0,10,0"
+												Margin="5,0"
 												FontSize="18"
 												Text="{x:Bind Email}" />
 										</StackPanel>
@@ -119,7 +121,7 @@
 				</Grid>
 			</PivotItem>
 
-			<PivotItem Margin="0,5" Header="Участники календарей" />
+			<PivotItem Padding="-15,0,0,0" Header="Участники календарей" />
 		</Pivot>
 
 		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">

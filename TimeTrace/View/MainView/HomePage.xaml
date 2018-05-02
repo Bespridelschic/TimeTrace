@@ -64,41 +64,41 @@
 					<TextBlock
 						Margin="5"
 						HorizontalAlignment="Right"
-						FontSize="19"
+						FontSize="18"
 						Text="Событий сегодня: " />
 					<TextBlock
 						Grid.Column="1"
 						Margin="5"
 						HorizontalAlignment="Left"
-						FontSize="19"
+						FontSize="18"
 						Text="{x:Bind ViewModel.NumEventsToday, Mode=OneWay}" />
 
 					<TextBlock
 						Grid.Row="1"
 						Margin="5"
 						HorizontalAlignment="Right"
-						FontSize="19"
+						FontSize="18"
 						Text="Ближайшее через: " />
 					<TextBlock
 						Grid.Row="1"
 						Grid.Column="1"
 						Margin="5"
 						HorizontalAlignment="Left"
-						FontSize="19"
+						FontSize="18"
 						Text="{x:Bind ViewModel.NearEvent, Mode=OneWay}" />
 
 					<TextBlock
 						Grid.Row="3"
 						Margin="5"
 						HorizontalAlignment="Right"
-						FontSize="19"
+						FontSize="18"
 						Text="Создано карт:" />
 					<TextBlock
 						Grid.Row="3"
 						Grid.Column="1"
 						Margin="5"
 						HorizontalAlignment="Left"
-						FontSize="19"
+						FontSize="18"
 						Text="{x:Bind ViewModel.NumEvents, Mode=OneWay}" />
 
 				</Grid>
@@ -113,7 +113,7 @@
 				VerticalAlignment="Center">
 				<TextBlock
 					Margin="0,0,0,10"
-					FontSize="20"
+					FontSize="23"
 					Text="Полезное для вас" />
 
 				<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">

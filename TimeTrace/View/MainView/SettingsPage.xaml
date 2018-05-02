@@ -28,164 +28,66 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
-			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.1*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="0.1*" />
-		</Grid.ColumnDefinitions>
 
 		<TextBlock
-			Grid.ColumnSpan="3"
-			Margin="20,20,20,10"
+			Margin="20,10,20,0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Center"
 			FontSize="35"
-			Text="Глобальные настройки приложения"
-			TextWrapping="Wrap" />
-
-		<MenuFlyoutSeparator
-			Grid.Row="1"
-			Grid.ColumnSpan="3"
-			VerticalAlignment="Top" />
+			FontWeight="Light"
+			Text="Настройки"
+			TextWrapping="WrapWholeWords" />
 
 		<ScrollViewer
 			Grid.Row="1"
-			Grid.Column="1"
-			Margin="0,10,0,10"
-			VerticalAlignment="Center"
+			Padding="20,5"
 			VerticalScrollBarVisibility="Auto">
-			<StackPanel>
 
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
+			<VariableSizedWrapGrid
+				HorizontalAlignment="Left"
+				VerticalAlignment="Top"
+				ItemHeight="150"
+				ItemWidth="450"
+				Orientation="Horizontal">
 
-					<ComboBox
-						Width="200"
-						Margin="15,5,15,5"
-						Header="Язык приложения"
-						SelectedIndex="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}">
-						<x:String>Текущий</x:String>
-						<x:String>Системный</x:String>
+				<StackPanel>
+					<TextBlock
+						Margin="0,10,0,5"
+						HorizontalAlignment="Left"
+						FontSize="28"
+						FontWeight="SemiLight"
+						Text="Языки" />
+
+					<TextBlock
+						Margin="0,0,0,5"
+						HorizontalAlignment="Left"
+						FontSize="15"
+						Text="Язык, используемый в приложении"
+						TextWrapping="WrapWholeWords" />
+
+					<ComboBox Width="200" PlaceholderText="{x:Bind ViewModel.CurrentLanguage}" SelectedIndex="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}">
 						<x:String>Русский</x:String>
 						<x:String>Английский</x:String>
 					</ComboBox>
-
+				</StackPanel>
+				<StackPanel>
 					<TextBlock
-						Grid.Column="1"
-						HorizontalAlignment="Right"
-						Text="Используемый язык в рамках приложения"
-						TextWrapping="WrapWholeWords" />
+						Margin="0,10,0,5"
+						HorizontalAlignment="Left"
+						FontSize="28"
+						FontWeight="SemiLight"
+						Text="Приложение" />
 
-				</Grid>
+					<HyperlinkButton
+						HorizontalAlignment="Left"
+						Content="Официальный сайт"
+						NavigateUri="https://mindstructuring.ru" />
+					<HyperlinkButton HorizontalAlignment="Left" Content="О приложении" Click="{x:Bind ViewModel.AppInfo}" />
+				</StackPanel>
+			</VariableSizedWrapGrid>
 
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<ComboBox
-						Width="200"
-						Margin="15,5,15,5"
-						Header="Цвет приложения">
-						<x:String>Текущий</x:String>
-						<x:String>Стандартный</x:String>
-						<x:String>Системный</x:String>
-						<x:String>Свой</x:String>
-					</ComboBox>
-
-					<TextBlock
-						Grid.Column="1"
-						HorizontalAlignment="Right"
-						Text="Настройка цвета иконок, кнопок, а так же рамки приложения"
-						TextWrapping="WrapWholeWords" />
-
-				</Grid>
-
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<ComboBox
-						Width="200"
-						Margin="15,5,15,5"
-						Header="Цвет надписей"
-						PlaceholderText="Текущий">
-						<x:String>Текущий</x:String>
-						<x:String>Стандартный</x:String>
-						<x:String>Системный</x:String>
-						<x:String>Свой</x:String>
-					</ComboBox>
-
-					<TextBlock
-						Grid.Column="1"
-						HorizontalAlignment="Right"
-						Text="Настройка цвета отображения символов и слов"
-						TextWrapping="WrapWholeWords" />
-
-				</Grid>
-
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<ComboBox
-						Width="200"
-						Margin="15,5,15,5"
-						Header="Размер шрифта"
-						ItemsSource="{x:Bind ViewModel.Fonts}" />
-
-					<TextBlock
-						Grid.Column="1"
-						HorizontalAlignment="Right"
-						Text="Установка семейства шрифтов для всего текста в приложении"
-						TextWrapping="WrapWholeWords" />
-
-				</Grid>
-
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<ComboBox
-						Width="200"
-						Margin="15,5,15,5"
-						Header="Тема приложения">
-						<x:String>Текущая</x:String>
-						<x:String>Системная</x:String>
-						<x:String>Светлая</x:String>
-						<x:String>Тёмная</x:String>
-					</ComboBox>
-
-					<TextBlock
-						Grid.Column="1"
-						HorizontalAlignment="Right"
-						Text="Смена темы приложения на темную или светлую"
-						TextWrapping="WrapWholeWords" />
-
-				</Grid>
-
-			</StackPanel>
 		</ScrollViewer>
-
-		<TextBlock
-			Grid.Row="2"
-			Grid.Column="1"
-			Margin="20,10,20,10"
-			HorizontalAlignment="Center"
-			FontSize="15"
-			Foreground="IndianRed"
-			Text="Применение некоторых настроек автоматически перезагрузит приложение!"
-			TextWrapping="Wrap" />
 
 	</Grid>
 </Page>

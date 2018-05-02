@@ -359,6 +359,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					Name = name.Text,
 					Description = description.Text,
 					AreaId = CurrentArea.Id,
+					Color = CurrentArea.Color,
 				};
 			}
 			else

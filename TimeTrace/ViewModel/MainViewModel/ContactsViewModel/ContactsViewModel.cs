@@ -313,14 +313,21 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			{
 				new MessageDialog("Не удаётся синхронизировать контакты. Проверьте своё подключение к интернету, а так же попробуйте перезайти в аккаунт",
 					"Ошибка синхронизации контактов");
+
+				return;
 			}
 
-			//using (MainDatabaseContext db = new MainDatabaseContext())
-			//{
-			//	ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			using (MainDatabaseContext db = new MainDatabaseContext())
+			{
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-			//	Contacts = new ObservableCollection<Contact>(db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList());
-			//}
+				Contacts.Clear();
+
+				foreach (var item in db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList())
+				{
+					Contacts.Add(item);
+				}
+			}
 		}
 
 		#region Contacts removing

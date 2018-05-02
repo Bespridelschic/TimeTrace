@@ -81,8 +81,6 @@
 	</Style>
 
 	<!--  Combo Box  -->
-	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="ComboBox">
-		<Setter Property="Header" Value="Подлежит переименованию!" />
-	</Style>
+	<Style BasedOn="{StaticResource CommonAligmentStyle}" TargetType="ComboBox" />
 
 </ResourceDictionary>

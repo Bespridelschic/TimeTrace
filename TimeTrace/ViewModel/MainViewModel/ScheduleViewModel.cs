@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage;
-using TimeTrace.Model;
 using TimeTrace.Model.Events;
 using TimeTrace.Model.DBContext;
 using Windows.UI.Popups;
@@ -106,10 +101,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public bool IsPublicMapEventsOnly
 		{
-			get { return isPublicMapEventsOnly; }
+			get => isPublicMapEventsOnly;
 			set
 			{
 				isPublicMapEventsOnly = value;
+				ApplyFilter();
 				OnPropertyChanged();
 			}
 		}
@@ -120,7 +116,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public bool IsTimeFiltered
 		{
-			get { return isTimeFiltered; }
+			get => isTimeFiltered;
 			set
 			{
 				isTimeFiltered = value;
@@ -128,37 +124,58 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					FilterStartTime = TimeSpan.Parse("00:00");
 					FilterEndTime = TimeSpan.Parse("23:59");
+					ApplyFilter();
 				}
 
 				OnPropertyChanged();
 			}
 		}
 
-		private TimeSpan? filterStartTime;
+		private TimeSpan filterStartTime;
 		/// <summary>
 		/// Filtering by start time
 		/// </summary>
-		public TimeSpan? FilterStartTime
+		public TimeSpan FilterStartTime
 		{
-			get { return filterStartTime; }
+			get => filterStartTime;
 			set
 			{
-				filterStartTime = value;
-				OnPropertyChanged();
+				if (filterStartTime != value)
+				{
+					if (FilterEndTime < value)
+					{
+						FilterEndTime = value;
+					}
+
+					filterStartTime = value;
+					ApplyFilter();
+					OnPropertyChanged();
+				}
 			}
 		}
 
-		private TimeSpan? filterEndTime;
+		private TimeSpan filterEndTime;
 		/// <summary>
 		/// Filtering by start time
 		/// </summary>
-		public TimeSpan? FilterEndTime
+		public TimeSpan FilterEndTime
 		{
-			get { return filterEndTime; }
+			get => filterEndTime;
 			set
 			{
-				filterEndTime = value;
-				OnPropertyChanged();
+				if (filterEndTime != value)
+				{
+					if (value < FilterStartTime)
+					{
+						filterEndTime = FilterStartTime;
+					}
+					else
+					{
+						filterEndTime = value;
+					}
+					ApplyFilter();
+					OnPropertyChanged();
+				}
 			}
 		}
 
@@ -168,10 +185,66 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public ObservableCollection<DateTimeOffset> SelectedFilteredDates
 		{
-			get { return selectedFilteredDates; }
+			get => selectedFilteredDates;
 			set
 			{
 				selectedFilteredDates = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> mapEventsPlacesSuggestList;
+		/// <summary>
+		/// Places filter tips
+		/// </summary>
+		public ObservableCollection<string> MapEventsPlacesSuggestList
+		{
+			get => mapEventsPlacesSuggestList;
+			set
+			{
+				mapEventsPlacesSuggestList = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> mapEventsPersonsSuggestList;
+		/// <summary>
+		/// Persons filter tips
+		/// </summary>
+		public ObservableCollection<string> MapEventsPersonsSuggestList
+		{
+			get => mapEventsPersonsSuggestList;
+			set
+			{
+				mapEventsPersonsSuggestList = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string requiredMapEventsLocation;
+		/// <summary>
+		/// Term for finding map events with locations
+		/// </summary>
+		public string RequiredMapEventsLocation
+		{
+			get => requiredMapEventsLocation;
+			set
+			{
+				requiredMapEventsLocation = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string requiredMapEventsPerson;
+		/// <summary>
+		/// Term for finding map events with persons
+		/// </summary>
+		public string RequiredMapEventsPerson
+		{
+			get => requiredMapEventsPerson;
+			set
+			{
+				requiredMapEventsPerson = value;
 				OnPropertyChanged();
 			}
 		}
@@ -194,6 +267,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			MapEventsSuggestList = new ObservableCollection<string>();
 			SelectedFilteredDates = new ObservableCollection<DateTimeOffset>();
+
+			MapEventsPlacesSuggestList = new ObservableCollection<string>();
+			mapEventsPersonsSuggestList = new ObservableCollection<string>();
 		}
 
 		/// <summary>
@@ -323,6 +399,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				var person = string.IsNullOrEmpty(tempEvent.UserBind) ? "Отсутствует" : tempEvent.UserBind;
 				var place = string.IsNullOrEmpty(tempEvent.Location) ? "Не задано" : tempEvent.Location;
+				var isPublicMapEvent = tempEvent.IsPublic ? "Публичное событие" : "Персональное событие";
 
 				TextBlock contentText = new TextBlock()
 				{
@@ -331,7 +408,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 							$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
 							$"Продолжительность: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} ч.\n" +
 							$"Персона, связанная с событием: {person}\n" +
-							$"Место события: {place}\n",
+							$"Место события: {place}\n\n" +
+							$"{isPublicMapEvent}",
 				};
 
 				ContentDialog contentDialog = new ContentDialog()
@@ -375,21 +453,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				SelectedFilteredDates.Add(item);
 			}
 
-			using (MainDatabaseContext db = new MainDatabaseContext())
-			{
-				MapEvents.Clear();
-
-				foreach (var item in db.MapEvents.Join(
-					SelectedFilteredDates,
-					i => i.Start.Date,
-					w => w.Date,
-					(i, w) => i
-				))
-				{
-					MapEvents.Add(item);
-				}
-
-			}
+			ApplyFilter();
 		}
 
 		/// <summary>
@@ -397,21 +461,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void ResetSelectedDates()
 		{
+			if (SelectedFilteredDates.Count <= 0) return;
+
 			SelectedFilteredDates.Clear();
-			selectedDates.SelectedDates.Clear();
-			MapEvents.Clear();
+			selectedDates?.SelectedDates?.Clear();
 
-			using (MainDatabaseContext db = new MainDatabaseContext())
-			{
-				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-				foreach (var item in db.MapEvents
-					.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete)
-					.ToList())
-				{
-					MapEvents.Add(item);
-				}
-			}
+			ApplyFilter();
 		}
 
 		/// <summary>
@@ -423,11 +478,166 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
+		/// Filtration of input places
+		/// </summary>
+		/// <param name="sender">Input filter</param>
+		/// <param name="args">Event args</param>
+		public void MapEventsPlacesFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (args.CheckCurrent())
+			{
+				MapEventsPlacesSuggestList.Clear();
+			}
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			if (!string.IsNullOrEmpty(sender.Text))
+			{
+				MapEventsPlacesSuggestList.Clear();
+
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.MapEvents
+						.Where(i => (i.Location.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
+						.Select(i => i))
+					{
+						if (!MapEventsPlacesSuggestList.Contains(i.Location))
+						{
+							MapEventsPlacesSuggestList.Add(i.Location);
+						}
+					}
+				}
+			}
+
+			ApplyFilter();
+		}
+
+		/// <summary>
+		/// Filtration of input persons
+		/// </summary>
+		/// <param name="sender">Input filter</param>
+		/// <param name="args">Event args</param>
+		public void MapEventsPersonsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (args.CheckCurrent())
+			{
+				MapEventsPersonsSuggestList.Clear();
+			}
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			if (!string.IsNullOrEmpty(sender.Text))
+			{
+				MapEventsPersonsSuggestList.Clear();
+
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.MapEvents
+						.Where(i => (i.UserBind.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
+						.Select(i => i))
+					{
+						if (!MapEventsPersonsSuggestList.Contains(i.UserBind))
+						{
+							MapEventsPersonsSuggestList.Add(i.UserBind);
+						}
+					}
+				}
+			}
+
+			ApplyFilter();
+		}
+
+		/// <summary>
 		/// Apply filter for selecting
 		/// </summary>
 		private void ApplyFilter()
 		{
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
+			using (MainDatabaseContext db = new MainDatabaseContext())
+			{
+				MapEvents.Clear();
+
+				foreach (var item in db.MapEvents
+					.Join(
+							SelectedFilteredDates,
+							i => i.Start.Date,
+							w => w.Date,
+							(i, w) => i
+						)
+					.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+					.ToList())
+				{
+					MapEvents.Add(item);
+				}
+
+				// Select all map events from database, if dates not selected
+				if (SelectedFilteredDates.Count <= 0)
+				{
+					foreach (var item in db.MapEvents
+						.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+						.ToList())
+					{
+						MapEvents.Add(item);
+					}
+				}
+
+				if (IsPublicMapEventsOnly)
+				{
+					foreach (var item in MapEvents.Where(i => !i.IsPublic).ToList())
+					{
+						MapEvents.Remove(item);
+					}
+				}
+
+				if (IsTimeFiltered)
+				{
+					foreach (var item in MapEvents
+						.Except(MapEvents
+						.Where(i => FilterStartTime < TimeSpan.Parse(i.Start.ToString("HH:mm:ss")) && FilterEndTime > TimeSpan.Parse(i.End.ToString("HH:mm:ss"))))
+						.ToList())
+					{
+						MapEvents.Remove(item);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(RequiredMapEventsLocation))
+				{
+					foreach (var item in MapEvents
+						.Where(i => !i.Location.Contains(RequiredMapEventsLocation))
+						.ToList())
+					{
+						MapEvents.Remove(item);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(RequiredMapEventsPerson))
+				{
+					foreach (var item in MapEvents
+						.Where(i => !i.UserBind.Contains(RequiredMapEventsPerson))
+						.ToList())
+					{
+						MapEvents.Remove(item);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Reset all selected filters
+		/// </summary>
+		public void ResetAllFilters()
+		{
+			ResetSelectedDates();
+			IsPublicMapEventsOnly = false;
+			IsTimeFiltered = false;
+
+			RequiredMapEventsLocation = string.Empty;
+			RequiredMapEventsPerson = string.Empty;
 		}
 
 		#endregion
@@ -446,12 +656,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 				MapEventsSuggestList.Clear();
 			}
 
-			// Remove all contacts for adding relevant filter
+			// Remove all map events for adding relevant filter
 			MapEvents.Clear();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-			// Select all contacts
+			// Select all map events
 			if (string.IsNullOrEmpty(sender.Text))
 			{
 				MapEventsSuggestList.Clear();

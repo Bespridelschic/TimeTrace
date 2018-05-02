@@ -15,52 +15,31 @@ namespace TimeTrace.ViewModel.MainViewModel
 	{
 		#region Properties
 
-		public int selectedLanguage;
+		private int selectedLanguage;
 		/// <summary>
 		/// Selected UI language
 		/// </summary>
 		public int SelectedLanguage
 		{
-			get { return selectedLanguage; }
+			get => selectedLanguage;
 			set
 			{
-				selectedLanguage = value;
-				string currentLanguage;
-
-				if (Windows.UI.Xaml.Window.Current.Content is Windows.UI.Xaml.Controls.Frame frame)
+				// If selected language isn't current
+				if (!(((Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("ru") && value == 0)
+					|| (Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("en") && value == 1))
 				{
-					currentLanguage = frame.Language;
+					selectedLanguage = value;
 
 					switch (value)
 					{
 						case 0:
 							{
-
+								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "ru-RU";
 								break;
 							}
 						case 1:
 							{
-
-								break;
-							}
-						case 2:
-							{
-								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "ru-RU";
-								if (currentLanguage != "ru")
-								{
-									AppRestart();
-								}
-
-								break;
-							}
-						case 3:
-							{
 								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
-								if (currentLanguage != "en-US")
-								{
-									AppRestart();
-								}
-
 								break;
 							}
 						default:
@@ -72,35 +51,61 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
-		private List<string> fonts;
-		/// <summary>
-		/// Available fonts
-		/// </summary>
-		public List<string> Fonts
-		{
-			get { return fonts; }
-			set
-			{
-				fonts = value;
-			}
-		}
+		public string CurrentLanguage { get; set; }
 
 		#endregion
 
 		public SettingsViewModel()
 		{
-			Fonts = new List<string>()
+			if ((Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("ru"))
 			{
-				"Текущий", "Comic Sans MC", "Courier New", "Segoe UI", "Timew New Roman"
-			};
+				CurrentLanguage = "Русский язык";
+				selectedLanguage = 0;
+			}
+
+			if ((Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("en"))
+			{
+				CurrentLanguage = "Английский язык";
+				selectedLanguage = 1;
+			}
 		}
 
-		public async void Foo()
+		/// <summary>
+		/// Show information about application
+		/// </summary>
+		public async void AppInfo()
 		{
-			if (Window.Current.Content is Frame frame)
+			TextBlock title = new TextBlock()
 			{
-				await (new MessageDialog($"{frame.Language}")).ShowAsync();
-			}
+				Text = "Информация о приложении",
+				TextWrapping = TextWrapping.WrapWholeWords,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				FontSize = 35,
+				FontWeight = new Windows.UI.Text.FontWeight() { Weight = 9 },
+				Margin = new Thickness(0, 0, 0, 10),
+			};
+
+			TextBlock mainContent = new TextBlock()
+			{
+				Text = "Дипломный проект\nРаспространяется под лицензией Freeware\n(c) Все права защищены 2018",
+				TextWrapping = TextWrapping.WrapWholeWords,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				FontSize = 18,
+				FontWeight = new Windows.UI.Text.FontWeight() { Weight = 5 },
+			};
+
+			StackPanel mainPanel = new StackPanel();
+			mainPanel.Children.Add(title);
+			mainPanel.Children.Add(mainContent);
+
+			ContentDialog information = new ContentDialog()
+			{
+				Content = mainPanel,
+				CloseButtonText = "Закрыть",
+				DefaultButton = ContentDialogButton.Close,
+			};
+
+			await information.ShowAsync();
 		}
 
 		/// <summary>

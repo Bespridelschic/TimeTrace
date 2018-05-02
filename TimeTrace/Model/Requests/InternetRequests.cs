@@ -635,7 +635,79 @@ namespace TimeTrace.Model.Requests
 		/// <returns>Result of getting</returns>
 		public static async Task<int> GetPublicMapEventsAsync()
 		{
-			throw new NotImplementedException();
+			int resultOfSynchronization = 1;
+
+			string receivedlink = "https://mindstructuring.ru/data/get-public";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			using (MainDatabaseContext db = new MainDatabaseContext())
+			{
+				Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId })}");
+				var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId }));
+
+				JObject jsonString = JObject.Parse(resultOfRequest);
+				Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+				resultOfSynchronization = (int)jsonString["answer"];
+
+				if (resultOfSynchronization != 0)
+				{
+					return resultOfSynchronization;
+				}
+
+				// Save new token
+				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
+
+				#region Projects adding to database
+
+				// Get projects items for adding to local database
+				IList<Project> receivedProjects = new List<Project>();
+				foreach (var result in jsonString["projects"]["item"].Children().ToList())
+				{
+					var searchResult = result.ToObject<Project>();
+					searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
+					searchResult.EmailOfOwner = (string)localSettings.Values["email"];
+					searchResult.Id = Guid.NewGuid().ToString();
+
+					receivedProjects.Add(searchResult);
+				}
+
+				// Add received projects to local database
+				db.Projects.AddRange(receivedProjects);
+
+				Debug.WriteLine($"Добавляем: {receivedProjects.Count} проектов");
+
+				#endregion
+
+				#region MapEvents adding to database
+
+				// Get map events items for adding to local database
+				IList<MapEvent> receivedMapEvents = new List<MapEvent>();
+				foreach (var result in jsonString["events"]["item"].Children().ToList())
+				{
+					var searchResult = result.ToObject<MapEvent>();
+					searchResult.Id = Guid.NewGuid().ToString();
+					searchResult.EmailOfOwner = (string)localSettings.Values["email"];
+					searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
+					searchResult.IsPublic = false;
+
+					receivedMapEvents.Add(searchResult);
+				}
+
+				// Add received map events to local database
+				db.MapEvents.AddRange(receivedMapEvents);
+
+				Debug.WriteLine($"Добавляем: {receivedMapEvents.Count} событий");
+
+				#endregion
+
+				db.SaveChanges();
+			}
+
+			return resultOfSynchronization;
 		}
 
 		#region JSON

@@ -36,133 +36,7 @@
 		<SplitView
 			Background="White"
 			IsPaneOpen="{x:Bind ViewModel.IsFilterExpanded, Mode=TwoWay}"
-			OpenPaneLength="400">
-
-			<SplitView.Pane>
-				<Grid
-					Background="White"
-					BorderBrush="{StaticResource HostBackdropBrush}"
-					BorderThickness="2">
-					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<ScrollViewer VerticalScrollBarVisibility="Auto">
-						<StackPanel Margin="5,10">
-							<TextBlock
-								Margin="0,0,0,20"
-								FontSize="25"
-								Text="Фильтрация по датам"
-								TextWrapping="WrapWholeWords" />
-							<CalendarView
-								HorizontalAlignment="Center"
-								SelectedBorderBrush="Red"
-								SelectedDatesChanged="{x:Bind ViewModel.DateSelection}"
-								SelectedForeground="Red"
-								SelectionMode="Multiple" />
-							<Button
-								Width="200"
-								Margin="14"
-								HorizontalAlignment="Center"
-								BorderBrush="{StaticResource HostBackdropBrush}"
-								BorderThickness="2"
-								Click="{x:Bind ViewModel.ResetSelectedDates}"
-								Content="Сбросить выбранные" />
-
-							<MenuFlyoutSeparator />
-
-							<TextBlock
-								Margin="0,0,0,20"
-								FontSize="25"
-								Text="Фильтрация по времени"
-								TextWrapping="WrapWholeWords" />
-
-							<CheckBox
-								Name="IsTimeFilterEnable"
-								Margin="45,0,45,5"
-								Content="Фильтровать по времени" />
-
-
-							<StackPanel
-								Margin="0,0,0,10"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal">
-								<TimePicker
-									MinWidth="150"
-									HorizontalAlignment="Center"
-									Header="Начало"
-									IsEnabled="{Binding ElementName=IsTimeFilterEnable, Path=IsChecked, Mode=TwoWay}" />
-
-								<TextBlock
-									Margin="5,10"
-									VerticalAlignment="Bottom"
-									Text="-" />
-
-								<TimePicker
-									MinWidth="150"
-									HorizontalAlignment="Center"
-									Header="Окончание"
-									IsEnabled="{Binding ElementName=IsTimeFilterEnable, Path=IsChecked, Mode=TwoWay}" />
-
-							</StackPanel>
-
-							<MenuFlyoutSeparator />
-
-							<TextBlock
-								Margin="20,0,20,20"
-								FontSize="25"
-								Text="Фильтрация по публичным событиям"
-								TextAlignment="Center"
-								TextWrapping="WrapWholeWords" />
-
-							<CheckBox Margin="45,0" Content="Только публичные события" />
-
-							<MenuFlyoutSeparator Margin="0,5,0,0" />
-
-							<TextBlock
-								Margin="20,0,20,5"
-								FontSize="25"
-								Text="Фильтрация по объектам привязки"
-								TextAlignment="Center"
-								TextWrapping="WrapWholeWords" />
-
-							<AutoSuggestBox
-								Margin="45,5"
-								Header="Имя контакта"
-								PlaceholderText="Имя связанного с событием контакта"
-								QueryIcon="Contact" />
-
-							<AutoSuggestBox
-								Margin="45,5"
-								Header="Место события"
-								PlaceholderText="Место связанное с событием"
-								QueryIcon="Globe" />
-
-							<MenuFlyoutSeparator Margin="0,5,0,0" />
-
-						</StackPanel>
-					</ScrollViewer>
-
-					<Grid Grid.Row="1">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition />
-						</Grid.RowDefinitions>
-
-						<MenuFlyoutSeparator />
-
-						<Button
-							Grid.Row="1"
-							HorizontalAlignment="Stretch"
-							Content="Сбросить все фильтры"
-							FontSize="18"
-							Foreground="Red" />
-
-					</Grid>
-
-				</Grid>
-			</SplitView.Pane>
+			OpenPaneLength="370">
 
 			<SplitView.Content>
 				<Grid>
@@ -174,9 +48,10 @@
 
 					<TextBlock
 						Grid.Row="0"
-						Margin="25,10,15,5"
+						Margin="20,10,20,4"
 						HorizontalAlignment="Left"
-						FontSize="30"
+						FontSize="35"
+						FontWeight="SemiLight"
 						Text="Текущее расписание" />
 
 					<ParallaxView
@@ -190,15 +65,20 @@
 					<ListView
 						x:Name="MapEventsList"
 						Grid.Row="1"
-						Padding="8"
+						Padding="20,5"
 						DoubleTapped="{x:Bind ViewModel.MoreAboutMapEvent}"
 						ItemsSource="{x:Bind ViewModel.MapEvents, Mode=TwoWay}"
 						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
 						SelectedIndex="{x:Bind ViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
+						<ListView.ItemContainerStyle>
+							<Style TargetType="ListViewItem">
+								<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+							</Style>
+						</ListView.ItemContainerStyle>
 						<ListView.ItemTemplate>
 							<DataTemplate x:DataType="local:MapEvent">
 								<StackPanel>
-									<StackPanel Margin="10,5,10,0" Orientation="Horizontal">
+									<StackPanel Margin="0,5,10,0" Orientation="Horizontal">
 
 										<Ellipse
 											Width="15"
@@ -211,38 +91,48 @@
 											VerticalAlignment="Center"
 											FontSize="26"
 											Text="{x:Bind Name}"
+											TextTrimming="WordEllipsis"
 											TextWrapping="WrapWholeWords" />
 
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal">
 										<TextBlock
-											Margin="10,3,0,2"
-											FontSize="18"
+											Margin="0,0,0,2"
+											FontSize="17"
+											FontStyle="Italic"
+											Foreground="Gray"
 											Text="Время: " />
 										<TextBlock
-											Margin="7,3,7,2"
-											FontSize="18"
+											Margin="7,0,7,2"
+											FontSize="17"
+											FontStyle="Italic"
+											Foreground="Gray"
 											Text="{x:Bind Start}" />
 										<TextBlock
-											Margin="0,3,0,1"
-											FontSize="18"
+											Margin="0,0,0,1"
+											FontSize="17"
+											FontStyle="Italic"
+											Foreground="Gray"
 											Text="-" />
 										<TextBlock
-											Margin="7,3,7,1"
-											FontSize="18"
+											Margin="7,0,7,1"
+											FontSize="17"
+											FontStyle="Italic"
+											Foreground="Gray"
 											Text="{x:Bind End}" />
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal">
-										<TextBlock
-											Margin="10,0,0,5"
+										<!--<TextBlock
+											Margin="0,0,0,5"
 											FontSize="18"
-											Text="Описание: " />
+											Text="Описание: " />-->
 										<TextBlock
-											Margin="7,0,0,5"
+											Margin="0,0,0,5"
 											FontSize="18"
-											Text="{x:Bind Description, TargetNullValue=Отсутствует}" />
+											Text="{x:Bind Description, TargetNullValue=Отсутствует}"
+											TextWrapping="WrapWholeWords" />
 									</StackPanel>
 								</StackPanel>
 							</DataTemplate>
@@ -267,6 +157,145 @@
 					</ListView>
 				</Grid>
 			</SplitView.Content>
+
+			<SplitView.Pane>
+				<Grid
+					Background="White"
+					BorderBrush="{StaticResource HostBackdropBrush}"
+					BorderThickness="2">
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<ScrollViewer VerticalScrollBarVisibility="Auto">
+						<StackPanel Padding="20,5">
+							<TextBlock
+								Margin="0,10,0,15"
+								HorizontalAlignment="Stretch"
+								FontSize="28"
+								FontWeight="SemiLight"
+								Text="Фильтрация по датам"
+								TextWrapping="WrapWholeWords" />
+							<CalendarView
+								HorizontalAlignment="Center"
+								SelectedBorderBrush="Red"
+								SelectedDatesChanged="{x:Bind ViewModel.DateSelection}"
+								SelectedForeground="Red"
+								SelectionMode="Multiple" />
+							<Button
+								Width="298"
+								Margin="0,10,0,10"
+								HorizontalAlignment="Center"
+								BorderBrush="{StaticResource HostBackdropBrush}"
+								BorderThickness="2"
+								Click="{x:Bind ViewModel.ResetSelectedDates}"
+								Content="Сбросить выбранные" />
+
+							<MenuFlyoutSeparator />
+
+							<TextBlock
+								Margin="0,5,0,15"
+								HorizontalAlignment="Stretch"
+								FontSize="28"
+								FontWeight="SemiLight"
+								Text="Фильтрация по времени"
+								TextWrapping="WrapWholeWords" />
+
+							<CheckBox Content="Фильтровать по времени" IsChecked="{x:Bind ViewModel.IsTimeFiltered, Mode=TwoWay}" />
+
+							<StackPanel
+								Margin="0,0,0,10"
+								HorizontalAlignment="Center"
+								Orientation="Horizontal">
+								<TimePicker
+									MinWidth="150"
+									HorizontalAlignment="Center"
+									Header="Начало"
+									IsEnabled="{x:Bind ViewModel.IsTimeFiltered, Mode=OneWay}"
+									Time="{x:Bind ViewModel.FilterStartTime, Mode=TwoWay}" />
+
+								<TextBlock
+									Margin="5,10"
+									VerticalAlignment="Bottom"
+									Text="-" />
+
+								<TimePicker
+									MinWidth="150"
+									HorizontalAlignment="Center"
+									Header="Окончание"
+									IsEnabled="{x:Bind ViewModel.IsTimeFiltered, Mode=OneWay}"
+									Time="{x:Bind ViewModel.FilterEndTime, Mode=TwoWay}" />
+
+							</StackPanel>
+
+							<MenuFlyoutSeparator />
+
+							<TextBlock
+								Margin="0,5,0,15"
+								HorizontalAlignment="Stretch"
+								FontSize="28"
+								FontWeight="SemiLight"
+								Text="Фильтрация по публичности события"
+								TextWrapping="WrapWholeWords" />
+
+							<CheckBox Content="Только публичные события" IsChecked="{x:Bind ViewModel.IsPublicMapEventsOnly, Mode=TwoWay}" />
+
+							<MenuFlyoutSeparator />
+
+							<TextBlock
+								Margin="0,5,0,15"
+								HorizontalAlignment="Stretch"
+								FontSize="28"
+								FontWeight="SemiLight"
+								Text="Фильтрация по объектам привязки"
+								TextWrapping="WrapWholeWords" />
+
+							<AutoSuggestBox
+								Width="320"
+								Margin="0,0,0,10"
+								HorizontalAlignment="Left"
+								Header="Имя контакта"
+								ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
+								PlaceholderText="Имя связанного с событием контакта"
+								QueryIcon="Contact"
+								Text="{x:Bind ViewModel.RequiredMapEventsPerson, Mode=TwoWay}"
+								TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}" />
+
+							<AutoSuggestBox
+								Width="320"
+								Margin="0,0,0,30"
+								HorizontalAlignment="Left"
+								Header="Место события"
+								ItemsSource="{x:Bind ViewModel.MapEventsPlacesSuggestList, Mode=TwoWay}"
+								PlaceholderText="Место связанное с событием"
+								QueryIcon="Globe"
+								Text="{x:Bind ViewModel.RequiredMapEventsLocation, Mode=TwoWay}"
+								TextChanged="{x:Bind ViewModel.MapEventsPlacesFilter}" />
+
+						</StackPanel>
+					</ScrollViewer>
+
+					<Grid Grid.Row="1">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+
+						<Button
+							Grid.Row="1"
+							Margin="20,5"
+							HorizontalAlignment="Stretch"
+							Background="{StaticResource HostBackdropBrush}"
+							Click="{x:Bind ViewModel.ResetAllFilters}"
+							Content="Сбросить все фильтры"
+							FontSize="18"
+							Foreground="White" />
+
+					</Grid>
+
+				</Grid>
+			</SplitView.Pane>
 
 		</SplitView>
 
