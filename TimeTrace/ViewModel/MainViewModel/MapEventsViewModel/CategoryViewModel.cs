@@ -16,6 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Input;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -31,16 +32,44 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		private Dictionary<string, string> ColorsTable { get; set; }
 
-		private ObservableCollection<Button> buttonCollection;
+		private ObservableCollection<Area> calendars;
 		/// <summary>
-		/// Binded collection of buttons
+		/// Collection of calendars
 		/// </summary>
-		public ObservableCollection<Button> ButtonCollection
+		public ObservableCollection<Area> Calendars
 		{
-			get => buttonCollection;
+			get => calendars;
 			set
 			{
-				buttonCollection = value;
+				calendars = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private List<Area> selectedAreas;
+		/// <summary>
+		/// Collection of multiple areas selection
+		/// </summary>
+		public List<Area> SelectedAreas
+		{
+			get => selectedAreas;
+			set
+			{
+				selectedAreas = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int? selectedArea;
+		/// <summary>
+		/// Index of selected area
+		/// </summary>
+		public int? SelectedArea
+		{
+			get => selectedArea;
+			set
+			{
+				selectedArea = value;
 				OnPropertyChanged();
 			}
 		}
@@ -59,6 +88,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private ListViewSelectionMode multipleSelection;
+		/// <summary>
+		/// Is multiple selection enable
+		/// </summary>
+		public ListViewSelectionMode MultipleSelection
+		{
+			get => multipleSelection;
+			set
+			{
+				multipleSelection = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -67,6 +110,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="mainPanel">Panel of frame</param>
 		public CategoryViewModel()
 		{
+			MultipleSelection = ListViewSelectionMode.Single;
+
 			ColorsTable = new Dictionary<string, string>()
 			{
 				{ "Красный", "#d50000" },
@@ -82,7 +127,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{ "Чёрный", "#616161" }
 			};
 
-			ButtonCollection = new ObservableCollection<Button>();
+			Calendars = new ObservableCollection<Area>();
 			AreaSuggestList = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -91,7 +136,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				foreach (var i in db.Areas.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 				{
-					ButtonCollection.Add(NewCategoryButtonCreate(i));
+					Calendars.Add(i);
 				}
 			}
 		}
@@ -99,7 +144,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <summary>
 		/// Creation of new category
 		/// </summary>
-		public async void CategoryCreate()
+		public async void CategoryCreateAsync()
 		{
 			Area newArea = await CategoryCreationDialogAsync(null);
 
@@ -112,40 +157,151 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					db.SaveChanges();
 				}
 
-				ButtonCollection.Add(NewCategoryButtonCreate(newArea));
+				Calendars.Add(newArea);
 			}
 		}
 
 		/// <summary>
 		/// Selecting an event category
 		/// </summary>
-		public void CategorySelect(object sender, RoutedEventArgs e)
+		public void CategorySelect()
 		{
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			if (SelectedArea.HasValue)
 			{
-				(Application.Current as App).AppFrame.Navigate(typeof(ProjectListPage), db.Areas.First(i => i.Id == (string)(sender as Button).Tag));
+				(Application.Current as App).AppFrame.Navigate(typeof(ProjectListPage), Calendars[SelectedArea.Value]);
 			}
 		}
 
-		public void CategoriesBulkRemoval()
+		/// <summary>
+		/// Selecting item of list with right click
+		/// </summary>
+		/// <param name="sender">Sender list</param>
+		/// <param name="e">Parameter</param>
+		public void SelectItemOnRightClick(object sender, RightTappedRoutedEventArgs e)
 		{
+			GridView listView = (GridView)sender;
+			if (((FrameworkElement)e.OriginalSource).DataContext is Area selectedItem)
+			{
+				SelectedArea = Calendars.IndexOf(selectedItem);
+			}
+		}
 
+		/// <summary>
+		/// Select several areas
+		/// </summary>
+		/// <param name="sender">ListView</param>
+		/// <param name="e">Parameters</param>
+		public void MultipleAreasSelection(object sender, SelectionChangedEventArgs e)
+		{
+			GridView listView = sender as GridView;
+			SelectedAreas = new List<Area>();
+
+			foreach (Area item in listView.SelectedItems)
+			{
+				SelectedAreas.Add(item);
+			};
+		}
+
+		/// <summary>
+		/// Bulk removal of calendars
+		/// </summary>
+		public async void CategoriesBulkRemovalAsync()
+		{
+			if (MultipleSelection == ListViewSelectionMode.Single)
+			{
+				MultipleSelection = ListViewSelectionMode.Multiple;
+			}
+			else
+			{
+				if (SelectedAreas == null || SelectedAreas.Count <= 0)
+				{
+					MultipleSelection = ListViewSelectionMode.Single;
+					return;
+				}
+
+				string removedAreas = string.Empty;
+
+				foreach (var area in SelectedAreas)
+				{
+					removedAreas += $"{area.Name}\n";
+				}
+
+				ScrollViewer scrollViewer = new ScrollViewer()
+				{
+					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+					Content = new TextBlock() { Text = removedAreas },
+				};
+
+				StackPanel mainPanel = new StackPanel()
+				{
+					Margin = new Thickness(0, 0, 0, 10),
+				};
+
+				mainPanel.Children.Add(new TextBlock()
+				{
+					Text = "Вы уверены что хотите удалить календари и все внутренние проекты и события для:",
+					TextWrapping = TextWrapping.WrapWholeWords
+				});
+
+				mainPanel.Children.Add(scrollViewer);
+
+				ContentDialog contentDialog = new ContentDialog()
+				{
+					Title = "Подтверждение действия",
+					Content = mainPanel,
+					PrimaryButtonText = "Удалить",
+					CloseButtonText = "Отмена",
+					DefaultButton = ContentDialogButton.Close
+				};
+
+				var result = await contentDialog.ShowAsync();
+
+				if (result == ContentDialogResult.Primary)
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						foreach (var area in SelectedAreas)
+						{
+							// Projects of the deleted calendar
+							foreach (var innerProject in db.Projects.Where(i => i.AreaId == area.Id))
+							{
+								foreach (var mapEvent in db.MapEvents.Where(i => i.ProjectId == innerProject.Id))
+								{
+									db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+								}
+
+								db.Projects.FirstOrDefault(i => i.Id == innerProject.Id).IsDelete = true;
+							}
+
+							// Remove Area from database
+							db.Areas.FirstOrDefault(i => i.Id == area.Id).IsDelete = true;
+
+							db.SaveChanges();
+
+							// Remove Area from UI panel
+							Calendars.Remove(area);
+						}
+					}
+
+					await new MessageDialog($"Календари со всеми проектами и событиями внутри были удалёны",
+									"Операция завершена успешно").ShowAsync();
+				}
+
+				MultipleSelection = ListViewSelectionMode.Single;
+			}
 		}
 
 		/// <summary>
 		/// Removing of selected category
 		/// </summary>
-		public async void CategoryRemoveAsync(object sender, RoutedEventArgs e)
+		public async void CategoryRemoveAsync()
 		{
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			if (SelectedArea.HasValue)
 			{
-				// Get selected Area
-				var selectedArea = db.Areas.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
-
 				ContentDialog confirmDialog = new ContentDialog()
 				{
 					Title = "Подтверждение удаления",
-					Content = $"Вы уверены что хотите удалить календарь {selectedArea.Name}?\n" +
+					Content = $"Вы уверены что хотите удалить календарь {Calendars[selectedArea.Value].Name}?\n" +
 								$"Удаление приведен к потере всех проектов и событий внутри календаря!",
 					PrimaryButtonText = "Удалить",
 					CloseButtonText = "Отмена",
@@ -156,27 +312,30 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				if (result == ContentDialogResult.Primary)
 				{
-					// Remove Area from UI panel
-					ButtonCollection.Remove(ButtonCollection.First(i => (string)(i as Button).Tag == selectedArea.Id));
-
-					// Projects of the deleted calendar
-					foreach (var innerProject in db.Projects.Where(i => i.AreaId == selectedArea.Id))
+					using (MainDatabaseContext db = new MainDatabaseContext())
 					{
-						foreach (var mapEvent in db.MapEvents.Where(i => i.ProjectId == innerProject.Id))
+						// Projects of the deleted calendar
+						foreach (var innerProject in db.Projects.Where(i => i.AreaId == Calendars[selectedArea.Value].Id))
 						{
-							db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+							foreach (var mapEvent in db.MapEvents.Where(i => i.ProjectId == innerProject.Id))
+							{
+								db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+							}
+
+							db.Projects.FirstOrDefault(i => i.Id == innerProject.Id).IsDelete = true;
 						}
 
-						db.Projects.FirstOrDefault(i => i.Id == innerProject.Id).IsDelete = true;
+						// Remove Area from database
+						db.Areas.FirstOrDefault(i => i.Id == Calendars[SelectedArea.Value].Id).IsDelete = true;
+
+						db.SaveChanges();
+
+						await new MessageDialog($"Календарь {Calendars[SelectedArea.Value].Name} со всеми проектами и событиями внутри был удалён",
+							"Операция завершена успешно").ShowAsync();
+
+						// Remove Area from UI panel
+						Calendars.Remove(Calendars[SelectedArea.Value]);
 					}
-
-					// Remove Area from UI
-					db.Areas.FirstOrDefault(i => i.Id == selectedArea.Id).IsDelete = true;
-
-					db.SaveChanges();
-
-					await new MessageDialog($"Календарь {selectedArea.Name} со всеми проектами и событиями внутри был удалён",
-						"Операция завершена успешно").ShowAsync();
 				}
 			}
 		}
@@ -184,54 +343,55 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <summary>
 		/// Edit of selected category
 		/// </summary>
-		public async void CategoryEditAsync(object sender, RoutedEventArgs e)
+		public async void CategoryEditAsync()
 		{
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			if (SelectedArea.HasValue)
 			{
-				// Get selected Area
-				var selectedArea = db.Areas.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
-
-				// Get edited Area object
-				var editedArea = await CategoryCreationDialogAsync(selectedArea);
-
-				if (editedArea == null)
+				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					return;
-				}
+					// Get edited Area object
+					var editedArea = await CategoryCreationDialogAsync(Calendars[SelectedArea.Value]);
 
-				// If area was edit
-				if (editedArea.Name != selectedArea.Name || editedArea.Description != selectedArea.Description || editedArea.Color != selectedArea.Color)
-				{
-					selectedArea.Name = editedArea.Name;
-					selectedArea.Description = editedArea.Description;
-
-					if (editedArea.Color != selectedArea.Color)
+					if (editedArea == null)
 					{
-						selectedArea.Color = editedArea.Color;
-
-						foreach (var innerProjects in db.Projects.Where(i => i.AreaId == selectedArea.Id))
-						{
-							foreach (var innerMaps in db.MapEvents.Where(i => i.ProjectId == innerProjects.Id))
-							{
-								innerMaps.Color = selectedArea.Color;
-								db.MapEvents.Update(innerMaps);
-							}
-
-							innerProjects.Color = selectedArea.Color;
-							db.Projects.Update(innerProjects);
-						}
+						return;
 					}
 
-					selectedArea.UpdateAt = DateTime.UtcNow;
+					// If area was edit
+					if (editedArea.Name != Calendars[SelectedArea.Value].Name ||
+						editedArea.Description != Calendars[SelectedArea.Value].Description ||
+						editedArea.Color != Calendars[SelectedArea.Value].Color)
+					{
+						Calendars[SelectedArea.Value].Name = editedArea.Name;
+						Calendars[SelectedArea.Value].Description = editedArea.Description;
 
-					// Update area in database
-					db.Areas.Update(selectedArea);
-					db.SaveChanges();
+						if (editedArea.Color != Calendars[SelectedArea.Value].Color)
+						{
+							Calendars[SelectedArea.Value].Color = editedArea.Color;
 
-					// Update current button
-					var index = ButtonCollection.IndexOf(ButtonCollection.First(i => (string)i.Tag == selectedArea.Id));
-					ButtonCollection.RemoveAt(index);
-					ButtonCollection.Insert(index, NewCategoryButtonCreate(selectedArea));
+							foreach (var innerProjects in db.Projects.Where(i => i.AreaId == Calendars[SelectedArea.Value].Id))
+							{
+								foreach (var innerMaps in db.MapEvents.Where(i => i.ProjectId == innerProjects.Id))
+								{
+									innerMaps.Color = Calendars[SelectedArea.Value].Color;
+									db.MapEvents.Update(innerMaps);
+								}
+
+								innerProjects.Color = Calendars[SelectedArea.Value].Color;
+								db.Projects.Update(innerProjects);
+							}
+						}
+
+						Calendars[SelectedArea.Value].UpdateAt = DateTime.UtcNow;
+
+						// Update area in database
+						db.Areas.Update(Calendars[SelectedArea.Value]);
+						db.SaveChanges();
+
+						/*// Update current button
+						Calendars.RemoveAt(SelectedArea.Value);
+						Calendars.Insert(SelectedArea.Value, selectedArea);*/
+					}
 				}
 			}
 		}
@@ -248,7 +408,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			TextBox name = new TextBox()
 			{
 				Header = "Название",
-				PlaceholderText = "Название новой категории",
+				PlaceholderText = "Название нового календаря",
 				Text = area?.Name ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 30,
@@ -258,7 +418,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			TextBox description = new TextBox()
 			{
 				Header = "Описание",
-				PlaceholderText = "Краткое описание категории",
+				PlaceholderText = "Краткое описание календаря",
 				Text = area?.Description ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 50,
@@ -270,7 +430,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ComboBox colors = new ComboBox()
 			{
-				Header = "Цвет категории",
+				Header = "Цвет календаря",
 				Width = 300,
 			};
 
@@ -326,7 +486,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ContentDialog dialog = new ContentDialog()
 			{
-				Title = (area == null) ? "Создание новой категории" : "Редактирование категории",
+				Title = (area == null) ? "Создание нового календаря" : "Редактирование календаря",
 				Content = panel,
 				PrimaryButtonText = (area == null) ? "Создать" : "Изменить",
 				CloseButtonText = "Отложить",
@@ -368,49 +528,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		}
 
 		/// <summary>
-		/// Factory of buttons
-		/// </summary>
-		/// <param name="area"></param>
-		/// <returns>New button object</returns>
-		private Button NewCategoryButtonCreate(Area area)
-		{
-			// Edit menu item
-			MenuFlyoutItem editItem = new MenuFlyoutItem()
-			{
-				Text = "Редактировать",
-				Icon = new SymbolIcon(Symbol.Edit),
-				Tag = area.Id,
-			};
-			editItem.Click += CategoryEditAsync;
-
-			// Remove menu item
-			MenuFlyoutItem removeItem = new MenuFlyoutItem()
-			{
-				Text = "Удалить",
-				Icon = new SymbolIcon(Symbol.Delete),
-				Tag = area.Id,
-			};
-			removeItem.Click += CategoryRemoveAsync;
-
-			// Main menu for button
-			MenuFlyout menuForButton = new MenuFlyout();
-			menuForButton.Items.Add(editItem);
-			menuForButton.Items.Add(removeItem);
-
-			// Creating area button for adding in page
-			Button newButton = new Button()
-			{
-				BorderBrush = GetColorFromString(ColorsTable.ElementAt(area.Color - 1).Value),
-				Content = area,
-				Tag = area.Id,
-				ContextFlyout = menuForButton
-			};
-			newButton.Click += CategorySelect;
-
-			return newButton;
-		}
-
-		/// <summary>
 		/// Get the color brush from string
 		/// </summary>
 		/// <param name="color">Input string color</param>
@@ -427,7 +544,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			return new SolidColorBrush(localColor);
 		}
 
-		#region Searching contacts
+		#region Searching calendars
 
 		/// <summary>
 		/// Filtration of input filters
@@ -436,7 +553,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="args">Event args</param>
 		public void CategoryFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
-			if (ButtonCollection == null) return;
+			if (Calendars == null) return;
 
 			if (args.CheckCurrent())
 			{
@@ -444,7 +561,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 
 			// Remove all buttons for adding relevant filter
-			ButtonCollection.Clear();
+			Calendars.Clear();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -457,7 +574,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					foreach (var i in db.Areas.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
 					{
-						ButtonCollection.Add(NewCategoryButtonCreate(i));
+						Calendars.Add(i);
 					}
 				}
 			}
@@ -478,7 +595,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							AreaSuggestList.Add(i.Name);
 						}
 
-						ButtonCollection.Add(NewCategoryButtonCreate(i));
+						Calendars.Add(i);
 					}
 				}
 			}
@@ -498,9 +615,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				return;
 			}
 
-			if (ButtonCollection != null)
+			if (Calendars != null)
 			{
-				ButtonCollection.Clear();
+				Calendars.Clear();
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
@@ -508,7 +625,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					var term = args.QueryText.ToLower();
 					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 					{
-						ButtonCollection.Add(NewCategoryButtonCreate(i));
+						Calendars.Add(i);
 					}
 				}
 			}

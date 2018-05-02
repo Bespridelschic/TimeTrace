@@ -2,12 +2,15 @@
 	x:Class="TimeTrace.View.MainView.PersonalMapsCreatePages.CategorySelectPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converver="using:TimeTrace.View.Converters"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
 	<Page.Resources>
+		<converver:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
+		<converver:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 		<Style TargetType="Button">
 			<Setter Property="Width" Value="200" />
 			<Setter Property="Height" Value="150" />
@@ -97,10 +100,11 @@
 			</Grid.RowDefinitions>
 
 			<TextBlock
-				Margin="20,20,20,10"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top"
+				Margin="20,10,20,0"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Center"
 				FontSize="35"
+				FontWeight="Light"
 				Text="Календари"
 				TextWrapping="WrapWholeWords" />
 
@@ -108,19 +112,100 @@
 
 		</Grid>
 
-		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-			<ItemsControl ItemsSource="{x:Bind ViewModel.ButtonCollection, Mode=TwoWay}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<VariableSizedWrapGrid
-							Margin="40,20"
+		<GridView
+			Grid.Row="1"
+			Padding="40,20"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			DoubleTapped="{x:Bind ViewModel.CategorySelect}"
+			ItemsSource="{x:Bind ViewModel.Calendars, Mode=TwoWay}"
+			RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
+			SelectedIndex="{x:Bind ViewModel.SelectedArea, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
+			SelectionChanged="{x:Bind ViewModel.MultipleAreasSelection}"
+			SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}">
+			<GridView.ContextFlyout>
+				<MenuFlyout Placement="Bottom">
+					<MenuFlyoutItem
+						Click="{x:Bind ViewModel.CategorySelect}"
+						Icon="Share"
+						Text="Перейти" />
+					<MenuFlyoutSeparator />
+					<MenuFlyoutItem
+						Click="{x:Bind ViewModel.CategoryEditAsync}"
+						Icon="Edit"
+						Text="Редактировать" />
+					<MenuFlyoutItem
+						Click="{x:Bind ViewModel.CategoryRemoveAsync}"
+						Icon="Delete"
+						Text="Удалить" />
+				</MenuFlyout>
+			</GridView.ContextFlyout>
+			<GridView.ItemTemplate>
+				<DataTemplate x:DataType="local:Area">
+					<Grid
+						Width="200"
+						Height="150"
+						Margin="2"
+						BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
+						BorderThickness="1.5"
+						ToolTipService.Placement="Top">
+
+						<ToolTipService.ToolTip>
+							<StackPanel>
+								<StackPanel Margin="10,2" Orientation="Horizontal">
+									<TextBlock
+										Margin="0,0,5,0"
+										FontSize="15"
+										Text="Календарь: " />
+									<TextBlock FontSize="15" Text="{Binding Name}" />
+								</StackPanel>
+								<StackPanel Margin="10,2" Orientation="Horizontal">
+									<TextBlock
+										Margin="0,0,5,0"
+										FontSize="15"
+										Text="Описание: " />
+									<TextBlock FontSize="15" Text="{Binding Description}" />
+								</StackPanel>
+								<StackPanel Margin="10,2" Orientation="Horizontal">
+									<TextBlock
+										Margin="0,0,5,0"
+										FontSize="15"
+										Text="Обновлено: " />
+									<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
+								</StackPanel>
+							</StackPanel>
+						</ToolTipService.ToolTip>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="10" />
+							<RowDefinition Height="50" />
+							<RowDefinition Height="10" />
+							<RowDefinition Height="77" />
+						</Grid.RowDefinitions>
+
+						<TextBlock
+							Grid.Row="1"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center"
-							Orientation="Horizontal" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-		</ScrollViewer>
+							FontSize="20"
+							Text="{Binding Name}"
+							TextAlignment="Center"
+							TextWrapping="WrapWholeWords" />
+
+						<MenuFlyoutSeparator Grid.Row="2" />
+
+						<TextBlock
+							Grid.Row="3"
+							HorizontalAlignment="Center"
+							FontSize="14"
+							Foreground="SlateGray"
+							Text="{Binding Description}"
+							TextAlignment="Center"
+							TextWrapping="WrapWholeWords" />
+					</Grid>
+				</DataTemplate>
+			</GridView.ItemTemplate>
+		</GridView>
 
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
 			<CommandBar.Content>
@@ -139,12 +224,12 @@
 			</CommandBar.Content>
 
 			<AppBarButton
-				Click="{x:Bind ViewModel.CategoryCreate}"
+				Click="{x:Bind ViewModel.CategoryCreateAsync}"
 				Icon="Add"
 				Label="Добавить календарь"
 				ToolTipService.ToolTip="Создать новый календарь" />
-			<AppBarButton
-				Click="{x:Bind ViewModel.CategoriesBulkRemoval}"
+			<AppBarToggleButton
+				Click="{x:Bind ViewModel.CategoriesBulkRemovalAsync}"
 				Icon="Remove"
 				Label="Удалить выбранные"
 				ToolTipService.ToolTip="Удалить выбранные календари" />
