@@ -152,6 +152,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public async void AppSignIn()
 		{
+			CurrentUser.Email = CurrentUser.Email.Trim();
+
 			var canAppSignInResult = await CanAppSignIn();
 
 			if (!canAppSignInResult)

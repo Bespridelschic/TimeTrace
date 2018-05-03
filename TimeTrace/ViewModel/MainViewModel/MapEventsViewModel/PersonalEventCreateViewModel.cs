@@ -21,6 +21,8 @@ using Windows.UI.Xaml.Media;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using TimeTrace.Model.Events;
+using System.Collections.ObjectModel;
+using Windows.Storage;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -159,6 +161,34 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private bool isBindingForWindowsCalendar;
+		/// <summary>
+		/// Is binding for windows calendar selected
+		/// </summary>
+		public bool IsBindingForWindowsCalendar
+		{
+			get => isBindingForWindowsCalendar;
+			set
+			{
+				isBindingForWindowsCalendar = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> mapEventsPersonsSuggestList;
+		/// <summary>
+		/// Persons filter tips
+		/// </summary>
+		public ObservableCollection<string> MapEventsPersonsSuggestList
+		{
+			get => mapEventsPersonsSuggestList;
+			set
+			{
+				mapEventsPersonsSuggestList = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -170,16 +200,17 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			StartDate = DateTime.Now;
 
 			MinDate = DateTime.Today;
-			IsNotAllDay = false;
+			IsNotAllDay = IsBindingForWindowsCalendar = false;
+			MapEventsPersonsSuggestList = new ObservableCollection<string>();
 		}
 
 		/// <summary>
 		/// Creating a new event
 		/// </summary>
 		/// <returns>Result of event creation</returns>
-		public async Task EventCreate()
+		public async Task EventCreateAsync()
 		{
-			if (string.IsNullOrEmpty(CurrentMapEvent.Name) || StartDate == null || (EndDate == null && IsNotAllDay))
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name?.Trim()) || StartDate == null || (EndDate == null && IsNotAllDay))
 			{
 				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
 
@@ -199,6 +230,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				return;
 			}
 
+			// Trim name and description of map event
+			CurrentMapEvent.Name = CurrentMapEvent.Name.Trim();
+
+			if (!string.IsNullOrEmpty(CurrentMapEvent.Description?.Trim()))
+			{
+				CurrentMapEvent.Description = CurrentMapEvent.Description.Trim();
+			}
+			else
+			{
+				CurrentMapEvent.Description = string.Empty;
+			}
+
+			// Set update date as now
 			CurrentMapEvent.UpdateAt = DateTime.UtcNow;
 			CurrentMapEvent.IsDelete = false;
 
@@ -206,24 +250,30 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			CurrentMapEvent.Start = CurrentMapEvent.Start.ToUniversalTime();
 			CurrentMapEvent.End = CurrentMapEvent.End.ToUniversalTime();
 
-			if (string.IsNullOrEmpty(CurrentMapEvent.Description))
+			if (!string.IsNullOrEmpty(CurrentMapEvent.UserBind?.Trim()))
 			{
-				CurrentMapEvent.Description = string.Empty;
+				CurrentMapEvent.UserBind = CurrentMapEvent.UserBind.Trim();
 			}
-
-			if (string.IsNullOrEmpty(CurrentMapEvent.UserBind))
+			else
 			{
 				CurrentMapEvent.UserBind = string.Empty;
 			}
 
-			if (string.IsNullOrEmpty(CurrentMapEvent.Location))
+			if (!string.IsNullOrEmpty(CurrentMapEvent.Location?.Trim()))
+			{
+				CurrentMapEvent.Location = CurrentMapEvent.Location.Trim();
+			}
+			else
 			{
 				CurrentMapEvent.Location = string.Empty;
 			}
 
 			CurrentMapEvent.EventInterval = "Не повторяется";
 
-			BindingEventToWindowsCalendar();
+			if (IsBindingForWindowsCalendar)
+			{
+				BindingEventToWindowsCalendarAsync();
+			}
 
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
@@ -235,9 +285,44 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		}
 
 		/// <summary>
+		/// Filtration of input persons
+		/// </summary>
+		/// <param name="sender">Input filter</param>
+		/// <param name="args">Event args</param>
+		public void MapEventsPersonsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (args.CheckCurrent())
+			{
+				MapEventsPersonsSuggestList.Clear();
+			}
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			if (!string.IsNullOrEmpty(sender.Text))
+			{
+				MapEventsPersonsSuggestList.Clear();
+
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Contacts
+						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
+						.Select(i => i))
+					{
+						if (!MapEventsPersonsSuggestList.Contains(i.Name))
+						{
+							MapEventsPersonsSuggestList.Add(i.Name);
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Open Windows 10 calendar
 		/// </summary>
-		private async void BindingEventToWindowsCalendar()
+		private async void BindingEventToWindowsCalendarAsync()
 		{
 			var appointment = new Windows.ApplicationModel.Appointments.Appointment();
 
@@ -277,7 +362,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			// An empty string return value indicates that the user canceled the operation before the appointment was added.
 			String appointmentId = await Windows.ApplicationModel.Appointments.AppointmentManager.ShowAddAppointmentAsync(
 				appointment, new Windows.Foundation.Rect(), Placement.Default);
-
+			Debug.WriteLine(appointmentId);
 		}
 
 		/// <summary>

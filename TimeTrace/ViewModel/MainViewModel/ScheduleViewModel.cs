@@ -304,7 +304,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				if (!string.IsNullOrEmpty(project.Id))
 				{
 					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
-						.Where(i => i.Id == project.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete)
+						.Where(i => i.ProjectId == project.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete)
 						.ToList());
 				}
 			}
@@ -534,15 +534,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.MapEvents
-						.Where(i => (i.UserBind.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+					foreach (var i in db.Contacts
+						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
 									i.EmailOfOwner == (string)localSettings.Values["email"] &&
 									!i.IsDelete)
 						.Select(i => i))
 					{
-						if (!MapEventsPersonsSuggestList.Contains(i.UserBind))
+						if (!MapEventsPersonsSuggestList.Contains(i.Name))
 						{
-							MapEventsPersonsSuggestList.Add(i.UserBind);
+							MapEventsPersonsSuggestList.Add(i.Name);
 						}
 					}
 				}
@@ -719,7 +719,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
 					foreach (var i in db.MapEvents
-						.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+						.Where(i => i.Name.ToLowerInvariant().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
 						.Select(i => i))
 					{
 						MapEvents.Add(i);

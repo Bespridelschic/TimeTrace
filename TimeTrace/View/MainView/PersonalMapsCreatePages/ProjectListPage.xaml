@@ -16,65 +16,6 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-			<!--<Style TargetType="Button">
-				<Setter Property="Width" Value="150" />
-				<Setter Property="Height" Value="150" />
-				<Setter Property="Background" Value="White" />
-				<Setter Property="BorderThickness" Value="1.5" />
-				<Setter Property="Foreground" Value="Black" />
-				<Setter Property="CanDrag" Value="True" />
-				<Setter Property="Margin" Value="1.5" />
-				<Setter Property="ContentTemplate">
-					<Setter.Value>
-						<DataTemplate x:DataType="local:Project">
-							<StackPanel ToolTipService.Placement="Top">
-								<ToolTipService.ToolTip>
-									<StackPanel>
-										<StackPanel Margin="10,2" Orientation="Horizontal">
-											<TextBlock
-												Margin="0,0,5,0"
-												FontSize="15"
-												Text="Проект: " />
-											<TextBlock FontSize="15" Text="{Binding Name}" />
-										</StackPanel>
-										<StackPanel Margin="10,2" Orientation="Horizontal">
-											<TextBlock
-												Margin="0,0,5,0"
-												FontSize="15"
-												Text="Описание: " />
-											<TextBlock FontSize="15" Text="{Binding Description}" />
-										</StackPanel>
-										<StackPanel Margin="10,2" Orientation="Horizontal">
-											<TextBlock
-												Margin="0,0,5,0"
-												FontSize="15"
-												Text="Обновлено: " />
-											<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
-										</StackPanel>
-									</StackPanel>
-								</ToolTipService.ToolTip>
-								<PersonPicture
-									Width="70"
-									Height="70"
-									Margin="10,0,0,0"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Top"
-									Background="White"
-									Initials="C#" />
-								<TextBlock
-									HorizontalAlignment="Center"
-									FontSize="20"
-									Text="{Binding Name}" />
-								<TextBlock
-									HorizontalAlignment="Center"
-									FontSize="15"
-									Foreground="SlateGray"
-									Text="{Binding Description}" />
-							</StackPanel>
-						</DataTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>-->
 		</ResourceDictionary>
 	</Page.Resources>
 
@@ -93,18 +34,23 @@
 			</Grid.RowDefinitions>
 
 			<StackPanel
-				HorizontalAlignment="Center"
+				HorizontalAlignment="Left"
 				VerticalAlignment="Top"
 				Orientation="Horizontal">
 				<TextBlock
-					Margin="20,20,10,10"
+					Margin="20,10,5,0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
 					FontSize="35"
+					FontWeight="Light"
 					Text="Календарь: "
 					TextWrapping="WrapWholeWords" />
 
 				<TextBlock
-					Margin="0,20,20,10"
+					Margin="0,10,20,0"
+					VerticalAlignment="Center"
 					FontSize="35"
+					FontWeight="Light"
 					Text="{x:Bind ViewModel.CurrentArea.Name}"
 					TextWrapping="WrapWholeWords" />
 			</StackPanel>
@@ -133,20 +79,86 @@
 								<RowDefinition />
 								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
+
 							<TextBlock
 								Margin="20,5"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Top"
 								FontSize="35"
 								Text="{Binding Name}" />
-							<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-								<StackPanel>
-									<TextBlock Margin="20,5" Text="Количество событий" />
-									<TextBlock Margin="20,5" Text="Ближайшее через" />
-									<TextBlock Margin="20,5" Text="Событий на сегодня" />
-									<TextBlock Margin="20,5" Text="Событий завершено" />
-								</StackPanel>
-							</ScrollViewer>
+
+							<GridView
+								Grid.Row="1"
+								Padding="10"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center">
+								<GridViewItem
+									Margin="10"
+									Padding="10"
+									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
+									BorderThickness="1.5">
+									<DataTemplate>
+										<StackPanel Orientation="Horizontal">
+											<TextBlock
+												Margin="3"
+												FontSize="25"
+												Text="Событий на сегодня:" />
+											<TextBlock
+												Margin="3"
+												FontSize="25"
+												Text="0" />
+										</StackPanel>
+									</DataTemplate>
+								</GridViewItem>
+								<GridViewItem
+									Margin="10"
+									Padding="10"
+									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
+									BorderThickness="1.5">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock
+											Margin="3"
+											FontSize="25"
+											Text="Общее количество:" />
+										<TextBlock
+											Margin="3"
+											FontSize="25"
+											Text="0" />
+									</StackPanel>
+								</GridViewItem>
+								<GridViewItem
+									Margin="10"
+									Padding="10"
+									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
+									BorderThickness="1.5">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock
+											Margin="3"
+											FontSize="25"
+											Text="Ближайшее через:" />
+										<TextBlock
+											Margin="3"
+											FontSize="25"
+											Text="0" />
+									</StackPanel>
+								</GridViewItem>
+								<GridViewItem
+									Margin="10"
+									Padding="10"
+									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
+									BorderThickness="1.5">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock
+											Margin="3"
+											FontSize="25"
+											Text="Завершено:" />
+										<TextBlock
+											Margin="3"
+											FontSize="25"
+											Text="0" />
+									</StackPanel>
+								</GridViewItem>
+							</GridView>
 
 						</Grid>
 					</DataTemplate>
@@ -224,10 +236,16 @@
 				Label="Добавить проект"
 				ToolTipService.ToolTip="Создать новый проект" />
 			<AppBarButton
-				Click="{x:Bind ViewModel.ProjectsBulkRemoval}"
+				Click="{x:Bind ViewModel.ProjectEditAsync}"
+				Icon="Edit"
+				Label="Редактировать проект"
+				ToolTipService.ToolTip="Редактировать выбранный проект" />
+			<AppBarSeparator />
+			<AppBarButton
+				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
 				Icon="Remove"
-				Label="Удалить выбранные"
-				ToolTipService.ToolTip="Удалить выбранные проекты" />
+				Label="Удалить проект"
+				ToolTipService.ToolTip="Удалить выбранный проект" />
 		</CommandBar>
 
 	</Grid>

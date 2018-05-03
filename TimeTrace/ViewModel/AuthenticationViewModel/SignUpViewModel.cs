@@ -115,7 +115,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// <returns>Is fields correct</returns>
 		private async Task<bool> CanSignUp()
 		{
-			if (string.IsNullOrEmpty(CurrentUser.Email) || string.IsNullOrEmpty(CurrentUser.Password) || string.IsNullOrEmpty(ConfirmPassword))
+			if (string.IsNullOrEmpty(CurrentUser.Email?.Trim()) || string.IsNullOrEmpty(CurrentUser.Password) || string.IsNullOrEmpty(ConfirmPassword))
 			{
 				await new MessageDialog(ResourceLoader.GetString("/SignInUp/FillAllFieldsText"),
 					ResourceLoader.GetString("/SignInUp/RegistrationProblemText")).ShowAsync();
@@ -155,6 +155,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// </summary>
 		public async void SignUpComplete()
 		{
+			CurrentUser.Email = CurrentUser.Email.Trim();
+
 			var CanSignUpResult = await CanSignUp();
 
 			if (!CanSignUpResult)

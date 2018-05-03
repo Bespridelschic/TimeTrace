@@ -235,6 +235,16 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 					return;
 				}
 
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					if (contact == null && (db.Contacts.Where(i => i.Email.ToLower() == email.Text.Trim().ToLower()).Count() > 0))
+					{
+						await new MessageDialog("Данный контакт уже добавлен в ваши контакты", "Ошибка добавления нового контакта").ShowAsync();
+
+						return;
+					}
+				}
+
 				string pattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
 				var res = Regex.Match(email.Text, pattern);
 
@@ -245,8 +255,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 					{
 						Contact newContact = new Contact()
 						{
-							Email = email.Text,
-							Name = name.Text
+							Email = email.Text.Trim(),
+							Name = name.Text.Trim()
 						};
 
 						using (MainDatabaseContext db = new MainDatabaseContext())
@@ -269,10 +279,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 					{
 						int tempSelectedContact = SelectedContact.Value;
 						var temp = Contacts[tempSelectedContact];
-						temp.Name = name.Text;
+						temp.Name = name.Text.Trim();
 						Contacts[tempSelectedContact] = temp;
 
-						Contacts[tempSelectedContact].Name = name.Text;
+						Contacts[tempSelectedContact].Name = name.Text.Trim();
 
 						using (MainDatabaseContext db = new MainDatabaseContext())
 						{

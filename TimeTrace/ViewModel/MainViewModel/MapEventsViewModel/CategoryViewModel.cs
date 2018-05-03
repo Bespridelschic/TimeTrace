@@ -374,23 +374,34 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								foreach (var innerMaps in db.MapEvents.Where(i => i.ProjectId == innerProjects.Id))
 								{
 									innerMaps.Color = Calendars[SelectedArea.Value].Color;
+									innerMaps.UpdateAt = DateTime.UtcNow;
 									db.MapEvents.Update(innerMaps);
 								}
 
 								innerProjects.Color = Calendars[SelectedArea.Value].Color;
+								innerProjects.UpdateAt = DateTime.UtcNow;
 								db.Projects.Update(innerProjects);
 							}
 						}
 
 						Calendars[SelectedArea.Value].UpdateAt = DateTime.UtcNow;
 
-						// Update area in database
-						db.Areas.Update(Calendars[SelectedArea.Value]);
-						db.SaveChanges();
+						try
+						{
+							// Update area in database
+							db.Areas.Update(Calendars[SelectedArea.Value]);
+							db.SaveChanges();
+						}
+						catch (Exception)
+						{
+							await new MessageDialog("Не предвиденная ошибка, попробуйте позже", "Ошибка при изменении данных").ShowAsync();
+						}
 
-						/*// Update current button
-						Calendars.RemoveAt(SelectedArea.Value);
-						Calendars.Insert(SelectedArea.Value, selectedArea);*/
+						// Update current button
+						int selectedIndex = SelectedArea.Value;
+						var tempArea = Calendars[selectedIndex];
+						Calendars.RemoveAt(selectedIndex);
+						Calendars.Insert(selectedIndex, tempArea);
 					}
 				}
 			}
@@ -497,7 +508,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			if (result == ContentDialogResult.Primary)
 			{
-				if (area == null && string.IsNullOrEmpty(name.Text))
+				if (area == null && string.IsNullOrEmpty(name.Text?.Trim()))
 				{
 					await new MessageDialog("Не заполнено имя для нового календаря", "Ошибка добавления нового календаря").ShowAsync();
 
@@ -505,7 +516,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				}
 				else
 				{
-					if (string.IsNullOrEmpty(name.Text))
+					if (string.IsNullOrEmpty(name.Text?.Trim()))
 					{
 						await new MessageDialog("Не заполнено имя изменяемого календаря", "Ошибка изменения календаря").ShowAsync();
 
@@ -516,8 +527,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// New area object for adding into Database
 				return new Area()
 				{
-					Name = name.Text,
-					Description = description.Text,
+					Name = name.Text.Trim(),
+					Description = description.Text.Trim(),
 					Color = colors.SelectedIndex + 1,
 				};
 			}
@@ -623,7 +634,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
-					foreach (var i in db.Areas.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
+					foreach (var i in db.Areas.Where(i => i.Name.ToLowerInvariant().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 					{
 						Calendars.Add(i);
 					}

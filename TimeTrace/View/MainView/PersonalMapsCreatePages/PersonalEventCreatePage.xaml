@@ -11,6 +11,7 @@
 	<Page.Resources>
 		<ResourceDictionary>
 			<converters:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
+			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -20,6 +21,156 @@
 					</Setter.Value>
 				</Setter>
 			</Style>
+			<Style TargetType="PivotHeaderItem">
+				<Setter Property="FontSize" Value="{ThemeResource PivotHeaderItemFontSize}" />
+				<Setter Property="FontFamily" Value="{ThemeResource PivotHeaderItemFontFamily}" />
+				<Setter Property="FontWeight" Value="{ThemeResource PivotHeaderItemThemeFontWeight}" />
+				<Setter Property="CharacterSpacing" Value="{ThemeResource PivotHeaderItemCharacterSpacing}" />
+				<Setter Property="Background" Value="{ThemeResource PivotHeaderItemBackgroundUnselected}" />
+				<Setter Property="Foreground" Value="{ThemeResource PivotHeaderItemForegroundUnselected}" />
+				<Setter Property="Padding" Value="{ThemeResource PivotHeaderItemMargin}" />
+				<Setter Property="Height" Value="48" />
+				<Setter Property="VerticalContentAlignment" Value="Center" />
+				<Setter Property="IsTabStop" Value="False" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="PivotHeaderItem">
+							<Grid
+								x:Name="Grid"
+								Padding="{TemplateBinding Padding}"
+								Background="{TemplateBinding Background}">
+								<Grid.RenderTransform>
+									<TranslateTransform x:Name="ContentPresenterTranslateTransform" />
+								</Grid.RenderTransform>
+								<ContentPresenter
+									x:Name="ContentPresenter"
+									HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+									Content="{TemplateBinding Content}"
+									ContentTemplate="{TemplateBinding ContentTemplate}"
+									FontFamily="{TemplateBinding FontFamily}"
+									FontSize="{TemplateBinding FontSize}"
+									FontWeight="{TemplateBinding FontWeight}"
+									OpticalMarginAlignment="TrimSideBearings" />
+								<Rectangle
+									x:Name="FocusPipe"
+									Height="2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Bottom"
+									Fill="{ThemeResource PivotHeaderItemFocusPipeFill}"
+									Visibility="Collapsed" />
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="SelectionStates">
+										<VisualStateGroup.Transitions>
+											<VisualTransition
+												GeneratedDuration="0:0:0.33"
+												From="Unselected"
+												To="UnselectedLocked" />
+											<VisualTransition
+												GeneratedDuration="0:0:0.33"
+												From="UnselectedLocked"
+												To="Unselected" />
+										</VisualStateGroup.Transitions>
+										<VisualState x:Name="Disabled">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundDisabled}" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundDisabled}" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="Unselected" />
+										<VisualState x:Name="UnselectedLocked">
+											<Storyboard>
+												<DoubleAnimation
+													Storyboard.TargetName="ContentPresenterTranslateTransform"
+													Storyboard.TargetProperty="X"
+													To="{ThemeResource PivotHeaderItemLockedTranslation}"
+													Duration="0" />
+												<DoubleAnimation
+													Storyboard.TargetName="ContentPresenter"
+													Storyboard.TargetProperty="(UIElement.Opacity)"
+													To="0"
+													Duration="0" />
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="Selected">
+											<VisualState.Setters>
+												<Setter Target="FocusPipe.Visibility" Value="Visible" />
+											</VisualState.Setters>
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundSelected}" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundSelected}" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="UnselectedPointerOver">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundUnselectedPointerOver}" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundUnselectedPointerOver}" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="SelectedPointerOver">
+											<VisualState.Setters>
+												<Setter Target="FocusPipe.Visibility" Value="Visible" />
+											</VisualState.Setters>
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundSelectedPointerOver}" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundSelectedPointerOver}" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="UnselectedPressed">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundUnselectedPressed}" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundUnselectedPressed}" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="SelectedPressed">
+											<VisualState.Setters>
+												<Setter Target="FocusPipe.Visibility" Value="Visible" />
+											</VisualState.Setters>
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundSelectedPressed}" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundSelectedPressed}" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+									</VisualStateGroup>
+									<VisualStateGroup x:Name="FocusStates">
+										<VisualState x:Name="Focused">
+											<VisualState.Setters>
+												<Setter Target="FocusPipe.Visibility" Value="Visible" />
+											</VisualState.Setters>
+										</VisualState>
+										<VisualState x:Name="Unfocused" />
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
@@ -28,91 +179,87 @@
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
-		<Pivot Title="События" Margin="20,10">
+		<Pivot Title="Temp" Padding="10,0,0,0">
 			<Pivot.TitleTemplate>
 				<DataTemplate>
 					<TextBlock
+						Margin="6,0,0,-15"
 						FontSize="35"
+						FontWeight="SemiLight"
 						Text="События календаря"
 						TextWrapping="WrapWholeWords" />
 				</DataTemplate>
 			</Pivot.TitleTemplate>
 
-			<PivotItem Header="Просмотр">
+			<PivotItem Padding="-15,0,0,0" Header="Просмотр">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition />
-						<RowDefinition Height="Auto" />
+						<RowDefinition Height="10" />
 					</Grid.RowDefinitions>
 
 					<ScrollViewer VerticalScrollBarVisibility="Auto">
-						<StackPanel Margin="0,10">
-							<ListView ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}" SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
+						<StackPanel>
+							<ListView
+								Padding="15,5,17,5"
+								DoubleTapped="{x:Bind ScheduleViewModel.MoreAboutMapEvent}"
+								ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}"
+								RightTapped="{x:Bind ScheduleViewModel.SelectItemOnRightClick}"
+								SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
 								<ListView.ItemTemplate>
 									<DataTemplate x:DataType="local:MapEvent">
 										<StackPanel>
-											<TextBlock
-												Margin="10,5,10,0"
-												FontSize="26"
-												Text="{x:Bind Name}"
-												TextWrapping="WrapWholeWords" />
+											<StackPanel Margin="0,5,10,0" Orientation="Horizontal">
+
+												<Ellipse
+													Width="15"
+													Height="15"
+													VerticalAlignment="Center"
+													Fill="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}" />
+
+												<TextBlock
+													Margin="5,0,0,0"
+													VerticalAlignment="Center"
+													FontSize="26"
+													Text="{x:Bind Name}"
+													TextTrimming="WordEllipsis"
+													TextWrapping="WrapWholeWords" />
+
+											</StackPanel>
 
 											<StackPanel Orientation="Horizontal">
 												<TextBlock
-													Margin="10,3,0,2"
-													FontSize="18"
+													Margin="0,0,0,2"
+													FontSize="17"
+													FontStyle="Italic"
+													Foreground="Gray"
 													Text="Время: " />
 												<TextBlock
-													Margin="7,3,7,2"
-													FontSize="18"
+													Margin="7,0,7,2"
+													FontSize="17"
+													FontStyle="Italic"
+													Foreground="Gray"
 													Text="{x:Bind Start}" />
 												<TextBlock
-													Margin="0,3,0,2"
-													FontSize="18"
+													Margin="0,0,0,1"
+													FontSize="17"
+													FontStyle="Italic"
+													Foreground="Gray"
 													Text="-" />
 												<TextBlock
-													Margin="7,3,7,2"
-													FontSize="18"
+													Margin="7,0,7,1"
+													FontSize="17"
+													FontStyle="Italic"
+													Foreground="Gray"
 													Text="{x:Bind End}" />
 											</StackPanel>
 
 											<StackPanel Orientation="Horizontal">
 												<TextBlock
-													Margin="10,0,0,0"
+													Margin="0,0,0,5"
 													FontSize="18"
-													Text="Место: " />
-												<TextBlock
-													Margin="7,0,0,0"
-													FontSize="18"
-													Text="{x:Bind Location, TargetNullValue=Неизвестно}" />
-												<TextBlock
-													Margin="0,0,0,0"
-													FontSize="18"
-													Text=";" />
-												<TextBlock
-													Margin="10,0,0,0"
-													FontSize="18"
-													Text="Контакт: " />
-												<TextBlock
-													Margin="7,0,0,0"
-													FontSize="18"
-													Text="{x:Bind UserBind, TargetNullValue=Неизвестен}" />
-											</StackPanel>
-
-											<StackPanel Orientation="Horizontal">
-												<TextBlock
-													Margin="10,5,0,5"
-													FontSize="18"
-													Text="Описание: " />
-												<TextBlock
-													Margin="7,5"
-													FontSize="18"
-													Text="{x:Bind Description, TargetNullValue=Отсутствует}" />
+													Text="{x:Bind Description, TargetNullValue=Отсутствует}"
+													TextWrapping="WrapWholeWords" />
 											</StackPanel>
 										</StackPanel>
 									</DataTemplate>
@@ -124,7 +271,10 @@
 											Icon="Page"
 											Text="Подробней" />
 										<MenuFlyoutSeparator />
-										<MenuFlyoutItem Icon="Edit" Text="Редактировать" />
+										<MenuFlyoutItem
+											Click="{x:Bind ScheduleViewModel.MapEventEditAsync}"
+											Icon="Edit"
+											Text="Редактировать" />
 										<MenuFlyoutItem
 											Click="{x:Bind ScheduleViewModel.MapEventRemove}"
 											Icon="Delete"
@@ -134,21 +284,10 @@
 							</ListView>
 						</StackPanel>
 					</ScrollViewer>
-
-					<ComboBox
-						Grid.Row="1"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center">
-						<x:String>Сегодня</x:String>
-						<x:String>Завтра</x:String>
-						<x:String>Было</x:String>
-						<x:String>Вчера</x:String>
-					</ComboBox>
-
 				</Grid>
 			</PivotItem>
 
-			<PivotItem Header="Создание">
+			<PivotItem Padding="-15,0,0,0" Header="Создание">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition />
@@ -292,17 +431,27 @@
 								<AutoSuggestBox
 									Margin="15,5,15,5"
 									Header="Имя контакта"
+									ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
 									PlaceholderText="Человек связанный с событием"
 									QueryIcon="Contact"
 									Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
+									TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}"
 									ToolTipService.ToolTip="Имя человека, к которому привязывается событие" />
 
 								<CheckBox
-									Margin="15,5,15,5"
+									Margin="15,5,15,0"
 									VerticalAlignment="Center"
 									Content="Доступно для моих контактов"
 									IsChecked="{x:Bind ViewModel.CurrentMapEvent.IsPublic, Mode=TwoWay}"
 									ToolTipService.ToolTip="При выборе, все люди из списка контактов смогут видеть создаваемое событие" />
+
+								<CheckBox
+									Width="300"
+									Margin="15,-10,15,5"
+									VerticalAlignment="Center"
+									Content="Установить в календарь Windows 10"
+									IsChecked="{x:Bind ViewModel.IsBindingForWindowsCalendar, Mode=TwoWay}"
+									ToolTipService.ToolTip="При выборе, данное событие будет так же установлено в календаре Windows 10" />
 
 							</StackPanel>
 
@@ -321,7 +470,7 @@
 						<Button
 							HorizontalAlignment="Center"
 							Background="SteelBlue"
-							Click="{x:Bind ViewModel.EventCreate}"
+							Click="{x:Bind ViewModel.EventCreateAsync}"
 							Content="Создать событие"
 							Foreground="White" />
 					</StackPanel>

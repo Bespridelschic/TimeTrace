@@ -72,6 +72,62 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private string projectMapEventsToday;
+		/// <summary>
+		/// Count of today's map events
+		/// </summary>
+		public string ProjectMapEventsToday
+		{
+			get => projectMapEventsToday;
+			set
+			{
+				projectMapEventsToday = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string projectMapEventsTotal;
+		/// <summary>
+		/// Count of total map events selected project
+		/// </summary>
+		public string ProjectMapEventsTotal
+		{
+			get => projectMapEventsTotal;
+			set
+			{
+				projectMapEventsTotal = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private DateTime nearMapEvent;
+		/// <summary>
+		/// How quickly came the nearest event
+		/// </summary>
+		public DateTime NearMapEvent
+		{
+			get => nearMapEvent;
+			set
+			{
+				nearMapEvent = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string projectMapEventsCompleted;
+		/// <summary>
+		/// Total count of completed map events
+		/// </summary>
+		public string ProjectMapEventsCompleted
+		{
+			get => projectMapEventsCompleted;
+			set
+			{
+				projectMapEventsCompleted = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -124,7 +180,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="e">Parameters</param>
 		public void ProjectSelect()
 		{
-			if (SelectedProject.HasValue)
+			if (SelectedProject.HasValue && SelectedProject.Value < CurrentProjects.Count && SelectedProject.Value >= 0)
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
@@ -135,23 +191,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 		public void ProjectsBulkRemoval()
 		{
-			
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
 		/// Removing of selected project
 		/// </summary>
-		public async void ProjectRemoveAsync(object sender, RoutedEventArgs e)
+		public async void ProjectRemoveAsync()
 		{
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			if (SelectedProject.HasValue)
 			{
-				// Get selected Area
-				var selectedProject = db.Projects.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
-
 				ContentDialog confirmDialog = new ContentDialog()
 				{
 					Title = "Подтверждение удаления",
-					Content = $"Вы уверены что хотите удалить проект {selectedProject.Name}?\n" +
+					Content = $"Вы уверены что хотите удалить проект {CurrentProjects[SelectedProject.Value].Name}?\n" +
 							  $"Удаление приведен к потере всех событий внутри проекта!",
 					PrimaryButtonText = "Удалить",
 					CloseButtonText = "Отмена",
@@ -162,19 +215,25 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				if (result == ContentDialogResult.Primary)
 				{
-					// Remove all events in this project
-					foreach (var mapEvent in db.MapEvents.Where(i => i.Id == selectedProject.Id))
+					using (MainDatabaseContext db = new MainDatabaseContext())
 					{
-						db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+						// Remove all events in this project
+						foreach (var mapEvent in db.MapEvents.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id))
+						{
+							db.MapEvents.FirstOrDefault(i => i.Id == mapEvent.Id).IsDelete = true;
+						}
+
+						// Remove Project from database
+						db.Projects.FirstOrDefault(i => i.Id == CurrentProjects[SelectedProject.Value].Id).IsDelete = true;
+
+						db.SaveChanges();
+
+						await new MessageDialog($"Проект {CurrentProjects[SelectedProject.Value].Name} со всеми событиями внутри был удалён",
+							"Операция завершена успешно").ShowAsync();
+
+						// Remove Area from UI panel
+						CurrentProjects.Remove(CurrentProjects[SelectedProject.Value]);
 					}
-
-					// Remove Project from database
-					db.Projects.FirstOrDefault(i => i.Id == selectedProject.Id).IsDelete = true;
-
-					db.SaveChanges();
-
-					await new MessageDialog($"Проект {selectedProject.Name} со всеми событиями внутри был удалён",
-						"Операция завершена успешно").ShowAsync();
 				}
 			}
 		}
@@ -184,39 +243,48 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public async void ProjectEditAsync(object sender, RoutedEventArgs e)
 		{
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			if (SelectedProject.HasValue)
 			{
-				// Get selected Project
-				var selectedProject = db.Projects.First(i => i.Id == (string)(sender as MenuFlyoutItem).Tag);
-
-				// Get edited Project object
-				var editedProject = await ProjectCreationDialogAsync(selectedProject);
-
-				if (editedProject == null)
+				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					return;
-				}
+					// Get edited Project object
+					var editedProject = await ProjectCreationDialogAsync(CurrentProjects[SelectedProject.Value]);
 
-				// If project was edit
-				if (editedProject.Name != selectedProject.Name || editedProject.Description != selectedProject.Description || editedProject.Color != selectedProject.Color)
-				{
-					selectedProject.Name = editedProject.Name;
-					selectedProject.Description = editedProject.Description;
-					selectedProject.Color = editedProject.Color;
+					if (editedProject == null)
+					{
+						return;
+					}
 
-					selectedProject.UpdateAt = DateTime.UtcNow;
+					// If project was edit
+					if (editedProject.Name != CurrentProjects[SelectedProject.Value].Name || editedProject.Description != CurrentProjects[SelectedProject.Value].Description)
+					{
+						CurrentProjects[SelectedProject.Value].Name = editedProject.Name.Trim();
+						CurrentProjects[SelectedProject.Value].Description = editedProject.Description.Trim();
 
-					// Update project in database
-					db.Projects.Update(selectedProject);
-					db.SaveChanges();
+						CurrentProjects[SelectedProject.Value].UpdateAt = DateTime.UtcNow;
 
-					// Update current button
-					/*var index = CurrentProjects.IndexOf(CurrentProjects.First(i => (string)i.Tag == selectedProject.Id));
-					CurrentProjects.RemoveAt(index);
-					CurrentProjects.Insert(index, NewProjectButtonCreate(selectedProject));*/
+						try
+						{
+							// Update project in database
+							db.Projects.Update(CurrentProjects[SelectedProject.Value]);
+							db.SaveChanges();
+						}
+						catch (Exception)
+						{
+							await new MessageDialog("Не предвиденная ошибка, попробуйте позже", "Ошибка при изменении данных").ShowAsync();
+						}
+
+						// Update current button
+						int selectedIndex = SelectedProject.Value;
+						var tempProject = CurrentProjects[selectedIndex];
+						CurrentProjects.RemoveAt(selectedIndex);
+						CurrentProjects.Insert(selectedIndex, tempProject);
+					}
 				}
 			}
 		}
+
+		#region Searching projects
 
 		/// <summary>
 		/// Filtration of input filters
@@ -235,16 +303,18 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			// Remove all buttons for adding relevant filter
 			CurrentProjects.Clear();
 
-			// Select all calendars
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			// Select all projects
 			if (string.IsNullOrEmpty(sender.Text))
 			{
 				ProjectSuggestList.Clear();
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id).Select(i => i))
+					foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
 					{
-						//CurrentProjects.Add(NewProjectButtonCreate(i));
+						CurrentProjects.Add(i);
 					}
 				}
 			}
@@ -253,16 +323,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Projects.
-										Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) && i.AreaId == CurrentArea.Id).
-										Select(i => i))
+					foreach (var i in db.Projects
+						.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) &&
+									i.AreaId == CurrentArea.Id &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
+						.Select(i => i))
 					{
 						if (!ProjectSuggestList.Contains(i.Name))
 						{
 							ProjectSuggestList.Add(i.Name);
 						}
 
-						//CurrentProjects.Add(NewProjectButtonCreate(i));
+						CurrentProjects.Add(i);
 					}
 				}
 			}
@@ -277,18 +350,30 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			ProjectSuggestList.Clear();
 
+			if (string.IsNullOrEmpty(args.QueryText))
+			{
+				return;
+			}
+
 			if (CurrentProjects != null)
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
-					foreach (var i in db.Projects.Where(i => i.Name.ToLower().Contains(term) && i.AreaId == CurrentArea.Id).Select(i => i))
+					foreach (var i in db.Projects
+						.Where(i => i.Name.ToLowerInvariant().Contains(term) &&
+									i.AreaId == CurrentArea.Id &&
+									!i.IsDelete
+									&& i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 					{
-						//CurrentProjects.Add(NewProjectButtonCreate(i));
+						CurrentProjects.Add(i);
 					}
 				}
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Creation of edition project dialog
@@ -337,7 +422,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			if (result == ContentDialogResult.Primary)
 			{
-				if (project == null && string.IsNullOrEmpty(name.Text))
+				if (project == null && string.IsNullOrEmpty(name.Text?.Trim()))
 				{
 					await new MessageDialog("Не заполнено имя для нового проекта", "Ошибка добавления нового проекта").ShowAsync();
 
@@ -345,7 +430,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				}
 				else
 				{
-					if (string.IsNullOrEmpty(name.Text))
+					if (string.IsNullOrEmpty(name.Text?.Trim()))
 					{
 						await new MessageDialog("Не заполнено имя изменяемого проекта", "Ошибка изменения проекта").ShowAsync();
 
@@ -356,8 +441,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// New area object for adding into Database
 				return new Project()
 				{
-					Name = name.Text,
-					Description = description.Text,
+					Name = name.Text.Trim(),
+					Description = description.Text.Trim(),
 					AreaId = CurrentArea.Id,
 					Color = CurrentArea.Color,
 				};
