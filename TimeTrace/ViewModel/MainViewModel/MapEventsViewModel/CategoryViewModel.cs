@@ -110,6 +110,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="mainPanel">Panel of frame</param>
 		public CategoryViewModel()
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+
 			MultipleSelection = ListViewSelectionMode.Single;
 
 			ColorsTable = new Dictionary<string, string>()

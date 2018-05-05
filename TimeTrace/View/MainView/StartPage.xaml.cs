@@ -21,7 +21,8 @@ namespace TimeTrace.View.MainView
 
 			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(650, 800));
 
-			ViewModel = new StartPageViewModel();
+			ViewModel = StartPageViewModel.Instance;
+			DataContext = ViewModel;
 		}
 
 		public StartPageViewModel ViewModel { get; private set; }

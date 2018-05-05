@@ -1,10 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeTrace.Model.DBContext;
 using TimeTrace.View.AuthenticationView;
 using TimeTrace.View.MainView;
@@ -18,7 +15,10 @@ using Windows.UI.Xaml.Controls;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
-	public class StartPageViewModel : BaseViewModel
+	/// <summary>
+	/// Singleton of start page ViewModel
+	/// </summary>
+	public sealed class StartPageViewModel : BaseViewModel
 	{
 		#region Properties
 
@@ -36,14 +36,50 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		private string pageTitle;
+		/// <summary>
+		/// Title of current page
+		/// </summary>
+		public string PageTitle
+		{
+			get { return pageTitle; }
+			set
+			{
+				pageTitle = value;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Username in command bar
+		/// </summary>
+		public string CurrentUserName { get; private set; }
+
 		#endregion
+
+		private static readonly Lazy<StartPageViewModel> instance = new Lazy<StartPageViewModel>(() => new StartPageViewModel());
+		/// <summary>
+		/// Getting singleton instance
+		/// </summary>
+		public static StartPageViewModel Instance
+		{
+			get
+			{
+				return instance.Value;
+			}
+		}
 
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public StartPageViewModel()
+		private StartPageViewModel()
 		{
+			SetHeader(Headers.Home);
 			MapEventsSuggestList = new ObservableCollection<string>();
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			var currentUser = new Model.User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
+			CurrentUserName = currentUser.Email[0].ToString().ToUpper() + currentUser.Email.Substring(1, currentUser.Email.IndexOf('@') - 1);
 		}
 
 		/// <summary>
@@ -55,6 +91,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			if (args.IsSettingsSelected)
 			{
+				SetHeader(Headers.Settings);
 				(Application.Current as App).AppFrame.Navigate(typeof(SettingsPage));
 			}
 
@@ -65,18 +102,22 @@ namespace TimeTrace.ViewModel.MainViewModel
 				switch (item.Tag)
 				{
 					case "home":
+						SetHeader(Headers.Home);
 						(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
 						break;
 
 					case "schedule":
+						SetHeader(Headers.Shedule);
 						(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage));
 						break;
 
 					case "contacts":
+						SetHeader(Headers.Contacts);
 						(Application.Current as App).AppFrame.Navigate(typeof(ContactsPage));
 						break;
 
 					case "personalMaps":
+						SetHeader(Headers.MapEvents);
 						(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 						break;
 
@@ -102,12 +143,50 @@ namespace TimeTrace.ViewModel.MainViewModel
 						break;
 
 					case "help":
+						sender.Header = "Помощь";
 						await new MessageDialog("Помощь пользователя находится в разработке").ShowAsync();
 						break;
 
 					default:
 						break;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Target pages
+		/// </summary>
+		public enum Headers
+		{
+			Home, Shedule, Contacts, MapEvents, Settings
+		}
+
+		/// <summary>
+		/// Set NavigationView title
+		/// </summary>
+		/// <param name="menu">Sender <see cref="NavigationView"/></param>
+		/// <param name="header">Target page</param>
+		public void SetHeader(Headers header)
+		{
+			switch (header)
+			{
+				case Headers.Home:
+					PageTitle = "Домашняя страница";
+					break;
+				case Headers.Shedule:
+					PageTitle = "Расписание";
+					break;
+				case Headers.Contacts:
+					PageTitle = "Контакты";
+					break;
+				case Headers.MapEvents:
+					PageTitle = "Персональные карты";
+					break;
+				case Headers.Settings:
+					PageTitle = "Настройки";
+					break;
+				default:
+					break;
 			}
 		}
 

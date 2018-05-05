@@ -72,6 +72,8 @@
 						SelectedIndex="{x:Bind ViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
 						<ListView.ItemContainerStyle>
 							<Style TargetType="ListViewItem">
+								<Setter Property="BorderBrush" Value="Gray" />
+								<Setter Property="BorderThickness" Value="0,.4,0,0" />
 								<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 							</Style>
 						</ListView.ItemContainerStyle>
@@ -183,6 +185,12 @@
 								SelectedDatesChanged="{x:Bind ViewModel.DateSelection}"
 								SelectedForeground="Red"
 								SelectionMode="Multiple" />
+
+							<CheckBox
+								Width="300"
+								Content="Показывать прошедшие события"
+								IsChecked="{x:Bind ViewModel.IsHistoryEventsViewed, Mode=TwoWay}" />
+
 							<Button
 								Width="298"
 								Margin="0,10,0,10"

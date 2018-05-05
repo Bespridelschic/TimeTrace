@@ -57,6 +57,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 		public SettingsViewModel()
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Settings);
+
 			if ((Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("ru"))
 			{
 				CurrentLanguage = "Русский язык";

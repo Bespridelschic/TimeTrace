@@ -189,6 +189,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private int startTabIndex;
+		/// <summary>
+		/// Start index of pivot
+		/// </summary>
+		public int StartTabIndex
+		{
+			get => startTabIndex;
+			set
+			{
+				startTabIndex = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -196,6 +210,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public PersonalEventCreateViewModel()
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+			StartTabIndex = 0;
+
 			CurrentMapEvent = new MapEvent();
 			StartDate = DateTime.Now;
 
@@ -275,10 +292,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				BindingEventToWindowsCalendarAsync();
 			}
 
+
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
-				db.MapEvents.Add(CurrentMapEvent);
-				db.SaveChanges();
+				if (StartTabIndex == 0)
+				{
+					db.MapEvents.Add(CurrentMapEvent);
+					db.SaveChanges();
+				}
+				else
+				{
+					db.Update(CurrentMapEvent);
+					db.SaveChanges();
+				}
 			}
 
 			NewMapEventNotification(CurrentMapEvent.Name, CurrentMapEvent.Start.ToLocalTime());
@@ -362,7 +388,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			// An empty string return value indicates that the user canceled the operation before the appointment was added.
 			String appointmentId = await Windows.ApplicationModel.Appointments.AppointmentManager.ShowAddAppointmentAsync(
 				appointment, new Windows.Foundation.Rect(), Placement.Default);
-			Debug.WriteLine(appointmentId);
 		}
 
 		/// <summary>
@@ -397,7 +422,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						{
 							new AdaptiveText()
 							{
-								Text = "Создано новое событие",
+								Text = (StartTabIndex == 0) ? "Создано новое событие" : "Событие изменено",
 								HintMaxLines = 1
 							},
 							new AdaptiveText()

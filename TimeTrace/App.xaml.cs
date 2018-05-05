@@ -16,6 +16,8 @@ using Windows.UI.Xaml.Navigation;
 using TimeTrace.Model;
 using TimeTrace.Model.Requests;
 using TimeTrace.View.MainView;
+using TimeTrace.ViewModel.MainViewModel;
+using TimeTrace.View.MainView.PersonalMapsCreatePages;
 
 namespace TimeTrace
 {
@@ -86,6 +88,7 @@ namespace TimeTrace
 				{
 					if (AppFrame.CanGoBack)
 					{
+						RenamePageTitleAfterGoBack(AppFrame.BackStack[AppFrame.BackStack.Count - 1]);
 						AppFrame.GoBack();
 						args.Handled = true;
 					}
@@ -213,6 +216,48 @@ namespace TimeTrace
 			catch (Exception)
 			{
 				throw;
+			}
+		}
+
+		/// <summary>
+		/// Rename current page after navigation back
+		/// </summary>
+		/// <param name="targerPage">Backstack</param>
+		private void RenamePageTitleAfterGoBack(PageStackEntry targerPage)
+		{
+			if (targerPage != null)
+			{
+				if (targerPage.SourcePageType == typeof(HomePage))
+				{
+					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Home);
+					return;
+				}
+
+				if (targerPage.SourcePageType == typeof(SchedulePage))
+				{
+					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Shedule);
+					return;
+				}
+
+				if (targerPage.SourcePageType == typeof(CategorySelectPage)
+					|| targerPage.SourcePageType == typeof(ProjectListPage)
+					|| targerPage.SourcePageType == typeof(PersonalEventCreatePage))
+				{
+					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+					return;
+				}
+
+				if (targerPage.SourcePageType == typeof(SettingsPage))
+				{
+					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Settings);
+					return;
+				}
+
+				if (targerPage.SourcePageType == typeof(View.MainView.ContactPages.ContactsPage))
+				{
+					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Contacts);
+					return;
+				}
 			}
 		}
 	}

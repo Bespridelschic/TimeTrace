@@ -100,6 +100,65 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			}
 		}
 
+		private int selectedTabIndex;
+		/// <summary>
+		/// Selected tab pivot
+		/// </summary>
+		public int SelectedTabIndex
+		{
+			get => selectedTabIndex;
+			set
+			{
+				selectedTabIndex = value;
+
+				if (Contacts.Count > 0)
+				{
+					Contacts.Clear();
+				}
+
+				if (selectedTabIndex == 1)
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+						var busyMapEvents = db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] &&
+																	!i.IsDelete &&
+																	!string.IsNullOrEmpty(i.UserBind) &&
+																	i.End >= DateTime.UtcNow);
+
+						if (busyMapEvents.Count() > 0)
+						{
+							foreach (var item in db.Contacts.Join
+								(
+									busyMapEvents,
+									i => i.Name.ToLowerInvariant(),
+									w => w.UserBind.ToLowerInvariant(),
+									(i, w) => i
+								))
+							{
+								Contacts.Add(item);
+							}
+						}
+					}
+				}
+				else
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+						foreach (var item in db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList())
+						{
+							Contacts.Add(item);
+						}
+					}
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -107,17 +166,14 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// </summary>
 		public ContactsViewModel()
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Contacts);
+
+			Contacts = new ObservableCollection<Contact>();
+			SelectedTabIndex = 0;
 			MultipleSelection = ListViewSelectionMode.Single;
 			RefreshContactsAsync().GetAwaiter();
 
 			ContactsSuggestList = new ObservableCollection<string>();
-
-			using (MainDatabaseContext db = new MainDatabaseContext())
-			{
-				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-				Contacts = new ObservableCollection<Contact>(db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).ToList());
-			}
 		}
 
 		/// <summary>
@@ -516,30 +572,85 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
+					if (SelectedTabIndex == 0)
 					{
-						Contacts.Add(i);
+						foreach (var i in db.Contacts.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
+						{
+							Contacts.Add(i);
+						}
+					}
+					else
+					{
+						var busyMapEvents = db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] &&
+																	!i.IsDelete &&
+																	!string.IsNullOrEmpty(i.UserBind) &&
+																	i.End >= DateTime.UtcNow);
+
+						if (busyMapEvents.Count() > 0)
+						{
+							foreach (var item in db.Contacts.Join
+								(
+									busyMapEvents,
+									i => i.Name.ToLowerInvariant(),
+									w => w.UserBind.ToLowerInvariant(),
+									(i, w) => i
+								))
+							{
+								Contacts.Add(item);
+							}
+						}
 					}
 				}
 			}
 
+			// Find all equals contacts
 			else
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.Contacts
+					if (SelectedTabIndex == 0)
+					{
+						foreach (var i in db.Contacts
 						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
 									i.Email.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
 									i.EmailOfOwner == (string)localSettings.Values["email"] &&
 									!i.IsDelete)
 						.Select(i => i))
-					{
-						if (!ContactsSuggestList.Contains(i.Name))
 						{
-							ContactsSuggestList.Add(i.Name);
-						}
+							if (!ContactsSuggestList.Contains(i.Name))
+							{
+								ContactsSuggestList.Add(i.Name);
+							}
 
-						Contacts.Add(i);
+							Contacts.Add(i);
+						}
+					}
+
+					else
+					{
+						var busyMapEvents = db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] &&
+																	!i.IsDelete &&
+																	!string.IsNullOrEmpty(i.UserBind) &&
+																	i.UserBind.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) &&
+																	i.End >= DateTime.UtcNow);
+
+						if (busyMapEvents.Count() > 0)
+						{
+							foreach (var mapEvent in busyMapEvents)
+							{
+								foreach (var item in db.Contacts.Where(i => i.Name.ToLowerInvariant().Contains(mapEvent.UserBind.ToLowerInvariant()) &&
+																			i.EmailOfOwner == (string)localSettings.Values["email"] &&
+																			!i.IsDelete))
+								{
+									if (!ContactsSuggestList.Contains(item.Name))
+									{
+										ContactsSuggestList.Add(item.Name);
+									}
+
+									Contacts.Add(item);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -567,9 +678,35 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				{
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
-					foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
+
+					if (SelectedTabIndex == 0)
 					{
-						Contacts.Add(i);
+						foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
+						{
+							Contacts.Add(i);
+						}
+					}
+
+					else
+					{
+						var busyMapEvents = db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] &&
+																	!i.IsDelete &&
+																	!string.IsNullOrEmpty(i.UserBind) &&
+																	i.UserBind.ToLowerInvariant().Contains(term.ToLowerInvariant()) &&
+																	i.End >= DateTime.UtcNow);
+
+						if (busyMapEvents.Count() > 0)
+						{
+							foreach (var mapEvent in busyMapEvents)
+							{
+								foreach (var item in db.Contacts.Where(i => i.Name.ToLowerInvariant().Contains(mapEvent.UserBind.ToLowerInvariant()) &&
+																			i.EmailOfOwner == (string)localSettings.Values["email"] &&
+																			!i.IsDelete))
+								{
+									Contacts.Add(item);
+								}
+							}
+						}
 					}
 				}
 			}

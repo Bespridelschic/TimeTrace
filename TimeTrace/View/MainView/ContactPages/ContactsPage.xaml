@@ -181,7 +181,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Pivot Padding="10,0,0,0">
+		<Pivot Padding="10,0,0,0" SelectedIndex="{x:Bind ViewModel.SelectedTabIndex, Mode=TwoWay}">
 			<Pivot.TitleTemplate>
 				<DataTemplate>
 					<TextBlock
@@ -211,6 +211,13 @@
 						SelectedIndex="{x:Bind ViewModel.SelectedContact, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
 						SelectionChanged="{x:Bind ViewModel.MultipleContactsSelection}"
 						SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}">
+						<ListView.ItemContainerStyle>
+							<Style TargetType="ListViewItem">
+								<Setter Property="BorderBrush" Value="Gray" />
+								<Setter Property="BorderThickness" Value="0,.4,0,0" />
+								<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+							</Style>
+						</ListView.ItemContainerStyle>
 						<ListView.ItemTemplate>
 							<DataTemplate x:DataType="local:Contact">
 								<Grid>
@@ -270,7 +277,89 @@
 				</Grid>
 			</PivotItem>
 
-			<PivotItem Padding="-15,0,0,0" Header="Участники календарей" />
+			<PivotItem Padding="-15,0,0,0" Header="Участники календарей" >
+				<Grid>
+					<ParallaxView
+						Opacity="0.5"
+						Source="{x:Bind UsedContactsList}"
+						VerticalShift="200">
+						<Image Source="../../../Assets/logo_Win.png" Stretch="UniformToFill" />
+					</ParallaxView>
+
+					<ListView
+						x:Name="UsedContactsList"
+						Padding="0,0,5,0"
+						DoubleTapped="{x:Bind ViewModel.StartChat}"
+						ItemsSource="{x:Bind ViewModel.Contacts, Mode=TwoWay}"
+						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
+						SelectedIndex="{x:Bind ViewModel.SelectedContact, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
+						SelectionChanged="{x:Bind ViewModel.MultipleContactsSelection}"
+						SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}">
+						<ListView.ItemContainerStyle>
+							<Style TargetType="ListViewItem">
+								<Setter Property="BorderBrush" Value="Gray" />
+								<Setter Property="BorderThickness" Value="0,.4,0,0" />
+								<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+							</Style>
+						</ListView.ItemContainerStyle>
+						<ListView.ItemTemplate>
+							<DataTemplate x:DataType="local:Contact">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<PersonPicture
+										Grid.Column="0"
+										Width="80"
+										Height="80"
+										Margin="10"
+										Initials="{x:Bind Name.Substring(0, 1)}" />
+
+									<StackPanel
+										Grid.Column="1"
+										Margin="10,0,0,0"
+										VerticalAlignment="Center">
+										<TextBlock
+											FontSize="26"
+											Text="{x:Bind Name}"
+											TextWrapping="WrapWholeWords" />
+										<StackPanel Orientation="Horizontal">
+											<TextBlock FontSize="18" Text="Контактный адрес: " />
+											<TextBlock
+												Margin="5,0"
+												FontSize="18"
+												Text="{x:Bind Email}" />
+										</StackPanel>
+									</StackPanel>
+								</Grid>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+						<ListView.ContextFlyout>
+							<MenuFlyout Placement="Bottom">
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.StartChat}"
+									Icon="Message"
+									Text="Отправить сообщение" />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
+									Icon="Page"
+									Text="Подробней" />
+								<MenuFlyoutSeparator />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.EditContactAsync}"
+									Icon="Edit"
+									Text="Редактировать" />
+								<MenuFlyoutItem
+									Click="{x:Bind ViewModel.ContactRemoveAsync}"
+									Icon="Delete"
+									Text="Удалить" />
+							</MenuFlyout>
+						</ListView.ContextFlyout>
+					</ListView>
+				</Grid>
+			</PivotItem>
 		</Pivot>
 
 		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">

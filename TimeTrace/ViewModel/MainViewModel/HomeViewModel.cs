@@ -84,6 +84,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public HomeViewModel()
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Home);
+
 			CurrentUser = GetUserInfo();
 			CurrentUserEmail = CurrentUser.Email[0].ToString().ToUpper() + CurrentUser.Email.Substring(1, CurrentUser.Email.IndexOf('@') - 1);
 
@@ -95,7 +97,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				NumEventsToday = db.MapEvents.
 					Count(mapEvent => mapEvent.Start.Date <= DateTime.Today && mapEvent.End.Date >= DateTime.Today && !mapEvent.IsDelete && mapEvent.EmailOfOwner == CurrentUser.Email);
 
-				NearEvent = 
+				NearEvent =
 					db.MapEvents.
 						Where(i => !i.IsDelete && i.EmailOfOwner == CurrentUser.Email).
 						FirstOrDefault(i => i.Start >= DateTime.Now)?.Start.Subtract(DateTime.Now).ToString("g").Split(',')[0]
@@ -111,7 +113,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			return new User(
-				(string)localSettings.Values["email"] ?? "Неизвестный",
+				(string)localSettings.Values["email"] ?? "Неизвестный@gmail.com",
 				null
 				);
 		}

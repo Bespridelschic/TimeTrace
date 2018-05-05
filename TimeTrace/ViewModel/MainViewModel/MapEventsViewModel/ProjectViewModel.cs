@@ -135,6 +135,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public ProjectViewModel(Area area)
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
 			CurrentArea = area;
 
 			CurrentProjects = new ObservableCollection<Project>();

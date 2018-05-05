@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TimeTrace.Model.DBContext;
 using TimeTrace.Model.Events;
 using TimeTrace.ViewModel.MainViewModel;
 using TimeTrace.ViewModel.MainViewModel.MapEventsViewModel;
@@ -36,13 +37,30 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 		{
 			if (e != null)
 			{
-				Project proj = (Project) e.Parameter;
+				if (e.Parameter as Project != null)
+				{
+					Project proj = (Project)e.Parameter;
 
-				ViewModel = new PersonalEventCreateViewModel();
-				ScheduleViewModel = new ScheduleViewModel(proj);
+					ScheduleViewModel = new ScheduleViewModel(proj);
+					ViewModel = new PersonalEventCreateViewModel();
 
-				ViewModel.CurrentMapEvent.ProjectId = proj.Id;
-				ViewModel.CurrentMapEvent.Color = proj.Color;
+					ViewModel.CurrentMapEvent.ProjectId = proj.Id;
+					ViewModel.CurrentMapEvent.Color = proj.Color;
+				}
+
+				if (e.Parameter as MapEvent != null)
+				{
+					MapEvent mapEvent = (MapEvent)e.Parameter;
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						var proj = db.Projects.FirstOrDefault(i => i.Id == mapEvent.ProjectId);
+						ScheduleViewModel = new ScheduleViewModel(proj);
+					}
+					
+					ViewModel = new PersonalEventCreateViewModel();
+					ViewModel.CurrentMapEvent = mapEvent;
+					ViewModel.StartTabIndex = 1;
+				}
 			}
 		}
 	}

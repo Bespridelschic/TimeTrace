@@ -8,6 +8,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
+using TimeTrace.View.MainView.PersonalMapsCreatePages;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -254,6 +255,21 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		private CalendarView selectedDates;
 
+		private bool isHistoryEventsViewed;
+		/// <summary>
+		/// Is enabled history of events
+		/// </summary>
+		public bool IsHistoryEventsViewed
+		{
+			get => isHistoryEventsViewed;
+			set
+			{
+				isHistoryEventsViewed = value;
+				OnPropertyChanged();
+				ApplyFilter();
+			}
+		}
+
 		#endregion
 
 		#endregion
@@ -265,6 +281,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		private void InitializationData()
 		{
+			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Shedule);
+
 			MapEventsSuggestList = new ObservableCollection<string>();
 			SelectedFilteredDates = new ObservableCollection<DateTimeOffset>();
 
@@ -284,7 +302,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 				MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
-						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete)
+						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete && i.End >= DateTime.UtcNow)
 						.ToList());
 			}
 		}
@@ -304,7 +322,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				if (!string.IsNullOrEmpty(project.Id))
 				{
 					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
-						.Where(i => i.ProjectId == project.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete)
+						.Where(i => i.ProjectId == project.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete && i.End >= DateTime.UtcNow)
 						.ToList());
 				}
 			}
@@ -327,7 +345,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 					RequiredFilter = requestedMapEvents;
 
 					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
-						.Where(i => i.Name.ToLowerInvariant().Contains(requestedMapEvents) && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete)
+						.Where(i => i.Name.ToLowerInvariant().Contains(requestedMapEvents) &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete &&
+									i.End >= DateTime.UtcNow)
 						.ToList());
 				}
 			}
@@ -429,7 +450,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void MapEventEditAsync()
 		{
-			await new MessageDialog("Здесь должен быть переход на страницу редактирования. Но его нет... Пока что...").ShowAsync();
+			if (SelectedMapEvent.HasValue && !IsHistoryEventsViewed)
+			{
+				(Application.Current as App)?.AppFrame.Navigate(typeof(PersonalEventCreatePage), MapEvents[selectedMapEvent.Value]);
+			}
+
+			if (IsHistoryEventsViewed)
+			{
+				await new MessageDialog("Нельзя изменять прошедшие события", "Ошибка изменения события").ShowAsync();
+			}
 		}
 
 		#region Filtering
@@ -562,27 +591,56 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				MapEvents.Clear();
 
-				foreach (var item in db.MapEvents
-					.Join(
-							SelectedFilteredDates,
-							i => i.Start.Date,
-							w => w.Date,
-							(i, w) => i
-						)
-					.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
-					.ToList())
-				{
-					MapEvents.Add(item);
-				}
-
-				// Select all map events from database, if dates not selected
-				if (SelectedFilteredDates.Count <= 0)
+				if (!IsHistoryEventsViewed)
 				{
 					foreach (var item in db.MapEvents
-						.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+						.Join(
+								SelectedFilteredDates,
+								i => i.Start.Date,
+								w => w.Date,
+								(i, w) => i
+							)
+						.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End >= DateTime.UtcNow)
 						.ToList())
 					{
 						MapEvents.Add(item);
+					}
+				}
+				else
+				{
+					foreach (var item in db.MapEvents
+						.Join(
+								SelectedFilteredDates,
+								i => i.Start.Date,
+								w => w.Date,
+								(i, w) => i
+							)
+						.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End < DateTime.UtcNow)
+						.ToList())
+					{
+						MapEvents.Add(item);
+					}
+				}
+				// Select all map events from database, if dates not selected
+				if (SelectedFilteredDates.Count <= 0)
+				{
+					if (!IsHistoryEventsViewed)
+					{
+						foreach (var item in db.MapEvents
+							.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End >= DateTime.UtcNow)
+							.ToList())
+						{
+							MapEvents.Add(item);
+						}
+					}
+					else
+					{
+						foreach (var item in db.MapEvents
+							.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End < DateTime.UtcNow)
+							.ToList())
+						{
+							MapEvents.Add(item);
+						}
 					}
 				}
 
@@ -635,6 +693,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ResetSelectedDates();
 			IsPublicMapEventsOnly = false;
 			IsTimeFiltered = false;
+			IsHistoryEventsViewed = false;
 
 			RequiredMapEventsLocation = string.Empty;
 			RequiredMapEventsPerson = string.Empty;
