@@ -57,9 +57,7 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 						ScheduleViewModel = new ScheduleViewModel(proj);
 					}
 					
-					ViewModel = new PersonalEventCreateViewModel();
-					ViewModel.CurrentMapEvent = mapEvent;
-					ViewModel.StartTabIndex = 1;
+					ViewModel = new PersonalEventCreateViewModel(mapEvent);
 				}
 			}
 		}

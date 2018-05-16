@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
@@ -100,18 +101,22 @@ namespace TimeTrace.Model.Requests
 		}
 
 		/// <summary>
-		/// Save hash of email and password
+		/// Save user email and password hash to file
 		/// </summary>
-		/// <param name="user">User account</param>
-		/// <returns>Result of saving</returns>
-		public static async Task SaveUserHashAsync(this User user)
+		/// <returns>Method result</returns>
+		public static async Task SaveUserHashToFileAsync(this User user)
 		{
+			if (ArgumentIsNull(user))
+			{
+				throw new ArgumentNullException($"{nameof(User)} is null");
+			}
+
 			try
 			{
 				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-				StorageFile storageFile = await storageFolder.CreateFileAsync("_epf.bin", CreationCollisionOption.ReplaceExisting);
+				StorageFile storageFile = await storageFolder.CreateFileAsync("_epsh.bin", CreationCollisionOption.ReplaceExisting);
 
-				string[] stringToFile = { user.Email, ":", user.Password };
+				string[] stringToFile = { user.GetHashEncrypt() };
 
 				await FileIO.WriteLinesAsync(storageFile, stringToFile);
 			}
@@ -195,6 +200,45 @@ namespace TimeTrace.Model.Requests
 			else
 			{
 				return (null, null);
+			}
+		}
+
+		/// <summary>
+		/// Check available for authorization with local hash
+		/// </summary>
+		/// <param name="user">Current authorized user</param>
+		/// <returns>True, if authatization available</returns>
+		public static async Task<bool> CanAuthorizationWithoutInternetAsync(this User user)
+		{
+			if (ArgumentIsNull(user))
+			{
+				throw new ArgumentNullException($"{nameof(User)} is null");
+			}
+
+			try
+			{
+				StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+
+				var tryGetFile = await ApplicationData.Current.LocalFolder.TryGetItemAsync("_epsh.bin");
+				if (tryGetFile == null)
+				{
+					return false;
+				}
+
+				StorageFile storageFile = await storageFolder.GetFileAsync("_epsh.bin");
+
+				var fileLines = await (FileIO.ReadLinesAsync(storageFile));
+
+				if (fileLines[0] == user.GetHashEncrypt())
+				{
+					return true;
+				}
+
+				return false;
+			}
+			catch (Exception)
+			{
+				throw;
 			}
 		}
 

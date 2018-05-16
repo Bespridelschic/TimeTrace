@@ -164,6 +164,13 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 				return;
 			}
 
+			if (!InternetRequests.CheckForInternetConnection())
+			{
+				await new MessageDialog("Проверьте своё подключение к интернету", "Ошибка регистрации").ShowAsync();
+
+				return;
+			}
+
 			Processing = true;
 			ControlEnable = false;
 

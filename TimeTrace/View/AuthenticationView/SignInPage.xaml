@@ -101,13 +101,13 @@
 				x:Uid="/SignInUp/SignInButton"
 				VerticalAlignment="Top"
 				BorderBrush="{x:Bind SolidBrush}"
-				Click="{x:Bind ViewModel.AppSignIn}"
+				Click="{x:Bind ViewModel.AppSignInAsync}"
 				IsEnabled="{x:Bind ViewModel.ControlEnable, Mode=OneWay}" />
 
 			<HyperlinkButton
 				x:Uid="/SignInUp/PasswordForgotLink"
 				VerticalAlignment="Bottom"
-				Click="{x:Bind ViewModel.UserPasswordRecovery}"
+				Click="{x:Bind ViewModel.UserPasswordRecoveryAsync}"
 				Foreground="{x:Bind SolidBrush}" />
 		</Grid>
 

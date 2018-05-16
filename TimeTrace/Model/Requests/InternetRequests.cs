@@ -98,12 +98,12 @@ namespace TimeTrace.Model.Requests
 				switch (destination)
 				{
 					case PostRequestDestination.SignIn:
-						link = "https://mindstructuring.ru/customer/login";
+						link = "https://planningway.ru/customer/login";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 
 					case PostRequestDestination.SignInWithToken:
-						link = "https://mindstructuring.ru/customer/login";
+						link = "https://planningway.ru/customer/login";
 						var res = await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync();
 
 						if (string.IsNullOrEmpty(res.email) || string.IsNullOrEmpty(res.token))
@@ -115,17 +115,17 @@ namespace TimeTrace.Model.Requests
 						break;
 
 					case PostRequestDestination.SignUp:
-						link = "https://mindstructuring.ru/customer/signup";
+						link = "https://planningway.ru/customer/signup";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 
 					case PostRequestDestination.AccountActivation:
-						link = "https://mindstructuring.ru/customer/sendactivationkey";
+						link = "https://planningway.ru/customer/sendactivationkey";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 
 					case PostRequestDestination.PasswordReset:
-						link = "https://mindstructuring.ru/customer/sendresetkey";
+						link = "https://planningway.ru/customer/sendresetkey";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 
@@ -164,7 +164,7 @@ namespace TimeTrace.Model.Requests
 		{
 			int resultOfSynchronization = 1;
 
-			string receivedlink = "https://mindstructuring.ru/data/synchronization";
+			string receivedlink = "https://planningway.ru/data/synchronization";
 			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -448,7 +448,7 @@ namespace TimeTrace.Model.Requests
 					)
 				};
 
-				string departureAddress = "https://mindstructuring.ru/data/save";
+				string departureAddress = "https://planningway.ru/data/save";
 				var completeSendingData = new
 				{
 					_csrf = (string)jsonString["_csrf"],
@@ -489,7 +489,7 @@ namespace TimeTrace.Model.Requests
 		{
 			int resultOfSynchronization = 1;
 
-			string receivedlink = "https://mindstructuring.ru/contact/synchronization";
+			string receivedlink = "https://planningway.ru/contact/synchronization";
 			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -600,7 +600,7 @@ namespace TimeTrace.Model.Requests
 					)
 				};
 
-				string departureAddress = "https://mindstructuring.ru/contact/save";
+				string departureAddress = "https://planningway.ru/contact/save";
 				var completeSendingData = new
 				{
 					_csrf = (string)jsonString["_csrf"],
@@ -637,7 +637,7 @@ namespace TimeTrace.Model.Requests
 		{
 			int resultOfSynchronization = 1;
 
-			string receivedlink = "https://mindstructuring.ru/data/get-public";
+			string receivedlink = "https://planningway.ru/data/get-public";
 			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -708,6 +708,35 @@ namespace TimeTrace.Model.Requests
 			}
 
 			return resultOfSynchronization;
+		}
+
+		/// <summary>
+		/// Check Internet connection
+		/// </summary>
+		/// <returns>Return true, if connected</returns>
+		public static bool CheckForInternetConnection()
+		{
+			try
+			{
+				using (var webClient = new WebClient())
+				{
+					webClient.Proxy = null;
+
+					using (webClient.OpenRead("http://clients3.google.com/generate_204"))
+					{
+						return true;
+					}
+				}
+			}
+			catch (WebException)
+			{
+				return false;
+			}
+
+			catch (Exception)
+			{
+				return false;
+			}
 		}
 
 		#region JSON

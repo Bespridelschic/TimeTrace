@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace TimeTrace.Model
 {
@@ -19,7 +20,7 @@ namespace TimeTrace.Model
 		[JsonProperty(PropertyName = "email")]
 		public string Email
 		{
-			get => email;
+			get => email.Trim();
 			set
 			{
 				email = value;
@@ -31,7 +32,7 @@ namespace TimeTrace.Model
 		[JsonProperty(PropertyName = "password")]
 		public string Password
 		{
-			get => password;
+			get => password.Trim();
 			set
 			{
 				password = value;
@@ -127,11 +128,30 @@ namespace TimeTrace.Model
 		/// <summary>
 		/// Hash algorithm SHA512 UTF8-UTF8
 		/// </summary>
-		/// <returns>Hash of password</returns>
+		/// <returns>Hash of Email + Password</returns>
 		public string GetHashEncrypt()
 		{
 			SHA512 hash = SHA512.Create();
-			var result = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+			var result = hash.ComputeHash(Encoding.UTF8.GetBytes(Email.ToLowerInvariant() + Password));
+
+			string res = string.Empty;
+			foreach (var item in result)
+			{
+				res += item.ToString();
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// Hash algorithm SHA512 UTF8-UTF8
+		/// </summary>
+		/// <param name="text">Text for encrypting</param>
+		/// <returns>Hash of parameters strings</returns>
+		public string GetHashEncrypt(string text)
+		{
+			SHA512 hash = SHA512.Create();
+			var result = hash.ComputeHash(Encoding.UTF8.GetBytes(text));
 			return Encoding.UTF8.GetString(result);
 		}
 

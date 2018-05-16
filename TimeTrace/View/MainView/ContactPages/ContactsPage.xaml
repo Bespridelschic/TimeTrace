@@ -257,6 +257,7 @@
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.StartChat}"
 									Icon="Message"
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 									Text="Отправить сообщение" />
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
@@ -266,10 +267,12 @@
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.EditContactAsync}"
 									Icon="Edit"
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 									Text="Редактировать" />
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.ContactRemoveAsync}"
 									Icon="Delete"
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 									Text="Удалить" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
@@ -277,7 +280,7 @@
 				</Grid>
 			</PivotItem>
 
-			<PivotItem Padding="-15,0,0,0" Header="Участники календарей" >
+			<PivotItem Padding="-15,0,0,0" Header="Участники календарей">
 				<Grid>
 					<ParallaxView
 						Opacity="0.5"
@@ -341,6 +344,7 @@
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.StartChat}"
 									Icon="Message"
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 									Text="Отправить сообщение" />
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
@@ -350,10 +354,12 @@
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.EditContactAsync}"
 									Icon="Edit"
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 									Text="Редактировать" />
 								<MenuFlyoutItem
 									Click="{x:Bind ViewModel.ContactRemoveAsync}"
 									Icon="Delete"
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 									Text="Удалить" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
@@ -381,6 +387,7 @@
 			<AppBarButton
 				Click="{x:Bind ViewModel.RefreshContactsAsync}"
 				Icon="Refresh"
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 				Label="Обновить список"
 				ToolTipService.ToolTip="Обновить список контактов" />
 
@@ -389,12 +396,14 @@
 			<AppBarButton
 				Click="{x:Bind ViewModel.AddContactAsync}"
 				Icon="AddFriend"
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 				Label="Добавить контакт"
 				ToolTipService.ToolTip="Создать новый контакт" />
 
 			<AppBarToggleButton
 				Click="{x:Bind ViewModel.ContactsRemoveAsync}"
 				Icon="BlockContact"
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 				Label="Удалить выбранные"
 				ToolTipService.ToolTip="Удалить выбранные контакты" />
 		</CommandBar>

@@ -77,6 +77,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public string CurrentUserEmail { get; set; }
 
+		/// <summary>
+		/// If offine sign in, block internet features
+		/// </summary>
+		public bool InternetFeaturesEnable { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -85,6 +90,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public HomeViewModel()
 		{
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Home);
+			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
 			CurrentUser = GetUserInfo();
 			CurrentUserEmail = CurrentUser.Email[0].ToString().ToUpper() + CurrentUser.Email.Substring(1, CurrentUser.Email.IndexOf('@') - 1);
@@ -160,6 +166,14 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void SettingsPageChoice()
 		{
 			(Application.Current as App).AppFrame.Navigate(typeof(SettingsPage));
+		}
+
+		/// <summary>
+		/// User feedback
+		/// </summary>
+		public void Feedback()
+		{
+			StartPageViewModel.Instance.Feedback();
 		}
 	}
 }

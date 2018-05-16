@@ -287,7 +287,7 @@
 				</Grid>
 			</PivotItem>
 
-			<PivotItem Padding="-15,0,0,0" Header="Создание">
+			<PivotItem Padding="-15,0,0,0" Header="{x:Bind ViewModel.Header}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition />
@@ -471,7 +471,7 @@
 							HorizontalAlignment="Center"
 							Background="SteelBlue"
 							Click="{x:Bind ViewModel.EventCreateAsync}"
-							Content="Создать событие"
+							Content="{x:Bind ViewModel.ActionName}"
 							Foreground="White" />
 					</StackPanel>
 				</Grid>

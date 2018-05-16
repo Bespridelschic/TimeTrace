@@ -160,6 +160,11 @@ namespace TimeTrace
 
 			try
 			{
+				if (!InternetRequests.CheckForInternetConnection())
+				{
+					return;
+				}
+
 				var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.SignInWithToken);
 
 				if (requestResult == 0)
@@ -199,7 +204,7 @@ namespace TimeTrace
 				{
 					StorageFile storageFile = await storageFolder.CreateFileAsync("_dif.bin", CreationCollisionOption.ReplaceExisting);
 
-					string[] stringToFile = {Guid.NewGuid().ToString()};
+					string[] stringToFile = { Guid.NewGuid().ToString() };
 
 					await FileIO.WriteLinesAsync(storageFile, stringToFile);
 				}

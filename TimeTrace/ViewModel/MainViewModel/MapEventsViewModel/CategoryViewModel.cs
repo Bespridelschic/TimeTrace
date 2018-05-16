@@ -597,10 +597,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.Areas
-						.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
-							i.Description.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) &&
-							i.EmailOfOwner == (string)localSettings.Values["email"] &&
-							!i.IsDelete)
+						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
+									i.Description.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
 						.Select(i => i))
 					{
 						if (!AreaSuggestList.Contains(i.Name))

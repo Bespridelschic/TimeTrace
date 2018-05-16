@@ -136,7 +136,7 @@ namespace TimeTrace.Model.Events
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
-		public MapEvent()
+		public MapEvent() : base()
 		{
 			ProjectOwnerEmail = string.Empty;
 			IsPublic = false;
@@ -147,23 +147,54 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		/// <param name="name">Event name</param>
 		/// <param name="description">Event description</param>
-		/// <param name="start">Start event date time</param>
-		/// <param name="end">End event date time</param>
+		/// <param name="start">Start event (date + time)</param>
+		/// <param name="end">End event (date + time)</param>
 		/// <param name="place">Event location</param>
 		/// <param name="user">Binded user</param>
 		/// <param name="eventInterval">Repeat of event</param>
+		/// <param name="isPublic">Is event available for contacts</param>
+		/// <param name="color">Color of event. Color is between 1 and 11 inclusive</param>
 		/// <param name="projectId">ID of map project</param>
-		public MapEvent(string name, string description, DateTime start, DateTime end, string place, string user, string eventInterval, string projectId, bool isPublic) : this()
+		public MapEvent(string name, string description, DateTime start, DateTime end, string place,
+			string user, string eventInterval, bool isPublic, int color, string projectId) : this()
 		{
-			Name = name;
-			Description = description;
-			Start = start;
-			End = end;
-			Location = place;
+			Name = name.Trim();
+
+			if (!string.IsNullOrEmpty(description?.Trim()))
+			{
+				Description = description.Trim();
+			}
+			else
+			{
+				Description = string.Empty;
+			}
+
+			Start = start.ToUniversalTime();
+			End = end.ToUniversalTime();
+
+			if (!string.IsNullOrEmpty(place?.Trim()))
+			{
+				Location = place.Trim();
+			}
+			else
+			{
+				Location = string.Empty;
+			}
+
+			if (!string.IsNullOrEmpty(user?.Trim()))
+			{
+				UserBind = user.Trim();
+			}
+			else
+			{
+				UserBind = string.Empty;
+			}
+
 			EventInterval = eventInterval;
-			ProjectId = projectId;
-			UserBind = user;
+
 			IsPublic = isPublic;
+			Color = color;
+			ProjectId = projectId;
 		}
 
 		#endregion

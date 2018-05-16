@@ -11,78 +11,7 @@
 	<Page.Resources>
 		<converver:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 		<converver:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
-		<Style TargetType="Button">
-			<Setter Property="Width" Value="200" />
-			<Setter Property="Height" Value="150" />
-			<Setter Property="Background" Value="White" />
-			<Setter Property="BorderThickness" Value="1.5" />
-			<Setter Property="Foreground" Value="Black" />
-			<Setter Property="CanDrag" Value="True" />
-			<Setter Property="Margin" Value="1.5" />
-			<Setter Property="ContentTemplate">
-				<Setter.Value>
-					<DataTemplate x:DataType="local:Area">
-						<Grid ToolTipService.Placement="Top">
-
-							<ToolTipService.ToolTip>
-								<StackPanel>
-									<StackPanel Margin="10,2" Orientation="Horizontal">
-										<TextBlock
-											Margin="0,0,5,0"
-											FontSize="15"
-											Text="Календарь: " />
-										<TextBlock FontSize="15" Text="{Binding Name}" />
-									</StackPanel>
-									<StackPanel Margin="10,2" Orientation="Horizontal">
-										<TextBlock
-											Margin="0,0,5,0"
-											FontSize="15"
-											Text="Описание: " />
-										<TextBlock FontSize="15" Text="{Binding Description}" />
-									</StackPanel>
-									<StackPanel Margin="10,2" Orientation="Horizontal">
-										<TextBlock
-											Margin="0,0,5,0"
-											FontSize="15"
-											Text="Обновлено: " />
-										<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
-									</StackPanel>
-								</StackPanel>
-							</ToolTipService.ToolTip>
-
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="10" />
-									<RowDefinition Height="50" />
-									<RowDefinition Height="10" />
-									<RowDefinition Height="80" />
-								</Grid.RowDefinitions>
-
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									FontSize="20"
-									Text="{Binding Name}"
-									TextAlignment="Center"
-									TextWrapping="WrapWholeWords" />
-
-								<MenuFlyoutSeparator Grid.Row="2" />
-
-								<TextBlock
-									Grid.Row="3"
-									HorizontalAlignment="Center"
-									FontSize="14"
-									Foreground="SlateGray"
-									Text="{Binding Description}"
-									TextAlignment="Center"
-									TextWrapping="WrapWholeWords" />
-							</Grid>
-						</Grid>
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+		<converver:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter"/>
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -171,7 +100,7 @@
 										Margin="0,0,5,0"
 										FontSize="15"
 										Text="Обновлено: " />
-									<TextBlock FontSize="15" Text="{Binding UpdateAt}" />
+									<TextBlock FontSize="15" Text="{Binding UpdateAt, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 								</StackPanel>
 							</StackPanel>
 						</ToolTipService.ToolTip>

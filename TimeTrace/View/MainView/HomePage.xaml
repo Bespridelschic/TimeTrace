@@ -202,7 +202,10 @@
 						</Grid>
 					</Button>
 
-					<Button Margin="5" HorizontalAlignment="Center">
+					<Button
+						Margin="5"
+						HorizontalAlignment="Center"
+						IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="50" />
@@ -224,7 +227,11 @@
 						</Grid>
 					</Button>
 
-					<Button Margin="5" HorizontalAlignment="Center">
+					<Button
+						Margin="5"
+						HorizontalAlignment="Center"
+						Click="{x:Bind ViewModel.Feedback}"
+						IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="50" />

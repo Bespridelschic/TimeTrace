@@ -29,6 +29,15 @@ namespace TimeTrace.View.MainView
 
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			if (e.Parameter is bool locker)
+			{
+				StartPageViewModel.Instance.InternetFeaturesEnable = locker;
+			}
+			else
+			{
+				StartPageViewModel.Instance.InternetFeaturesEnable = true;
+			}
+
 			(Application.Current as App).AppFrame = ContentFrame;
 			(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
 			(Application.Current as App).AppFrame.BackStack.Clear();

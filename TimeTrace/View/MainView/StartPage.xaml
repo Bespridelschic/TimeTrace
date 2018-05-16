@@ -15,19 +15,16 @@
 		</ResourceDictionary>
 	</Page.Resources>
 
-	<NavigationView
-		Background="{StaticResource HostBackdropBrush}"
-		SelectionChanged="{x:Bind ViewModel.NavigatingThroughTheMainMenu}">
-
+	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="{x:Bind ViewModel.NavigatingThroughTheMainMenu}">
 		<NavigationView.HeaderTemplate>
 			<DataTemplate x:DataType="local:StartPageViewModel">
-				<Grid Margin="20,10,0,0">
+				<Grid Margin="20,23,0,-10">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 					<TextBlock
-						Margin="0,0,0,10"
+						Margin="-12,0,0,10"
 						VerticalAlignment="Bottom"
 						FontSize="32"
 						Style="{StaticResource TitleTextBlockStyle}"
@@ -42,6 +39,7 @@
 						<AppBarButton
 							Click="{x:Bind Feedback}"
 							Icon="Edit"
+							IsEnabled="{x:Bind InternetFeaturesEnable, Mode=OneWay}"
 							Label="Сообщить об ошибке"
 							ToolTipService.ToolTip="Рассказать о найденных ошибках или предложить нововведения" />
 						<AppBarButton
@@ -99,6 +97,7 @@
 			<NavigationViewItem
 				Content="Синронизация с календарями"
 				Icon="Upload"
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 				Tag="scheduleSync"
 				ToolTipService.Placement="Right"
 				ToolTipService.ToolTip="Установить текущее расписание в онлайн-календарях" />

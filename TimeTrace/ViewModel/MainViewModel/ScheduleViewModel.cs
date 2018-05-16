@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
+using TimeTrace.Model.Requests;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -93,6 +94,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 				OnPropertyChanged();
 			}
 		}
+
+		/// <summary>
+		/// If offine sign in, block internet features
+		/// </summary>
+		public bool InternetFeaturesEnable { get; set; }
 
 		#region Filters
 
@@ -282,6 +288,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		private void InitializationData()
 		{
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Shedule);
+			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
 			MapEventsSuggestList = new ObservableCollection<string>();
 			SelectedFilteredDates = new ObservableCollection<DateTimeOffset>();
@@ -459,6 +466,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				await new MessageDialog("Нельзя изменять прошедшие события", "Ошибка изменения события").ShowAsync();
 			}
+		}
+
+		/// <summary>
+		/// Getting public map events from contacts
+		/// </summary>
+		public async void GetPublicEventsAsync()
+		{
+			await new MessageDialog("Not implemented").ShowAsync();
+			return;
+			var result = await InternetRequests.GetPublicMapEventsAsync();
 		}
 
 		#region Filtering
@@ -727,7 +744,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
+					foreach (var i in db.MapEvents
+						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"]
+							&& !i.IsDelete
+							&& i.End >= DateTime.UtcNow)
+						.Select(i => i))
 					{
 						MapEvents.Add(i);
 					}
@@ -739,9 +760,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.MapEvents
-						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
-									i.EmailOfOwner == (string)localSettings.Values["email"] &&
-									!i.IsDelete)
+						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()))
+							&& i.EmailOfOwner == (string)localSettings.Values["email"]
+							&& !i.IsDelete
+							&& i.End >= DateTime.UtcNow)
 						.Select(i => i))
 					{
 						if (!MapEventsSuggestList.Contains(i.Name))
@@ -778,7 +800,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					var term = args.QueryText.ToLower();
 					foreach (var i in db.MapEvents
-						.Where(i => i.Name.ToLowerInvariant().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+						.Where(i => i.Name.ToLowerInvariant().Contains(term)
+							&& !i.IsDelete
+							&& i.EmailOfOwner == (string)localSettings.Values["email"]
+							&& i.End >= DateTime.UtcNow)
 						.Select(i => i))
 					{
 						MapEvents.Add(i);

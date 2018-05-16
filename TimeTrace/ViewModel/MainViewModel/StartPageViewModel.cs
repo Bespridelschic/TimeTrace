@@ -53,11 +53,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Username in command bar
 		/// </summary>
-		public string CurrentUserName { get; private set; }
+		public string CurrentUserName { get; set; }
+
+		/// <summary>
+		/// If offine sign in, block internet features
+		/// </summary>
+		public bool InternetFeaturesEnable { get; set; }
 
 		#endregion
 
-		private static readonly Lazy<StartPageViewModel> instance = new Lazy<StartPageViewModel>(() => new StartPageViewModel());
+		private static readonly Lazy<StartPageViewModel> instance;
 		/// <summary>
 		/// Getting singleton instance
 		/// </summary>
@@ -67,6 +72,14 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				return instance.Value;
 			}
+		}
+
+		/// <summary>
+		/// Standart static constructor
+		/// </summary>
+		static StartPageViewModel()
+		{
+			instance = new Lazy<StartPageViewModel>(() => new StartPageViewModel());
 		}
 
 		/// <summary>
@@ -80,7 +93,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			var currentUser = new Model.User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
 			CurrentUserName = currentUser.Email[0].ToString().ToUpper() + currentUser.Email.Substring(1, currentUser.Email.IndexOf('@') - 1);
-		}
+
+			InternetFeaturesEnable = true;
+	}
 
 		/// <summary>
 		/// Navigation menu
@@ -140,11 +155,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 							ShowToastNotification(1);
 						}
 
-						break;
-
-					case "help":
-						sender.Header = "Помощь";
-						await new MessageDialog("Помощь пользователя находится в разработке").ShowAsync();
 						break;
 
 					default:
@@ -242,7 +252,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		/// <param name="sender">Sender</param>
 		/// <param name="e">Parameter</param>
-		public async void Feedback(object sender, RoutedEventArgs e)
+		public async void Feedback()
 		{
 			var message = new TextBox()
 			{
@@ -270,7 +280,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					await (new MessageDialog("Вы не можете отправить пустое сообщение!", "Ошибка")).ShowAsync();
 
-					Feedback(sender, e);
+					Feedback();
 				}
 				else
 				{
@@ -284,7 +294,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		/// <param name="sender">Sender</param>
 		/// <param name="e">Parameter</param>
-		public async void SignOut(object sender, RoutedEventArgs e)
+		public async void SignOut()
 		{
 			ContentDialog dialog = new ContentDialog
 			{
@@ -336,7 +346,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					foreach (var i in db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
+					foreach (var i in db.MapEvents
+						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"]
+							&& !i.IsDelete
+							&& i.End >= DateTime.UtcNow)
+						.Select(i => i))
 					{
 						MapEventsSuggestList.Add(i.Name);
 					}
@@ -348,9 +362,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.MapEvents
-						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
-									i.EmailOfOwner == (string)localSettings.Values["email"] &&
-									!i.IsDelete)
+						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()))
+							&& i.EmailOfOwner == (string)localSettings.Values["email"]
+							&& !i.IsDelete
+							&& i.End >= DateTime.UtcNow)
 						.Select(i => i))
 					{
 						if (!MapEventsSuggestList.Contains(i.Name))

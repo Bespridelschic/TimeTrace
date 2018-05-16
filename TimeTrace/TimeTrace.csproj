@@ -11,7 +11,7 @@
     <AssemblyName>TimeTrace</AssemblyName>
     <DefaultLanguage>ru-RU</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -136,6 +136,7 @@
     </Compile>
     <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
+    <Compile Include="View\Converters\FromUtcToLocalTime.cs" />
     <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>

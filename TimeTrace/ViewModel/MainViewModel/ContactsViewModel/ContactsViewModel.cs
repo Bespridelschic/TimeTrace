@@ -159,6 +159,11 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			}
 		}
 
+		/// <summary>
+		/// If offine sign in, block internet features
+		/// </summary>
+		public bool InternetFeaturesEnable { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -171,9 +176,13 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			Contacts = new ObservableCollection<Contact>();
 			SelectedTabIndex = 0;
 			MultipleSelection = ListViewSelectionMode.Single;
-			RefreshContactsAsync().GetAwaiter();
-
 			ContactsSuggestList = new ObservableCollection<string>();
+
+			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
+			if (InternetFeaturesEnable)
+			{
+				RefreshContactsAsync().GetAwaiter();
+			}
 		}
 
 		/// <summary>
@@ -213,7 +222,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		{
 			if (SelectedContact.HasValue)
 			{
-				(Application.Current as App).AppFrame.Navigate(typeof(ChatPage), Contacts[SelectedContact.Value]);
+				if (InternetFeaturesEnable)
+				{
+					(Application.Current as App).AppFrame.Navigate(typeof(ChatPage), Contacts[SelectedContact.Value]);
+				}
 			}
 		}
 

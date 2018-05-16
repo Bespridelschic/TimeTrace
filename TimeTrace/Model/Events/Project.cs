@@ -53,14 +53,17 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public Project()
 		{
-
+			ProjectSource = string.Empty;
 		}
 
 		/// <summary>
 		/// Standart constructor with Area ID parameter
 		/// </summary>
 		/// <param name="areaId"></param>
-		public Project(string areaId) => AreaId = areaId;
+		public Project(string areaId) : this()
+		{
+			AreaId = areaId;
+		}
 
 		#endregion
 	}

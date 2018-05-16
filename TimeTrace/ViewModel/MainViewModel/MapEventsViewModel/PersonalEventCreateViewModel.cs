@@ -54,7 +54,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 		private DateTimeOffset? startDate;
 		/// <summary>
-		/// Event start updateAt
+		/// Event start time
 		/// </summary>
 		public DateTimeOffset? StartDate
 		{
@@ -199,9 +199,30 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			set
 			{
 				startTabIndex = value;
+
+				if (startTabIndex == 0)
+				{
+					Header = "Создание";
+					ActionName = "Создать событие";
+				}
+				else
+				{
+					Header = "Редактирование";
+					ActionName = "Изменить событие";
+				}
+
 				OnPropertyChanged();
 			}
 		}
+
+		/// <summary>
+		/// The title of event create or edit tab
+		/// </summary>
+		public string Header { get; set; }
+		/// <summary>
+		/// Content of create of edit map event button
+		/// </summary>
+		public string ActionName { get; set; }
 
 		#endregion
 
@@ -222,6 +243,48 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		}
 
 		/// <summary>
+		/// Standart constructor for map event editing
+		/// </summary>
+		/// <param name="mapEvent"></param>
+		public PersonalEventCreateViewModel(MapEvent mapEvent) : this()
+		{
+			// This part for correct editing. Variable assignment doesn't work here
+			CurrentMapEvent.Color = mapEvent.Color;
+			CurrentMapEvent.CreateAt = mapEvent.CreateAt;
+			CurrentMapEvent.Description = mapEvent.Description;
+			CurrentMapEvent.EmailOfOwner = mapEvent.EmailOfOwner;
+			CurrentMapEvent.EventInterval = mapEvent.EventInterval;
+			CurrentMapEvent.Id = mapEvent.Id;
+			CurrentMapEvent.IsPublic = mapEvent.IsPublic;
+			CurrentMapEvent.Location = mapEvent.Location;
+			CurrentMapEvent.Name = mapEvent.Name;
+			CurrentMapEvent.ProjectId = mapEvent.ProjectId;
+			CurrentMapEvent.ProjectOwnerEmail = mapEvent.ProjectOwnerEmail;
+			CurrentMapEvent.UpdateAt = mapEvent.UpdateAt;
+			CurrentMapEvent.UserBind = mapEvent.UserBind;
+
+			StartTabIndex = 1;
+
+			StartDate = mapEvent.Start.ToLocalTime();
+			EndDate = mapEvent.End.ToLocalTime();
+			StartTime = TimeSpan.Parse(mapEvent.Start.ToLocalTime().ToShortTimeString());
+			EndTime = TimeSpan.Parse(mapEvent.End.ToLocalTime().ToShortTimeString());
+
+			if (mapEvent.Start.ToLocalTime().Date == mapEvent.End.ToLocalTime().Date
+				&& mapEvent.Start.ToLocalTime().Hour == 0
+				&& mapEvent.Start.ToLocalTime().Minute == 0
+				&& mapEvent.End.ToLocalTime().Hour == 23
+				&& mapEvent.End.ToLocalTime().Minute == 59)
+			{
+				IsNotAllDay = false;
+			}
+			else
+			{
+				IsNotAllDay = true;
+			}
+		}
+
+		/// <summary>
 		/// Creating a new event
 		/// </summary>
 		/// <returns>Result of event creation</returns>
@@ -229,15 +292,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			if (string.IsNullOrEmpty(CurrentMapEvent.Name?.Trim()) || StartDate == null || (EndDate == null && IsNotAllDay))
 			{
-				await (new MessageDialog("Не заполнено одно из обязательных полей", "Ошибка создания нового события")).ShowAsync();
+				await (new MessageDialog("Не заполнено одно из обязательных полей",
+					(StartTabIndex == 0) ? "Ошибка создания нового события" : "Ошибка изменения события")).ShowAsync();
 
 				return;
-			}
-
-			if (!IsNotAllDay)
-			{
-				EndTime = TimeSpan.Parse("23:59");
-				EndDate = StartDate;
 			}
 
 			if (CurrentMapEvent.Start > CurrentMapEvent.End)
@@ -247,49 +305,21 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				return;
 			}
 
-			// Trim name and description of map event
-			CurrentMapEvent.Name = CurrentMapEvent.Name.Trim();
-
-			if (!string.IsNullOrEmpty(CurrentMapEvent.Description?.Trim()))
-			{
-				CurrentMapEvent.Description = CurrentMapEvent.Description.Trim();
-			}
-			else
-			{
-				CurrentMapEvent.Description = string.Empty;
-			}
-
-			// Set update date as now
-			CurrentMapEvent.UpdateAt = DateTime.UtcNow;
-			CurrentMapEvent.IsDelete = false;
-
-			// Convert dates to UTC
-			CurrentMapEvent.Start = CurrentMapEvent.Start.ToUniversalTime();
-			CurrentMapEvent.End = CurrentMapEvent.End.ToUniversalTime();
-
-			if (!string.IsNullOrEmpty(CurrentMapEvent.UserBind?.Trim()))
-			{
-				CurrentMapEvent.UserBind = CurrentMapEvent.UserBind.Trim();
-			}
-			else
-			{
-				CurrentMapEvent.UserBind = string.Empty;
-			}
-
-			if (!string.IsNullOrEmpty(CurrentMapEvent.Location?.Trim()))
-			{
-				CurrentMapEvent.Location = CurrentMapEvent.Location.Trim();
-			}
-			else
-			{
-				CurrentMapEvent.Location = string.Empty;
-			}
-
-			CurrentMapEvent.EventInterval = "Не повторяется";
+			MapEvent savedMapEvent = new MapEvent(
+				CurrentMapEvent.Name,
+				CurrentMapEvent.Description,
+				CurrentMapEvent.Start,
+				CurrentMapEvent.End,
+				CurrentMapEvent.Location,
+				CurrentMapEvent.UserBind,
+				"Не повторяется",
+				CurrentMapEvent.IsPublic,
+				CurrentMapEvent.Color,
+				CurrentMapEvent.ProjectId);
 
 			if (IsBindingForWindowsCalendar)
 			{
-				BindingEventToWindowsCalendarAsync();
+				BindingEventToWindowsCalendarAsync(savedMapEvent);
 			}
 
 
@@ -297,17 +327,22 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				if (StartTabIndex == 0)
 				{
-					db.MapEvents.Add(CurrentMapEvent);
+					db.MapEvents.Add(savedMapEvent);
 					db.SaveChanges();
 				}
 				else
 				{
-					db.Update(CurrentMapEvent);
+					savedMapEvent.Id = CurrentMapEvent.Id;
+					savedMapEvent.ProjectId = CurrentMapEvent.ProjectId;
+					savedMapEvent.CreateAt = CurrentMapEvent.CreateAt;
+					savedMapEvent.UpdateAt = DateTime.UtcNow;
+
+					db.Update(savedMapEvent);
 					db.SaveChanges();
 				}
 			}
 
-			NewMapEventNotification(CurrentMapEvent.Name, CurrentMapEvent.Start.ToLocalTime());
+			NewMapEventNotification(savedMapEvent.Name, savedMapEvent.Start.ToLocalTime());
 		}
 
 		/// <summary>
@@ -348,7 +383,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <summary>
 		/// Open Windows 10 calendar
 		/// </summary>
-		private async void BindingEventToWindowsCalendarAsync()
+		private async void BindingEventToWindowsCalendarAsync(MapEvent mapEvent)
 		{
 			var appointment = new Windows.ApplicationModel.Appointments.Appointment();
 
@@ -360,13 +395,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			appointment.StartTime = startTime;
 
 			// Subject
-			appointment.Subject = CurrentMapEvent.Name;
+			appointment.Subject = mapEvent.Name;
 
 			// Location
-			appointment.Location = CurrentMapEvent.Location ?? "Default";
+			appointment.Location = mapEvent.Location ?? "Default";
 
 			// Details
-			appointment.Details = CurrentMapEvent.Description;
+			appointment.Details = mapEvent.Description;
 
 			// Duration
 			appointment.Duration = EndTime - StartTime;

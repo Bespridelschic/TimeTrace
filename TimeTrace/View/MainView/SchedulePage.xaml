@@ -12,6 +12,7 @@
 		<ResourceDictionary>
 			<converters:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
+			<converters:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -110,7 +111,7 @@
 											FontSize="17"
 											FontStyle="Italic"
 											Foreground="Gray"
-											Text="{x:Bind Start}" />
+											Text="{x:Bind Start, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 										<TextBlock
 											Margin="0,0,0,1"
 											FontSize="17"
@@ -122,7 +123,7 @@
 											FontSize="17"
 											FontStyle="Italic"
 											Foreground="Gray"
-											Text="{x:Bind End}" />
+											Text="{x:Bind End, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal">
@@ -174,7 +175,7 @@
 						<StackPanel Padding="20,5">
 							<TextBlock
 								Margin="0,10,0,15"
-								HorizontalAlignment="Stretch"
+								HorizontalAlignment="Center"
 								FontSize="28"
 								FontWeight="SemiLight"
 								Text="Фильтрация по датам"
@@ -188,6 +189,8 @@
 
 							<CheckBox
 								Width="300"
+								Margin="0,5,0,0"
+								HorizontalAlignment="Center"
 								Content="Показывать прошедшие события"
 								IsChecked="{x:Bind ViewModel.IsHistoryEventsViewed, Mode=TwoWay}" />
 
@@ -328,6 +331,12 @@
 				Icon="Filter"
 				Label="Фильтрация событий"
 				ToolTipService.ToolTip="Применить фильтры для событий" />
+			<AppBarButton
+				Click="{x:Bind ViewModel.GetPublicEventsAsync}"
+				Icon="BackToWindow"
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
+				Label="События контактов"
+				ToolTipService.ToolTip="Получить события своих контактов" />
 		</CommandBar>
 
 	</Grid>

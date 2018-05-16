@@ -118,7 +118,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// Check fields correct
 		/// </summary>
 		/// <returns>Do the fields satisfy business logic</returns>
-		private async Task<bool> CanAppSignIn()
+		private async Task<bool> CanAppSignInAsync()
 		{
 			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
 			{
@@ -150,11 +150,11 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// <summary>
 		/// Sign in operation
 		/// </summary>
-		public async void AppSignIn()
+		public async Task AppSignInAsync()
 		{
 			CurrentUser.Email = CurrentUser.Email.Trim();
 
-			var canAppSignInResult = await CanAppSignIn();
+			var canAppSignInResult = await CanAppSignInAsync();
 
 			if (!canAppSignInResult)
 			{
@@ -166,17 +166,59 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			try
 			{
+				if (!InternetRequests.CheckForInternetConnection())
+				{
+					if (await CurrentUser.CanAuthorizationWithoutInternetAsync())
+					{
+						ContentDialog signInAccept = new ContentDialog()
+						{
+							Title = "Хотите войти локально?",
+							Content = "Мы обнаружили, что вы ранее входили под этой учётной записью с этого компьютера." +
+									"\nХотите войти под своей учётной записью в автономном режиме?\n\nНекоторые функции будут недоступны!",
+							PrimaryButtonText = "Войти",
+							CloseButtonText = "Отмена",
+							DefaultButton = ContentDialogButton.Primary
+						};
+
+						var signInAcceptResult = await signInAccept.ShowAsync();
+
+						if (signInAcceptResult == ContentDialogResult.Primary)
+						{
+							// Save user local data for using after sign in
+							ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+							localSettings.Values["email"] = CurrentUser.Email.ToLower();
+
+							// Set current user name into title bar
+							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
+							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
+
+							if (Window.Current.Content is Frame frame)
+							{
+								// Navigation to the start page, and disabling internet features
+								frame.Navigate(typeof(StartPage), false);
+							}
+						}
+
+						return;
+					}
+
+					await new MessageDialog("Вход не возможен. Проверьте своё интернет подключение", "Нет доступа к интернету").ShowAsync();
+					return;
+				}
+
 				var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.SignIn, CurrentUser);
 
 				switch (requestResult)
 				{
 					case 0:
 						{
+							// Save user hash to file
+							await CurrentUser.SaveUserHashToFileAsync();
+
 							// Save login to file
 							if (IsPasswordSave)
 							{
 								await CurrentUser.SaveUserToFileAsync();
-								await CurrentUser.SaveUserHashAsync();
 							}
 							else
 							{
@@ -186,6 +228,10 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							// Save user local data for using after sign in
 							ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 							localSettings.Values["email"] = CurrentUser.Email.ToLower();
+
+							// Set current user name into title bar
+							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
+							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
 
 							if (Window.Current.Content is Frame frame)
 							{
@@ -253,7 +299,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 		/// <summary>
 		/// Password recovery operation
 		/// </summary>
-		public async void UserPasswordRecovery()
+		public async void UserPasswordRecoveryAsync()
 		{
 			string currentPassword = CurrentUser.Password;
 			string currentEmail = new string(CurrentUser.Email.ToCharArray());
@@ -311,7 +357,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					CurrentUser.Email = emailTextBox.Text;
 					CurrentUser.Password = passwordTextBox.Password;
 
-					var CanAppSignInResult = await CanAppSignIn();
+					var CanAppSignInResult = await CanAppSignInAsync();
 					if (!CanAppSignInResult)
 					{
 						CurrentUser.Password = currentPassword;
