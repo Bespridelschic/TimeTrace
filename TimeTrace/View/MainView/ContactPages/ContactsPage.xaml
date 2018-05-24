@@ -185,15 +185,15 @@
 			<Pivot.TitleTemplate>
 				<DataTemplate>
 					<TextBlock
+						x:Uid="/ContactsView/ContactsHeader"
 						Margin="6,0,0,-15"
 						FontSize="35"
 						FontWeight="SemiLight"
-						Text="Контакты"
 						TextWrapping="WrapWholeWords" />
 				</DataTemplate>
 			</Pivot.TitleTemplate>
 
-			<PivotItem Padding="-15,0,0,0" Header="Все">
+			<PivotItem x:Uid="/ContactsView/AllContacts" Padding="-15,0,0,0">
 				<Grid>
 					<ParallaxView
 						Opacity="0.5"
@@ -237,12 +237,9 @@
 										Grid.Column="1"
 										Margin="10,0,0,0"
 										VerticalAlignment="Center">
-										<TextBlock
-											FontSize="26"
-											Text="{x:Bind Name}"
-											TextWrapping="WrapWholeWords" />
+										<TextBlock FontSize="26" Text="{x:Bind Name}" />
 										<StackPanel Orientation="Horizontal">
-											<TextBlock FontSize="18" Text="Контактный адрес: " />
+											<TextBlock x:Uid="/ContactsView/Email" FontSize="18" />
 											<TextBlock
 												Margin="5,0"
 												FontSize="18"
@@ -255,32 +252,32 @@
 						<ListView.ContextFlyout>
 							<MenuFlyout Placement="Bottom">
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuSendMessage"
 									Click="{x:Bind ViewModel.StartChat}"
 									Icon="Message"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-									Text="Отправить сообщение" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuDetails"
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
-									Icon="Page"
-									Text="Подробней" />
+									Icon="Page" />
 								<MenuFlyoutSeparator />
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuEdit"
 									Click="{x:Bind ViewModel.EditContactAsync}"
 									Icon="Edit"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-									Text="Редактировать" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuRemove"
 									Click="{x:Bind ViewModel.ContactRemoveAsync}"
 									Icon="Delete"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-									Text="Удалить" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
 					</ListView>
 				</Grid>
 			</PivotItem>
 
-			<PivotItem Padding="-15,0,0,0" Header="Участники календарей">
+			<PivotItem x:Uid="/ContactsView/ParticipantsContacts" Padding="-15,0,0,0">
 				<Grid>
 					<ParallaxView
 						Opacity="0.5"
@@ -329,7 +326,7 @@
 											Text="{x:Bind Name}"
 											TextWrapping="WrapWholeWords" />
 										<StackPanel Orientation="Horizontal">
-											<TextBlock FontSize="18" Text="Контактный адрес: " />
+											<TextBlock x:Uid="/ContactsView/Email" FontSize="18" />
 											<TextBlock
 												Margin="5,0"
 												FontSize="18"
@@ -342,25 +339,25 @@
 						<ListView.ContextFlyout>
 							<MenuFlyout Placement="Bottom">
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuSendMessage"
 									Click="{x:Bind ViewModel.StartChat}"
 									Icon="Message"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-									Text="Отправить сообщение" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuDetails"
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
-									Icon="Page"
-									Text="Подробней" />
+									Icon="Page" />
 								<MenuFlyoutSeparator />
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuEdit"
 									Click="{x:Bind ViewModel.EditContactAsync}"
 									Icon="Edit"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-									Text="Редактировать" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 								<MenuFlyoutItem
+									x:Uid="/ContactsView/ContextMenuRemove"
 									Click="{x:Bind ViewModel.ContactRemoveAsync}"
 									Icon="Delete"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-									Text="Удалить" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
 					</ListView>
@@ -371,12 +368,12 @@
 		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">
 			<CommandBar.Content>
 				<StackPanel Margin="10,-5" Orientation="Horizontal">
-					<TextBlock Text="Поиск по контактам: " />
+					<TextBlock x:Uid="/ContactsView/Searching" />
 					<AutoSuggestBox
+						x:Uid="/ContactsView/SearchingPlaceholder"
 						Width="250"
 						Margin="10,13,10,10"
 						ItemsSource="{x:Bind ViewModel.ContactsSuggestList, Mode=TwoWay}"
-						PlaceholderText="Поиск..."
 						QueryIcon="Find"
 						QuerySubmitted="{x:Bind ViewModel.ContactsFilterQuerySubmitted}"
 						TextChanged="{x:Bind ViewModel.ContactsFilter}" />
@@ -385,27 +382,24 @@
 			</CommandBar.Content>
 
 			<AppBarButton
+				x:Uid="/ContactsView/ContactsRefresh"
 				Click="{x:Bind ViewModel.RefreshContactsAsync}"
 				Icon="Refresh"
-				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-				Label="Обновить список"
-				ToolTipService.ToolTip="Обновить список контактов" />
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 
 			<AppBarSeparator />
 
 			<AppBarButton
+				x:Uid="/ContactsView/ContactsAdd"
 				Click="{x:Bind ViewModel.AddContactAsync}"
 				Icon="AddFriend"
-				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-				Label="Добавить контакт"
-				ToolTipService.ToolTip="Создать новый контакт" />
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 
 			<AppBarToggleButton
+				x:Uid="/ContactsView/ContactsRemove"
 				Click="{x:Bind ViewModel.ContactsRemoveAsync}"
 				Icon="BlockContact"
-				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-				Label="Удалить выбранные"
-				ToolTipService.ToolTip="Удалить выбранные контакты" />
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 		</CommandBar>
 
 	</Grid>

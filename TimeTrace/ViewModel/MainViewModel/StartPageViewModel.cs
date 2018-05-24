@@ -1,12 +1,16 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Requests;
 using TimeTrace.View.AuthenticationView;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.ContactPages;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
+using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
@@ -60,6 +64,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public bool InternetFeaturesEnable { get; set; }
 
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
 		#endregion
 
 		private static readonly Lazy<StartPageViewModel> instance;
@@ -87,22 +96,83 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		private StartPageViewModel()
 		{
+			ResourceLoader = ResourceLoader.GetForCurrentView("HomeVM");
+
 			SetHeader(Headers.Home);
 			MapEventsSuggestList = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-			var currentUser = new Model.User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
+			var currentUser = new Model.User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/HomeVM/UnknownEmail"), null);
 			CurrentUserName = currentUser.Email[0].ToString().ToUpper() + currentUser.Email.Substring(1, currentUser.Email.IndexOf('@') - 1);
 
 			InternetFeaturesEnable = true;
-	}
+		}
+
+		/// <summary>
+		/// Getting last data from server
+		/// </summary>
+		/// <returns>Result of synchronization</returns>
+		public async Task ServerDataSynchronization()
+		{
+			if (Instance.InternetFeaturesEnable)
+			{
+				// Contacts synchronization
+				await new ContactsViewModel.ContactsViewModel().RefreshContactsAsync();
+				Debug.WriteLine("Контакты синхронизированы с сервером");
+
+				// Calendars, projects and map events synchronization
+				try
+				{
+					var resultOfSynchronization = await Model.Requests.InternetRequests.SynchronizationRequestAsync();
+					if (resultOfSynchronization == 0)
+					{
+						ShowToastNotification(0);
+					}
+
+					if (resultOfSynchronization == 1)
+					{
+						ShowToastNotification(1);
+					}
+				}
+				catch (Exception)
+				{
+					ShowToastNotification(1);
+				}
+
+				Debug.WriteLine("Календари, проекты и события синхронизированы с сервером");
+			}
+		}
+
+		/// <summary>
+		/// Regular synchronization of calendars, projects and map events
+		/// </summary>
+		/// <returns>Result of synchronization</returns>
+		public async Task CategoriesSynchronization()
+		{
+			// Start synchronization if internet connection enabled
+			if (InternetRequests.CheckForInternetConnection())
+			{
+				try
+				{
+					// Synchronization updated categories
+					if (await InternetRequests.SynchronizationRequestAsync() == 1)
+					{
+						ShowToastNotification(1);
+					}
+				}
+				catch (Exception)
+				{
+					ShowToastNotification(1);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Navigation menu
 		/// </summary>
 		/// <param name="sender">Sender</param>
 		/// <param name="args">Parameter</param>
-		public async void NavigatingThroughTheMainMenu(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		public void NavigatingThroughTheMainMenu(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			if (args.IsSettingsSelected)
 			{
@@ -136,27 +206,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 						(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 						break;
 
-					case "scheduleSync":
-						try
-						{
-							var resultOfSynchronization = await Model.Requests.InternetRequests.SynchronizationRequestAsync();
-							if (resultOfSynchronization == 0)
-							{
-								ShowToastNotification(0);
-							}
-
-							if (resultOfSynchronization == 1)
-							{
-								ShowToastNotification(1);
-							}
-						}
-						catch (Exception)
-						{
-							ShowToastNotification(1);
-						}
-
-						break;
-
 					default:
 						break;
 				}
@@ -181,19 +230,19 @@ namespace TimeTrace.ViewModel.MainViewModel
 			switch (header)
 			{
 				case Headers.Home:
-					PageTitle = "Домашняя страница";
+					PageTitle = ResourceLoader.GetString("/StartVM/Homepage");
 					break;
 				case Headers.Shedule:
-					PageTitle = "Расписание";
+					PageTitle = ResourceLoader.GetString("/StartVM/Shedule");
 					break;
 				case Headers.Contacts:
-					PageTitle = "Контакты";
+					PageTitle = ResourceLoader.GetString("/StartVM/Contacts");
 					break;
 				case Headers.MapEvents:
-					PageTitle = "Персональные карты";
+					PageTitle = ResourceLoader.GetString("/StartVM/PersonalEvents");
 					break;
 				case Headers.Settings:
-					PageTitle = "Настройки";
+					PageTitle = ResourceLoader.GetString("/StartVM/Settings");
 					break;
 				default:
 					break;
@@ -205,7 +254,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		private void ShowToastNotification(int res)
 		{
-			string message = res == 0 ? "Синхронизация завершена успешно" : "Ошибка во время синхронизации. Попробуйте перезайти в аккаунт";
+			string message = res == 0 ? ResourceLoader.GetString("/StartVM/SynchronizationSuccess") : ResourceLoader.GetString("/StartVM/SynchronizationError");
 
 			var toastContent = new ToastContent()
 			{
@@ -217,12 +266,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 						{
 							new AdaptiveText()
 							{
-								Text = "Синхронизация событий",
+								Text = ResourceLoader.GetString("/StartVM/SynchronizationSuccess"),
 								HintMaxLines = 1
 							},
 							new AdaptiveText()
 							{
-								Text = $"Начало синхронизации: {DateTime.Now.ToShortTimeString()}"
+								Text = $"{ResourceLoader.GetString("/StartVM/SynchronizationStart")}: {DateTime.Now.ToShortTimeString()}"
 							},
 							new AdaptiveText()
 							{
@@ -231,7 +280,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 						},
 						AppLogoOverride = new ToastGenericAppLogo()
 						{
-							//Source = "https://picsum.photos/48?image=883",
 							Source = @"Assets/user-48.png",
 							HintCrop = ToastGenericAppLogoCrop.Circle
 						}
@@ -256,8 +304,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			var message = new TextBox()
 			{
-				Header = "Расскажите, с какими проблемами вы столкнулись ?",
-				PlaceholderText = "Опишите проблему...",
+				Header = ResourceLoader.GetString("/StartVM/FeedbackHeader"),
+				PlaceholderText = ResourceLoader.GetString("/StartVM/FeedbackPlaceholder"),
 				Height = 200,
 				Width = 350,
 				TextWrapping = TextWrapping.Wrap,
@@ -267,10 +315,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			ContentDialog dialog = new ContentDialog
 			{
-				Title = "Обратная связь",
+				Title = ResourceLoader.GetString("/StartVM/FeedbackTitle"),
 				Content = message,
-				PrimaryButtonText = "Отправить",
-				CloseButtonText = "Отмена",
+				PrimaryButtonText = ResourceLoader.GetString("/StartVM/FeedbackSend"),
+				CloseButtonText = ResourceLoader.GetString("/StartVM/FeedbackLater"),
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
@@ -278,13 +326,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				if (string.IsNullOrEmpty(message.Text))
 				{
-					await (new MessageDialog("Вы не можете отправить пустое сообщение!", "Ошибка")).ShowAsync();
+					await (new MessageDialog(ResourceLoader.GetString("/StartVM/FeedbackProblem"), ResourceLoader.GetString("/StartVM/FeedbackError"))).ShowAsync();
 
 					Feedback();
 				}
 				else
 				{
-					await (new MessageDialog("Благодарим Вас за вашу поддержку", "Сообщение успешно отправлено")).ShowAsync();
+					await (new MessageDialog(ResourceLoader.GetString("/StartVM/FeedbackMessage"), ResourceLoader.GetString("/StartVM/FeedbackSuccess"))).ShowAsync();
 				}
 			}
 		}
@@ -298,10 +346,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			ContentDialog dialog = new ContentDialog
 			{
-				Title = "Подтверждение",
-				Content = "Вы уверены что хотите выйти из системы?",
-				PrimaryButtonText = "Выйти",
-				CloseButtonText = "Отмена",
+				Title = ResourceLoader.GetString("/StartVM/SignOutHeader"),
+				Content = ResourceLoader.GetString("/StartVM/SignOutMessage"),
+				PrimaryButtonText = ResourceLoader.GetString("/StartVM/SignOutExit"),
+				CloseButtonText = ResourceLoader.GetString("/StartVM/SignOutCancel"),
 				DefaultButton = ContentDialogButton.Close
 			};
 

@@ -285,9 +285,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		}
 
 		/// <summary>
-		/// Creating a new event
+		/// Creating a new event or changing selected
 		/// </summary>
-		/// <returns>Result of event creation</returns>
+		/// <returns>Result of event creation or changing</returns>
 		public async Task EventCreateAsync()
 		{
 			if (string.IsNullOrEmpty(CurrentMapEvent.Name?.Trim()) || StartDate == null || (EndDate == null && IsNotAllDay))
@@ -343,6 +343,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 
 			NewMapEventNotification(savedMapEvent.Name, savedMapEvent.Start.ToLocalTime());
+
+			// Synchronization of changes with server
+			await StartPageViewModel.Instance.CategoriesSynchronization();
 		}
 
 		/// <summary>

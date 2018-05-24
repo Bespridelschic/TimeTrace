@@ -159,6 +159,12 @@
     <value>Check your input data or create a new account</value>
     <comment>Chech correction report</comment>
   </data>
+  <data name="CheckInternetConnectionMessage" xml:space="preserve">
+    <value>Check your internet connection</value>
+  </data>
+  <data name="ConfirmOfflineSignIn" xml:space="preserve">
+    <value>Do you want to log in to your account offline?</value>
+  </data>
   <data name="ConfirmPasswordBoxRegistration.Header" xml:space="preserve">
     <value>Confirm password:</value>
     <comment>Confirm password field</comment>
@@ -230,6 +236,12 @@
     <value>E-mail incorrect. Check it again</value>
     <comment>E-mail incorrect report</comment>
   </data>
+  <data name="InternetConnectionProblemMessage" xml:space="preserve">
+    <value>No access to the Internet</value>
+  </data>
+  <data name="InternetConnectionProblems" xml:space="preserve">
+    <value>Input is not possible. Check your internet connection</value>
+  </data>
   <data name="LastNameTextBox.Header" xml:space="preserve">
     <value>Last name:</value>
     <comment>Last name field</comment>
@@ -243,6 +255,9 @@
   <data name="LaterButtonText" xml:space="preserve">
     <value>Later</value>
     <comment>Cancel password recovery button</comment>
+  </data>
+  <data name="LimitFunctionWarnings" xml:space="preserve">
+    <value>Some functions will be unavailable!</value>
   </data>
   <data name="MiddleNameTextBox.Header" xml:space="preserve">
     <value>Middle name:</value>
@@ -268,6 +283,18 @@
   <data name="ObligatoryFieldAttentionText.Text" xml:space="preserve">
     <value>All fields are obligatory*</value>
     <comment>Obligatory attention text</comment>
+  </data>
+  <data name="OfferOfflineSignIn" xml:space="preserve">
+    <value>We found that you previously used this account from this computer.</value>
+  </data>
+  <data name="OfflineSignIn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="OfflineSignInCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OfflineSignInConfirm" xml:space="preserve">
+    <value>Do you want to login offline?</value>
   </data>
   <data name="OperationFailedText" xml:space="preserve">
     <value>Operation failed</value>
@@ -382,5 +409,8 @@
   <data name="UndefinedErrorText" xml:space="preserve">
     <value>Undefined error. Please, contact the developer</value>
     <comment>Undefined error report</comment>
+  </data>
+  <data name="UnknownEmail" xml:space="preserve">
+    <value>Unknown@gmail.com</value>
   </data>
 </root>

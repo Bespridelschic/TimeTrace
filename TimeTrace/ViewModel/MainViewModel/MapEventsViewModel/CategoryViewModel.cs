@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Input;
+using TimeTrace.Model.Requests;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -102,6 +104,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -111,22 +118,23 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		public CategoryViewModel()
 		{
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+			ResourceLoader = ResourceLoader.GetForCurrentView("CalendarsVM");
 
 			MultipleSelection = ListViewSelectionMode.Single;
 
 			ColorsTable = new Dictionary<string, string>()
 			{
-				{ "Красный", "#d50000" },
-				{ "Розовый", "#E67C73" },
-				{ "Оранжевый", "#F4511E"},
-				{ "Жёлтый", "#F6BF26" },
-				{ "Светло-зелёный", "#33B679" },
-				{ "Зелёный", "#0B8043" },
-				{ "Голубой", "#039BE5" },
-				{ "Синий", "#3F51B5" },
-				{ "Светло-фиолетовый", "#7986CB" },
-				{ "Фиолетовый", "#8E24AA" },
-				{ "Чёрный", "#616161" }
+				{ ResourceLoader.GetString("/CalendarsVM/Red"), "#d50000" },
+				{ ResourceLoader.GetString("/CalendarsVM/Pink"), "#E67C73" },
+				{ ResourceLoader.GetString("/CalendarsVM/Orange"), "#F4511E"},
+				{ ResourceLoader.GetString("/CalendarsVM/Yellow"), "#F6BF26" },
+				{ ResourceLoader.GetString("/CalendarsVM/LightGreen"), "#33B679" },
+				{ ResourceLoader.GetString("/CalendarsVM/Green"), "#0B8043" },
+				{ ResourceLoader.GetString("/CalendarsVM/Blue"), "#039BE5" },
+				{ ResourceLoader.GetString("/CalendarsVM/DarkBlue"), "#3F51B5" },
+				{ ResourceLoader.GetString("/CalendarsVM/LightPurple"), "#7986CB" },
+				{ ResourceLoader.GetString("/CalendarsVM/Purple"), "#8E24AA" },
+				{ ResourceLoader.GetString("/CalendarsVM/Black"), "#616161" }
 			};
 
 			Calendars = new ObservableCollection<Area>();
@@ -160,6 +168,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				}
 
 				Calendars.Add(newArea);
+
+				// Synchronization of changes with server
+				await StartPageViewModel.Instance.CategoriesSynchronization();
 			}
 		}
 
@@ -241,7 +252,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				mainPanel.Children.Add(new TextBlock()
 				{
-					Text = "Вы уверены что хотите удалить календари и все внутренние проекты и события для:",
+					Text = ResourceLoader.GetString("/CalendarsVM/RemoveConfirm"),
 					TextWrapping = TextWrapping.WrapWholeWords
 				});
 
@@ -249,10 +260,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				ContentDialog contentDialog = new ContentDialog()
 				{
-					Title = "Подтверждение действия",
+					Title = ResourceLoader.GetString("/CalendarsVM/ConfirmRemove"),
 					Content = mainPanel,
-					PrimaryButtonText = "Удалить",
-					CloseButtonText = "Отмена",
+					PrimaryButtonText = ResourceLoader.GetString("/CalendarsVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/CalendarsVM/Cancel"),
 					DefaultButton = ContentDialogButton.Close
 				};
 
@@ -285,8 +296,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						}
 					}
 
-					await new MessageDialog($"Календари со всеми проектами и событиями внутри были удалёны",
-									"Операция завершена успешно").ShowAsync();
+					await new MessageDialog(ResourceLoader.GetString("/CalendarsVM/CalendarWasRemovedNotification"),
+									ResourceLoader.GetString("/CalendarsVM/OperationSuccess")).ShowAsync();
 				}
 
 				MultipleSelection = ListViewSelectionMode.Single;
@@ -302,11 +313,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				ContentDialog confirmDialog = new ContentDialog()
 				{
-					Title = "Подтверждение удаления",
-					Content = $"Вы уверены что хотите удалить календарь {Calendars[selectedArea.Value].Name}?\n" +
-								$"Удаление приведен к потере всех проектов и событий внутри календаря!",
-					PrimaryButtonText = "Удалить",
-					CloseButtonText = "Отмена",
+					Title = ResourceLoader.GetString("/CalendarsVM/ConfirmRemove"),
+					Content = $"{ResourceLoader.GetString("/CalendarsVM/ConfirmationRemoving")} {Calendars[selectedArea.Value].Name}?\n" +
+								$"{ResourceLoader.GetString("/CalendarsVM/CascadingRemovalWarning")}",
+					PrimaryButtonText = ResourceLoader.GetString("/CalendarsVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/CalendarsVM/Cancel"),
 					DefaultButton = ContentDialogButton.Close,
 				};
 
@@ -332,11 +343,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 						db.SaveChanges();
 
-						await new MessageDialog($"Календарь {Calendars[SelectedArea.Value].Name} со всеми проектами и событиями внутри был удалён",
-							"Операция завершена успешно").ShowAsync();
+						await new MessageDialog($"{ResourceLoader.GetString("/CalendarsVM/Calendar")} {Calendars[SelectedArea.Value].Name} {ResourceLoader.GetString("/CalendarsVM/CascadingRemovalNotification")}",
+							ResourceLoader.GetString("/CalendarsVM/OperationSuccess")).ShowAsync();
 
 						// Remove Area from UI panel
 						Calendars.Remove(Calendars[SelectedArea.Value]);
+
+						// Synchronization of changes with server
+						await StartPageViewModel.Instance.CategoriesSynchronization();
 					}
 				}
 			}
@@ -396,7 +410,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						}
 						catch (Exception)
 						{
-							await new MessageDialog("Не предвиденная ошибка, попробуйте позже", "Ошибка при изменении данных").ShowAsync();
+							await new MessageDialog(ResourceLoader.GetString("/CalendarsVM/UndefinedErrorMessage"), ResourceLoader.GetString("/CalendarsVM/CalendarChangeError")).ShowAsync();
 						}
 
 						// Update current button
@@ -404,6 +418,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						var tempArea = Calendars[selectedIndex];
 						Calendars.RemoveAt(selectedIndex);
 						Calendars.Insert(selectedIndex, tempArea);
+
+						// Synchronization of changes with server
+						await StartPageViewModel.Instance.CategoriesSynchronization();
 					}
 				}
 			}
@@ -420,8 +437,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			TextBox name = new TextBox()
 			{
-				Header = "Название",
-				PlaceholderText = "Название нового календаря",
+				Header = ResourceLoader.GetString("/CalendarsVM/CalendarNameTitle"),
+				PlaceholderText = ResourceLoader.GetString("/CalendarsVM/CalendarName"),
 				Text = area?.Name ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 30,
@@ -430,8 +447,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			TextBox description = new TextBox()
 			{
-				Header = "Описание",
-				PlaceholderText = "Краткое описание календаря",
+				Header = ResourceLoader.GetString("/CalendarsVM/CalendarDescriptionTitle"),
+				PlaceholderText = ResourceLoader.GetString("/CalendarsVM/CalendarDescription"),
 				Text = area?.Description ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 50,
@@ -443,7 +460,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ComboBox colors = new ComboBox()
 			{
-				Header = "Цвет календаря",
+				Header = ResourceLoader.GetString("/CalendarsVM/CalendarColor"),
 				Width = 300,
 			};
 
@@ -499,10 +516,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ContentDialog dialog = new ContentDialog()
 			{
-				Title = (area == null) ? "Создание нового календаря" : "Редактирование календаря",
+				Title = (area == null) ? ResourceLoader.GetString("/CalendarsVM/CalendarAdding") : ResourceLoader.GetString("/CalendarsVM/CalendarChanging"),
 				Content = panel,
-				PrimaryButtonText = (area == null) ? "Создать" : "Изменить",
-				CloseButtonText = "Отложить",
+				PrimaryButtonText = (area == null) ? ResourceLoader.GetString("/CalendarsVM/Create") : ResourceLoader.GetString("/CalendarsVM/Change"),
+				CloseButtonText = ResourceLoader.GetString("/CalendarsVM/Later"),
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
@@ -512,7 +529,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				if (area == null && string.IsNullOrEmpty(name.Text?.Trim()))
 				{
-					await new MessageDialog("Не заполнено имя для нового календаря", "Ошибка добавления нового календаря").ShowAsync();
+					await new MessageDialog(ResourceLoader.GetString("/CalendarsVM/CalendarAddingError"), ResourceLoader.GetString("/CalendarsVM/CalendarAddingErrorTitle")).ShowAsync();
 
 					return null;
 				}
@@ -520,7 +537,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					if (string.IsNullOrEmpty(name.Text?.Trim()))
 					{
-						await new MessageDialog("Не заполнено имя изменяемого календаря", "Ошибка изменения календаря").ShowAsync();
+						await new MessageDialog(ResourceLoader.GetString("/CalendarsVM/CalendarChangingError"), ResourceLoader.GetString("/CalendarsVM/CalendarChangingErrorTitle")).ShowAsync();
 
 						return null;
 					}

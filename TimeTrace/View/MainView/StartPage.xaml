@@ -37,16 +37,14 @@
 						Background="{ThemeResource HostBackdropBrush}"
 						DefaultLabelPosition="Right">
 						<AppBarButton
+							x:Uid="/StartView/ReportBug"
 							Click="{x:Bind Feedback}"
 							Icon="Edit"
-							IsEnabled="{x:Bind InternetFeaturesEnable, Mode=OneWay}"
-							Label="Сообщить об ошибке"
-							ToolTipService.ToolTip="Рассказать о найденных ошибках или предложить нововведения" />
+							IsEnabled="{x:Bind InternetFeaturesEnable, Mode=OneWay}" />
 						<AppBarButton
+							x:Uid="/StartView/ChangeUser"
 							Click="{x:Bind SignOut}"
-							Icon="OtherUser"
-							Label="Сменить пользователя"
-							ToolTipService.ToolTip="Выйти из текущего аккаунта" />
+							Icon="OtherUser" />
 						<AppBarButton Icon="Contact" Label="{x:Bind CurrentUserName}" />
 					</CommandBar>
 				</Grid>
@@ -55,52 +53,39 @@
 
 		<NavigationView.AutoSuggestBox>
 			<AutoSuggestBox
+				x:Uid="/StartView/EventsSearching"
 				ItemsSource="{x:Bind ViewModel.MapEventsSuggestList, Mode=TwoWay}"
-				PlaceholderText="Поиск по картам"
 				QueryIcon="Find"
 				QuerySubmitted="{x:Bind ViewModel.MapEventsFilterQuerySubmitted}"
-				TextChanged="{x:Bind ViewModel.MapEventsFilter}"
-				ToolTipService.ToolTip="Введите имена ваших события для поиска" />
+				TextChanged="{x:Bind ViewModel.MapEventsFilter}" />
 		</NavigationView.AutoSuggestBox>
 
 		<NavigationView.MenuItems>
 			<NavigationViewItem
-				Content="Домой"
+				x:Uid="/StartView/ToHome"
 				Icon="Home"
 				Tag="home"
-				ToolTipService.Placement="Right"
-				ToolTipService.ToolTip="Переход на домашнюю страницу" />
+				ToolTipService.Placement="Right" />
 
 			<NavigationViewItem
-				Content="Расписание"
+				x:Uid="/StartView/ToShedule"
 				Icon="Calendar"
 				Tag="schedule"
-				ToolTipService.Placement="Right"
-				ToolTipService.ToolTip="Посмотреть текущее расписание" />
+				ToolTipService.Placement="Right" />
 
 			<NavigationViewItem
-				Content="Контакты"
+				x:Uid="/StartView/ToContacts"
 				Icon="Phone"
 				Tag="contacts"
-				ToolTipService.Placement="Right"
-				ToolTipService.ToolTip="Перейти к списку контактов" />
+				ToolTipService.Placement="Right" />
 
 			<NavigationViewItem
-				Content="Персональные карты"
+				x:Uid="/StartView/ToEvents"
 				Icon="Contact"
 				Tag="personalMaps"
-				ToolTipService.Placement="Right"
-				ToolTipService.ToolTip="Редактирование и создание персональных карт" />
+				ToolTipService.Placement="Right" />
 
 			<NavigationViewItemSeparator />
-
-			<NavigationViewItem
-				Content="Синронизация с календарями"
-				Icon="Upload"
-				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-				Tag="scheduleSync"
-				ToolTipService.Placement="Right"
-				ToolTipService.ToolTip="Установить текущее расписание в онлайн-календарях" />
 		</NavigationView.MenuItems>
 
 		<!--<NavigationView.PaneFooter>

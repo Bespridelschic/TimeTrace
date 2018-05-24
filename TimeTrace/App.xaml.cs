@@ -176,6 +176,7 @@ namespace TimeTrace
 					User currentUser = new User();
 					await currentUser.LoadUserFromFileAsync();
 					localSettings.Values["email"] = currentUser.Email.ToLower() ?? "Неизвестный";
+					await StartPageViewModel.Instance.ServerDataSynchronization();
 
 					if (Window.Current.Content is Frame frame)
 					{

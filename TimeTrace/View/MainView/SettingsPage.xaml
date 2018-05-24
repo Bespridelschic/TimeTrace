@@ -31,12 +31,12 @@
 		</Grid.RowDefinitions>
 
 		<TextBlock
+			x:Uid="/SettingsView/SettingsTitle"
 			Margin="20,10,20,0"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Center"
 			FontSize="35"
 			FontWeight="Light"
-			Text="Настройки"
 			TextWrapping="WrapWholeWords" />
 
 		<ScrollViewer
@@ -53,37 +53,43 @@
 
 				<StackPanel>
 					<TextBlock
+						x:Uid="/SettingsView/Language"
 						Margin="0,10,0,5"
 						HorizontalAlignment="Left"
 						FontSize="28"
-						FontWeight="SemiLight"
-						Text="Языки" />
+						FontWeight="SemiLight" />
 
 					<TextBlock
+						x:Uid="/SettingsView/MoreAboutLanguage"
 						Margin="0,0,0,5"
 						HorizontalAlignment="Left"
 						FontSize="15"
-						Text="Язык, используемый в приложении"
 						TextWrapping="WrapWholeWords" />
 
-					<ComboBox Width="200" PlaceholderText="{x:Bind ViewModel.CurrentLanguage}" SelectedIndex="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}">
+					<ComboBox
+						Width="200"
+						PlaceholderText="{x:Bind ViewModel.CurrentLanguage}"
+						SelectedIndex="{x:Bind ViewModel.SelectedLanguage, Mode=TwoWay}">
 						<x:String>Русский</x:String>
-						<x:String>Английский</x:String>
+						<x:String>English</x:String>
 					</ComboBox>
 				</StackPanel>
 				<StackPanel>
 					<TextBlock
+						x:Uid="/SettingsView/Application"
 						Margin="0,10,0,5"
 						HorizontalAlignment="Left"
 						FontSize="28"
-						FontWeight="SemiLight"
-						Text="Приложение" />
+						FontWeight="SemiLight" />
 
 					<HyperlinkButton
+						x:Uid="/SettingsView/OfficialSite"
 						HorizontalAlignment="Left"
-						Content="Официальный сайт"
-						NavigateUri="https://mindstructuring.ru" />
-					<HyperlinkButton HorizontalAlignment="Left" Content="О приложении" Click="{x:Bind ViewModel.AppInfo}" />
+						NavigateUri="https://planningway.ru" />
+					<HyperlinkButton
+						x:Uid="/SettingsView/AboutApplication"
+						HorizontalAlignment="Left"
+						Click="{x:Bind ViewModel.AppInfo}" />
 				</StackPanel>
 			</VariableSizedWrapGrid>
 

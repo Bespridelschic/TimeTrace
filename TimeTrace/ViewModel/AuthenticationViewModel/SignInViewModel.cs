@@ -160,7 +160,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 			{
 				return;
 			}
-			
+
 			ControlEnable = false;
 			Processing = true;
 
@@ -172,11 +172,11 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 					{
 						ContentDialog signInAccept = new ContentDialog()
 						{
-							Title = "Хотите войти локально?",
-							Content = "Мы обнаружили, что вы ранее входили под этой учётной записью с этого компьютера." +
-									"\nХотите войти под своей учётной записью в автономном режиме?\n\nНекоторые функции будут недоступны!",
-							PrimaryButtonText = "Войти",
-							CloseButtonText = "Отмена",
+							Title = ResourceLoader.GetString("/SignInUp/OfflineSignInConfirm"),
+							Content = $"{ResourceLoader.GetString("/SignInUp/OfferOfflineSignIn")}" +
+									$"\n{ResourceLoader.GetString("/SignInUp/ConfirmOfflineSignIn")}\n\n{ResourceLoader.GetString("/SignInUp/LimitFunctionWarnings")}",
+							PrimaryButtonText = ResourceLoader.GetString("/SignInUp/OfflineSignIn"),
+							CloseButtonText = ResourceLoader.GetString("/SignInUp/OfflineSignInCancel"),
 							DefaultButton = ContentDialogButton.Primary
 						};
 
@@ -189,7 +189,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							localSettings.Values["email"] = CurrentUser.Email.ToLower();
 
 							// Set current user name into title bar
-							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
+							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/SignInUp/UnknownEmail"), null);
 							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
 
 							if (Window.Current.Content is Frame frame)
@@ -202,7 +202,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 						return;
 					}
 
-					await new MessageDialog("Вход не возможен. Проверьте своё интернет подключение", "Нет доступа к интернету").ShowAsync();
+					await new MessageDialog(ResourceLoader.GetString("/SignInUp/InternetConnectionProblems"), ResourceLoader.GetString("/SignInUp/InternetConnectionProblemMessage")).ShowAsync();
 					return;
 				}
 
@@ -230,8 +230,9 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							localSettings.Values["email"] = CurrentUser.Email.ToLower();
 
 							// Set current user name into title bar
-							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? "Неизвестный@gmail.com", null);
+							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/SignInUp/UnknownEmail"), null);
 							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
+							await MainViewModel.StartPageViewModel.Instance.ServerDataSynchronization();
 
 							if (Window.Current.Content is Frame frame)
 							{

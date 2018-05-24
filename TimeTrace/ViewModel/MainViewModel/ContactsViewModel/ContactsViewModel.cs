@@ -20,6 +20,7 @@ using TimeTrace.Model.Requests;
 using TimeTrace.View.Converters;
 using TimeTrace.View.MainView.ContactPages;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 {
@@ -164,6 +165,11 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// </summary>
 		public bool InternetFeaturesEnable { get; set; }
 
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -171,6 +177,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// </summary>
 		public ContactsViewModel()
 		{
+			ResourceLoader = ResourceLoader.GetForCurrentView("ContactsVM");
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Contacts);
 
 			Contacts = new ObservableCollection<Contact>();
@@ -179,10 +186,6 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			ContactsSuggestList = new ObservableCollection<string>();
 
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
-			if (InternetFeaturesEnable)
-			{
-				RefreshContactsAsync().GetAwaiter();
-			}
 		}
 
 		/// <summary>
@@ -260,7 +263,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 			TextBox email = new TextBox()
 			{
-				Header = "Электронная почта",
+				Header = ResourceLoader.GetString("/ContactsVM/EmailHeader"),
 				PlaceholderText = "example@gmail.com",
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 30,
@@ -270,8 +273,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 			TextBox name = new TextBox()
 			{
-				Header = "Используемое имя",
-				PlaceholderText = "Псевдоним контакта",
+				Header = ResourceLoader.GetString("/ContactsVM/NameHeader"),
+				PlaceholderText = ResourceLoader.GetString("/ContactsVM/NamePlaceholder"),
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 50,
 				Text = (contact == null) ? string.Empty : contact.Name,
@@ -285,10 +288,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 			ContentDialog dialog = new ContentDialog()
 			{
-				Title = (contact == null) ? "Добавление нового контакта" : "Изменение контакта",
+				Title = (contact == null) ? ResourceLoader.GetString("/ContactsVM/AddingNewContact") : ResourceLoader.GetString("/ContactsVM/EditingContact"),
 				Content = panel,
-				PrimaryButtonText = (contact == null) ? "Добавить" : "Изменить",
-				CloseButtonText = "Отложить",
+				PrimaryButtonText = (contact == null) ? ResourceLoader.GetString("/ContactsVM/AddContact") : ResourceLoader.GetString("/ContactsVM/ChangeContact"),
+				CloseButtonText = ResourceLoader.GetString("/ContactsVM/Later"),
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
@@ -298,7 +301,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			{
 				if (string.IsNullOrEmpty(email.Text) || string.IsNullOrEmpty(name.Text))
 				{
-					await new MessageDialog("Не заполнено одно из полей", (contact == null) ? "Ошибка добавления нового контакта" : "Ошибка изменения контакта").ShowAsync();
+					await new MessageDialog(ResourceLoader.GetString("/ContactsVM/FieldsEmptyError"),
+											(contact == null) ? ResourceLoader.GetString("/ContactsVM/AddContactError")
+											: ResourceLoader.GetString("/ContactsVM/EditingContactError"))
+						.ShowAsync();
 
 					return;
 				}
@@ -307,7 +313,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				{
 					if (contact == null && (db.Contacts.Where(i => i.Email.ToLower() == email.Text.Trim().ToLower()).Count() > 0))
 					{
-						await new MessageDialog("Данный контакт уже добавлен в ваши контакты", "Ошибка добавления нового контакта").ShowAsync();
+						await new MessageDialog(ResourceLoader.GetString("/ContactsVM/ContactAlreadyAddedError"), ResourceLoader.GetString("/ContactsVM/AddContactError")).ShowAsync();
 
 						return;
 					}
@@ -337,7 +343,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 						await RefreshContactsAsync();
 
-						await new MessageDialog($"Ваше приглашение для {newContact.Email} успешно отправлено", "Успех").ShowAsync();
+						await new MessageDialog($"{ResourceLoader.GetString("/ContactsVM/InviteFor")} {newContact.Email} {ResourceLoader.GetString("/ContactsVM/SuccessSend")}",
+							ResourceLoader.GetString("/ContactsVM/Success")).ShowAsync();
 
 						return;
 					}
@@ -360,13 +367,18 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 						await RefreshContactsAsync();
 
-						await new MessageDialog($"Контакт {Contacts[tempSelectedContact].Email} успешно изменен", "Успех").ShowAsync();
+						await new MessageDialog($"{ResourceLoader.GetString("/ContactsVM/Contact")} {Contacts[tempSelectedContact].Email} {ResourceLoader.GetString("/ContactsVM/SuccessChanging")}",
+							ResourceLoader.GetString("/ContactsVM/Success")).ShowAsync();
 					}
 
 				}
 				else
 				{
-					await new MessageDialog("Не корректно введенный адрес электронной почты", (contact == null) ? "Ошибка добавления нового контакта" : "Ошибка изменения контакта").ShowAsync();
+					await new MessageDialog(ResourceLoader.GetString("/ContactsVM/IncorrectEmailError"),
+							(contact == null)
+								? ResourceLoader.GetString("/ContactsVM/AddContactError")
+								: ResourceLoader.GetString("/ContactsVM/EditingContactError"))
+						.ShowAsync();
 				}
 			}
 		}
@@ -389,8 +401,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			}
 			catch (Exception)
 			{
-				new MessageDialog("Не удаётся синхронизировать контакты. Проверьте своё подключение к интернету, а так же попробуйте перезайти в аккаунт",
-					"Ошибка синхронизации контактов");
+				new MessageDialog(ResourceLoader.GetString("/ContactsVM/SynchronizationMessageError"),
+					ResourceLoader.GetString("/ContactsVM/SynchronizationError"));
 
 				return;
 			}
@@ -419,10 +431,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			{
 				ContentDialog contentDialog = new ContentDialog()
 				{
-					Title = "Подтверждение действия",
-					Content = $"Вы уверены что хотите удалить контакт \"{Contacts[SelectedContact.Value].Name}\"?",
-					PrimaryButtonText = "Удалить",
-					CloseButtonText = "Отмена",
+					Title = ResourceLoader.GetString("/ContactsVM/ConfirmAction"),
+					Content = $"{ResourceLoader.GetString("/ContactsVM/ConfirmRemoving")} \"{Contacts[SelectedContact.Value].Name}\"?",
+					PrimaryButtonText = ResourceLoader.GetString("/ContactsVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/ContactsVM/Cancel"),
 					DefaultButton = ContentDialogButton.Close
 				};
 
@@ -437,6 +449,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 						db.SaveChanges();
 					}
+
+					await RefreshContactsAsync();
 				}
 			}
 		}
@@ -475,15 +489,15 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				{
 					Margin = new Thickness(0, 0, 0, 10),
 				};
-				mainPanel.Children.Add(new TextBlock() { Text = "Вы уверены что хотите удалить контакты:" });
+				mainPanel.Children.Add(new TextBlock() { Text = ResourceLoader.GetString("/ContactsVM/ConfirmBulkRemoving") });
 				mainPanel.Children.Add(scrollViewer);
 
 				ContentDialog contentDialog = new ContentDialog()
 				{
-					Title = "Подтверждение действия",
+					Title = ResourceLoader.GetString("/ContactsVM/ConfirmAction"),
 					Content = mainPanel,
-					PrimaryButtonText = "Удалить",
-					CloseButtonText = "Отмена",
+					PrimaryButtonText = ResourceLoader.GetString("/ContactsVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/ContactsVM/Cancel"),
 					DefaultButton = ContentDialogButton.Close
 				};
 
@@ -506,6 +520,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 							Contacts.Remove(contact);
 						}
 					}
+
+					await RefreshContactsAsync();
 				}
 
 				MultipleSelection = ListViewSelectionMode.Single;
@@ -525,17 +541,17 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				{
 					TextBlock email = new TextBlock()
 					{
-						Text = $"Контактный адрес: {Contacts[selectedContact.Value].Email}",
+						Text = $"{ResourceLoader.GetString("/ContactsVM/Email")} {Contacts[selectedContact.Value].Email}",
 					};
 
 					TextBlock name = new TextBlock()
 					{
-						Text = $"Псевдоним: {Contacts[selectedContact.Value].Name}",
+						Text = $"{ResourceLoader.GetString("/ContactsVM/Name")} {Contacts[selectedContact.Value].Name}",
 					};
 
 					TextBlock addedAt = new TextBlock()
 					{
-						Text = $"Добавлен: {Contacts[selectedContact.Value].CreateAt.Value.ToLocalTime()}",
+						Text = $"{ResourceLoader.GetString("/ContactsVM/Uploaded")} {Contacts[selectedContact.Value].CreateAt.Value.ToLocalTime()}",
 					};
 
 					StackPanel mainPanel = new StackPanel();
@@ -545,9 +561,9 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 					ContentDialog contentDialog = new ContentDialog()
 					{
-						Title = "Подробности",
+						Title = ResourceLoader.GetString("/ContactsVM/Details"),
 						Content = mainPanel,
-						CloseButtonText = "Закрыть",
+						CloseButtonText = ResourceLoader.GetString("/ContactsVM/Close"),
 						DefaultButton = ContentDialogButton.Close
 					};
 

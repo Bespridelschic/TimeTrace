@@ -29,21 +29,6 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
-		private string projectSource;
-		/// <summary>
-		/// The owner of project
-		/// </summary>
-		[JsonProperty(PropertyName = "from")]
-		public string ProjectSource
-		{
-			get { return projectSource; }
-			set
-			{
-				projectSource = value;
-				OnPropertyChanged();
-			}
-		}
-
 		#endregion
 
 		#region Constructors
@@ -53,7 +38,7 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public Project()
 		{
-			ProjectSource = string.Empty;
+			
 		}
 
 		/// <summary>

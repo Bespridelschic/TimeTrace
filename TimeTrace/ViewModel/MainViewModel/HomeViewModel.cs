@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using TimeTrace.Model;
 using TimeTrace.Model.DBContext;
+using TimeTrace.Model.Requests;
 using TimeTrace.View.MainView;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
+using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -82,6 +85,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public bool InternetFeaturesEnable { get; set; }
 
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -89,13 +97,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public HomeViewModel()
 		{
+			ResourceLoader = ResourceLoader.GetForCurrentView("HomeVM");
+
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Home);
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
 			CurrentUser = GetUserInfo();
 			CurrentUserEmail = CurrentUser.Email[0].ToString().ToUpper() + CurrentUser.Email.Substring(1, CurrentUser.Email.IndexOf('@') - 1);
 
-			NearEvent = "Совсем скоро";
+			NearEvent = ResourceLoader.GetString("/HomeVM/NearEvent");
 
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
@@ -107,7 +117,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					db.MapEvents.
 						Where(i => !i.IsDelete && i.EmailOfOwner == CurrentUser.Email).
 						FirstOrDefault(i => i.Start >= DateTime.Now)?.Start.Subtract(DateTime.Now).ToString("g").Split(',')[0]
-						?? "Нет ближайших";
+						?? ResourceLoader.GetString("/HomeVM/NoClosest");
 			}
 		}
 
@@ -119,29 +129,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			return new User(
-				(string)localSettings.Values["email"] ?? "Неизвестный@gmail.com",
+				(string)localSettings.Values["email"] ?? ResourceLoader.GetString("/HomeVM/UnknownEmail"),
 				null
 				);
-		}
-
-		/// <summary>
-		/// Find new avatar in local
-		/// </summary>
-		public async void AvatarChange()
-		{
-			var picker = new Windows.Storage.Pickers.FileOpenPicker();
-			picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-			picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-			picker.FileTypeFilter.Add(".jpg");
-			picker.FileTypeFilter.Add(".jpeg");
-			picker.FileTypeFilter.Add(".png");
-
-			StorageFile file = await picker.PickSingleFileAsync();
-
-			if (file != null)
-			{
-				await (new MessageDialog($"Picked photo: {file.Path}").ShowAsync());
-			}
 		}
 
 		/// <summary>
@@ -174,6 +164,140 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void Feedback()
 		{
 			StartPageViewModel.Instance.Feedback();
+		}
+
+		/// <summary>
+		/// Password change
+		/// </summary>
+		public async void UserPasswordResetAsync()
+		{
+			string currentPassword = string.Empty;
+			string currentEmail = CurrentUser.Email;
+
+			#region Dialog window
+
+			TextBox emailTextBox = new TextBox
+			{
+				Header = ResourceLoader.GetString("/HomeVM/YourEmail"),
+				Text = CurrentUser.Email,
+				IsReadOnly = true
+			};
+
+			PasswordBox passwordTextBox = new PasswordBox
+			{
+				PlaceholderText = ResourceLoader.GetString("/HomeVM/NewPasswordPlaceholderText"),
+				Header = ResourceLoader.GetString("/HomeVM/NewPasswordHeader"),
+				MaxLength = 20,
+			};
+
+			Grid grid = new Grid();
+			RowDefinition row1 = new RowDefinition();
+			RowDefinition row2 = new RowDefinition();
+			RowDefinition row3 = new RowDefinition();
+
+			row1.Height = new GridLength(0, GridUnitType.Auto);
+			row2.Height = new GridLength(10);
+			row3.Height = new GridLength(0, GridUnitType.Auto);
+
+			grid.RowDefinitions.Add(row1);
+			grid.RowDefinitions.Add(row2);
+			grid.RowDefinitions.Add(row3);
+
+			grid.Children.Add(emailTextBox);
+			grid.Children.Add(passwordTextBox);
+
+			Grid.SetRow(emailTextBox, 0);
+			Grid.SetRow(passwordTextBox, 2);
+
+			#endregion
+
+			ContentDialog dialog = new ContentDialog
+			{
+				Title = ResourceLoader.GetString("/HomeVM/ChangePassword"),
+				Content = grid,
+				PrimaryButtonText = ResourceLoader.GetString("/HomeVM/ApplyChanging"),
+				CloseButtonText = ResourceLoader.GetString("/HomeVM/ChangeLater"),
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+			{
+				try
+				{
+					CurrentUser.Email = emailTextBox.Text;
+					CurrentUser.Password = passwordTextBox.Password;
+
+					var CanAppSignInResult = await CanPasswordResetAsync();
+					if (!CanAppSignInResult)
+					{
+						CurrentUser.Password = currentPassword;
+						CurrentUser.Email = currentEmail;
+						return;
+					}
+
+					var requestResult = await InternetRequests.PostRequestAsync(InternetRequests.PostRequestDestination.PasswordReset, CurrentUser);
+
+					switch (requestResult)
+					{
+						case 0:
+							{
+								await (new MessageDialog(ResourceLoader.GetString("/HomeVM/ActivationInstruction"),
+									ResourceLoader.GetString("/HomeVM/ChangePassword"))).ShowAsync();
+								break;
+							}
+						case 1:
+							{
+								await (new MessageDialog(ResourceLoader.GetString("/HomeVM/CantChangePassword"),
+									ResourceLoader.GetString("/HomeVM/ChangePassword"))).ShowAsync();
+								break;
+							}
+						default:
+							{
+								await (new MessageDialog(ResourceLoader.GetString("/HomeVM/UndefinedError"),
+									ResourceLoader.GetString("/HomeVM/ChangePassword"))).ShowAsync();
+								break;
+							}
+					}
+				}
+				catch (Exception ex)
+				{
+					await (new MessageDialog($"{ex.Message}\n" +
+						$"{ResourceLoader.GetString("/HomeVM/UndefinedErrorText")}", ResourceLoader.GetString("/HomeVM/OperationFailedText"))).ShowAsync();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Check fields correct
+		/// </summary>
+		/// <returns>Do the fields satisfy business logic</returns>
+		private async Task<bool> CanPasswordResetAsync()
+		{
+			if (CurrentUser.Email.Length == 0 || CurrentUser.Password.Length == 0)
+			{
+				await new MessageDialog(ResourceLoader.GetString("/HomeVM/FillAllFields"),
+					ResourceLoader.GetString("/HomeVM/FailedText")).ShowAsync();
+
+				return false;
+			}
+
+			if (!CurrentUser.EmailCorrectCheck())
+			{
+				await new MessageDialog(ResourceLoader.GetString("/HomeVM/IncorrectEmail"),
+					ResourceLoader.GetString("/HomeVM/FailedText")).ShowAsync();
+
+				return false;
+			}
+
+			if (CurrentUser.Password.Length < 8)
+			{
+				await new MessageDialog(ResourceLoader.GetString("/HomeVM/PasswordLengthShort"),
+					ResourceLoader.GetString("/HomeVM/FailedText")).ShowAsync();
+
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

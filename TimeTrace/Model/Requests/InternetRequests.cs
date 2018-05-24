@@ -138,7 +138,7 @@ namespace TimeTrace.Model.Requests
 					throw new NullReferenceException("Server return null");
 				}
 
-				// Парсер JSON
+				// Json string parsing
 				JObject JsonString = JObject.Parse(result);
 
 				int answerCode = (int)JsonString["answer"];
@@ -228,9 +228,6 @@ namespace TimeTrace.Model.Requests
 				JObject jsonString = JObject.Parse(resultOfRequest);
 
 				Debug.WriteLine($"Получаемые данные \n{jsonString}");
-
-				// Save new token
-				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 
 				#region Areas processing
 
@@ -423,7 +420,8 @@ namespace TimeTrace.Model.Requests
 							color = i.Color,
 							area_id = i.AreaId,
 							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							personEmail = i.EmailOfOwner
 						}
 					),
 					events = db.MapEvents.Join
@@ -443,7 +441,9 @@ namespace TimeTrace.Model.Requests
 							recurrence = i.EventInterval,
 							project_id = i.ProjectId,
 							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+							projectPersonEmail = i.ProjectOwnerEmail,
+							personEmail = i.EmailOfOwner
 						}
 					)
 				};
@@ -451,7 +451,7 @@ namespace TimeTrace.Model.Requests
 				string departureAddress = "https://planningway.ru/data/save";
 				var completeSendingData = new
 				{
-					_csrf = (string)jsonString["_csrf"],
+					_csrf = token,
 					idDevice = deviceId,
 					areas = sendingData.areas,
 					projects = sendingData.projects,
@@ -463,8 +463,6 @@ namespace TimeTrace.Model.Requests
 				var finalResult = await BasePostRequestAsync(departureAddress, JsonSerialize(completeSendingData));
 
 				jsonString = JObject.Parse(finalResult);
-
-				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 				resultOfSynchronization = (int)jsonString["answer"];
 
 
@@ -524,9 +522,6 @@ namespace TimeTrace.Model.Requests
 				JObject jsonString = JObject.Parse(resultOfRequest);
 
 				Debug.WriteLine($"Получаемые данные \n{jsonString}");
-
-				// Save new token
-				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 
 				#region Contacts processing
 
@@ -603,7 +598,7 @@ namespace TimeTrace.Model.Requests
 				string departureAddress = "https://planningway.ru/contact/save";
 				var completeSendingData = new
 				{
-					_csrf = (string)jsonString["_csrf"],
+					_csrf = token,
 					idDevice = deviceId,
 					contacts = sendingData.contacts
 				};
@@ -613,10 +608,7 @@ namespace TimeTrace.Model.Requests
 				var finalResult = await BasePostRequestAsync(departureAddress, JsonSerialize(completeSendingData));
 
 				jsonString = JObject.Parse(finalResult);
-
-				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
 				resultOfSynchronization = (int)jsonString["answer"];
-
 
 				if (resultOfSynchronization == 0)
 				{

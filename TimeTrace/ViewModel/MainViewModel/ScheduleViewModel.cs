@@ -10,6 +10,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using TimeTrace.Model.Requests;
+using System.Diagnostics;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -99,6 +101,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// If offine sign in, block internet features
 		/// </summary>
 		public bool InternetFeaturesEnable { get; set; }
+
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
 
 		#region Filters
 
@@ -288,6 +295,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		private void InitializationData()
 		{
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Shedule);
+			ResourceLoader = ResourceLoader.GetForCurrentView("ScheduleVM");
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
 			MapEventsSuggestList = new ObservableCollection<string>();
@@ -386,16 +394,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				if (DateTime.UtcNow > MapEvents[SelectedMapEvent.Value].End)
 				{
-					await (new MessageDialog("Прошедшее событие не может быть удалено", "Ошибка")).ShowAsync();
+					await (new MessageDialog(ResourceLoader.GetString("/ScheduleVM/PastEventCantBeRemoved"), ResourceLoader.GetString("/ScheduleVM/Error"))).ShowAsync();
 					return;
 				}
 
 				ContentDialog contentDialog = new ContentDialog()
 				{
-					Title = "Подтверждение действия",
-					Content = $"Вы уверены что хотите удалить событие \"{MapEvents[SelectedMapEvent.Value].Name}\"?",
-					PrimaryButtonText = "Удалить",
-					CloseButtonText = "Отмена",
+					Title = ResourceLoader.GetString("/ScheduleVM/ConfirmAction"),
+					Content = $"{ResourceLoader.GetString("/ScheduleVM/ConfirmationRemoving")} \"{MapEvents[SelectedMapEvent.Value].Name}\"?",
+					PrimaryButtonText = ResourceLoader.GetString("/ScheduleVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/ScheduleVM/Cancel"),
 					DefaultButton = ContentDialogButton.Close
 				};
 
@@ -411,7 +419,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 						db.SaveChanges();
 					}
 
-					await (new MessageDialog("Событие успешно удалёно", "Успех")).ShowAsync();
+					await (new MessageDialog(ResourceLoader.GetString("/ScheduleVM/EventSuccessfullyDeleted"), ResourceLoader.GetString("/ScheduleVM/Success"))).ShowAsync();
+
+					// Synchronization of changes with server
+					await StartPageViewModel.Instance.CategoriesSynchronization();
 				}
 			}
 		}
@@ -425,26 +436,26 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				MapEvent tempEvent = MapEvents[SelectedMapEvent.Value];
 
-				var person = string.IsNullOrEmpty(tempEvent.UserBind) ? "Отсутствует" : tempEvent.UserBind;
-				var place = string.IsNullOrEmpty(tempEvent.Location) ? "Не задано" : tempEvent.Location;
-				var isPublicMapEvent = tempEvent.IsPublic ? "Публичное событие" : "Персональное событие";
+				var person = string.IsNullOrEmpty(tempEvent.UserBind) ? ResourceLoader.GetString("/ScheduleVM/Absent") : tempEvent.UserBind;
+				var place = string.IsNullOrEmpty(tempEvent.Location) ? ResourceLoader.GetString("/ScheduleVM/NotSet") : tempEvent.Location;
+				var isPublicMapEvent = tempEvent.IsPublic ? ResourceLoader.GetString("/ScheduleVM/PublicEvent") : ResourceLoader.GetString("/ScheduleVM/PrivateEvent");
 
 				TextBlock contentText = new TextBlock()
 				{
-					Text = $"Имя события: {tempEvent.Name}\n" +
-							$"Описание: {tempEvent.Description ?? "Отсутствует"}\n" +
-							$"Время начала: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
-							$"Продолжительность: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} ч.\n" +
-							$"Персона, связанная с событием: {person}\n" +
-							$"Место события: {place}\n\n" +
+					Text = $"{ResourceLoader.GetString("/ScheduleVM/Name")}: {tempEvent.Name}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {tempEvent.Description ?? ResourceLoader.GetString("/ScheduleVM/Absent")}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Start")}: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Duration")}: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} {ResourceLoader.GetString("/ScheduleVM/Hours")}.\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/PersonAssociatedWithEvent")}: {person}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Place")}: {place}\n\n" +
 							$"{isPublicMapEvent}",
 				};
 
 				ContentDialog contentDialog = new ContentDialog()
 				{
-					Title = "Подробности",
+					Title = ResourceLoader.GetString("/ScheduleVM/Details"),
 					Content = contentText,
-					CloseButtonText = "Закрыть",
+					CloseButtonText = ResourceLoader.GetString("/ScheduleVM/Close"),
 					DefaultButton = ContentDialogButton.Close
 				};
 
@@ -464,7 +475,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			if (IsHistoryEventsViewed)
 			{
-				await new MessageDialog("Нельзя изменять прошедшие события", "Ошибка изменения события").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/EventChangingErrorMessage"), ResourceLoader.GetString("/ScheduleVM/EventChangingError")).ShowAsync();
 			}
 		}
 
@@ -473,8 +484,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void GetPublicEventsAsync()
 		{
-			await new MessageDialog("Not implemented").ShowAsync();
-			return;
 			var result = await InternetRequests.GetPublicMapEventsAsync();
 		}
 
@@ -638,6 +647,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 						MapEvents.Add(item);
 					}
 				}
+
 				// Select all map events from database, if dates not selected
 				if (SelectedFilteredDates.Count <= 0)
 				{
@@ -672,8 +682,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 				if (IsTimeFiltered)
 				{
 					foreach (var item in MapEvents
-						.Except(MapEvents
-						.Where(i => FilterStartTime < TimeSpan.Parse(i.Start.ToString("HH:mm:ss")) && FilterEndTime > TimeSpan.Parse(i.End.ToString("HH:mm:ss"))))
+						.Where(i => !(TimeSpan.Parse(i.Start.ToLocalTime().ToString("HH:mm:ss")) <= FilterStartTime
+									&& TimeSpan.Parse(i.End.ToLocalTime().ToString("HH:mm:ss")) >= FilterEndTime))
 						.ToList())
 					{
 						MapEvents.Remove(item);

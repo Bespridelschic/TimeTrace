@@ -166,7 +166,7 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 			if (!InternetRequests.CheckForInternetConnection())
 			{
-				await new MessageDialog("Проверьте своё подключение к интернету", "Ошибка регистрации").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/SignInUp/CheckInternetConnectionMessage"), ResourceLoader.GetString("/SignInUp/RegistrationProblemText")).ShowAsync();
 
 				return;
 			}

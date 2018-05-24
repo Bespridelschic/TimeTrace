@@ -159,6 +159,12 @@
     <value>Проверьте корректность введенных данных, или зарегистрируйте новый аккаунт</value>
     <comment>Сообщение с предложением создания аккаунта или проверкой корректности данных</comment>
   </data>
+  <data name="CheckInternetConnectionMessage" xml:space="preserve">
+    <value>Проверьте своё подключение к интернету</value>
+  </data>
+  <data name="ConfirmOfflineSignIn" xml:space="preserve">
+    <value>Хотите войти под своей учётной записью в автономном режиме?</value>
+  </data>
   <data name="ConfirmPasswordBoxRegistration.Header" xml:space="preserve">
     <value>Подтвердите пароль:</value>
     <comment>Поле для подтверждения введенного пароля</comment>
@@ -230,6 +236,12 @@
     <value>Проверьте корректность введенного адреса электронной почты</value>
     <comment>Сообщение о некорректном формате адреса электронной почты</comment>
   </data>
+  <data name="InternetConnectionProblemMessage" xml:space="preserve">
+    <value>Нет доступа к интернету</value>
+  </data>
+  <data name="InternetConnectionProblems" xml:space="preserve">
+    <value>Вход невозможен. Проверьте своё интернет подключение</value>
+  </data>
   <data name="LastNameTextBox.Header" xml:space="preserve">
     <value>Фамилия:</value>
     <comment>Поле для ввода фамилии</comment>
@@ -243,6 +255,9 @@
   <data name="LaterButtonText" xml:space="preserve">
     <value>Позже</value>
     <comment>Название кнопки отмены восстановления пароля</comment>
+  </data>
+  <data name="LimitFunctionWarnings" xml:space="preserve">
+    <value>Некоторые функции будут недоступны!</value>
   </data>
   <data name="MiddleNameTextBox.Header" xml:space="preserve">
     <value>Отчество:</value>
@@ -268,6 +283,18 @@
   <data name="ObligatoryFieldAttentionText.Text" xml:space="preserve">
     <value>Все поля являются обязательными*</value>
     <comment>Предупреждение об обязательности полей</comment>
+  </data>
+  <data name="OfferOfflineSignIn" xml:space="preserve">
+    <value>Мы обнаружили, что вы ранее входили под этой учётной записью с этого компьютера.</value>
+  </data>
+  <data name="OfflineSignIn" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="OfflineSignInCancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="OfflineSignInConfirm" xml:space="preserve">
+    <value>Хотите войти локально?</value>
   </data>
   <data name="OperationFailedText" xml:space="preserve">
     <value>Ошибка операции</value>
@@ -382,5 +409,8 @@
   <data name="UndefinedErrorText" xml:space="preserve">
     <value>Не предвиденная ошибка. Обратитесь к разработчику</value>
     <comment>Сообщение о не предвиденной ошибке</comment>
+  </data>
+  <data name="UnknownEmail" xml:space="preserve">
+    <value>Неизвестный@gmail.com</value>
   </data>
 </root>

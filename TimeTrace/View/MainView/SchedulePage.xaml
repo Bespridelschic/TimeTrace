@@ -48,12 +48,12 @@
 					</Grid.RowDefinitions>
 
 					<TextBlock
+						x:Uid="/ScheduleView/CurrentSchedule"
 						Grid.Row="0"
 						Margin="20,10,20,4"
 						HorizontalAlignment="Left"
 						FontSize="35"
-						FontWeight="SemiLight"
-						Text="Текущее расписание" />
+						FontWeight="SemiLight" />
 
 					<ParallaxView
 						Grid.Row="1"
@@ -101,11 +101,11 @@
 
 									<StackPanel Orientation="Horizontal">
 										<TextBlock
+											x:Uid="/ScheduleView/Time"
 											Margin="0,0,0,2"
 											FontSize="17"
 											FontStyle="Italic"
-											Foreground="Gray"
-											Text="Время: " />
+											Foreground="Gray" />
 										<TextBlock
 											Margin="7,0,7,2"
 											FontSize="17"
@@ -127,10 +127,6 @@
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal">
-										<!--<TextBlock
-											Margin="0,0,0,5"
-											FontSize="18"
-											Text="Описание: " />-->
 										<TextBlock
 											Margin="0,0,0,5"
 											FontSize="18"
@@ -143,18 +139,18 @@
 						<ListView.ContextFlyout>
 							<MenuFlyout Placement="Bottom">
 								<MenuFlyoutItem
+									x:Uid="/ScheduleView/MoreDetails"
 									Click="{x:Bind ViewModel.MoreAboutMapEvent}"
-									Icon="Page"
-									Text="Подробней" />
+									Icon="Page" />
 								<MenuFlyoutSeparator />
 								<MenuFlyoutItem
+									x:Uid="/ScheduleView/Edit"
 									Click="{x:Bind ViewModel.MapEventEditAsync}"
-									Icon="Edit"
-									Text="Редактировать" />
+									Icon="Edit" />
 								<MenuFlyoutItem
+									x:Uid="/ScheduleView/Remove"
 									Click="{x:Bind ViewModel.MapEventRemove}"
-									Icon="Delete"
-									Text="Удалить" />
+									Icon="Delete" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
 					</ListView>
@@ -174,11 +170,11 @@
 					<ScrollViewer VerticalScrollBarVisibility="Auto">
 						<StackPanel Padding="20,5">
 							<TextBlock
+								x:Uid="/ScheduleView/DateFiltration"
 								Margin="0,10,0,15"
 								HorizontalAlignment="Center"
 								FontSize="28"
 								FontWeight="SemiLight"
-								Text="Фильтрация по датам"
 								TextWrapping="WrapWholeWords" />
 							<CalendarView
 								HorizontalAlignment="Center"
@@ -188,41 +184,41 @@
 								SelectionMode="Multiple" />
 
 							<CheckBox
+								x:Uid="/ScheduleView/HistoryEventsViewed"
 								Width="300"
 								Margin="0,5,0,0"
 								HorizontalAlignment="Center"
-								Content="Показывать прошедшие события"
 								IsChecked="{x:Bind ViewModel.IsHistoryEventsViewed, Mode=TwoWay}" />
 
 							<Button
+								x:Uid="/ScheduleView/ResetSelectedDates"
 								Width="298"
 								Margin="0,10,0,10"
 								HorizontalAlignment="Center"
 								BorderBrush="{StaticResource HostBackdropBrush}"
 								BorderThickness="2"
-								Click="{x:Bind ViewModel.ResetSelectedDates}"
-								Content="Сбросить выбранные" />
+								Click="{x:Bind ViewModel.ResetSelectedDates}" />
 
 							<MenuFlyoutSeparator />
 
 							<TextBlock
+								x:Uid="/ScheduleView/TimeFiltration"
 								Margin="0,5,0,15"
 								HorizontalAlignment="Stretch"
 								FontSize="28"
 								FontWeight="SemiLight"
-								Text="Фильтрация по времени"
 								TextWrapping="WrapWholeWords" />
 
-							<CheckBox Content="Фильтровать по времени" IsChecked="{x:Bind ViewModel.IsTimeFiltered, Mode=TwoWay}" />
+							<CheckBox x:Uid="/ScheduleView/IsTimeFiltration" IsChecked="{x:Bind ViewModel.IsTimeFiltered, Mode=TwoWay}" />
 
 							<StackPanel
 								Margin="0,0,0,10"
 								HorizontalAlignment="Center"
 								Orientation="Horizontal">
 								<TimePicker
+									x:Uid="/ScheduleView/StartFiltrationTime"
 									MinWidth="150"
 									HorizontalAlignment="Center"
-									Header="Начало"
 									IsEnabled="{x:Bind ViewModel.IsTimeFiltered, Mode=OneWay}"
 									Time="{x:Bind ViewModel.FilterStartTime, Mode=TwoWay}" />
 
@@ -232,9 +228,9 @@
 									Text="-" />
 
 								<TimePicker
+									x:Uid="/ScheduleView/EndFiltrationTime"
 									MinWidth="150"
 									HorizontalAlignment="Center"
-									Header="Окончание"
 									IsEnabled="{x:Bind ViewModel.IsTimeFiltered, Mode=OneWay}"
 									Time="{x:Bind ViewModel.FilterEndTime, Mode=TwoWay}" />
 
@@ -243,43 +239,41 @@
 							<MenuFlyoutSeparator />
 
 							<TextBlock
+								x:Uid="/ScheduleView/PublicEventsFiltration"
 								Margin="0,5,0,15"
 								HorizontalAlignment="Stretch"
 								FontSize="28"
 								FontWeight="SemiLight"
-								Text="Фильтрация по публичности события"
 								TextWrapping="WrapWholeWords" />
 
-							<CheckBox Content="Только публичные события" IsChecked="{x:Bind ViewModel.IsPublicMapEventsOnly, Mode=TwoWay}" />
+							<CheckBox x:Uid="/ScheduleView/PublicEventsOnlyFiltration" IsChecked="{x:Bind ViewModel.IsPublicMapEventsOnly, Mode=TwoWay}" />
 
 							<MenuFlyoutSeparator />
 
 							<TextBlock
+								x:Uid="/ScheduleView/LinkTo"
 								Margin="0,5,0,15"
 								HorizontalAlignment="Stretch"
 								FontSize="28"
 								FontWeight="SemiLight"
-								Text="Фильтрация по объектам привязки"
 								TextWrapping="WrapWholeWords" />
 
 							<AutoSuggestBox
+								x:Uid="/ScheduleView/ContactBinding"
 								Width="320"
 								Margin="0,0,0,10"
 								HorizontalAlignment="Left"
-								Header="Имя контакта"
 								ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
-								PlaceholderText="Имя связанного с событием контакта"
 								QueryIcon="Contact"
 								Text="{x:Bind ViewModel.RequiredMapEventsPerson, Mode=TwoWay}"
 								TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}" />
 
 							<AutoSuggestBox
+								x:Uid="/ScheduleView/PlaceBinding"
 								Width="320"
 								Margin="0,0,0,30"
 								HorizontalAlignment="Left"
-								Header="Место события"
 								ItemsSource="{x:Bind ViewModel.MapEventsPlacesSuggestList, Mode=TwoWay}"
-								PlaceholderText="Место связанное с событием"
 								QueryIcon="Globe"
 								Text="{x:Bind ViewModel.RequiredMapEventsLocation, Mode=TwoWay}"
 								TextChanged="{x:Bind ViewModel.MapEventsPlacesFilter}" />
@@ -294,12 +288,12 @@
 						</Grid.RowDefinitions>
 
 						<Button
+							x:Uid="/ScheduleView/AllFiltersReset"
 							Grid.Row="1"
 							Margin="20,5"
 							HorizontalAlignment="Stretch"
 							Background="{StaticResource HostBackdropBrush}"
 							Click="{x:Bind ViewModel.ResetAllFilters}"
-							Content="Сбросить все фильтры"
 							FontSize="18"
 							Foreground="White" />
 
@@ -313,12 +307,12 @@
 		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">
 			<CommandBar.Content>
 				<StackPanel Margin="10,-5" Orientation="Horizontal">
-					<TextBlock Text="Поиск событий: " />
+					<TextBlock x:Uid="/ScheduleView/EventsSearching" />
 					<AutoSuggestBox
+						x:Uid="/ScheduleView/EventsSearchingPlaceholder"
 						Width="250"
 						Margin="10,13,10,10"
 						ItemsSource="{x:Bind ViewModel.MapEventsSuggestList, Mode=TwoWay}"
-						PlaceholderText="Поиск..."
 						QueryIcon="Find"
 						QuerySubmitted="{x:Bind ViewModel.MapEventsFilterQuerySubmitted}"
 						Text="{x:Bind ViewModel.RequiredFilter, Mode=TwoWay}"
@@ -327,16 +321,14 @@
 			</CommandBar.Content>
 
 			<AppBarButton
+				x:Uid="/ScheduleView/EventsFiltersCall"
 				Click="{x:Bind ViewModel.ExpandFilterPage}"
-				Icon="Filter"
-				Label="Фильтрация событий"
-				ToolTipService.ToolTip="Применить фильтры для событий" />
+				Icon="Filter" />
 			<AppBarButton
+				x:Uid="/ScheduleView/GetPublicEvents"
 				Click="{x:Bind ViewModel.GetPublicEventsAsync}"
 				Icon="BackToWindow"
-				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
-				Label="События контактов"
-				ToolTipService.ToolTip="Получить события своих контактов" />
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
 		</CommandBar>
 
 	</Grid>

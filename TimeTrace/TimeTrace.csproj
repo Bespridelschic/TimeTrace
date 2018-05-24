@@ -170,6 +170,30 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="ProjectDiagrams\ClassDiagram.cd" />
+    <PRIResource Include="Strings\ru-RU\HomeView.resw" />
+    <PRIResource Include="Strings\en-US\HomeView.resw" />
+    <PRIResource Include="Strings\ru-RU\HomeVM.resw" />
+    <PRIResource Include="Strings\en-US\HomeVM.resw" />
+    <PRIResource Include="Strings\ru-RU\StartView.resw" />
+    <PRIResource Include="Strings\en-US\StartView.resw" />
+    <PRIResource Include="Strings\ru-RU\StartVM.resw" />
+    <PRIResource Include="Strings\en-US\StartVM.resw" />
+    <PRIResource Include="Strings\ru-RU\SettingsView.resw" />
+    <PRIResource Include="Strings\en-US\SettingsView.resw" />
+    <PRIResource Include="Strings\ru-RU\SettingsVM.resw" />
+    <PRIResource Include="Strings\en-US\SettingsVM.resw" />
+    <PRIResource Include="Strings\ru-RU\ContactsView.resw" />
+    <PRIResource Include="Strings\en-US\ContactsView.resw" />
+    <PRIResource Include="Strings\ru-RU\ContactsVM.resw" />
+    <PRIResource Include="Strings\en-US\ContactsVM.resw" />
+    <PRIResource Include="Strings\ru-RU\ScheduleView.resw" />
+    <PRIResource Include="Strings\en-US\ScheduleView.resw" />
+    <PRIResource Include="Strings\ru-RU\ScheduleVM.resw" />
+    <PRIResource Include="Strings\en-US\ScheduleVM.resw" />
+    <PRIResource Include="Strings\ru-RU\CalendarsView.resw" />
+    <PRIResource Include="Strings\en-US\CalendarsView.resw" />
+    <PRIResource Include="Strings\ru-RU\CalendarsVM.resw" />
+    <PRIResource Include="Strings\en-US\CalendarsVM.resw" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />

@@ -138,7 +138,7 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public MapEvent() : base()
 		{
-			ProjectOwnerEmail = string.Empty;
+			ProjectOwnerEmail = EmailOfOwner;
 			IsPublic = false;
 		}
 

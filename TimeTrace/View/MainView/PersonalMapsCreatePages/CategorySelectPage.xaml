@@ -11,7 +11,7 @@
 	<Page.Resources>
 		<converver:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 		<converver:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
-		<converver:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter"/>
+		<converver:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -29,12 +29,12 @@
 			</Grid.RowDefinitions>
 
 			<TextBlock
+				x:Uid="/CalendarsView/Calendars"
 				Margin="20,10,20,0"
 				HorizontalAlignment="Left"
 				VerticalAlignment="Center"
 				FontSize="35"
 				FontWeight="Light"
-				Text="Календари"
 				TextWrapping="WrapWholeWords" />
 
 			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
@@ -55,18 +55,18 @@
 			<GridView.ContextFlyout>
 				<MenuFlyout Placement="Bottom">
 					<MenuFlyoutItem
+						x:Uid="/CalendarsView/GoTo"
 						Click="{x:Bind ViewModel.CategorySelect}"
-						Icon="Share"
-						Text="Перейти" />
+						Icon="Share" />
 					<MenuFlyoutSeparator />
 					<MenuFlyoutItem
+						x:Uid="/CalendarsView/Edit"
 						Click="{x:Bind ViewModel.CategoryEditAsync}"
-						Icon="Edit"
-						Text="Редактировать" />
+						Icon="Edit" />
 					<MenuFlyoutItem
+						x:Uid="/CalendarsView/Remove"
 						Click="{x:Bind ViewModel.CategoryRemoveAsync}"
-						Icon="Delete"
-						Text="Удалить" />
+						Icon="Delete" />
 				</MenuFlyout>
 			</GridView.ContextFlyout>
 			<GridView.ItemTemplate>
@@ -83,23 +83,23 @@
 							<StackPanel>
 								<StackPanel Margin="10,2" Orientation="Horizontal">
 									<TextBlock
+										x:Uid="/CalendarsView/CalendarDetails"
 										Margin="0,0,5,0"
-										FontSize="15"
-										Text="Календарь: " />
+										FontSize="15" />
 									<TextBlock FontSize="15" Text="{Binding Name}" />
 								</StackPanel>
 								<StackPanel Margin="10,2" Orientation="Horizontal">
 									<TextBlock
 										Margin="0,0,5,0"
 										FontSize="15"
-										Text="Описание: " />
+										x:Uid="/CalendarsView/DesctiptionDetails" />
 									<TextBlock FontSize="15" Text="{Binding Description}" />
 								</StackPanel>
 								<StackPanel Margin="10,2" Orientation="Horizontal">
 									<TextBlock
 										Margin="0,0,5,0"
 										FontSize="15"
-										Text="Обновлено: " />
+										x:Uid="/CalendarsView/UpdateDetails" />
 									<TextBlock FontSize="15" Text="{Binding UpdateAt, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 								</StackPanel>
 							</StackPanel>
@@ -139,12 +139,12 @@
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
 			<CommandBar.Content>
 				<StackPanel Margin="10,-5" Orientation="Horizontal">
-					<TextBlock Text="Поиск по календарям: " />
+					<TextBlock x:Uid="/CalendarsView/CalendarsSearching" />
 					<AutoSuggestBox
 						Width="250"
 						Margin="10,13,10,10"
 						ItemsSource="{x:Bind ViewModel.AreaSuggestList, Mode=TwoWay}"
-						PlaceholderText="Поиск..."
+						x:Uid="/CalendarsView/CalendarsSearchingPlaceholder"
 						QueryIcon="Find"
 						QuerySubmitted="{x:Bind ViewModel.CategoryFilterQuerySubmitted}"
 						TextChanged="{x:Bind ViewModel.CategoryFilter}" />
@@ -155,13 +155,11 @@
 			<AppBarButton
 				Click="{x:Bind ViewModel.CategoryCreateAsync}"
 				Icon="Add"
-				Label="Добавить календарь"
-				ToolTipService.ToolTip="Создать новый календарь" />
+				x:Uid="/CalendarsView/AddCalendar" />
 			<AppBarToggleButton
 				Click="{x:Bind ViewModel.CategoriesBulkRemovalAsync}"
 				Icon="Remove"
-				Label="Удалить выбранные"
-				ToolTipService.ToolTip="Удалить выбранные календари" />
+				x:Uid="/CalendarsView/RemoveCalendar" />
 		</CommandBar>
 
 	</Grid>

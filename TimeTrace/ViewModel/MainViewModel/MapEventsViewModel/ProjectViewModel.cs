@@ -171,6 +171,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				}
 
 				CurrentProjects.Add(newProject);
+
+				// Synchronization of changes with server
+				await StartPageViewModel.Instance.CategoriesSynchronization();
 			}
 		}
 
@@ -234,6 +237,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 						// Remove Area from UI panel
 						CurrentProjects.Remove(CurrentProjects[SelectedProject.Value]);
+
+						// Synchronization of changes with server
+						await StartPageViewModel.Instance.CategoriesSynchronization();
 					}
 				}
 			}
@@ -280,6 +286,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						var tempProject = CurrentProjects[selectedIndex];
 						CurrentProjects.RemoveAt(selectedIndex);
 						CurrentProjects.Insert(selectedIndex, tempProject);
+
+						// Synchronization of changes with server
+						await StartPageViewModel.Instance.CategoriesSynchronization();
 					}
 				}
 			}

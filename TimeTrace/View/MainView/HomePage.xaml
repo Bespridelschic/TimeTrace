@@ -37,7 +37,7 @@
 				Margin="20"
 				HorizontalAlignment="Center"
 				Orientation="Horizontal">
-				<TextBlock FontSize="25" Text="Добро пожаловать, " />
+				<TextBlock FontSize="25" x:Uid="/HomeView/WelcomeText" />
 				<TextBlock FontSize="25" Text="{x:Bind ViewModel.CurrentUserEmail, Mode=OneWay}" />
 				<TextBlock FontSize="25" Text="!" />
 			</StackPanel>
@@ -65,7 +65,7 @@
 						Margin="5"
 						HorizontalAlignment="Right"
 						FontSize="18"
-						Text="Событий сегодня: " />
+						x:Uid="/HomeView/MapEventsToday" />
 					<TextBlock
 						Grid.Column="1"
 						Margin="5"
@@ -78,7 +78,7 @@
 						Margin="5"
 						HorizontalAlignment="Right"
 						FontSize="18"
-						Text="Ближайшее через: " />
+						x:Uid="/HomeView/ClosestThrough" />
 					<TextBlock
 						Grid.Row="1"
 						Grid.Column="1"
@@ -92,7 +92,7 @@
 						Margin="5"
 						HorizontalAlignment="Right"
 						FontSize="18"
-						Text="Создано карт:" />
+						x:Uid="/HomeView/TotalCreatedMapEvents" />
 					<TextBlock
 						Grid.Row="3"
 						Grid.Column="1"
@@ -114,7 +114,7 @@
 				<TextBlock
 					Margin="0,0,0,10"
 					FontSize="23"
-					Text="Полезное для вас" />
+					x:Uid="/HomeView/UsefulForYou" />
 
 				<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
 					<Button Margin="5" Click="{x:Bind ViewModel.SchedulePageChoice}">
@@ -125,7 +125,7 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" Text="Расписание" />
+							<TextBlock FontSize="20" x:Uid="/HomeView/Shedule" />
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
@@ -133,7 +133,7 @@
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								Text="Узнать расписание на текущее время, или применить фильтры"
+								x:Uid="/HomeView/MoreAboutShedule"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -146,7 +146,7 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" Text="Карты" />
+							<TextBlock FontSize="20" x:Uid="/HomeView/MapEvents" />
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
@@ -154,7 +154,7 @@
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								Text="Перейти к созданию интеллект-карт или редактированию"
+								x:Uid="/HomeView/MoreAboutMapEvents"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -167,7 +167,7 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" Text="Настройки" />
+							<TextBlock FontSize="20" x:Uid="/HomeView/Settings" />
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
@@ -175,7 +175,7 @@
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								Text="Изменить конфигурацию приложения"
+								x:Uid="/HomeView/MoreAboutSettings"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -188,7 +188,7 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" Text="Помощь" />
+							<TextBlock FontSize="20" x:Uid="/HomeView/Help" />
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
@@ -196,7 +196,7 @@
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								Text="Видео-инструкции по работе с приложением"
+								x:Uid="/HomeView/MoreAboutHelp"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -205,6 +205,7 @@
 					<Button
 						Margin="5"
 						HorizontalAlignment="Center"
+						Click="{x:Bind ViewModel.UserPasswordResetAsync}"
 						IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}">
 						<Grid>
 							<Grid.RowDefinitions>
@@ -213,7 +214,7 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" Text="Сменить пароль" />
+							<TextBlock FontSize="20" x:Uid="/HomeView/ChangePassword" />
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
@@ -221,7 +222,7 @@
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								Text="Изменить пароль. Никому не сообщайте свой пароль!"
+								x:Uid="/HomeView/MoreAboutChangePassword"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -239,7 +240,7 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" Text="Обратная связь" />
+							<TextBlock FontSize="20" x:Uid="/HomeView/Feedback" />
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
@@ -247,7 +248,7 @@
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								Text="Сообщите нам об ошибках, или предложите новшество!"
+								x:Uid="/HomeView/MoreAboutFeedback"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
