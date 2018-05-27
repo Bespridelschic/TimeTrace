@@ -312,11 +312,11 @@
 						x:Uid="/ScheduleView/EventsSearchingPlaceholder"
 						Width="250"
 						Margin="10,13,10,10"
-						ItemsSource="{x:Bind ViewModel.MapEventsSuggestList, Mode=TwoWay}"
+						ItemsSource="{x:Bind ViewModel.SearchSuggestions, Mode=OneWay}"
 						QueryIcon="Find"
-						QuerySubmitted="{x:Bind ViewModel.MapEventsFilterQuerySubmitted}"
-						Text="{x:Bind ViewModel.RequiredFilter, Mode=TwoWay}"
-						TextChanged="{x:Bind ViewModel.MapEventsFilter}" />
+						QuerySubmitted="{x:Bind ViewModel.SearchRequest}"
+						Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
+						TextChanged="{x:Bind ViewModel.DynamicSearch}" />
 				</StackPanel>
 			</CommandBar.Content>
 

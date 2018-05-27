@@ -222,11 +222,12 @@
 					<AutoSuggestBox
 						Width="250"
 						Margin="10,13,10,10"
-						ItemsSource="{x:Bind ViewModel.ProjectSuggestList, Mode=TwoWay}"
+						ItemsSource="{x:Bind ViewModel.SearchSuggestions, Mode=OneWay}"
 						PlaceholderText="Поиск..."
 						QueryIcon="Find"
-						QuerySubmitted="{x:Bind ViewModel.ProjectFilterQuerySubmitted}"
-						TextChanged="{x:Bind ViewModel.ProjectFilter}" />
+						QuerySubmitted="{x:Bind ViewModel.SearchRequest}"
+						Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
+						TextChanged="{x:Bind ViewModel.DynamicSearch}" />
 				</StackPanel>
 			</CommandBar.Content>
 

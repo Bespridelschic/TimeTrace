@@ -119,6 +119,7 @@
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ChatViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ContactsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\ISearchable.cs" />
     <Compile Include="ViewModel\MainViewModel\StartPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs" />

@@ -4,22 +4,17 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Input;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using TimeTrace.Model;
-using TimeTrace.Model.Events;
 using TimeTrace.Model.DBContext;
 using TimeTrace.Model.Requests;
-using TimeTrace.View.Converters;
 using TimeTrace.View.MainView.ContactPages;
-using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
@@ -27,7 +22,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 	/// <summary>
 	/// Contacts view model
 	/// </summary>
-	public class ContactsViewModel : BaseViewModel
+	public class ContactsViewModel : BaseViewModel, ISearchable<string>
 	{
 		#region Properties
 
@@ -55,20 +50,6 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			set
 			{
 				selectedContacts = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private ObservableCollection<string> contactsSuggestList;
-		/// <summary>
-		/// Filter tips
-		/// </summary>
-		public ObservableCollection<string> ContactsSuggestList
-		{
-			get => contactsSuggestList;
-			set
-			{
-				contactsSuggestList = value;
 				OnPropertyChanged();
 			}
 		}
@@ -183,7 +164,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			Contacts = new ObservableCollection<Contact>();
 			SelectedTabIndex = 0;
 			MultipleSelection = ListViewSelectionMode.Single;
-			ContactsSuggestList = new ObservableCollection<string>();
+			SearchSuggestions = new ObservableCollection<string>();
 
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 		}
@@ -574,19 +555,45 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 		#region Searching contacts
 
+		private string searchTerm;
 		/// <summary>
-		/// Filtration of input filters
+		/// Term for searching
 		/// </summary>
-		/// <param name="sender">Input filter</param>
+		public string SearchTerm
+		{
+			get => searchTerm;
+			set
+			{
+				searchTerm = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> searchSuggestions;
+		/// <summary>
+		/// Suggestions for searching
+		/// </summary>
+		public ObservableCollection<string> SearchSuggestions
+		{
+			get => searchSuggestions;
+			set
+			{
+				searchSuggestions = value;
+				OnPropertyChanged();
+			}
+
+		}
+
+		/// <summary>
+		/// Filtration of input terms
+		/// </summary>
+		/// <param name="sender">Input term</param>
 		/// <param name="args">Event args</param>
-		public void ContactsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		public void DynamicSearch()
 		{
 			if (Contacts == null) return;
 
-			if (args.CheckCurrent())
-			{
-				ContactsSuggestList.Clear();
-			}
+			SearchSuggestions.Clear();
 
 			// Remove all contacts for adding relevant filter
 			Contacts.Clear();
@@ -594,10 +601,8 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			// Select all contacts
-			if (string.IsNullOrEmpty(sender.Text))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
-				ContactsSuggestList.Clear();
-
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					if (SelectedTabIndex == 0)
@@ -639,15 +644,15 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 					if (SelectedTabIndex == 0)
 					{
 						foreach (var i in db.Contacts
-						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
-									i.Email.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
-									i.EmailOfOwner == (string)localSettings.Values["email"] &&
-									!i.IsDelete)
-						.Select(i => i))
+							.Where(i => (i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()) ||
+										i.Email.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant())) &&
+										i.EmailOfOwner == (string)localSettings.Values["email"] &&
+										!i.IsDelete)
+							.Select(i => i))
 						{
-							if (!ContactsSuggestList.Contains(i.Name))
+							if (!SearchSuggestions.Contains(i.Name))
 							{
-								ContactsSuggestList.Add(i.Name);
+								SearchSuggestions.Add(i.Name);
 							}
 
 							Contacts.Add(i);
@@ -659,7 +664,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 						var busyMapEvents = db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] &&
 																	!i.IsDelete &&
 																	!string.IsNullOrEmpty(i.UserBind) &&
-																	i.UserBind.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) &&
+																	i.UserBind.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()) &&
 																	i.End >= DateTime.UtcNow);
 
 						if (busyMapEvents.Count() > 0)
@@ -670,9 +675,9 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 																			i.EmailOfOwner == (string)localSettings.Values["email"] &&
 																			!i.IsDelete))
 								{
-									if (!ContactsSuggestList.Contains(item.Name))
+									if (!SearchSuggestions.Contains(item.Name))
 									{
-										ContactsSuggestList.Add(item.Name);
+										SearchSuggestions.Add(item.Name);
 									}
 
 									Contacts.Add(item);
@@ -685,15 +690,15 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		}
 
 		/// <summary>
-		/// Click on Find contact
+		/// User request for searching
 		/// </summary>
-		/// <param name="sender">Object</param>
-		/// <param name="args">Args</param>
-		public void ContactsFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		/// <param name="sender">Input term</param>
+		/// <param name="args">Event args</param>
+		public void SearchRequest()
 		{
-			ContactsSuggestList.Clear();
+			SearchSuggestions.Clear();
 
-			if (string.IsNullOrEmpty(args.QueryText))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
 				return;
 			}
@@ -705,11 +710,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-					var term = args.QueryText.ToLower();
 
 					if (SelectedTabIndex == 0)
 					{
-						foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
+						foreach (var i in db.Contacts.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLowerInvariant()) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
 						{
 							Contacts.Add(i);
 						}
@@ -720,7 +724,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 						var busyMapEvents = db.MapEvents.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] &&
 																	!i.IsDelete &&
 																	!string.IsNullOrEmpty(i.UserBind) &&
-																	i.UserBind.ToLowerInvariant().Contains(term.ToLowerInvariant()) &&
+																	i.UserBind.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()) &&
 																	i.End >= DateTime.UtcNow);
 
 						if (busyMapEvents.Count() > 0)

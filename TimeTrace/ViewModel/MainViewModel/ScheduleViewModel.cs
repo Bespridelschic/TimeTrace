@@ -12,13 +12,14 @@ using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using TimeTrace.Model.Requests;
 using System.Diagnostics;
 using Windows.ApplicationModel.Resources;
+using System.Collections.Generic;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
 	/// <summary>
 	/// Schedule view model
 	/// </summary>
-	public class ScheduleViewModel : BaseViewModel
+	public class ScheduleViewModel : BaseViewModel, ISearchable<string>
 	{
 		#region Properties
 
@@ -65,34 +66,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 			set
 			{
 				isFilterExpanded = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string requiredFilter;
-		/// <summary>
-		/// Term for finding map events
-		/// </summary>
-		public string RequiredFilter
-		{
-			get { return requiredFilter; }
-			set
-			{
-				requiredFilter = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private ObservableCollection<string> mapEventsSuggestList;
-		/// <summary>
-		/// Filter tips
-		/// </summary>
-		public ObservableCollection<string> MapEventsSuggestList
-		{
-			get => mapEventsSuggestList;
-			set
-			{
-				mapEventsSuggestList = value;
 				OnPropertyChanged();
 			}
 		}
@@ -298,7 +271,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ResourceLoader = ResourceLoader.GetForCurrentView("ScheduleVM");
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
-			MapEventsSuggestList = new ObservableCollection<string>();
+			SearchSuggestions = new ObservableCollection<string>();
 			SelectedFilteredDates = new ObservableCollection<DateTimeOffset>();
 
 			MapEventsPlacesSuggestList = new ObservableCollection<string>();
@@ -357,7 +330,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				if (requestedMapEvents != null)
 				{
-					RequiredFilter = requestedMapEvents;
+					SearchTerm = requestedMapEvents;
 
 					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
 						.Where(i => i.Name.ToLowerInvariant().Contains(requestedMapEvents) &&
@@ -730,17 +703,40 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 		#region Searching map events
 
+		private string searchTerm;
 		/// <summary>
-		/// Filtration of input filters
+		/// Term for finding map events
 		/// </summary>
-		/// <param name="sender">Input filter</param>
-		/// <param name="args">Event args</param>
-		public void MapEventsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		public string SearchTerm
 		{
-			if (args.CheckCurrent())
+			get => searchTerm;
+			set
 			{
-				MapEventsSuggestList.Clear();
+				searchTerm = value;
+				OnPropertyChanged();
 			}
+		}
+
+		private ObservableCollection<string> searchSuggestions;
+		/// <summary>
+		/// Suggestions for searching
+		/// </summary>
+		public ObservableCollection<string> SearchSuggestions
+		{
+			get => searchSuggestions;
+			set
+			{
+				searchSuggestions = value;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Filtration of input terms
+		/// </summary>
+		public void DynamicSearch()
+		{
+			SearchSuggestions.Clear();
 
 			// Remove all map events for adding relevant filter
 			MapEvents.Clear();
@@ -748,10 +744,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			// Select all map events
-			if (string.IsNullOrEmpty(sender.Text))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
-				MapEventsSuggestList.Clear();
-
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.MapEvents
@@ -770,15 +764,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.MapEvents
-						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()))
+						.Where(i => i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant())
 							&& i.EmailOfOwner == (string)localSettings.Values["email"]
 							&& !i.IsDelete
 							&& i.End >= DateTime.UtcNow)
 						.Select(i => i))
 					{
-						if (!MapEventsSuggestList.Contains(i.Name))
+						if (!SearchSuggestions.Contains(i.Name))
 						{
-							MapEventsSuggestList.Add(i.Name);
+							SearchSuggestions.Add(i.Name);
 						}
 
 						MapEvents.Add(i);
@@ -788,15 +782,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Click on Find map events
+		/// User request for searching
 		/// </summary>
-		/// <param name="sender">Object</param>
-		/// <param name="args">Args</param>
-		public void MapEventsFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		public void SearchRequest()
 		{
-			MapEventsSuggestList.Clear();
+			SearchSuggestions.Clear();
 
-			if (string.IsNullOrEmpty(args.QueryText))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
 				return;
 			}
@@ -808,9 +800,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-					var term = args.QueryText.ToLower();
+
 					foreach (var i in db.MapEvents
-						.Where(i => i.Name.ToLowerInvariant().Contains(term)
+						.Where(i => i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant())
 							&& !i.IsDelete
 							&& i.EmailOfOwner == (string)localSettings.Values["email"]
 							&& i.End >= DateTime.UtcNow)

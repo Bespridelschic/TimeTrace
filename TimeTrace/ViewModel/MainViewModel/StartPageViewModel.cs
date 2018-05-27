@@ -22,23 +22,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 	/// <summary>
 	/// Singleton of start page ViewModel
 	/// </summary>
-	public sealed class StartPageViewModel : BaseViewModel
+	public sealed class StartPageViewModel : BaseViewModel, ISearchable<string>
 	{
 		#region Properties
-
-		private ObservableCollection<string> mapEventsSuggestList;
-		/// <summary>
-		/// Filter tips
-		/// </summary>
-		public ObservableCollection<string> MapEventsSuggestList
-		{
-			get => mapEventsSuggestList;
-			set
-			{
-				mapEventsSuggestList = value;
-				OnPropertyChanged();
-			}
-		}
 
 		private string pageTitle;
 		/// <summary>
@@ -99,7 +85,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			ResourceLoader = ResourceLoader.GetForCurrentView("HomeVM");
 
 			SetHeader(Headers.Home);
-			MapEventsSuggestList = new ObservableCollection<string>();
+			SearchSuggestions = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			var currentUser = new Model.User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/HomeVM/UnknownEmail"), null);
@@ -168,12 +154,19 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
+		/// Local reference to main navigation view
+		/// </summary>
+		private NavigationView localNavView;
+
+		/// <summary>
 		/// Navigation menu
 		/// </summary>
 		/// <param name="sender">Sender</param>
 		/// <param name="args">Parameter</param>
 		public void NavigatingThroughTheMainMenu(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
+			localNavView = sender;
+
 			if (args.IsSettingsSelected)
 			{
 				SetHeader(Headers.Settings);
@@ -231,19 +224,34 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				case Headers.Home:
 					PageTitle = ResourceLoader.GetString("/StartVM/Homepage");
+
+					// If without check - null reference exception, because app start on home page
+					if (localNavView != null)
+					{
+						localNavView.SelectedItem = localNavView.MenuItems[0];
+					}
 					break;
+
 				case Headers.Shedule:
 					PageTitle = ResourceLoader.GetString("/StartVM/Shedule");
+					localNavView.SelectedItem = localNavView.MenuItems[1];
 					break;
+
 				case Headers.Contacts:
 					PageTitle = ResourceLoader.GetString("/StartVM/Contacts");
+					localNavView.SelectedItem = localNavView.MenuItems[2];
 					break;
+
 				case Headers.MapEvents:
 					PageTitle = ResourceLoader.GetString("/StartVM/PersonalEvents");
+					localNavView.SelectedItem = localNavView.MenuItems[3];
 					break;
+
 				case Headers.Settings:
 					PageTitle = ResourceLoader.GetString("/StartVM/Settings");
+					localNavView.SelectedItem = localNavView.SettingsItem;
 					break;
+
 				default:
 					break;
 			}
@@ -252,9 +260,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Send push-notification to windows
 		/// </summary>
-		private void ShowToastNotification(int res)
+		/// <param name="result">Result of synchronization. 0 is success, 1 is error</param>
+		private void ShowToastNotification(int result)
 		{
-			string message = res == 0 ? ResourceLoader.GetString("/StartVM/SynchronizationSuccess") : ResourceLoader.GetString("/StartVM/SynchronizationError");
+			string message = result == 0 ? ResourceLoader.GetString("/StartVM/SynchronizationSuccess") : ResourceLoader.GetString("/StartVM/SynchronizationError");
 
 			var toastContent = new ToastContent()
 			{
@@ -372,25 +381,46 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 		#region Searching map events
 
+		private string searchTerm;
 		/// <summary>
-		/// Filtration of input filters
+		/// Term for searching
 		/// </summary>
-		/// <param name="sender">Input filter</param>
-		/// <param name="args">Event args</param>
-		public void MapEventsFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		public string SearchTerm
 		{
-			if (args.CheckCurrent())
+			get => searchTerm;
+			set
 			{
-				MapEventsSuggestList.Clear();
+				searchTerm = value;
+				OnPropertyChanged();
 			}
+		}
 
+		private ObservableCollection<string> searchSuggestions;
+		/// <summary>
+		/// Suggestions for searching
+		/// </summary>
+		public ObservableCollection<string> SearchSuggestions
+		{
+			get => searchSuggestions;
+			set
+			{
+				searchSuggestions = value;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Filtration of input terms
+		/// </summary>
+		public void DynamicSearch()
+		{
 			// Remove all contacts for adding relevant filter
-			MapEventsSuggestList.Clear();
+			SearchSuggestions.Clear();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			// Select all contacts
-			if (string.IsNullOrEmpty(sender.Text))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
@@ -400,7 +430,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 							&& i.End >= DateTime.UtcNow)
 						.Select(i => i))
 					{
-						MapEventsSuggestList.Add(i.Name);
+						SearchSuggestions.Add(i.Name);
 					}
 				}
 			}
@@ -410,15 +440,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.MapEvents
-						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()))
+						.Where(i => (i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()))
 							&& i.EmailOfOwner == (string)localSettings.Values["email"]
 							&& !i.IsDelete
 							&& i.End >= DateTime.UtcNow)
 						.Select(i => i))
 					{
-						if (!MapEventsSuggestList.Contains(i.Name))
+						if (!SearchSuggestions.Contains(i.Name))
 						{
-							MapEventsSuggestList.Add(i.Name);
+							SearchSuggestions.Add(i.Name);
 						}
 					}
 				}
@@ -426,27 +456,23 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Click on Find map event
+		/// User request for searching
 		/// </summary>
-		/// <param name="sender">Object</param>
-		/// <param name="args">Args</param>
-		public void MapEventsFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		public void SearchRequest()
 		{
-			// Remove term from search
-			sender.Text = string.Empty;
+			SearchSuggestions.Clear();
 
-			MapEventsSuggestList.Clear();
-
-			if (string.IsNullOrEmpty(args.QueryText))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
 				return;
 			}
 
-			if (MapEventsSuggestList != null)
+			if (SearchSuggestions != null)
 			{
-				MapEventsSuggestList.Clear();
+				(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage), SearchTerm.ToLowerInvariant());
 
-				(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage), args.QueryText.ToLowerInvariant());
+				SearchTerm = string.Empty;
+				SearchSuggestions.Clear();
 			}
 		}
 

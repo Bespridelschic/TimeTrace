@@ -21,7 +21,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 	/// <summary>
 	/// View model of project list
 	/// </summary>
-	public class ProjectViewModel : BaseViewModel
+	public class ProjectViewModel : BaseViewModel, ISearchable<string>
 	{
 		#region Properties
 
@@ -40,20 +40,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			set
 			{
 				currentProjects = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private ObservableCollection<string> projectSuggestList;
-		/// <summary>
-		/// Filter tips
-		/// </summary>
-		public ObservableCollection<string> ProjectSuggestList
-		{
-			get => projectSuggestList;
-			set
-			{
-				projectSuggestList = value;
 				OnPropertyChanged();
 			}
 		}
@@ -139,7 +125,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			CurrentArea = area;
 
 			CurrentProjects = new ObservableCollection<Project>();
-			ProjectSuggestList = new ObservableCollection<string>();
+			SearchSuggestions = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -294,97 +280,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		#region Searching projects
-
-		/// <summary>
-		/// Filtration of input filters
-		/// </summary>
-		/// <param name="sender">Input filter</param>
-		/// <param name="args">Event args</param>
-		public void ProjectFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-		{
-			if (CurrentProjects == null) return;
-
-			if (args.CheckCurrent())
-			{
-				ProjectSuggestList.Clear();
-			}
-
-			// Remove all buttons for adding relevant filter
-			CurrentProjects.Clear();
-
-			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-			// Select all projects
-			if (string.IsNullOrEmpty(sender.Text))
-			{
-				ProjectSuggestList.Clear();
-
-				using (MainDatabaseContext db = new MainDatabaseContext())
-				{
-					foreach (var i in db.Projects.Where(i => i.AreaId == CurrentArea.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
-					{
-						CurrentProjects.Add(i);
-					}
-				}
-			}
-
-			else
-			{
-				using (MainDatabaseContext db = new MainDatabaseContext())
-				{
-					foreach (var i in db.Projects
-						.Where(i => i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) &&
-									i.AreaId == CurrentArea.Id &&
-									i.EmailOfOwner == (string)localSettings.Values["email"] &&
-									!i.IsDelete)
-						.Select(i => i))
-					{
-						if (!ProjectSuggestList.Contains(i.Name))
-						{
-							ProjectSuggestList.Add(i.Name);
-						}
-
-						CurrentProjects.Add(i);
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Click on Find button
-		/// </summary>
-		/// <param name="sender">Object</param>
-		/// <param name="args">Args</param>
-		public void ProjectFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-		{
-			ProjectSuggestList.Clear();
-
-			if (string.IsNullOrEmpty(args.QueryText))
-			{
-				return;
-			}
-
-			if (CurrentProjects != null)
-			{
-				using (MainDatabaseContext db = new MainDatabaseContext())
-				{
-					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-					var term = args.QueryText.ToLower();
-					foreach (var i in db.Projects
-						.Where(i => i.Name.ToLowerInvariant().Contains(term) &&
-									i.AreaId == CurrentArea.Id &&
-									!i.IsDelete
-									&& i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
-					{
-						CurrentProjects.Add(i);
-					}
-				}
-			}
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Creation of edition project dialog
 		/// </summary>
@@ -462,5 +357,120 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				return project;
 			}
 		}
+
+		#region Searching projects
+
+		private string searchTerm;
+		/// <summary>
+		/// Term for searching
+		/// </summary>
+		public string SearchTerm
+		{
+			get => searchTerm;
+			set
+			{
+				searchTerm = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> searchSuggestions;
+		/// <summary>
+		/// Suggestions for searching
+		/// </summary>
+		public ObservableCollection<string> SearchSuggestions
+		{
+			get => searchSuggestions;
+			set
+			{
+				searchSuggestions = value;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Filtration of input terms
+		/// </summary>
+		public void DynamicSearch()
+		{
+			if (CurrentProjects == null) return;
+
+			// Remove all projects for adding relevant filter
+			CurrentProjects.Clear();
+			SearchSuggestions.Clear();
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+			// Select all projects
+			if (string.IsNullOrEmpty(SearchTerm))
+			{
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Projects
+						.Where(i => i.AreaId == CurrentArea.Id
+							&& i.EmailOfOwner == (string)localSettings.Values["email"]
+							&& !i.IsDelete)
+
+						.Select(i => i))
+					{
+						CurrentProjects.Add(i);
+					}
+				}
+			}
+
+			else
+			{
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					foreach (var i in db.Projects
+						.Where(i => i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()) &&
+									i.AreaId == CurrentArea.Id &&
+									i.EmailOfOwner == (string)localSettings.Values["email"] &&
+									!i.IsDelete)
+						.Select(i => i))
+					{
+						if (!SearchSuggestions.Contains(i.Name))
+						{
+							SearchSuggestions.Add(i.Name);
+						}
+
+						CurrentProjects.Add(i);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// User request for searching
+		/// </summary>
+		public void SearchRequest()
+		{
+			SearchSuggestions.Clear();
+
+			if (string.IsNullOrEmpty(SearchTerm))
+			{
+				return;
+			}
+
+			if (CurrentProjects != null)
+			{
+				using (MainDatabaseContext db = new MainDatabaseContext())
+				{
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+					foreach (var i in db.Projects
+						.Where(i => i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()) &&
+									i.AreaId == CurrentArea.Id &&
+									!i.IsDelete
+									&& i.EmailOfOwner == (string)localSettings.Values["email"])
+						.Select(i => i))
+					{
+						CurrentProjects.Add(i);
+					}
+				}
+			}
+		}
+
+		#endregion
 	}
 }

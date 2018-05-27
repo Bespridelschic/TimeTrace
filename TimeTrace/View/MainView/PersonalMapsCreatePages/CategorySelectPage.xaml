@@ -90,16 +90,16 @@
 								</StackPanel>
 								<StackPanel Margin="10,2" Orientation="Horizontal">
 									<TextBlock
+										x:Uid="/CalendarsView/DesctiptionDetails"
 										Margin="0,0,5,0"
-										FontSize="15"
-										x:Uid="/CalendarsView/DesctiptionDetails" />
+										FontSize="15" />
 									<TextBlock FontSize="15" Text="{Binding Description}" />
 								</StackPanel>
 								<StackPanel Margin="10,2" Orientation="Horizontal">
 									<TextBlock
+										x:Uid="/CalendarsView/UpdateDetails"
 										Margin="0,0,5,0"
-										FontSize="15"
-										x:Uid="/CalendarsView/UpdateDetails" />
+										FontSize="15" />
 									<TextBlock FontSize="15" Text="{Binding UpdateAt, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 								</StackPanel>
 							</StackPanel>
@@ -141,25 +141,26 @@
 				<StackPanel Margin="10,-5" Orientation="Horizontal">
 					<TextBlock x:Uid="/CalendarsView/CalendarsSearching" />
 					<AutoSuggestBox
+						x:Uid="/CalendarsView/CalendarsSearchingPlaceholder"
 						Width="250"
 						Margin="10,13,10,10"
-						ItemsSource="{x:Bind ViewModel.AreaSuggestList, Mode=TwoWay}"
-						x:Uid="/CalendarsView/CalendarsSearchingPlaceholder"
+						ItemsSource="{x:Bind ViewModel.SearchSuggestions, Mode=OneWay}"
 						QueryIcon="Find"
-						QuerySubmitted="{x:Bind ViewModel.CategoryFilterQuerySubmitted}"
-						TextChanged="{x:Bind ViewModel.CategoryFilter}" />
+						QuerySubmitted="{x:Bind ViewModel.SearchRequest}"
+						Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
+						TextChanged="{x:Bind ViewModel.DynamicSearch}" />
 				</StackPanel>
 
 			</CommandBar.Content>
 
 			<AppBarButton
+				x:Uid="/CalendarsView/AddCalendar"
 				Click="{x:Bind ViewModel.CategoryCreateAsync}"
-				Icon="Add"
-				x:Uid="/CalendarsView/AddCalendar" />
+				Icon="Add" />
 			<AppBarToggleButton
+				x:Uid="/CalendarsView/RemoveCalendar"
 				Click="{x:Bind ViewModel.CategoriesBulkRemovalAsync}"
-				Icon="Remove"
-				x:Uid="/CalendarsView/RemoveCalendar" />
+				Icon="Remove" />
 		</CommandBar>
 
 	</Grid>

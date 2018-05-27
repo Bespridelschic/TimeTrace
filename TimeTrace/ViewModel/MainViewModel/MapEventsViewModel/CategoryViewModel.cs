@@ -25,7 +25,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 	/// <summary>
 	/// View model of category (calendar) creation
 	/// </summary>
-	public class CategoryViewModel : BaseViewModel
+	public class CategoryViewModel : BaseViewModel, ISearchable<string>
 	{
 		#region Properties
 
@@ -72,20 +72,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			set
 			{
 				selectedArea = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private ObservableCollection<string> areaSuggestList;
-		/// <summary>
-		/// Filter tips
-		/// </summary>
-		public ObservableCollection<string> AreaSuggestList
-		{
-			get => areaSuggestList;
-			set
-			{
-				areaSuggestList = value;
 				OnPropertyChanged();
 			}
 		}
@@ -138,7 +124,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			};
 
 			Calendars = new ObservableCollection<Area>();
-			AreaSuggestList = new ObservableCollection<string>();
+			SearchSuggestions = new ObservableCollection<string>();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -576,30 +562,51 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 		#region Searching calendars
 
+		private string searchTerm;
 		/// <summary>
-		/// Filtration of input filters
+		/// Term for searching
 		/// </summary>
-		/// <param name="sender">Input filter</param>
-		/// <param name="args">Event args</param>
-		public void CategoryFilter(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		public string SearchTerm
+		{
+			get => searchTerm;
+			set
+			{
+				searchTerm = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<string> searchSuggestions;
+		/// <summary>
+		/// Suggestions for searching
+		/// </summary>
+		public ObservableCollection<string> SearchSuggestions
+		{
+			get => searchSuggestions;
+			set
+			{
+				searchSuggestions = value;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Filtration of input terms
+		/// </summary>
+		public void DynamicSearch()
 		{
 			if (Calendars == null) return;
 
-			if (args.CheckCurrent())
-			{
-				AreaSuggestList.Clear();
-			}
+			SearchSuggestions.Clear();
 
-			// Remove all buttons for adding relevant filter
+			// Remove all calendars for adding relevant filter
 			Calendars.Clear();
 
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 			// Select all calendars
-			if (string.IsNullOrEmpty(sender.Text))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
-				AreaSuggestList.Clear();
-
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.Areas.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete).Select(i => i))
@@ -614,15 +621,15 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					foreach (var i in db.Areas
-						.Where(i => (i.Name.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant()) ||
-									i.Description.ToLowerInvariant().Contains(sender.Text.ToLowerInvariant())) &&
+						.Where(i => (i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant()) ||
+									i.Description.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant())) &&
 									i.EmailOfOwner == (string)localSettings.Values["email"] &&
 									!i.IsDelete)
 						.Select(i => i))
 					{
-						if (!AreaSuggestList.Contains(i.Name))
+						if (!SearchSuggestions.Contains(i.Name))
 						{
-							AreaSuggestList.Add(i.Name);
+							SearchSuggestions.Add(i.Name);
 						}
 
 						Calendars.Add(i);
@@ -632,15 +639,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		}
 
 		/// <summary>
-		/// Click on Find button
+		/// User request for searching
 		/// </summary>
-		/// <param name="sender">Object</param>
-		/// <param name="args">Args</param>
-		public void CategoryFilterQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		public void SearchRequest()
 		{
-			AreaSuggestList.Clear();
+			SearchSuggestions.Clear();
 
-			if (string.IsNullOrEmpty(args.QueryText))
+			if (string.IsNullOrEmpty(SearchTerm))
 			{
 				return;
 			}
@@ -652,8 +657,12 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-					var term = args.QueryText.ToLower();
-					foreach (var i in db.Areas.Where(i => i.Name.ToLowerInvariant().Contains(term) && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Select(i => i))
+
+					foreach (var i in db.Areas
+						.Where(i => i.Name.ToLowerInvariant().Contains(SearchTerm.ToLowerInvariant())
+							&& !i.IsDelete
+							&& i.EmailOfOwner == (string)localSettings.Values["email"])
+						.Select(i => i))
 					{
 						Calendars.Add(i);
 					}

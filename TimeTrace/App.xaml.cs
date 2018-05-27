@@ -33,7 +33,6 @@ namespace TimeTrace
 		public App()
 		{
 			IsIdDeviceAvailable();
-			//AppSignInWithToken().GetAwaiter();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -54,7 +53,7 @@ namespace TimeTrace
 		/// например, если приложение запускается для открытия конкретного файла.
 		/// </summary>
 		/// <param name="e">Сведения о запросе и обработке запуска.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
+		protected async override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			if (!(Window.Current.Content is Frame))
 			{
@@ -72,6 +71,9 @@ namespace TimeTrace
 
 			if (e.PrelaunchActivated == false)
 			{
+				// Try to enter with token
+				//await AppSignInWithToken();
+
 				if (AppFrame.Content == null)
 				{
 					AppFrame.Navigate(typeof(StartPage), e.Arguments);
@@ -80,21 +82,20 @@ namespace TimeTrace
 				// Обеспечение активности текущего окна
 				Window.Current.Activate();
 
-				// Скрытие TitleBar
+				// Hiden TitleBar
 				ExtendAcrylicIntoTitleBar();
 
-				// Активация навигации
+				// Navigation activation
 				SystemNavigationManager.GetForCurrentView().BackRequested += ((sender, args) =>
 				{
 					if (AppFrame.CanGoBack)
 					{
-						RenamePageTitleAfterGoBack(AppFrame.BackStack[AppFrame.BackStack.Count - 1]);
 						AppFrame.GoBack();
 						args.Handled = true;
 					}
 				});
 
-				// Лямбда для навигации
+				// Lambda for navigation
 				AppFrame.Navigated += (s, args) =>
 				{
 					if (AppFrame.CanGoBack) // если можно перейти назад, показываем кнопку
@@ -112,7 +113,7 @@ namespace TimeTrace
 		}
 
 		/// <summary>
-		/// Скрытие TitleBar
+		/// Hiden TitleBar
 		/// </summary>
 		private void ExtendAcrylicIntoTitleBar()
 		{
@@ -147,7 +148,7 @@ namespace TimeTrace
 		}
 
 		/// <summary>
-		/// Попытка входа в систему с помощью токена
+		/// Try sign in with token
 		/// </summary>
 		private async Task AppSignInWithToken()
 		{
@@ -222,48 +223,6 @@ namespace TimeTrace
 			catch (Exception)
 			{
 				throw;
-			}
-		}
-
-		/// <summary>
-		/// Rename current page after navigation back
-		/// </summary>
-		/// <param name="targerPage">Backstack</param>
-		private void RenamePageTitleAfterGoBack(PageStackEntry targerPage)
-		{
-			if (targerPage != null)
-			{
-				if (targerPage.SourcePageType == typeof(HomePage))
-				{
-					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Home);
-					return;
-				}
-
-				if (targerPage.SourcePageType == typeof(SchedulePage))
-				{
-					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Shedule);
-					return;
-				}
-
-				if (targerPage.SourcePageType == typeof(CategorySelectPage)
-					|| targerPage.SourcePageType == typeof(ProjectListPage)
-					|| targerPage.SourcePageType == typeof(PersonalEventCreatePage))
-				{
-					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
-					return;
-				}
-
-				if (targerPage.SourcePageType == typeof(SettingsPage))
-				{
-					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Settings);
-					return;
-				}
-
-				if (targerPage.SourcePageType == typeof(View.MainView.ContactPages.ContactsPage))
-				{
-					StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Contacts);
-					return;
-				}
 			}
 		}
 	}

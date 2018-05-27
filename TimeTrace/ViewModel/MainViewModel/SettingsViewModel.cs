@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
-using Windows.UI.Notifications;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -36,11 +29,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 						case 0:
 							{
 								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "ru-RU";
+								AppRestart("Changing global properties");
+
 								break;
 							}
 						case 1:
 							{
 								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+								AppRestart("Changing global properties");
+
 								break;
 							}
 						default:
@@ -52,6 +49,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 		}
 
+		/// <summary>
+		/// Current language used in application
+		/// </summary>
 		public string CurrentLanguage { get; set; }
 
 		/// <summary>
@@ -77,7 +77,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			if ((Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("en"))
 			{
-				CurrentLanguage = "Английский язык";
+				CurrentLanguage = "English";
 				selectedLanguage = 1;
 			}
 		}
@@ -143,10 +143,27 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Restart the app
 		/// </summary>
-		public async void AppRestart()
+		public async void AppRestart(string reason)
 		{
-			Windows.ApplicationModel.Core.AppRestartFailureReason result =
-				await Windows.ApplicationModel.Core.CoreApplication.RequestRestartAsync("Changing global properties");
+			StackPanel mainText = new StackPanel();
+			mainText.Children.Add(new TextBlock() { Text = ResourceLoader.GetString("/SettingsVM/RestartMessage") });
+			mainText.Children.Add(new TextBlock() { Text = ResourceLoader.GetString("/SettingsVM/RestartMessageEnd"), Margin = new Thickness(0, 0, 0, 10) });
+			mainText.Children.Add(new TextBlock() { Text = ResourceLoader.GetString("/SettingsVM/RestartQuestion") });
+
+			ContentDialog appRestartResolution = new ContentDialog()
+			{
+				Title = ResourceLoader.GetString("/SettingsVM/RestartConfirm"),
+				Content = mainText,
+				PrimaryButtonText = ResourceLoader.GetString("/SettingsVM/Restart"),
+				CloseButtonText = ResourceLoader.GetString("/SettingsVM/Later"),
+				DefaultButton = ContentDialogButton.Primary
+			};
+
+			if ((await appRestartResolution.ShowAsync()) == ContentDialogResult.Primary)
+			{
+				Windows.ApplicationModel.Core.AppRestartFailureReason result =
+					await Windows.ApplicationModel.Core.CoreApplication.RequestRestartAsync(reason);
+			}
 		}
 	}
 }

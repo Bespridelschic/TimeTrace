@@ -54,10 +54,11 @@
 		<NavigationView.AutoSuggestBox>
 			<AutoSuggestBox
 				x:Uid="/StartView/EventsSearching"
-				ItemsSource="{x:Bind ViewModel.MapEventsSuggestList, Mode=TwoWay}"
+				ItemsSource="{x:Bind ViewModel.SearchSuggestions, Mode=OneWay}"
 				QueryIcon="Find"
-				QuerySubmitted="{x:Bind ViewModel.MapEventsFilterQuerySubmitted}"
-				TextChanged="{x:Bind ViewModel.MapEventsFilter}" />
+				QuerySubmitted="{x:Bind ViewModel.SearchRequest}"
+				Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
+				TextChanged="{x:Bind ViewModel.DynamicSearch}" />
 		</NavigationView.AutoSuggestBox>
 
 		<NavigationView.MenuItems>
@@ -87,15 +88,6 @@
 
 			<NavigationViewItemSeparator />
 		</NavigationView.MenuItems>
-
-		<!--<NavigationView.PaneFooter>
-			<NavigationViewItem
-				Content="Помощь"
-				Icon="Help"
-				Tag="help"
-				ToolTipService.Placement="Right"
-				ToolTipService.ToolTip="Получение справки с инструкциями по работе" />
-		</NavigationView.PaneFooter>-->
 
 		<Frame x:Name="ContentFrame">
 			<Frame.ContentTransitions>

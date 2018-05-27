@@ -30,7 +30,11 @@ namespace TimeTrace.View.AuthenticationView
 		{
 			if (e.Parameter != null && e.Parameter.ToString() != "")
 			{
-				ViewModel.CurrentUser = (User)e.Parameter;
+				// Pattern matching for sign in after restart, because e.Parameter is string after that
+				if (e.Parameter is User sended)
+				{
+					ViewModel.CurrentUser = sended;
+				}
 			}
 
 			if (Window.Current.Content is Frame frame)

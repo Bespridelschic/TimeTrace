@@ -132,7 +132,22 @@
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
+  <data name="Later" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="Restart" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="RestartConfirm" xml:space="preserve">
+    <value>Confirm action</value>
+  </data>
+  <data name="RestartMessage" xml:space="preserve">
+    <value>For the new settings to take effect</value>
+  </data>
+  <data name="RestartMessageEnd" xml:space="preserve">
+    <value>you must restart the application.</value>
+  </data>
+  <data name="RestartQuestion" xml:space="preserve">
+    <value>Would you like to reboot now?</value>
   </data>
 </root>
