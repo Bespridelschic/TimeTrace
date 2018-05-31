@@ -166,8 +166,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void ChangeThemeToLight()
 		{
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-			localSettings.Values["theme"] = ApplicationTheme.Light.ToString();
+			if ((string)localSettings.Values["theme"] == ApplicationTheme.Light.ToString())
+			{
+				return;
+			}
 
+			localSettings.Values["theme"] = ApplicationTheme.Light.ToString();
 			AppRestart("Changing global theme");
 		}
 
@@ -177,8 +181,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void ChangeThemeToDark()
 		{
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-			localSettings.Values["theme"] = ApplicationTheme.Dark.ToString();
+			if ((string)localSettings.Values["theme"] == ApplicationTheme.Dark.ToString())
+			{
+				return;
+			}
 
+			localSettings.Values["theme"] = ApplicationTheme.Dark.ToString();
 			AppRestart("Changing global theme");
 		}
 

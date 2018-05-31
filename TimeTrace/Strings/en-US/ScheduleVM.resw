@@ -132,6 +132,9 @@
   <data name="ConfirmationRemoving" xml:space="preserve">
     <value>Are you sure you want to delete the event</value>
   </data>
+  <data name="ConfirmBulkRemoving" xml:space="preserve">
+    <value>Are you sure you want to delete events:</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>

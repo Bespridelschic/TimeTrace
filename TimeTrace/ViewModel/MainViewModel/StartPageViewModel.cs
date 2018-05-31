@@ -52,6 +52,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public bool InternetFeaturesEnable { get; set; }
 
 		/// <summary>
+		/// Local reference to main navigation view
+		/// </summary>
+		public NavigationView LocalNavView;
+
+		/// <summary>
 		/// Localization resource loader
 		/// </summary>
 		public ResourceLoader ResourceLoader { get; set; }
@@ -101,7 +106,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <returns>Result of synchronization</returns>
 		public async Task ServerDataSynchronization()
 		{
-			if (Instance.InternetFeaturesEnable)
+			if (InternetFeaturesEnable)
 			{
 				// Calendars, projects and map events synchronization
 				try
@@ -141,7 +146,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public async Task CategoriesSynchronization()
 		{
 			// Start synchronization if internet connection enabled
-			if (InternetRequests.CheckForInternetConnection())
+			if (InternetFeaturesEnable && InternetRequests.CheckForInternetConnection())
 			{
 				try
 				{
@@ -157,11 +162,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 				}
 			}
 		}
-
-		/// <summary>
-		/// Local reference to main navigation view
-		/// </summary>
-		public NavigationView LocalNavView;
 
 		/// <summary>
 		/// Navigation menu

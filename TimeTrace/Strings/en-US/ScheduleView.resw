@@ -144,6 +144,12 @@
   <data name="EventsFiltersCall.ToolTipService.ToolTip" xml:space="preserve">
     <value>Apply filters</value>
   </data>
+  <data name="EventsRemove.Label" xml:space="preserve">
+    <value>Remove selected</value>
+  </data>
+  <data name="EventsRemove.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remove selected events</value>
+  </data>
   <data name="EventsSearching.Text" xml:space="preserve">
     <value>Events searching: </value>
   </data>

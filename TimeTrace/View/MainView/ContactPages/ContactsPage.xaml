@@ -237,13 +237,17 @@
 										Grid.Column="1"
 										Margin="10,0,0,0"
 										VerticalAlignment="Center">
-										<TextBlock FontSize="26" Text="{x:Bind Name}" />
+										<TextBlock
+											FontSize="26"
+											Text="{x:Bind Name}"
+											TextTrimming="WordEllipsis" />
 										<StackPanel Orientation="Horizontal">
 											<TextBlock x:Uid="/ContactsView/Email" FontSize="18" />
 											<TextBlock
 												Margin="5,0"
 												FontSize="18"
-												Text="{x:Bind Email}" />
+												Text="{x:Bind Email}"
+												TextTrimming="WordEllipsis" />
 										</StackPanel>
 									</StackPanel>
 								</Grid>
@@ -375,8 +379,8 @@
 						Margin="10,13,10,10"
 						ItemsSource="{x:Bind ViewModel.SearchSuggestions, Mode=TwoWay}"
 						QueryIcon="Find"
-						Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
 						QuerySubmitted="{x:Bind ViewModel.SearchRequest}"
+						Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
 						TextChanged="{x:Bind ViewModel.DynamicSearch}" />
 				</StackPanel>
 

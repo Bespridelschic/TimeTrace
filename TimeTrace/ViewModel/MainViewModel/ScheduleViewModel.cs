@@ -75,6 +75,34 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public bool InternetFeaturesEnable { get; set; }
 
+		private ListViewSelectionMode multipleSelection;
+		/// <summary>
+		/// Is multiple selection enable
+		/// </summary>
+		public ListViewSelectionMode MultipleSelection
+		{
+			get => multipleSelection;
+			set
+			{
+				multipleSelection = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private List<MapEvent> selectedEvents;
+		/// <summary>
+		/// Collection of multiple contacts selection
+		/// </summary>
+		public List<MapEvent> SelectedEvents
+		{
+			get => selectedEvents;
+			set
+			{
+				selectedEvents = value;
+				OnPropertyChanged();
+			}
+		}
+
 		/// <summary>
 		/// Localization resource loader
 		/// </summary>
@@ -276,6 +304,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			MapEventsPlacesSuggestList = new ObservableCollection<string>();
 			mapEventsPersonsSuggestList = new ObservableCollection<string>();
+
+			MultipleSelection = ListViewSelectionMode.Single;
 		}
 
 		/// <summary>
@@ -411,17 +441,20 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				var person = string.IsNullOrEmpty(tempEvent.UserBind) ? ResourceLoader.GetString("/ScheduleVM/Absent") : tempEvent.UserBind;
 				var place = string.IsNullOrEmpty(tempEvent.Location) ? ResourceLoader.GetString("/ScheduleVM/NotSet") : tempEvent.Location;
+				var description = string.IsNullOrEmpty(tempEvent.Description) ? ResourceLoader.GetString("/ScheduleVM/Absent") : tempEvent.Description;
 				var isPublicMapEvent = tempEvent.IsPublic ? ResourceLoader.GetString("/ScheduleVM/PublicEvent") : ResourceLoader.GetString("/ScheduleVM/PrivateEvent");
 
 				TextBlock contentText = new TextBlock()
 				{
 					Text = $"{ResourceLoader.GetString("/ScheduleVM/Name")}: {tempEvent.Name}\n" +
-							$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {tempEvent.Description ?? ResourceLoader.GetString("/ScheduleVM/Absent")}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}\n\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Start")}: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Duration")}: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} {ResourceLoader.GetString("/ScheduleVM/Hours")}.\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/PersonAssociatedWithEvent")}: {person}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Place")}: {place}\n\n" +
 							$"{isPublicMapEvent}",
+					TextWrapping = TextWrapping.WrapWholeWords,
+					TextTrimming = TextTrimming.WordEllipsis,
 				};
 
 				ContentDialog contentDialog = new ContentDialog()
@@ -453,6 +486,95 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
+		/// Select several events
+		/// </summary>
+		/// <param name="sender">ListView</param>
+		/// <param name="e">Parameters</param>
+		public void MultipleEventsSelection(object sender, SelectionChangedEventArgs e)
+		{
+			ListView listView = sender as ListView;
+			SelectedEvents = new List<MapEvent>();
+
+			foreach (MapEvent item in listView.SelectedItems)
+			{
+				SelectedEvents.Add(item);
+			};
+		}
+
+		/// <summary>
+		/// Remove of several events
+		/// </summary>
+		public async void EventsRemoveAsync()
+		{
+			if (MultipleSelection == ListViewSelectionMode.Single)
+			{
+				MultipleSelection = ListViewSelectionMode.Multiple;
+			}
+			else
+			{
+				if (SelectedEvents == null || SelectedEvents.Count <= 0)
+				{
+					MultipleSelection = ListViewSelectionMode.Single;
+					return;
+				}
+
+				string removedEvents = string.Empty;
+
+				foreach (var localEvent in SelectedEvents)
+				{
+					removedEvents += $"{localEvent.Name}\n";
+				}
+
+				ScrollViewer scrollViewer = new ScrollViewer()
+				{
+					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+					Content = new TextBlock() { Text = removedEvents },
+				};
+
+				StackPanel mainPanel = new StackPanel()
+				{
+					Margin = new Thickness(0, 0, 0, 10),
+				};
+				mainPanel.Children.Add(new TextBlock() { Text = ResourceLoader.GetString("/ScheduleVM/ConfirmBulkRemoving") });
+				mainPanel.Children.Add(scrollViewer);
+
+				ContentDialog contentDialog = new ContentDialog()
+				{
+					Title = ResourceLoader.GetString("/ScheduleVM/ConfirmAction"),
+					Content = mainPanel,
+					PrimaryButtonText = ResourceLoader.GetString("/ScheduleVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/ScheduleVM/Cancel"),
+					DefaultButton = ContentDialogButton.Close
+				};
+
+				var result = await contentDialog.ShowAsync();
+
+				if (result == ContentDialogResult.Primary)
+				{
+					using (MainDatabaseContext db = new MainDatabaseContext())
+					{
+						foreach (var localEvent in SelectedEvents)
+						{
+							localEvent.IsDelete = true;
+						}
+
+						db.MapEvents.UpdateRange(SelectedEvents);
+						db.SaveChanges();
+
+						foreach (var localEvent in SelectedEvents)
+						{
+							MapEvents.Remove(localEvent);
+						}
+					}
+				}
+
+				MultipleSelection = ListViewSelectionMode.Single;
+			}
+
+			await StartPageViewModel.Instance.CategoriesSynchronization();
+		}
+
+		/// <summary>
 		/// Getting public map events from contacts
 		/// </summary>
 		public async void GetPublicEventsAsync()
@@ -476,9 +598,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			SelectedFilteredDates.Clear();
 
+			//var subtractedTime = TimeSpan.Parse("07:00");
 			foreach (var item in sender.SelectedDates)
 			{
+				//DateTimeOffset.TryParse(item.ToString("dd.MM.yyyy"), out DateTimeOffset res);
+				//SelectedFilteredDates.Add(res.Subtract(subtractedTime));
 				SelectedFilteredDates.Add(item);
+				//Debug.WriteLine(res.Subtract(subtractedTime));
 			}
 
 			ApplyFilter();
@@ -595,7 +721,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					foreach (var item in db.MapEvents
 						.Join(
 								SelectedFilteredDates,
-								i => i.Start.Date,
+								i => i.Start.ToLocalTime().Date,
 								w => w.Date,
 								(i, w) => i
 							)
@@ -610,7 +736,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					foreach (var item in db.MapEvents
 						.Join(
 								SelectedFilteredDates,
-								i => i.Start.Date,
+								i => i.Start.ToLocalTime().Date,
 								w => w.Date,
 								(i, w) => i
 							)

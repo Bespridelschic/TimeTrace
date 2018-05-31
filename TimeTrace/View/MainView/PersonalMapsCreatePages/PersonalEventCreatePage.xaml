@@ -12,6 +12,7 @@
 		<ResourceDictionary>
 			<converters:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
+			<converters:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -204,11 +205,15 @@
 					<ScrollViewer VerticalScrollBarVisibility="Auto">
 						<StackPanel>
 							<ListView
+								x:Name="MapEventsList"
+								Grid.Row="1"
 								Padding="15,5,17,5"
 								DoubleTapped="{x:Bind ScheduleViewModel.MoreAboutMapEvent}"
 								ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}"
 								RightTapped="{x:Bind ScheduleViewModel.SelectItemOnRightClick}"
-								SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
+								SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
+								SelectionChanged="{x:Bind ScheduleViewModel.MultipleEventsSelection}"
+								SelectionMode="{x:Bind ScheduleViewModel.MultipleSelection, Mode=TwoWay}">
 								<ListView.ItemContainerStyle>
 									<Style TargetType="ListViewItem">
 										<Setter Property="BorderBrush" Value="Gray" />
@@ -219,8 +224,12 @@
 								<ListView.ItemTemplate>
 									<DataTemplate x:DataType="local:MapEvent">
 										<StackPanel>
+											<Grid Margin="0,5,10,0">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition />
+												</Grid.ColumnDefinitions>
 
-											<StackPanel Margin="0,5,10,0" Orientation="Horizontal">
 												<Ellipse
 													Width="15"
 													Height="15"
@@ -228,67 +237,63 @@
 													Fill="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}" />
 
 												<TextBlock
+													Grid.Column="1"
 													Margin="5,0,0,0"
 													VerticalAlignment="Center"
 													FontSize="26"
 													Text="{x:Bind Name}"
-													TextTrimming="WordEllipsis"
-													TextWrapping="WrapWholeWords" />
+													TextTrimming="WordEllipsis" />
 
-											</StackPanel>
+											</Grid>
 
 											<StackPanel Orientation="Horizontal">
 												<TextBlock
+													x:Uid="/ScheduleView/Time"
 													Margin="0,0,0,2"
 													FontSize="17"
-													FontStyle="Italic"
-													Foreground="Gray"
-													Text="Время: " />
+													Foreground="LightSlateGray" />
 												<TextBlock
 													Margin="7,0,7,2"
 													FontSize="17"
-													FontStyle="Italic"
-													Foreground="Gray"
-													Text="{x:Bind Start}" />
+													Foreground="LightSlateGray"
+													Text="{x:Bind Start, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 												<TextBlock
 													Margin="0,0,0,1"
 													FontSize="17"
-													FontStyle="Italic"
-													Foreground="Gray"
+													Foreground="LightSlateGray"
 													Text="-" />
 												<TextBlock
 													Margin="7,0,7,1"
 													FontSize="17"
-													FontStyle="Italic"
-													Foreground="Gray"
-													Text="{x:Bind End}" />
+													Foreground="LightSlateGray"
+													Text="{x:Bind End, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 											</StackPanel>
 
-											<StackPanel Orientation="Horizontal">
-												<TextBlock
-													Margin="0,0,0,5"
-													FontSize="18"
-													Text="{x:Bind Description, TargetNullValue=Отсутствует}"
-													TextWrapping="WrapWholeWords" />
-											</StackPanel>
+											<TextBlock
+												Margin="0,0,0,5"
+												FontSize="18"
+												MaxLines="2"
+												Text="{x:Bind Description, TargetNullValue=Отсутствует}"
+												TextTrimming="WordEllipsis"
+												TextWrapping="WrapWholeWords" />
 										</StackPanel>
 									</DataTemplate>
 								</ListView.ItemTemplate>
 								<ListView.ContextFlyout>
 									<MenuFlyout Placement="Bottom">
 										<MenuFlyoutItem
+											x:Uid="/ScheduleView/MoreDetails"
 											Click="{x:Bind ScheduleViewModel.MoreAboutMapEvent}"
-											Icon="Page"
-											Text="Подробней" />
+											Icon="Page" />
 										<MenuFlyoutSeparator />
 										<MenuFlyoutItem
+											x:Uid="/ScheduleView/Edit"
 											Click="{x:Bind ScheduleViewModel.MapEventEditAsync}"
-											Icon="Edit"
-											Text="Редактировать" />
+											Icon="Edit" />
 										<MenuFlyoutItem
+											x:Uid="/ScheduleView/Remove"
 											Click="{x:Bind ScheduleViewModel.MapEventRemove}"
-											Icon="Delete"
-											Text="Удалить" />
+											Icon="Delete" />
 									</MenuFlyout>
 								</ListView.ContextFlyout>
 							</ListView>

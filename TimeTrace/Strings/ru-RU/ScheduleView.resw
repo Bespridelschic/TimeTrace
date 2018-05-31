@@ -144,6 +144,12 @@
   <data name="EventsFiltersCall.ToolTipService.ToolTip" xml:space="preserve">
     <value>Применить фильтры для событий</value>
   </data>
+  <data name="EventsRemove.Label" xml:space="preserve">
+    <value>Удалить выбранные</value>
+  </data>
+  <data name="EventsRemove.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить выбранные события</value>
+  </data>
   <data name="EventsSearching.Text" xml:space="preserve">
     <value>Поиск событий: </value>
   </data>
