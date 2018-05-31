@@ -466,7 +466,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// Center ring with white color
 				Ellipse innerColorRing = new Ellipse
 				{
-					Fill = new SolidColorBrush(new Color() { A = 255, R = 255, G = 255, B = 255 }),
+					Fill = App.Current.RequestedTheme == ApplicationTheme.Dark
+						? new SolidColorBrush(new Color() { A = 255, R = 0, G = 0, B = 0 })
+						: new SolidColorBrush(new Color() { A = 255, R = 255, G = 255, B = 255 }),
 					Width = 12,
 					Height = 12,
 				};

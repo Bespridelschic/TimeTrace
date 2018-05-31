@@ -17,7 +17,6 @@ using TimeTrace.Model;
 using TimeTrace.Model.Requests;
 using TimeTrace.View.MainView;
 using TimeTrace.ViewModel.MainViewModel;
-using TimeTrace.View.MainView.PersonalMapsCreatePages;
 
 namespace TimeTrace
 {
@@ -33,6 +32,16 @@ namespace TimeTrace
 		public App()
 		{
 			IsIdDeviceAvailable();
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			if ((string)localSettings.Values["theme"] == ApplicationTheme.Dark.ToString())
+			{
+				Application.Current.RequestedTheme = ApplicationTheme.Dark;
+			}
+			else
+			{
+				Application.Current.RequestedTheme = ApplicationTheme.Light;
+			}
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -177,12 +186,13 @@ namespace TimeTrace
 					User currentUser = new User();
 					await currentUser.LoadUserFromFileAsync();
 					localSettings.Values["email"] = currentUser.Email.ToLower() ?? "Неизвестный";
-					await StartPageViewModel.Instance.ServerDataSynchronization();
 
 					if (Window.Current.Content is Frame frame)
 					{
 						frame.Navigate(typeof(StartPage));
 					}
+
+					await StartPageViewModel.Instance.ServerDataSynchronization();
 				}
 			}
 			catch (Exception ex)

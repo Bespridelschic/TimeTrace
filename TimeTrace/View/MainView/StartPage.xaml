@@ -15,7 +15,10 @@
 		</ResourceDictionary>
 	</Page.Resources>
 
-	<NavigationView Background="{StaticResource HostBackdropBrush}" SelectionChanged="{x:Bind ViewModel.NavigatingThroughTheMainMenu}">
+	<NavigationView
+		Name="MainNavigationView"
+		Background="{StaticResource SystemControlAcrylicWindowMediumHighBrush}"
+		SelectionChanged="{x:Bind ViewModel.NavigatingThroughTheMainMenu}">
 		<NavigationView.HeaderTemplate>
 			<DataTemplate x:DataType="local:StartPageViewModel">
 				<Grid Margin="20,23,0,-10">
@@ -31,21 +34,26 @@
 						Text="{x:Bind PageTitle, Mode=TwoWay}" />
 					<CommandBar
 						Grid.Column="1"
-						Margin="0,0,10,0"
+						Margin="0,0,0,0"
 						HorizontalAlignment="Right"
 						VerticalAlignment="Bottom"
-						Background="{ThemeResource HostBackdropBrush}"
+						Background="{StaticResource SystemControlAcrylicWindowMediumHighBrush}"
 						DefaultLabelPosition="Right">
 						<AppBarButton
 							x:Uid="/StartView/ReportBug"
-							Click="{x:Bind Feedback}"
-							Icon="Edit"
-							IsEnabled="{x:Bind InternetFeaturesEnable, Mode=OneWay}" />
+							Click="{x:Bind FeedbackAsync}"
+							IsEnabled="{x:Bind InternetFeaturesEnable, Mode=OneWay}">
+							<FontIcon Glyph="&#xED15;" />
+						</AppBarButton>
 						<AppBarButton
 							x:Uid="/StartView/ChangeUser"
-							Click="{x:Bind SignOut}"
+							Click="{x:Bind SignOutAsync}"
 							Icon="OtherUser" />
-						<AppBarButton Icon="Contact" Label="{x:Bind CurrentUserName}" />
+						<AppBarButton
+							x:Uid="/StartView/AboutUser"
+							Click="{x:Bind GoToHome}"
+							Icon="Contact"
+							Label="{x:Bind CurrentUserName}" />
 					</CommandBar>
 				</Grid>
 			</DataTemplate>

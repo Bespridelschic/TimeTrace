@@ -47,7 +47,7 @@
 			<VariableSizedWrapGrid
 				HorizontalAlignment="Left"
 				VerticalAlignment="Top"
-				ItemHeight="150"
+				ItemHeight="280"
 				ItemWidth="450"
 				Orientation="Horizontal">
 
@@ -73,6 +73,33 @@
 						<x:String>Русский</x:String>
 						<x:String>English</x:String>
 					</ComboBox>
+
+					<TextBlock
+						x:Uid="/SettingsView/Theme"
+						Margin="0,20,0,5"
+						HorizontalAlignment="Left"
+						FontSize="28"
+						FontWeight="SemiLight" />
+					<TextBlock
+						x:Uid="/SettingsView/MoreAboutTheme"
+						Margin="0,0,0,5"
+						HorizontalAlignment="Left"
+						FontSize="15"
+						TextWrapping="WrapWholeWords" />
+
+					<RadioButton
+						x:Uid="/SettingsView/Light"
+						Margin="0,0,0,2"
+						Click="{x:Bind ViewModel.ChangeThemeToLight}"
+						GroupName="theme"
+						IsChecked="{x:Bind ViewModel.IsCurrentThemeLight}" />
+					<RadioButton
+						x:Uid="/SettingsView/Dark"
+						Margin="0,2"
+						Click="{x:Bind ViewModel.ChangeThemeToDark}"
+						GroupName="theme"
+						IsChecked="{x:Bind ViewModel.IsCurrentThemeDark}" />
+
 				</StackPanel>
 				<StackPanel>
 					<TextBlock

@@ -1,2 +1,194 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TimeTrace.Model.BaseEntity" Collapsed="true">
+    <Position X="3.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAIAAAAAoAAAAIAAgAAAAAABAAAAA4AAAgA=</HashCode>
+      <FileName>Model\BaseEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TimeTrace.Model.Contact" Collapsed="true">
+    <Position X="5.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAgAAAAAAQAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Contact.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.User" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="5.75" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="TimeTrace.Model.User.PasswordScore" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\User.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAACAAAAAkIAAAAAAAgAAAAAACAAABAgAAAAg=</HashCode>
+      <FileName>Model\User.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TimeTrace.Model.DBContext.MainDatabaseContext" Collapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAQAAAAAAAAAAAAIAAACAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Model\DBContext\MainDatabaseContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.Events.Area" Collapsed="true">
+    <Position X="4" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAA=</HashCode>
+      <FileName>Model\Events\Area.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.Events.Category" Collapsed="true">
+    <Position X="2.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAIAAAAAQAAAAEAACAAAAAgAAAAAA=</HashCode>
+      <FileName>Model\Events\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.Events.MapEvent" Collapsed="true">
+    <Position X="0.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAACACAAAAAgQAIEEAAChCAAAIAkAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Events\MapEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.Events.Project" Collapsed="true">
+    <Position X="2.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Model\Events\Project.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.Requests.FileSystemRequests" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <NestedTypes>
+      <Class Name="TimeTrace.Model.Requests.FileSystemRequests.AesEnDecryption" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Requests\FileSystemRequests.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAACQIAAQEAAAQAAAQAAAAAA=</HashCode>
+      <FileName>Model\Requests\FileSystemRequests.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.Model.Requests.InternetRequests" Collapsed="true">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="TimeTrace.Model.Requests.InternetRequests.PostRequestDestination" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Requests\InternetRequests.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQAAAQAACAAAAAAACAAAAAAAgAAAAAAAAAAIAAAAAE=</HashCode>
+      <FileName>Model\Requests\InternetRequests.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.AuthenticationViewModel.SignInViewModel" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAoAAGgCAABAAAAACIAAAAiAAABAAAAEAAAA=</HashCode>
+      <FileName>ViewModel\AuthenticationViewModel\SignInViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.AuthenticationViewModel.SignUpViewModel" Collapsed="true">
+    <Position X="6" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAgAAAAAIAAAgCAAAAAAAACIAQAAiAAAAAAAAEAIAA=</HashCode>
+      <FileName>ViewModel\AuthenticationViewModel\SignUpViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.BaseViewModel" Collapsed="true">
+    <Position X="5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\BaseViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.ContactsViewModel.ChatViewModel" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAIAAAACEAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\ContactsViewModel\ChatViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.ContactsViewModel.ContactsViewModel" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DSAEBAQBAAQAAIAEABSABAAEAAgACAEICAgAAEsAIAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\ContactsViewModel\ContactsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.HomeViewModel" Collapsed="true">
+    <Position X="2.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAhAIAAIACEAAACAAAAAAAAAhIUAAIgIBEAAgA=</HashCode>
+      <FileName>ViewModel\MainViewModel\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.ScheduleViewModel" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CCACBAghQAACAJBAAQSDRBYCAKhEQsIoBECiCkEAAgQ=</HashCode>
+      <FileName>ViewModel\MainViewModel\ScheduleViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.SettingsViewModel" Collapsed="true">
+    <Position X="7.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAQAAAAAgAAAAAAAAAAAAAAACAAAIAAAAEAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\SettingsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.StartPageViewModel" Collapsed="true">
+    <Position X="9.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABCADAAAAAIAAAACCBAIAAQhAAAEIQEgECEEAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\StartPageViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.MapEventsViewModel.CategoryViewModel" Collapsed="true">
+    <Position X="4" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgQABAAAiAAAAIAAAACEDAgAgAwCCAAMAEgAAENAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.273" />
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.MapEventsViewModel.PersonalEventCreateViewModel" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>TAQQBAAAEAAAAACAAWAkgCEiIAAiAgDARBAFBEQAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\MapEventsViewModel\PersonalEventCreateViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrace.ViewModel.MainViewModel.MapEventsViewModel.ProjectViewModel" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BEAETQAAAAJAIIAAIRCAAAEECAgABAgIAAAAAEAAAAE=</HashCode>
+      <FileName>ViewModel\MainViewModel\MapEventsViewModel\ProjectViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="TimeTrace.ViewModel.MainViewModel.ISearchable&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAACAAAAAAAAAAAAIAAAAAEAAAAA=</HashCode>
+      <FileName>ViewModel\MainViewModel\ISearchable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

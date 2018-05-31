@@ -179,7 +179,10 @@
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<Pivot Title="Temp" Padding="10,0,0,0" SelectedIndex="{x:Bind ViewModel.StartTabIndex, Mode=OneWay}">
+		<Pivot
+			Title="Temp"
+			Padding="10,0,0,0"
+			SelectedIndex="{x:Bind ViewModel.StartTabIndex, Mode=OneWay}">
 			<Pivot.TitleTemplate>
 				<DataTemplate>
 					<TextBlock
@@ -206,11 +209,18 @@
 								ItemsSource="{x:Bind ScheduleViewModel.MapEvents, Mode=TwoWay}"
 								RightTapped="{x:Bind ScheduleViewModel.SelectItemOnRightClick}"
 								SelectedIndex="{x:Bind ScheduleViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}">
+								<ListView.ItemContainerStyle>
+									<Style TargetType="ListViewItem">
+										<Setter Property="BorderBrush" Value="Gray" />
+										<Setter Property="BorderThickness" Value="0,.4,0,0" />
+										<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+									</Style>
+								</ListView.ItemContainerStyle>
 								<ListView.ItemTemplate>
 									<DataTemplate x:DataType="local:MapEvent">
 										<StackPanel>
-											<StackPanel Margin="0,5,10,0" Orientation="Horizontal">
 
+											<StackPanel Margin="0,5,10,0" Orientation="Horizontal">
 												<Ellipse
 													Width="15"
 													Height="15"
@@ -327,6 +337,43 @@
 							</StackPanel>
 
 							<StackPanel>
+
+								<AutoSuggestBox
+									Margin="15,5,15,5"
+									Header="Место события"
+									PlaceholderText="Выберите место события"
+									QueryIcon="Globe"
+									Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
+									ToolTipService.ToolTip="Место, привязываемое к событию" />
+
+								<AutoSuggestBox
+									Margin="15,5,15,5"
+									Header="Имя контакта"
+									ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
+									PlaceholderText="Человек связанный с событием"
+									QueryIcon="Contact"
+									Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
+									TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}"
+									ToolTipService.ToolTip="Имя человека, к которому привязывается событие" />
+
+								<CheckBox
+									Margin="15,5,15,0"
+									VerticalAlignment="Center"
+									Content="Доступно для моих контактов"
+									IsChecked="{x:Bind ViewModel.CurrentMapEvent.IsPublic, Mode=TwoWay}"
+									ToolTipService.ToolTip="При выборе, все люди из списка контактов смогут видеть создаваемое событие" />
+
+								<CheckBox
+									Width="300"
+									Margin="15,-10,15,5"
+									VerticalAlignment="Center"
+									Content="Установить в календарь Windows 10"
+									IsChecked="{x:Bind ViewModel.IsBindingForWindowsCalendar, Mode=TwoWay}"
+									ToolTipService.ToolTip="При выборе, данное событие будет так же установлено в календаре Windows 10" />
+
+							</StackPanel>
+
+							<StackPanel>
 								<Grid>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto" />
@@ -396,6 +443,7 @@
 										HorizontalAlignment="Stretch"
 										Header="Повторение события"
 										PlaceholderText="Без повторений"
+										SelectedIndex="{x:Bind ViewModel.SelectedRepeatMode, Mode=TwoWay}"
 										ToolTipService.ToolTip="Как часто будет происходить напоминание">
 										<ComboBoxItem Content="Без повторений" />
 										<ComboBoxItem Content="Каждый день" />
@@ -415,43 +463,97 @@
 										OnContent="Нет" />
 
 								</Grid>
-
 							</StackPanel>
 
-							<StackPanel>
+							<StackPanel Visibility="{x:Bind ViewModel.CustomRepeatEnable, Mode=OneWay}">
 
-								<AutoSuggestBox
-									Margin="15,5,15,5"
-									Header="Место события"
-									PlaceholderText="Выберите место события"
-									QueryIcon="Globe"
-									Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
-									ToolTipService.ToolTip="Место, привязываемое к событию" />
+								<ToggleSwitch
+									Name="EndingForDate"
+									Margin="15,5,0,5"
+									IsOn="{x:Bind ViewModel.IsEndingForDateSelected, Mode=TwoWay}"
+									OffContent="Окончить по дате"
+									OnContent="Окончание по дате" />
 
-								<AutoSuggestBox
-									Margin="15,5,15,5"
-									Header="Имя контакта"
-									ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
-									PlaceholderText="Человек связанный с событием"
-									QueryIcon="Contact"
-									Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
-									TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}"
-									ToolTipService.ToolTip="Имя человека, к которому привязывается событие" />
+								<CalendarDatePicker
+									Grid.Column="1"
+									Margin="15,0,10,5"
+									DateFormat="{}{day.integer} {month.full} {year.full}"
+									IsEnabled="{Binding ElementName=EndingForDate, Path=IsOn}"
+									MaxDate="{x:Bind ViewModel.MinDate}"
+									MinDate="{x:Bind ViewModel.MinDate}"
+									PlaceholderText="Дата окончания события"
+									ToolTipService.ToolTip="Дата окончания события" />
 
-								<CheckBox
-									Margin="15,5,15,0"
-									VerticalAlignment="Center"
-									Content="Доступно для моих контактов"
-									IsChecked="{x:Bind ViewModel.CurrentMapEvent.IsPublic, Mode=TwoWay}"
-									ToolTipService.ToolTip="При выборе, все люди из списка контактов смогут видеть создаваемое событие" />
+								<ToggleSwitch
+									Name="EndingForRepeated"
+									Margin="15,0,10,0"
+									IsOn="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=TwoWay}"
+									OffContent="Окончить после количества"
+									OnContent="Окончание после количества" />
 
-								<CheckBox
-									Width="300"
-									Margin="15,-10,15,5"
-									VerticalAlignment="Center"
-									Content="Установить в календарь Windows 10"
-									IsChecked="{x:Bind ViewModel.IsBindingForWindowsCalendar, Mode=TwoWay}"
-									ToolTipService.ToolTip="При выборе, данное событие будет так же установлено в календаре Windows 10" />
+								<CalendarDatePicker
+									Grid.Column="1"
+									Margin="15,0,10,5"
+									DateFormat="{}{day.integer} {month.full} {year.full}"
+									IsEnabled="{Binding ElementName=EndingForRepeated, Path=IsOn}"
+									MaxDate="{x:Bind ViewModel.MinDate}"
+									MinDate="{x:Bind ViewModel.MinDate}"
+									PlaceholderText="Число"
+									ToolTipService.ToolTip="Число повторов" />
+
+								<Grid Margin="15,0,15,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition />
+										<ColumnDefinition />
+										<ColumnDefinition />
+										<ColumnDefinition />
+										<ColumnDefinition />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<ToggleButton
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Пн." />
+									<ToggleButton
+										Grid.Column="1"
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Вт." />
+									<ToggleButton
+										Grid.Column="2"
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Ср." />
+									<ToggleButton
+										Grid.Column="3"
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Чт." />
+									<ToggleButton
+										Grid.Column="4"
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Пт." />
+									<ToggleButton
+										Grid.Column="5"
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Сб." />
+									<ToggleButton
+										Grid.Column="6"
+										Height="35"
+										Margin="2"
+										HorizontalAlignment="Stretch"
+										Content="Вс." />
+								</Grid>
 
 							</StackPanel>
 

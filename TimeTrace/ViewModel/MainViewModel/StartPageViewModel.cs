@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using TimeTrace.Model.DBContext;
 using TimeTrace.Model.Requests;
@@ -102,14 +103,18 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			if (Instance.InternetFeaturesEnable)
 			{
-				// Contacts synchronization
-				await new ContactsViewModel.ContactsViewModel().RefreshContactsAsync();
-				Debug.WriteLine("Контакты синхронизированы с сервером");
-
 				// Calendars, projects and map events synchronization
 				try
 				{
-					var resultOfSynchronization = await Model.Requests.InternetRequests.SynchronizationRequestAsync();
+					// Contacts synchronization
+					var contactsSynchResult = await InternetRequests.ContactsSynchronizationRequestAsync();
+					if (contactsSynchResult == 1)
+					{
+						throw new HttpRequestException("Internet connection problem or bad token");
+					}
+					Debug.WriteLine("Контакты синхронизированы с сервером");
+
+					var resultOfSynchronization = await InternetRequests.SynchronizationRequestAsync();
 					if (resultOfSynchronization == 0)
 					{
 						ShowToastNotification(0);
@@ -156,7 +161,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Local reference to main navigation view
 		/// </summary>
-		private NavigationView localNavView;
+		public NavigationView LocalNavView;
 
 		/// <summary>
 		/// Navigation menu
@@ -165,8 +170,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <param name="args">Parameter</param>
 		public void NavigatingThroughTheMainMenu(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
-			localNavView = sender;
-
 			if (args.IsSettingsSelected)
 			{
 				SetHeader(Headers.Settings);
@@ -226,30 +229,30 @@ namespace TimeTrace.ViewModel.MainViewModel
 					PageTitle = ResourceLoader.GetString("/StartVM/Homepage");
 
 					// If without check - null reference exception, because app start on home page
-					if (localNavView != null)
+					if (LocalNavView != null)
 					{
-						localNavView.SelectedItem = localNavView.MenuItems[0];
+						LocalNavView.SelectedItem = LocalNavView.MenuItems[0];
 					}
 					break;
 
 				case Headers.Shedule:
 					PageTitle = ResourceLoader.GetString("/StartVM/Shedule");
-					localNavView.SelectedItem = localNavView.MenuItems[1];
+					LocalNavView.SelectedItem = LocalNavView.MenuItems[1];
 					break;
 
 				case Headers.Contacts:
 					PageTitle = ResourceLoader.GetString("/StartVM/Contacts");
-					localNavView.SelectedItem = localNavView.MenuItems[2];
+					LocalNavView.SelectedItem = LocalNavView.MenuItems[2];
 					break;
 
 				case Headers.MapEvents:
 					PageTitle = ResourceLoader.GetString("/StartVM/PersonalEvents");
-					localNavView.SelectedItem = localNavView.MenuItems[3];
+					LocalNavView.SelectedItem = LocalNavView.MenuItems[3];
 					break;
 
 				case Headers.Settings:
 					PageTitle = ResourceLoader.GetString("/StartVM/Settings");
-					localNavView.SelectedItem = localNavView.SettingsItem;
+					LocalNavView.SelectedItem = LocalNavView.SettingsItem;
 					break;
 
 				default:
@@ -307,41 +310,47 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Sending message to developer
 		/// </summary>
-		/// <param name="sender">Sender</param>
-		/// <param name="e">Parameter</param>
-		public async void Feedback()
+		public async void FeedbackAsync()
 		{
-			var message = new TextBox()
+			// Start Windows 10 Feedback service
+			if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
 			{
-				Header = ResourceLoader.GetString("/StartVM/FeedbackHeader"),
-				PlaceholderText = ResourceLoader.GetString("/StartVM/FeedbackPlaceholder"),
-				Height = 200,
-				Width = 350,
-				TextWrapping = TextWrapping.Wrap,
-				AcceptsReturn = true,
-				IsSpellCheckEnabled = true
-			};
-
-			ContentDialog dialog = new ContentDialog
+				await Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault().LaunchAsync();
+			}
+			else
 			{
-				Title = ResourceLoader.GetString("/StartVM/FeedbackTitle"),
-				Content = message,
-				PrimaryButtonText = ResourceLoader.GetString("/StartVM/FeedbackSend"),
-				CloseButtonText = ResourceLoader.GetString("/StartVM/FeedbackLater"),
-				DefaultButton = ContentDialogButton.Primary,
-			};
-
-			if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-			{
-				if (string.IsNullOrEmpty(message.Text))
+				var message = new TextBox()
 				{
-					await (new MessageDialog(ResourceLoader.GetString("/StartVM/FeedbackProblem"), ResourceLoader.GetString("/StartVM/FeedbackError"))).ShowAsync();
+					Header = ResourceLoader.GetString("/StartVM/FeedbackHeader"),
+					PlaceholderText = ResourceLoader.GetString("/StartVM/FeedbackPlaceholder"),
+					Height = 200,
+					Width = 350,
+					TextWrapping = TextWrapping.Wrap,
+					AcceptsReturn = true,
+					IsSpellCheckEnabled = true
+				};
 
-					Feedback();
-				}
-				else
+				ContentDialog dialog = new ContentDialog
 				{
-					await (new MessageDialog(ResourceLoader.GetString("/StartVM/FeedbackMessage"), ResourceLoader.GetString("/StartVM/FeedbackSuccess"))).ShowAsync();
+					Title = ResourceLoader.GetString("/StartVM/FeedbackTitle"),
+					Content = message,
+					PrimaryButtonText = ResourceLoader.GetString("/StartVM/FeedbackSend"),
+					CloseButtonText = ResourceLoader.GetString("/StartVM/FeedbackLater"),
+					DefaultButton = ContentDialogButton.Primary,
+				};
+
+				if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+				{
+					if (string.IsNullOrEmpty(message.Text))
+					{
+						await (new MessageDialog(ResourceLoader.GetString("/StartVM/FeedbackProblem"), ResourceLoader.GetString("/StartVM/FeedbackError"))).ShowAsync();
+
+						FeedbackAsync();
+					}
+					else
+					{
+						await (new MessageDialog(ResourceLoader.GetString("/StartVM/FeedbackMessage"), ResourceLoader.GetString("/StartVM/FeedbackSuccess"))).ShowAsync();
+					}
 				}
 			}
 		}
@@ -349,9 +358,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Sign out from system
 		/// </summary>
-		/// <param name="sender">Sender</param>
-		/// <param name="e">Parameter</param>
-		public async void SignOut()
+		public async void SignOutAsync()
 		{
 			ContentDialog dialog = new ContentDialog
 			{
@@ -377,6 +384,14 @@ namespace TimeTrace.ViewModel.MainViewModel
 					frame.Navigate(typeof(SignInPage));
 				}
 			}
+		}
+
+		/// <summary>
+		/// Go to homepage
+		/// </summary>
+		public void GoToHome()
+		{
+			(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
 		}
 
 		#region Searching map events

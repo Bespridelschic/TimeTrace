@@ -163,7 +163,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void Feedback()
 		{
-			StartPageViewModel.Instance.Feedback();
+			StartPageViewModel.Instance.FeedbackAsync();
 		}
 
 		/// <summary>

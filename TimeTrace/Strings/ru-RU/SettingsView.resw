@@ -123,16 +123,28 @@
   <data name="Application.Text" xml:space="preserve">
     <value>Приложение</value>
   </data>
+  <data name="Dark.Content" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
   <data name="Language.Text" xml:space="preserve">
     <value>Языки</value>
   </data>
+  <data name="Light.Content" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
   <data name="MoreAboutLanguage.Text" xml:space="preserve">
     <value>Язык, используемый в приложении</value>
+  </data>
+  <data name="MoreAboutTheme.Text" xml:space="preserve">
+    <value>Тема приложения. Изменение последует после перезагрузки</value>
   </data>
   <data name="OfficialSite.Content" xml:space="preserve">
     <value>Официальный сайт</value>
   </data>
   <data name="SettingsTitle.Text" xml:space="preserve">
     <value>Настройки</value>
+  </data>
+  <data name="Theme.Text" xml:space="preserve">
+    <value>Тема</value>
   </data>
 </root>

@@ -650,9 +650,6 @@ namespace TimeTrace.Model.Requests
 					return resultOfSynchronization;
 				}
 
-				// Save new token
-				await FileSystemRequests.SaveUserTokenToFileAsync((string)jsonString["_csrf"]);
-
 				#region Projects adding to database
 
 				// Get projects items for adding to local database
@@ -670,7 +667,7 @@ namespace TimeTrace.Model.Requests
 				// Add received projects to local database
 				db.Projects.AddRange(receivedProjects);
 
-				Debug.WriteLine($"Добавляем: {receivedProjects.Count} проектов");
+				Debug.WriteLine($"Добавляем: {receivedProjects.Count} публичных проектов контактов");
 
 				#endregion
 
@@ -683,6 +680,7 @@ namespace TimeTrace.Model.Requests
 					var searchResult = result.ToObject<MapEvent>();
 					searchResult.Id = Guid.NewGuid().ToString();
 					searchResult.EmailOfOwner = (string)localSettings.Values["email"];
+					searchResult.ProjectOwnerEmail = (string)localSettings.Values["email"];
 					searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
 					searchResult.IsPublic = false;
 
@@ -692,7 +690,7 @@ namespace TimeTrace.Model.Requests
 				// Add received map events to local database
 				db.MapEvents.AddRange(receivedMapEvents);
 
-				Debug.WriteLine($"Добавляем: {receivedMapEvents.Count} событий");
+				Debug.WriteLine($"Добавляем: {receivedMapEvents.Count} публичных событий контактов");
 
 				#endregion
 

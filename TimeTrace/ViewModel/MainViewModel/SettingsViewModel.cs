@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.ApplicationModel.Resources;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -29,14 +30,14 @@ namespace TimeTrace.ViewModel.MainViewModel
 						case 0:
 							{
 								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "ru-RU";
-								AppRestart("Changing global properties");
+								AppRestart("Changing global language");
 
 								break;
 							}
 						case 1:
 							{
 								Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US";
-								AppRestart("Changing global properties");
+								AppRestart("Changing global language");
 
 								break;
 							}
@@ -53,6 +54,16 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// Current language used in application
 		/// </summary>
 		public string CurrentLanguage { get; set; }
+
+		/// <summary>
+		/// Initializing of current theme as light
+		/// </summary>
+		public bool IsCurrentThemeLight { get; set; }
+
+		/// <summary>
+		/// Initializing of current theme as dark
+		/// </summary>
+		public bool IsCurrentThemeDark { get; set; }
 
 		/// <summary>
 		/// Localization resource loader
@@ -79,6 +90,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				CurrentLanguage = "English";
 				selectedLanguage = 1;
+			}
+
+			if (Application.Current.RequestedTheme == ApplicationTheme.Light)
+			{
+				IsCurrentThemeLight = true;
+			}
+			else
+			{
+				IsCurrentThemeDark = true;
 			}
 		}
 
@@ -138,6 +158,28 @@ namespace TimeTrace.ViewModel.MainViewModel
 			};
 
 			await information.ShowAsync();
+		}
+
+		/// <summary>
+		/// Change theme after reboot to light
+		/// </summary>
+		public void ChangeThemeToLight()
+		{
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			localSettings.Values["theme"] = ApplicationTheme.Light.ToString();
+
+			AppRestart("Changing global theme");
+		}
+
+		/// <summary>
+		/// Change theme after reboot to dark
+		/// </summary>
+		public void ChangeThemeToDark()
+		{
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			localSettings.Values["theme"] = ApplicationTheme.Dark.ToString();
+
+			AppRestart("Changing global theme");
 		}
 
 		/// <summary>

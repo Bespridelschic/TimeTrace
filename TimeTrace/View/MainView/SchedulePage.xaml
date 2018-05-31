@@ -40,7 +40,7 @@
 			OpenPaneLength="370">
 
 			<SplitView.Content>
-				<Grid>
+				<Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -159,7 +159,7 @@
 
 			<SplitView.Pane>
 				<Grid
-					Background="White"
+					Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
 					BorderBrush="{StaticResource HostBackdropBrush}"
 					BorderThickness="2">
 					<Grid.RowDefinitions>

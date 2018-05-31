@@ -37,7 +37,7 @@
 				Margin="20"
 				HorizontalAlignment="Center"
 				Orientation="Horizontal">
-				<TextBlock FontSize="25" x:Uid="/HomeView/WelcomeText" />
+				<TextBlock x:Uid="/HomeView/WelcomeText" FontSize="25" />
 				<TextBlock FontSize="25" Text="{x:Bind ViewModel.CurrentUserEmail, Mode=OneWay}" />
 				<TextBlock FontSize="25" Text="!" />
 			</StackPanel>
@@ -62,10 +62,10 @@
 					</Grid.RowDefinitions>
 
 					<TextBlock
+						x:Uid="/HomeView/MapEventsToday"
 						Margin="5"
 						HorizontalAlignment="Right"
-						FontSize="18"
-						x:Uid="/HomeView/MapEventsToday" />
+						FontSize="18" />
 					<TextBlock
 						Grid.Column="1"
 						Margin="5"
@@ -74,11 +74,11 @@
 						Text="{x:Bind ViewModel.NumEventsToday, Mode=OneWay}" />
 
 					<TextBlock
+						x:Uid="/HomeView/ClosestThrough"
 						Grid.Row="1"
 						Margin="5"
 						HorizontalAlignment="Right"
-						FontSize="18"
-						x:Uid="/HomeView/ClosestThrough" />
+						FontSize="18" />
 					<TextBlock
 						Grid.Row="1"
 						Grid.Column="1"
@@ -88,11 +88,11 @@
 						Text="{x:Bind ViewModel.NearEvent, Mode=OneWay}" />
 
 					<TextBlock
+						x:Uid="/HomeView/TotalCreatedMapEvents"
 						Grid.Row="3"
 						Margin="5"
 						HorizontalAlignment="Right"
-						FontSize="18"
-						x:Uid="/HomeView/TotalCreatedMapEvents" />
+						FontSize="18" />
 					<TextBlock
 						Grid.Row="3"
 						Grid.Column="1"
@@ -112,12 +112,15 @@
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center">
 				<TextBlock
+					x:Uid="/HomeView/UsefulForYou"
 					Margin="0,0,0,10"
-					FontSize="23"
-					x:Uid="/HomeView/UsefulForYou" />
+					FontSize="23" />
 
 				<VariableSizedWrapGrid HorizontalAlignment="Center" Orientation="Horizontal">
-					<Button Margin="5" Click="{x:Bind ViewModel.SchedulePageChoice}">
+					<Button
+						Margin="5"
+						Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+						Click="{x:Bind ViewModel.SchedulePageChoice}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="50" />
@@ -125,20 +128,32 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" x:Uid="/HomeView/Shedule" />
+							<StackPanel
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Orientation="Horizontal">
+								<FontIcon Foreground="Red" Glyph="&#xE823;" />
+								<TextBlock
+									x:Uid="/HomeView/Shedule"
+									Margin="7,0,0,0"
+									FontSize="20" />
+							</StackPanel>
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
-								Grid.Row="2"
-								Margin="10"
-								VerticalAlignment="Top"
-								FontSize="14"
 								x:Uid="/HomeView/MoreAboutShedule"
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
 					</Button>
-					<Button Margin="5" Click="{x:Bind ViewModel.PersonalMapsPageChoice}">
+					<Button
+						Margin="5"
+						Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+						Click="{x:Bind ViewModel.PersonalMapsPageChoice}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="50" />
@@ -146,20 +161,32 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" x:Uid="/HomeView/MapEvents" />
+							<StackPanel
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Orientation="Horizontal">
+								<FontIcon Foreground="Orange" Glyph="&#xE787;" />
+								<TextBlock
+									x:Uid="/HomeView/MapEvents"
+									Margin="7,0,0,0"
+									FontSize="20" />
+							</StackPanel>
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
-								Grid.Row="2"
-								Margin="10"
-								VerticalAlignment="Top"
-								FontSize="14"
 								x:Uid="/HomeView/MoreAboutMapEvents"
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
 					</Button>
-					<Button Margin="5" Click="{x:Bind ViewModel.SettingsPageChoice}">
+					<Button
+						Margin="5"
+						Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+						Click="{x:Bind ViewModel.SettingsPageChoice}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="50" />
@@ -167,20 +194,29 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" x:Uid="/HomeView/Settings" />
+							<StackPanel
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Orientation="Horizontal">
+								<FontIcon Foreground="Green" Glyph="&#xE90F;" />
+								<TextBlock
+									x:Uid="/HomeView/Settings"
+									Margin="7,0,0,0"
+									FontSize="20" />
+							</StackPanel>
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
-								Grid.Row="2"
-								Margin="10"
-								VerticalAlignment="Top"
-								FontSize="14"
 								x:Uid="/HomeView/MoreAboutSettings"
+								Grid.Row="2"
+								Margin="10"
+								VerticalAlignment="Top"
+								FontSize="14"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
 					</Button>
-					<Button Margin="5">
+					<Button Margin="5" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="50" />
@@ -188,15 +224,24 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" x:Uid="/HomeView/Help" />
+							<StackPanel
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Orientation="Horizontal">
+								<FontIcon Foreground="Blue" Glyph="&#xE897;" />
+								<TextBlock
+									x:Uid="/HomeView/Help"
+									Margin="7,0,0,0"
+									FontSize="20" />
+							</StackPanel>
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
+								x:Uid="/HomeView/MoreAboutHelp"
 								Grid.Row="2"
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								x:Uid="/HomeView/MoreAboutHelp"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -205,6 +250,7 @@
 					<Button
 						Margin="5"
 						HorizontalAlignment="Center"
+						Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 						Click="{x:Bind ViewModel.UserPasswordResetAsync}"
 						IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}">
 						<Grid>
@@ -214,15 +260,24 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" x:Uid="/HomeView/ChangePassword" />
+							<StackPanel
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Orientation="Horizontal">
+								<FontIcon Foreground="DeepPink" Glyph="&#xE8D7;" />
+								<TextBlock
+									x:Uid="/HomeView/ChangePassword"
+									Margin="4,0,0,0"
+									FontSize="20" />
+							</StackPanel>
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
+								x:Uid="/HomeView/MoreAboutChangePassword"
 								Grid.Row="2"
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								x:Uid="/HomeView/MoreAboutChangePassword"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>
@@ -231,6 +286,7 @@
 					<Button
 						Margin="5"
 						HorizontalAlignment="Center"
+						Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 						Click="{x:Bind ViewModel.Feedback}"
 						IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}">
 						<Grid>
@@ -240,15 +296,24 @@
 								<RowDefinition Height="90" />
 							</Grid.RowDefinitions>
 
-							<TextBlock FontSize="20" x:Uid="/HomeView/Feedback" />
+							<StackPanel
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Orientation="Horizontal">
+								<FontIcon Foreground="Purple" Glyph="&#xED15;" />
+								<TextBlock
+									x:Uid="/HomeView/Feedback"
+									Margin="7,0,0,0"
+									FontSize="20" />
+							</StackPanel>
 							<MenuFlyoutSeparator Grid.Row="1" />
 
 							<TextBlock
+								x:Uid="/HomeView/MoreAboutFeedback"
 								Grid.Row="2"
 								Margin="10"
 								VerticalAlignment="Top"
 								FontSize="14"
-								x:Uid="/HomeView/MoreAboutFeedback"
 								TextAlignment="Center"
 								TextWrapping="WrapWholeWords" />
 						</Grid>

@@ -37,6 +37,8 @@ namespace TimeTrace.View.MainView
 			{
 				StartPageViewModel.Instance.InternetFeaturesEnable = true;
 			}
+			
+			StartPageViewModel.Instance.LocalNavView = MainNavigationView;
 
 			(Application.Current as App).AppFrame = ContentFrame;
 			(Application.Current as App).AppFrame.Navigate(typeof(HomePage));

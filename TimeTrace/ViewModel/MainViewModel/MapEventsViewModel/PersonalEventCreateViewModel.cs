@@ -219,10 +219,87 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// The title of event create or edit tab
 		/// </summary>
 		public string Header { get; set; }
+
 		/// <summary>
 		/// Content of create of edit map event button
 		/// </summary>
 		public string ActionName { get; set; }
+
+		private bool customRepeatEnable;
+		/// <summary>
+		/// Is custom setting of event repeat enabled
+		/// </summary>
+		public bool CustomRepeatEnable
+		{
+			get => customRepeatEnable;
+			set
+			{
+				customRepeatEnable = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int selectedRepeatMode;
+		/// <summary>
+		/// The selected repeat mode
+		/// </summary>
+		public int SelectedRepeatMode
+		{
+			get => selectedRepeatMode;
+			set
+			{
+				selectedRepeatMode = value;
+				if (value == 6)
+				{
+					CustomRepeatEnable = true;
+					IsEndingForDateSelected = true;
+				}
+				else
+				{
+					CustomRepeatEnable = false;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		private bool isEndingForDateSelected;
+		/// <summary>
+		/// Repeat event before date
+		/// </summary>
+		public bool IsEndingForDateSelected
+		{
+			get => isEndingForDateSelected;
+			set
+			{
+				isEndingForDateSelected = value;
+				if (IsEndingForRepeatSelected != !value)
+				{
+					IsEndingForRepeatSelected = !value;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		private bool isEndingForRepeatSelected;
+		/// <summary>
+		/// Repeat event by number
+		/// </summary>
+		public bool IsEndingForRepeatSelected
+		{
+			get => isEndingForRepeatSelected;
+			set
+			{
+				isEndingForRepeatSelected = value;
+				if (IsEndingForDateSelected != !value)
+				{
+					IsEndingForDateSelected = !value;
+				}
+
+				OnPropertyChanged();
+			}
+		}
 
 		#endregion
 
@@ -267,6 +344,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			StartDate = mapEvent.Start.ToLocalTime();
 			EndDate = mapEvent.End.ToLocalTime();
+			Debug.WriteLine(mapEvent.Start.ToLocalTime().ToShortTimeString());
 			StartTime = TimeSpan.Parse(mapEvent.Start.ToLocalTime().ToShortTimeString());
 			EndTime = TimeSpan.Parse(mapEvent.End.ToLocalTime().ToShortTimeString());
 

@@ -232,12 +232,13 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 							// Set current user name into title bar
 							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/SignInUp/UnknownEmail"), null);
 							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
-							await MainViewModel.StartPageViewModel.Instance.ServerDataSynchronization();
 
 							if (Window.Current.Content is Frame frame)
 							{
 								frame.Navigate(typeof(StartPage));
 							}
+
+							await MainViewModel.StartPageViewModel.Instance.ServerDataSynchronization();
 
 							break;
 						}
