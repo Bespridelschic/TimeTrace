@@ -325,40 +325,37 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="mapEvent"></param>
 		public PersonalEventCreateViewModel(MapEvent mapEvent) : this()
 		{
-			// This part for correct editing. Variable assignment doesn't work here
-			CurrentMapEvent.Color = mapEvent.Color;
-			CurrentMapEvent.CreateAt = mapEvent.CreateAt;
-			CurrentMapEvent.Description = mapEvent.Description;
-			CurrentMapEvent.EmailOfOwner = mapEvent.EmailOfOwner;
-			CurrentMapEvent.EventInterval = mapEvent.EventInterval;
-			CurrentMapEvent.Id = mapEvent.Id;
-			CurrentMapEvent.IsPublic = mapEvent.IsPublic;
-			CurrentMapEvent.Location = mapEvent.Location;
-			CurrentMapEvent.Name = mapEvent.Name;
-			CurrentMapEvent.ProjectId = mapEvent.ProjectId;
-			CurrentMapEvent.ProjectOwnerEmail = mapEvent.ProjectOwnerEmail;
-			CurrentMapEvent.UpdateAt = mapEvent.UpdateAt;
-			CurrentMapEvent.UserBind = mapEvent.UserBind;
-
 			StartTabIndex = 1;
 
-			StartDate = mapEvent.Start.ToLocalTime();
-			EndDate = mapEvent.End.ToLocalTime();
-			Debug.WriteLine(mapEvent.Start.ToLocalTime().ToShortTimeString());
-			StartTime = TimeSpan.Parse(mapEvent.Start.ToLocalTime().ToShortTimeString());
-			EndTime = TimeSpan.Parse(mapEvent.End.ToLocalTime().ToShortTimeString());
+			CurrentMapEvent = mapEvent.Clone() as MapEvent;
+			if (CurrentMapEvent != null)
+			{
+				var localStartDate = CurrentMapEvent.Start.ToLocalTime().Date;
+				var localStartTimeHour = CurrentMapEvent.Start.ToLocalTime().Hour;
+				var localStartTimeMin = CurrentMapEvent.Start.ToLocalTime().Minute;
 
-			if (mapEvent.Start.ToLocalTime().Date == mapEvent.End.ToLocalTime().Date
-				&& mapEvent.Start.ToLocalTime().Hour == 0
-				&& mapEvent.Start.ToLocalTime().Minute == 0
-				&& mapEvent.End.ToLocalTime().Hour == 23
-				&& mapEvent.End.ToLocalTime().Minute == 59)
-			{
-				IsNotAllDay = false;
-			}
-			else
-			{
-				IsNotAllDay = true;
+				var localEndDate = CurrentMapEvent.End.ToLocalTime().Date;
+				var localEndTimeHour = CurrentMapEvent.End.ToLocalTime().Hour;
+				var localEndTimeMin = CurrentMapEvent.End.ToLocalTime().Minute;
+
+				StartDate = localStartDate;
+				EndDate = localEndDate;
+
+				StartTime = new TimeSpan(localStartTimeHour, localStartTimeMin, 0);
+				EndTime = new TimeSpan(localEndTimeHour, localEndTimeMin, 0);
+
+				if (StartDate.Value.Date == EndDate.Value.Date
+					&& StartTime.Hours == 0
+					&& StartTime.Minutes == 0
+					&& EndTime.Hours == 23
+					&& EndTime.Minutes == 59)
+				{
+					IsNotAllDay = false;
+				}
+				else
+				{
+					IsNotAllDay = true;
+				}
 			}
 		}
 
@@ -393,13 +390,16 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				"Не повторяется",
 				CurrentMapEvent.IsPublic,
 				CurrentMapEvent.Color,
-				CurrentMapEvent.ProjectId);
+				CurrentMapEvent.ProjectId)
+			{
+				ProjectOwnerEmail = CurrentMapEvent.ProjectOwnerEmail,
+				EmailOfOwner = CurrentMapEvent.EmailOfOwner
+			};
 
 			if (IsBindingForWindowsCalendar)
 			{
 				BindingEventToWindowsCalendarAsync(savedMapEvent);
 			}
-
 
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{

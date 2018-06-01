@@ -10,6 +10,7 @@ using TimeTrace.ViewModel.MainViewModel;
 using TimeTrace.ViewModel.MainViewModel.MapEventsViewModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -59,6 +60,18 @@ namespace TimeTrace.View.MainView.PersonalMapsCreatePages
 					
 					ViewModel = new PersonalEventCreateViewModel(mapEvent);
 				}
+			}
+		}
+
+		/// <summary>
+		/// System color
+		/// </summary>
+		private SolidColorBrush SolidBrush
+		{
+			get
+			{
+				var color = (Color)this.Resources["SystemAccentColor"];
+				return new SolidColorBrush(color);
 			}
 		}
 	}

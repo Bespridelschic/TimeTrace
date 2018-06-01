@@ -443,13 +443,17 @@ namespace TimeTrace.ViewModel.MainViewModel
 				var place = string.IsNullOrEmpty(tempEvent.Location) ? ResourceLoader.GetString("/ScheduleVM/NotSet") : tempEvent.Location;
 				var description = string.IsNullOrEmpty(tempEvent.Description) ? ResourceLoader.GetString("/ScheduleVM/Absent") : tempEvent.Description;
 				var isPublicMapEvent = tempEvent.IsPublic ? ResourceLoader.GetString("/ScheduleVM/PublicEvent") : ResourceLoader.GetString("/ScheduleVM/PrivateEvent");
+				var duration = new TimeSpan(tempEvent.End.Subtract(tempEvent.Start).Ticks)
+								.ToString(@"d\.hh\:mm")
+								.Replace(".", $" {ResourceLoader.GetString("/ScheduleVM/Days")} ") + " " + ResourceLoader.GetString("/ScheduleVM/Hours");
 
 				TextBlock contentText = new TextBlock()
 				{
 					Text = $"{ResourceLoader.GetString("/ScheduleVM/Name")}: {tempEvent.Name}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}\n\n" +
-							$"{ResourceLoader.GetString("/ScheduleVM/Start")}: {tempEvent.Start.ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
-							$"{ResourceLoader.GetString("/ScheduleVM/Duration")}: {(int)tempEvent.End.Subtract(tempEvent.Start).TotalHours} {ResourceLoader.GetString("/ScheduleVM/Hours")}.\n" +
+							
+							$"{ResourceLoader.GetString("/ScheduleVM/Start")}: {tempEvent.Start.ToLocalTime().ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Duration")}: {duration}.\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/PersonAssociatedWithEvent")}: {person}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Place")}: {place}\n\n" +
 							$"{isPublicMapEvent}",

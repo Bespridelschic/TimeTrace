@@ -7,7 +7,7 @@ namespace TimeTrace.Model.Events
 	/// <summary>
 	/// Event map class
 	/// </summary>
-	public class MapEvent : Category
+	public class MapEvent : Category, ICloneable
 	{
 		#region Properties
 
@@ -44,7 +44,7 @@ namespace TimeTrace.Model.Events
 
 		private DateTime start;
 		/// <summary>
-		/// Full start event updateAt and time
+		/// Full start event time
 		/// </summary>
 		[Required]
 		[JsonProperty(PropertyName = "start")]
@@ -56,7 +56,7 @@ namespace TimeTrace.Model.Events
 
 		private DateTime end;
 		/// <summary>
-		/// Full end event updateAt and time
+		/// Full end event time
 		/// </summary>
 		[Required]
 		[JsonProperty(PropertyName = "end")]
@@ -198,5 +198,22 @@ namespace TimeTrace.Model.Events
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Deep cloning of current object
+		/// </summary>
+		/// <returns></returns>
+		public object Clone()
+		{
+			return new MapEvent(Name, Description, Start.ToLocalTime(), End.ToLocalTime(), Location, UserBind, EventInterval, IsPublic, Color, ProjectId)
+			{
+				ProjectOwnerEmail = this.ProjectOwnerEmail,
+				Id = this.Id,
+				CreateAt = this.CreateAt,
+				UpdateAt = this.UpdateAt,
+				IsDelete = this.IsDelete,
+				EmailOfOwner = this.EmailOfOwner
+			};
+		}
 	}
 }

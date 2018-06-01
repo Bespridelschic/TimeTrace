@@ -189,4 +189,7 @@
   <data name="Success" xml:space="preserve">
     <value>Успех</value>
   </data>
+  <data name="Days" xml:space="preserve">
+    <value>дней</value>
+  </data>
 </root>

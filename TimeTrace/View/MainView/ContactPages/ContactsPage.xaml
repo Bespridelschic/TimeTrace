@@ -241,14 +241,21 @@
 											FontSize="26"
 											Text="{x:Bind Name}"
 											TextTrimming="WordEllipsis" />
-										<StackPanel Orientation="Horizontal">
+
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto" />
+												<ColumnDefinition />
+											</Grid.ColumnDefinitions>
+
 											<TextBlock x:Uid="/ContactsView/Email" FontSize="18" />
 											<TextBlock
+												Grid.Column="1"
 												Margin="5,0"
 												FontSize="18"
 												Text="{x:Bind Email}"
-												TextTrimming="WordEllipsis" />
-										</StackPanel>
+												TextTrimming="CharacterEllipsis" />
+										</Grid>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
@@ -328,14 +335,22 @@
 										<TextBlock
 											FontSize="26"
 											Text="{x:Bind Name}"
-											TextWrapping="WrapWholeWords" />
-										<StackPanel Orientation="Horizontal">
+											TextTrimming="WordEllipsis" />
+
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto" />
+												<ColumnDefinition />
+											</Grid.ColumnDefinitions>
+
 											<TextBlock x:Uid="/ContactsView/Email" FontSize="18" />
 											<TextBlock
+												Grid.Column="1"
 												Margin="5,0"
 												FontSize="18"
-												Text="{x:Bind Email}" />
-										</StackPanel>
+												Text="{x:Bind Email}"
+												TextTrimming="CharacterEllipsis" />
+										</Grid>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>

@@ -318,6 +318,7 @@
 							<StackPanel>
 								<TextBox
 									Width="370"
+									MaxWidth="370"
 									Margin="15,5,15,5"
 									HorizontalAlignment="Center"
 									Header="Имя события*"
@@ -329,6 +330,7 @@
 
 								<TextBox
 									Height="130"
+									MaxWidth="370"
 									MaxHeight="130"
 									Margin="15,5,15,5"
 									AcceptsReturn="True"
@@ -344,6 +346,7 @@
 							<StackPanel>
 
 								<AutoSuggestBox
+									MaxWidth="370"
 									Margin="15,5,15,5"
 									Header="Место события"
 									PlaceholderText="Выберите место события"
@@ -352,6 +355,7 @@
 									ToolTipService.ToolTip="Место, привязываемое к событию" />
 
 								<AutoSuggestBox
+									MaxWidth="370"
 									Margin="15,5,15,5"
 									Header="Имя контакта"
 									ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
@@ -576,10 +580,10 @@
 							Text="* - обязательные поля" />
 						<Button
 							HorizontalAlignment="Center"
-							Background="SteelBlue"
+							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+							BorderBrush="{x:Bind SolidBrush}"
 							Click="{x:Bind ViewModel.EventCreateAsync}"
-							Content="{x:Bind ViewModel.ActionName}"
-							Foreground="White" />
+							Content="{x:Bind ViewModel.ActionName}" />
 					</StackPanel>
 				</Grid>
 			</PivotItem>
