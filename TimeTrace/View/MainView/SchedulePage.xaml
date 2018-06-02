@@ -13,6 +13,7 @@
 			<converters:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<converters:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
+			<converters:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -100,6 +101,7 @@
 											Margin="5,0,0,0"
 											VerticalAlignment="Center"
 											FontSize="26"
+											FontWeight="SemiLight"
 											Text="{x:Bind Name}"
 											TextTrimming="WordEllipsis" />
 
@@ -334,7 +336,8 @@
 			<AppBarToggleButton
 				x:Uid="/ScheduleView/EventsRemove"
 				Click="{x:Bind ViewModel.EventsRemoveAsync}"
-				Icon="Delete" />
+				Icon="Delete"
+				IsEnabled="{x:Bind ViewModel.MapEvents.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 		</CommandBar>
 
 	</Grid>

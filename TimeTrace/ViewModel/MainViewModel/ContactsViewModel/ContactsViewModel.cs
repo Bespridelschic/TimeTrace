@@ -502,7 +502,10 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 						}
 					}
 
-					await RefreshContactsAsync();
+					if (StartPageViewModel.Instance.InternetFeaturesEnable)
+					{
+						await RefreshContactsAsync();
+					}
 				}
 
 				MultipleSelection = ListViewSelectionMode.Single;

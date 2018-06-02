@@ -135,6 +135,7 @@
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Converters\FromIntToBoolConverter.cs" />
     <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
     <Compile Include="View\Converters\FromUtcToLocalTime.cs" />
@@ -195,6 +196,10 @@
     <PRIResource Include="Strings\ru-RU\CalendarsVM.resw" />
     <PRIResource Include="Strings\en-US\CalendarsVM.resw" />
     <None Include="ProjectDiagrams\ClassDiagram1.cd" />
+    <PRIResource Include="Strings\ru-RU\ProjectsView.resw" />
+    <PRIResource Include="Strings\en-US\ProjectsView.resw" />
+    <PRIResource Include="Strings\ru-RU\ProjectsVM.resw" />
+    <PRIResource Include="Strings\en-US\ProjectsVM.resw" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />

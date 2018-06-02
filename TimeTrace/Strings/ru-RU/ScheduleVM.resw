@@ -192,4 +192,7 @@
   <data name="Days" xml:space="preserve">
     <value>дней</value>
   </data>
+  <data name="WillComeThrough" xml:space="preserve">
+    <value>Наступит через</value>
+  </data>
 </root>

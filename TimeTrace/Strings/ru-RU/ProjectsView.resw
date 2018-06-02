@@ -117,58 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActivationInstruction" xml:space="preserve">
-    <value>Проверьте указанный адрес электронной почты. На него было отправлено письмо с инструкциями по смене пароля</value>
+  <data name="AddProject.Label" xml:space="preserve">
+    <value>Добавить проект</value>
   </data>
-  <data name="ApplyChanging" xml:space="preserve">
-    <value>Сменить</value>
+  <data name="AddProject.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Создать новый проект</value>
   </data>
-  <data name="CantChangePassword" xml:space="preserve">
-    <value>Проблема при смене пароля. Попробуйте позже</value>
+  <data name="Calendar.Text" xml:space="preserve">
+    <value>Календарь: </value>
   </data>
-  <data name="ChangeLater" xml:space="preserve">
-    <value>Позже</value>
+  <data name="CreateAt.Text" xml:space="preserve">
+    <value>Создан</value>
   </data>
-  <data name="ChangePassword" xml:space="preserve">
-    <value>Смена пароля</value>
+  <data name="Date.Width" xml:space="preserve">
+    <value>290</value>
   </data>
-  <data name="Days" xml:space="preserve">
-    <value>дней</value>
+  <data name="Description.Text" xml:space="preserve">
+    <value>Описание</value>
   </data>
-  <data name="FailedText" xml:space="preserve">
-    <value>Ошибка</value>
+  <data name="EditProject.Label" xml:space="preserve">
+    <value>Редактировать проект</value>
   </data>
-  <data name="FillAllFields" xml:space="preserve">
-    <value>Все поля должны быть заполнены</value>
+  <data name="EditProject.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Редактировать выбранный проект</value>
   </data>
-  <data name="Hours" xml:space="preserve">
-    <value>ч</value>
+  <data name="GoToEvents.Content" xml:space="preserve">
+    <value>Перейти</value>
   </data>
-  <data name="IncorrectEmail" xml:space="preserve">
-    <value>Не корректный адрес электронной почты</value>
+  <data name="GoToEvents.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Перейти к созданию новых событий для текущего выбранного проекта</value>
   </data>
-  <data name="NearEvent" xml:space="preserve">
-    <value>Совсем скоро</value>
+  <data name="ProjectsSearching.Text" xml:space="preserve">
+    <value>Поиск по проектам: </value>
   </data>
-  <data name="NewPasswordHeader" xml:space="preserve">
-    <value>Новый пароль:</value>
+  <data name="ProjectsSearchingPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Поиск...</value>
   </data>
-  <data name="NewPasswordPlaceholderText" xml:space="preserve">
-    <value>Введите новый пароль...</value>
+  <data name="RemoveProject.Label" xml:space="preserve">
+    <value>Удалить проект</value>
   </data>
-  <data name="NoClosest" xml:space="preserve">
-    <value>Нет ближайших</value>
+  <data name="RemoveProject.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить выбранный проект</value>
   </data>
-  <data name="PasswordLengthShort" xml:space="preserve">
-    <value>Длина пароля должна быть минимум 8 символов</value>
-  </data>
-  <data name="UndefinedError" xml:space="preserve">
-    <value>Неизвестная ошибка. Попробуйте сменить пароль позже, или обратитесь к разработчику</value>
-  </data>
-  <data name="UnknownEmail" xml:space="preserve">
-    <value>Неизвестный@gmail.com</value>
-  </data>
-  <data name="YourEmail.Header" xml:space="preserve">
-    <value>Электронная почта:</value>
+  <data name="UpdateAt.Text" xml:space="preserve">
+    <value>Обновлён</value>
   </data>
 </root>

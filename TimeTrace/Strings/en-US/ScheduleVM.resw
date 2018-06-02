@@ -192,4 +192,7 @@
   <data name="Days" xml:space="preserve">
     <value>days</value>
   </data>
+  <data name="WillComeThrough" xml:space="preserve">
+    <value>Will come through</value>
+  </data>
 </root>

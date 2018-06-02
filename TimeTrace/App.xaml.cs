@@ -94,7 +94,7 @@ namespace TimeTrace
 				// Hiden TitleBar
 				ExtendAcrylicIntoTitleBar();
 
-				// Navigation activation
+				// Back button click action
 				SystemNavigationManager.GetForCurrentView().BackRequested += ((sender, args) =>
 				{
 					if (AppFrame.CanGoBack)
@@ -104,10 +104,11 @@ namespace TimeTrace
 					}
 				});
 
-				// Lambda for navigation
+				// Back button visibility
 				AppFrame.Navigated += (s, args) =>
 				{
-					if (AppFrame.CanGoBack) // если можно перейти назад, показываем кнопку
+					// If can go back - show back button
+					if (AppFrame.CanGoBack)
 					{
 						SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
 												AppViewBackButtonVisibility.Visible;
@@ -116,6 +117,31 @@ namespace TimeTrace
 					{
 						SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
 												AppViewBackButtonVisibility.Collapsed;
+					}
+				};
+
+				// Binding mouse click back and forward button to navigation
+				(Window.Current.Content as Frame).PointerPressed += (sender, args) =>
+				{
+					bool isXButton1Pressed = args.GetCurrentPoint(sender as UIElement).Properties.PointerUpdateKind == Windows.UI.Input.PointerUpdateKind.XButton1Pressed;
+					bool isXButton2Pressed = args.GetCurrentPoint(sender as UIElement).Properties.PointerUpdateKind == Windows.UI.Input.PointerUpdateKind.XButton2Pressed;
+
+					// If pressed back button
+					if (isXButton1Pressed)
+					{
+						if (AppFrame.CanGoBack)
+						{
+							AppFrame.GoBack();
+						}
+					}
+
+					// If pressed forward button
+					if (isXButton2Pressed)
+					{
+						if (AppFrame.CanGoForward)
+						{
+							AppFrame.GoForward();
+						}
 					}
 				};
 			}

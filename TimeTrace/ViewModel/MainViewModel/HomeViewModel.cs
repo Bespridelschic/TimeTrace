@@ -111,13 +111,21 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				NumEvents = db.MapEvents.Count(mapEvent => !mapEvent.IsDelete && mapEvent.EmailOfOwner == CurrentUser.Email);
 				NumEventsToday = db.MapEvents.
-					Count(mapEvent => mapEvent.Start.Date <= DateTime.Today && mapEvent.End.Date >= DateTime.Today && !mapEvent.IsDelete && mapEvent.EmailOfOwner == CurrentUser.Email);
+					Count(i =>
+						i.Start <= DateTime.UtcNow
+						&& i.End >= DateTime.UtcNow
+						&& !i.IsDelete
+						&& i.EmailOfOwner == CurrentUser.Email);
 
+				NearEvent =	db.MapEvents
+						.Where(i => !i.IsDelete && i.EmailOfOwner == CurrentUser.Email)
+						.OrderBy(i => i.Start)
+						.FirstOrDefault(i => i.Start >= DateTime.UtcNow)?.Start.Subtract(DateTime.UtcNow).ToString(@"d\.hh\:mm");
 				NearEvent =
-					db.MapEvents.
-						Where(i => !i.IsDelete && i.EmailOfOwner == CurrentUser.Email).
-						FirstOrDefault(i => i.Start >= DateTime.Now)?.Start.Subtract(DateTime.Now).ToString("g").Split(',')[0]
-						?? ResourceLoader.GetString("/HomeVM/NoClosest");
+					NearEvent == null
+					? ResourceLoader.GetString("/HomeVM/NoClosest")
+					: NearEvent.Replace(".", $" {ResourceLoader.GetString("/HomeVM/Days")} ") + " " + ResourceLoader.GetString("/HomeVM/Hours") + ".";
+						
 			}
 		}
 

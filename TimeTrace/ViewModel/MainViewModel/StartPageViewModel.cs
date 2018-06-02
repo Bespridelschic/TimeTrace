@@ -54,7 +54,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Local reference to main navigation view
 		/// </summary>
-		public NavigationView LocalNavView;
+		public NavigationView LocalNavView { get; set; }
 
 		/// <summary>
 		/// Localization resource loader
@@ -312,7 +312,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void FeedbackAsync()
 		{
-			// Start Windows 10 Feedback service
+			// Start Windows 10 Feedback service if supported
 			if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
 			{
 				await Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault().LaunchAsync();
@@ -391,7 +391,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public void GoToHome()
 		{
-			(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
+			if (PageTitle != ResourceLoader.GetString("/StartVM/Homepage"))
+			{
+				(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
+			}
 		}
 
 		#region Searching map events

@@ -132,11 +132,17 @@
   <data name="ChangePassword" xml:space="preserve">
     <value>Password changing</value>
   </data>
+  <data name="Days" xml:space="preserve">
+    <value>days</value>
+  </data>
   <data name="FailedText" xml:space="preserve">
     <value>Error</value>
   </data>
   <data name="FillAllFields" xml:space="preserve">
     <value>All fields must be filled in</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>h</value>
   </data>
   <data name="IncorrectEmail" xml:space="preserve">
     <value>Не корректный адрес электронной почты</value>

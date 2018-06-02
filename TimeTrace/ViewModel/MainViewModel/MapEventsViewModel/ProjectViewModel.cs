@@ -15,6 +15,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -58,61 +59,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		private string projectMapEventsToday;
 		/// <summary>
-		/// Count of today's map events
+		/// Localization resource loader
 		/// </summary>
-		public string ProjectMapEventsToday
-		{
-			get => projectMapEventsToday;
-			set
-			{
-				projectMapEventsToday = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string projectMapEventsTotal;
-		/// <summary>
-		/// Count of total map events selected project
-		/// </summary>
-		public string ProjectMapEventsTotal
-		{
-			get => projectMapEventsTotal;
-			set
-			{
-				projectMapEventsTotal = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private DateTime nearMapEvent;
-		/// <summary>
-		/// How quickly came the nearest event
-		/// </summary>
-		public DateTime NearMapEvent
-		{
-			get => nearMapEvent;
-			set
-			{
-				nearMapEvent = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string projectMapEventsCompleted;
-		/// <summary>
-		/// Total count of completed map events
-		/// </summary>
-		public string ProjectMapEventsCompleted
-		{
-			get => projectMapEventsCompleted;
-			set
-			{
-				projectMapEventsCompleted = value;
-				OnPropertyChanged();
-			}
-		}
+		public ResourceLoader ResourceLoader { get; set; }
 
 		#endregion
 
@@ -123,6 +73,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
 			CurrentArea = area;
+
+			ResourceLoader = ResourceLoader.GetForCurrentView("ProjectsVM");
 
 			CurrentProjects = new ObservableCollection<Project>();
 			SearchSuggestions = new ObservableCollection<string>();
@@ -193,11 +145,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				ContentDialog confirmDialog = new ContentDialog()
 				{
-					Title = "Подтверждение удаления",
-					Content = $"Вы уверены что хотите удалить проект {CurrentProjects[SelectedProject.Value].Name}?\n" +
-							  $"Удаление приведен к потере всех событий внутри проекта!",
-					PrimaryButtonText = "Удалить",
-					CloseButtonText = "Отмена",
+					Title = ResourceLoader.GetString("/ProjectsVM/ConfirmAction"),
+					Content = $"{ResourceLoader.GetString("/ProjectsVM/ConfirmDeletion")} {CurrentProjects[SelectedProject.Value].Name}?\n" +
+							  $"{ResourceLoader.GetString("/ProjectsVM/DeletionWarning")}",
+					PrimaryButtonText = ResourceLoader.GetString("/ProjectsVM/Remove"),
+					CloseButtonText = ResourceLoader.GetString("/ProjectsVM/Cancel"),
 					DefaultButton = ContentDialogButton.Close,
 				};
 
@@ -218,8 +170,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 						db.SaveChanges();
 
-						await new MessageDialog($"Проект {CurrentProjects[SelectedProject.Value].Name} со всеми событиями внутри был удалён",
-							"Операция завершена успешно").ShowAsync();
+						await new MessageDialog($"{ResourceLoader.GetString("/ProjectsVM/Project")} {CurrentProjects[SelectedProject.Value].Name} {ResourceLoader.GetString("/ProjectsVM/RemoveInformation")}",
+							ResourceLoader.GetString("/ProjectsVM/Success")).ShowAsync();
 
 						// Remove Area from UI panel
 						CurrentProjects.Remove(CurrentProjects[SelectedProject.Value]);
@@ -234,7 +186,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <summary>
 		/// Edit of selected project
 		/// </summary>
-		public async void ProjectEditAsync(object sender, RoutedEventArgs e)
+		public async void ProjectEditAsync()
 		{
 			if (SelectedProject.HasValue)
 			{
@@ -264,7 +216,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						}
 						catch (Exception)
 						{
-							await new MessageDialog("Не предвиденная ошибка, попробуйте позже", "Ошибка при изменении данных").ShowAsync();
+							await new MessageDialog(ResourceLoader.GetString("/ProjectsVM/UndefinedError"), ResourceLoader.GetString("/ProjectsVM/ErrorChangindData")).ShowAsync();
 						}
 
 						// Update current button
@@ -291,8 +243,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			TextBox name = new TextBox()
 			{
-				Header = "Название",
-				PlaceholderText = "Название нового проекта",
+				Header = ResourceLoader.GetString("/ProjectsVM/Name"),
+				PlaceholderText = (project == null)
+									? ResourceLoader.GetString("/ProjectsVM/NewProjectName")
+									: ResourceLoader.GetString("/ProjectsVM/CurrentProjectName"),
 				Text = project?.Name ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 30,
@@ -301,8 +255,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			TextBox description = new TextBox()
 			{
-				Header = "Описание",
-				PlaceholderText = "Краткое описание проекта",
+				Header = ResourceLoader.GetString("/ProjectsVM/Description"),
+				PlaceholderText = ResourceLoader.GetString("/ProjectsVM/ShortDescription"),
 				Text = project?.Description ?? string.Empty,
 				Margin = new Thickness(0, 0, 0, 10),
 				MaxLength = 50,
@@ -316,10 +270,10 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			ContentDialog dialog = new ContentDialog()
 			{
-				Title = (project == null) ? "Создание нового проекта" : "Редактирование проекта",
+				Title = (project == null) ? ResourceLoader.GetString("/ProjectsVM/CreatingNewProject") : ResourceLoader.GetString("/ProjectsVM/ChangingProject"),
 				Content = panel,
-				PrimaryButtonText = (project == null) ? "Создать" : "Изменить",
-				CloseButtonText = "Отложить",
+				PrimaryButtonText = (project == null) ? ResourceLoader.GetString("/ProjectsVM/Create") : ResourceLoader.GetString("/ProjectsVM/Change"),
+				CloseButtonText = ResourceLoader.GetString("/ProjectsVM/Later"),
 				DefaultButton = ContentDialogButton.Primary,
 			};
 
@@ -329,7 +283,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			{
 				if (project == null && string.IsNullOrEmpty(name.Text?.Trim()))
 				{
-					await new MessageDialog("Не заполнено имя для нового проекта", "Ошибка добавления нового проекта").ShowAsync();
+					await new MessageDialog(ResourceLoader.GetString("/ProjectsVM/CreatingNewProjectErrorNameNotEntered"),
+						ResourceLoader.GetString("/ProjectsVM/AddingNewProjectError")).ShowAsync();
 
 					return null;
 				}
@@ -337,7 +292,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					if (string.IsNullOrEmpty(name.Text?.Trim()))
 					{
-						await new MessageDialog("Не заполнено имя изменяемого проекта", "Ошибка изменения проекта").ShowAsync();
+						await new MessageDialog(ResourceLoader.GetString("/ProjectsVM/ChangingProjectErrorNameNotEntered"),
+							ResourceLoader.GetString("/ProjectsVM/ChangingProjectError")).ShowAsync();
 
 						return null;
 					}

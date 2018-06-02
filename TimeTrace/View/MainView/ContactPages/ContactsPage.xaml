@@ -11,6 +11,7 @@
 	<Page.Resources>
 		<ResourceDictionary>
 			<converver:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
+			<converver:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -419,7 +420,7 @@
 				x:Uid="/ContactsView/ContactsRemove"
 				Click="{x:Bind ViewModel.ContactsRemoveAsync}"
 				Icon="BlockContact"
-				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
+				IsEnabled="{x:Bind ViewModel.Contacts.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 		</CommandBar>
 
 	</Grid>

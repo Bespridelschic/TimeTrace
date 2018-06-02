@@ -12,6 +12,7 @@
 		<converver:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 		<converver:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 		<converver:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
+		<converver:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -160,7 +161,8 @@
 			<AppBarToggleButton
 				x:Uid="/CalendarsView/RemoveCalendar"
 				Click="{x:Bind ViewModel.CategoriesBulkRemovalAsync}"
-				Icon="Remove" />
+				Icon="Remove"
+				IsEnabled="{x:Bind ViewModel.Calendars.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 		</CommandBar>
 
 	</Grid>

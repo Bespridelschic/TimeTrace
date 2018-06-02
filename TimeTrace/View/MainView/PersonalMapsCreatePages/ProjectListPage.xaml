@@ -13,6 +13,7 @@
 		<ResourceDictionary>
 			<converter:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 			<converter:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
+			<converter:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
@@ -33,27 +34,30 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<StackPanel
-				HorizontalAlignment="Left"
-				VerticalAlignment="Top"
-				Orientation="Horizontal">
+			<Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
 				<TextBlock
+					x:Uid="/ProjectsView/Calendar"
 					Margin="20,10,5,0"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Center"
 					FontSize="35"
 					FontWeight="Light"
-					Text="Календарь: "
 					TextWrapping="WrapWholeWords" />
 
 				<TextBlock
+					Grid.Column="1"
 					Margin="0,10,20,0"
 					VerticalAlignment="Center"
 					FontSize="35"
 					FontWeight="Light"
 					Text="{x:Bind ViewModel.CurrentArea.Name}"
-					TextWrapping="WrapWholeWords" />
-			</StackPanel>
+					TextTrimming="WordEllipsis" />
+			</Grid>
 			<MenuFlyoutSeparator Grid.Row="1" VerticalAlignment="Bottom" />
 		</Grid>
 
@@ -67,13 +71,14 @@
 			<FlipView
 				x:Name="flipView"
 				Padding="4"
+				Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
 				BorderBrush="{x:Bind ViewModel.CurrentArea.Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
 				BorderThickness="1.4"
 				ItemsSource="{x:Bind ViewModel.CurrentProjects}">
 
 				<FlipView.ItemTemplate>
 					<DataTemplate x:Name="CustomerItemTemplate" x:DataType="local:Project">
-						<Grid Background="White">
+						<Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition />
@@ -85,7 +90,8 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Top"
 								FontSize="35"
-								Text="{Binding Name}" />
+								Text="{x:Bind Name, Mode=OneWay, FallbackValue=123}"
+								TextTrimming="CharacterEllipsis" />
 
 							<GridView
 								Grid.Row="1"
@@ -93,94 +99,125 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center">
 								<GridViewItem
+									x:Uid="/ProjectsView/Date"
+									Height="110"
 									Margin="10"
 									Padding="10"
 									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
 									BorderThickness="1.5">
-									<DataTemplate>
-										<StackPanel Orientation="Horizontal">
-											<TextBlock
-												Margin="3"
-												FontSize="25"
-												Text="Событий на сегодня:" />
-											<TextBlock
-												Margin="3"
-												FontSize="25"
-												Text="0" />
-										</StackPanel>
-									</DataTemplate>
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition />
+											<RowDefinition Height="Auto" />
+											<RowDefinition />
+										</Grid.RowDefinitions>
+
+										<TextBlock
+											Margin="3"
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											FontSize="30"
+											Text="{x:Bind Description, Mode=OneWay}"
+											TextTrimming="CharacterEllipsis"
+											ToolTipService.ToolTip="{x:Bind Description, Mode=OneWay}" />
+
+										<MenuFlyoutSeparator Grid.Row="1" />
+
+										<TextBlock
+											x:Uid="/ProjectsView/Description"
+											Grid.Row="2"
+											Margin="3"
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											FontSize="20" />
+									</Grid>
 								</GridViewItem>
 								<GridViewItem
 									Margin="10"
 									Padding="10"
 									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
 									BorderThickness="1.5">
-									<StackPanel Orientation="Horizontal">
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition />
+											<RowDefinition Height="Auto" />
+											<RowDefinition />
+										</Grid.RowDefinitions>
+
 										<TextBlock
 											Margin="3"
-											FontSize="25"
-											Text="Общее количество:" />
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											FontSize="30"
+											Text="{x:Bind CreateAt, Mode=OneWay}"
+											ToolTipService.ToolTip="{x:Bind CreateAt, Mode=OneWay}" />
+
+										<MenuFlyoutSeparator Grid.Row="1" />
+
 										<TextBlock
+											x:Uid="/ProjectsView/CreateAt"
+											Grid.Row="2"
 											Margin="3"
-											FontSize="25"
-											Text="0" />
-									</StackPanel>
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											FontSize="20" />
+									</Grid>
 								</GridViewItem>
 								<GridViewItem
 									Margin="10"
 									Padding="10"
 									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
 									BorderThickness="1.5">
-									<StackPanel Orientation="Horizontal">
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition />
+											<RowDefinition Height="Auto" />
+											<RowDefinition />
+										</Grid.RowDefinitions>
+
 										<TextBlock
 											Margin="3"
-											FontSize="25"
-											Text="Ближайшее через:" />
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											FontSize="30"
+											Text="{x:Bind UpdateAt, Mode=OneWay}"
+											ToolTipService.ToolTip="{x:Bind UpdateAt, Mode=OneWay}" />
+
+										<MenuFlyoutSeparator Grid.Row="1" />
+
 										<TextBlock
+											x:Uid="/ProjectsView/UpdateAt"
+											Grid.Row="2"
 											Margin="3"
-											FontSize="25"
-											Text="0" />
-									</StackPanel>
-								</GridViewItem>
-								<GridViewItem
-									Margin="10"
-									Padding="10"
-									BorderBrush="{x:Bind Color, Converter={StaticResource fromIntToSolidColorBrushConverter}}"
-									BorderThickness="1.5">
-									<StackPanel Orientation="Horizontal">
-										<TextBlock
-											Margin="3"
-											FontSize="25"
-											Text="Завершено:" />
-										<TextBlock
-											Margin="3"
-											FontSize="25"
-											Text="0" />
-									</StackPanel>
+											HorizontalAlignment="Center"
+											VerticalAlignment="Center"
+											FontSize="20" />
+									</Grid>
 								</GridViewItem>
 							</GridView>
-
 						</Grid>
 					</DataTemplate>
 				</FlipView.ItemTemplate>
 			</FlipView>
 
 			<Button
+				x:Uid="/ProjectsView/GoToEvents"
 				Grid.Row="1"
 				Height="80"
 				MaxWidth="9999999"
 				HorizontalAlignment="Stretch"
 				VerticalAlignment="Bottom"
 				Background="#A5000000"
+				BorderBrush="{StaticResource HostBackdropBrush}"
 				Click="{x:Bind ViewModel.ProjectSelect}"
-				Content="Перейти"
 				FontFamily="Segoe UI"
 				FontSize="26.667"
-				Foreground="#CCFFFFFF" />
+				Foreground="#CCFFFFFF"
+				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 
 			<ScrollViewer
 				Grid.Row="2"
-				Padding="0,5,0,10"
+				Padding="0,4.5,0,10"
 				HorizontalAlignment="Center"
 				HorizontalContentAlignment="Left"
 				HorizontalScrollBarVisibility="Auto"
@@ -193,16 +230,14 @@
 								Padding="10"
 								HorizontalAlignment="Stretch"
 								Background="{StaticResource HostBackdropBrush}"
-								CornerRadius="5">
-								<StackPanel
-									Width="Auto"
-									HorizontalAlignment="Stretch"
-									Orientation="Horizontal">
+								CornerRadius="15">
+								<Grid Width="Auto" HorizontalAlignment="Stretch">
 									<TextBlock
 										HorizontalAlignment="Center"
 										VerticalAlignment="Center"
-										Text="{x:Bind Name}" />
-								</StackPanel>
+										Text="{x:Bind Name}"
+										TextTrimming="CharacterEllipsis" />
+								</Grid>
 							</Border>
 						</DataTemplate>
 					</advancedViews:FlipViewIndicator.ItemTemplate>
@@ -218,12 +253,12 @@
 		<CommandBar Grid.Row="2" VerticalAlignment="Bottom">
 			<CommandBar.Content>
 				<StackPanel Margin="10,-5" Orientation="Horizontal">
-					<TextBlock Text="Поиск по проектам: " />
+					<TextBlock x:Uid="/ProjectsView/ProjectsSearching" />
 					<AutoSuggestBox
+						x:Uid="/ProjectsView/ProjectsSearchingPlaceholder"
 						Width="250"
 						Margin="10,13,10,10"
 						ItemsSource="{x:Bind ViewModel.SearchSuggestions, Mode=OneWay}"
-						PlaceholderText="Поиск..."
 						QueryIcon="Find"
 						QuerySubmitted="{x:Bind ViewModel.SearchRequest}"
 						Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
@@ -232,21 +267,20 @@
 			</CommandBar.Content>
 
 			<AppBarButton
+				x:Uid="/ProjectsView/AddProject"
 				Click="{x:Bind ViewModel.ProjectCreate}"
-				Icon="Add"
-				Label="Добавить проект"
-				ToolTipService.ToolTip="Создать новый проект" />
+				Icon="Add" />
 			<AppBarButton
+				x:Uid="/ProjectsView/EditProject"
 				Click="{x:Bind ViewModel.ProjectEditAsync}"
 				Icon="Edit"
-				Label="Редактировать проект"
-				ToolTipService.ToolTip="Редактировать выбранный проект" />
+				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 			<AppBarSeparator />
 			<AppBarButton
+				x:Uid="/ProjectsView/RemoveProject"
 				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
 				Icon="Remove"
-				Label="Удалить проект"
-				ToolTipService.ToolTip="Удалить выбранный проект" />
+				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 		</CommandBar>
 
 	</Grid>

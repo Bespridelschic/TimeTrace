@@ -321,6 +321,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
 						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete && i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.ToList());
 			}
 		}
@@ -341,6 +342,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					MapEvents = new ObservableCollection<MapEvent>(db.MapEvents
 						.Where(i => i.ProjectId == project.Id && i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete && i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.ToList());
 				}
 			}
@@ -367,6 +369,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 									i.EmailOfOwner == (string)localSettings.Values["email"] &&
 									!i.IsDelete &&
 									i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.ToList());
 				}
 			}
@@ -446,17 +449,20 @@ namespace TimeTrace.ViewModel.MainViewModel
 				var duration = new TimeSpan(tempEvent.End.Subtract(tempEvent.Start).Ticks)
 								.ToString(@"d\.hh\:mm")
 								.Replace(".", $" {ResourceLoader.GetString("/ScheduleVM/Days")} ") + " " + ResourceLoader.GetString("/ScheduleVM/Hours");
+				var willComeThrough = tempEvent.Start.Subtract(DateTime.UtcNow)
+								.ToString(@"d\.hh\:mm")
+								.Replace(".", $" {ResourceLoader.GetString("/ScheduleVM/Days")} ") + " " + ResourceLoader.GetString("/ScheduleVM/Hours");
 
 				TextBlock contentText = new TextBlock()
 				{
 					Text = $"{ResourceLoader.GetString("/ScheduleVM/Name")}: {tempEvent.Name}\n" +
-							$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}\n\n" +
-							
 							$"{ResourceLoader.GetString("/ScheduleVM/Start")}: {tempEvent.Start.ToLocalTime().ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Duration")}: {duration}.\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/WillComeThrough")}: {willComeThrough}.\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/PersonAssociatedWithEvent")}: {person}\n" +
-							$"{ResourceLoader.GetString("/ScheduleVM/Place")}: {place}\n\n" +
-							$"{isPublicMapEvent}",
+							$"{ResourceLoader.GetString("/ScheduleVM/Place")}: {place}\n" +
+							$"{isPublicMapEvent}\n\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}",
 					TextWrapping = TextWrapping.WrapWholeWords,
 					TextTrimming = TextTrimming.WordEllipsis,
 				};
@@ -570,12 +576,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 							MapEvents.Remove(localEvent);
 						}
 					}
+
+					await StartPageViewModel.Instance.CategoriesSynchronization();
 				}
 
 				MultipleSelection = ListViewSelectionMode.Single;
 			}
-
-			await StartPageViewModel.Instance.CategoriesSynchronization();
 		}
 
 		/// <summary>
@@ -602,13 +608,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			SelectedFilteredDates.Clear();
 
-			//var subtractedTime = TimeSpan.Parse("07:00");
 			foreach (var item in sender.SelectedDates)
 			{
-				//DateTimeOffset.TryParse(item.ToString("dd.MM.yyyy"), out DateTimeOffset res);
-				//SelectedFilteredDates.Add(res.Subtract(subtractedTime));
 				SelectedFilteredDates.Add(item);
-				//Debug.WriteLine(res.Subtract(subtractedTime));
 			}
 
 			ApplyFilter();
@@ -730,6 +732,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 								(i, w) => i
 							)
 						.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.ToList())
 					{
 						MapEvents.Add(item);
@@ -745,6 +748,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 								(i, w) => i
 							)
 						.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End < DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.ToList())
 					{
 						MapEvents.Add(item);
@@ -758,6 +762,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					{
 						foreach (var item in db.MapEvents
 							.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End >= DateTime.UtcNow)
+							.OrderBy(i => i.Start)
 							.ToList())
 						{
 							MapEvents.Add(item);
@@ -767,6 +772,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					{
 						foreach (var item in db.MapEvents
 							.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"] && i.End < DateTime.UtcNow)
+							.OrderBy(i => i.Start)
 							.ToList())
 						{
 							MapEvents.Add(item);
@@ -787,6 +793,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					foreach (var item in MapEvents
 						.Where(i => !(TimeSpan.Parse(i.Start.ToLocalTime().ToString("HH:mm:ss")) <= FilterStartTime
 									&& TimeSpan.Parse(i.End.ToLocalTime().ToString("HH:mm:ss")) >= FilterEndTime))
+						.OrderBy(i => i.Start)
 						.ToList())
 					{
 						MapEvents.Remove(item);
@@ -797,6 +804,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					foreach (var item in MapEvents
 						.Where(i => !i.Location.Contains(RequiredMapEventsLocation))
+						.OrderBy(i => i.Start)
 						.ToList())
 					{
 						MapEvents.Remove(item);
@@ -807,6 +815,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					foreach (var item in MapEvents
 						.Where(i => !i.UserBind.Contains(RequiredMapEventsPerson))
+						.OrderBy(i => i.Start)
 						.ToList())
 					{
 						MapEvents.Remove(item);

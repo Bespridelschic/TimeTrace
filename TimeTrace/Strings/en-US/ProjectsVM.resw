@@ -117,58 +117,76 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActivationInstruction" xml:space="preserve">
-    <value>Проверьте указанный адрес электронной почты. На него было отправлено письмо с инструкциями по смене пароля</value>
+  <data name="AddingNewProjectError" xml:space="preserve">
+    <value>Error adding new project</value>
   </data>
-  <data name="ApplyChanging" xml:space="preserve">
-    <value>Сменить</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
-  <data name="CantChangePassword" xml:space="preserve">
-    <value>Проблема при смене пароля. Попробуйте позже</value>
+  <data name="Change" xml:space="preserve">
+    <value>Edit</value>
   </data>
-  <data name="ChangeLater" xml:space="preserve">
-    <value>Позже</value>
+  <data name="ChangingProject" xml:space="preserve">
+    <value>Editing a project</value>
   </data>
-  <data name="ChangePassword" xml:space="preserve">
-    <value>Смена пароля</value>
+  <data name="ChangingProjectError" xml:space="preserve">
+    <value>Error changing project</value>
   </data>
-  <data name="Days" xml:space="preserve">
-    <value>дней</value>
+  <data name="ChangingProjectErrorNameNotEntered" xml:space="preserve">
+    <value>The name of the project being modified is not filled</value>
   </data>
-  <data name="FailedText" xml:space="preserve">
-    <value>Ошибка</value>
+  <data name="ConfirmAction" xml:space="preserve">
+    <value>Confirm removal</value>
   </data>
-  <data name="FillAllFields" xml:space="preserve">
-    <value>Все поля должны быть заполнены</value>
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Are you sure you want to delete the project</value>
   </data>
-  <data name="Hours" xml:space="preserve">
-    <value>ч</value>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
   </data>
-  <data name="IncorrectEmail" xml:space="preserve">
-    <value>Не корректный адрес электронной почты</value>
+  <data name="CreatingNewProject" xml:space="preserve">
+    <value>Creating a new project</value>
   </data>
-  <data name="NearEvent" xml:space="preserve">
-    <value>Совсем скоро</value>
+  <data name="CreatingNewProjectErrorNameNotEntered" xml:space="preserve">
+    <value>The name for the new project is not filled in</value>
   </data>
-  <data name="NewPasswordHeader" xml:space="preserve">
-    <value>Новый пароль:</value>
+  <data name="CurrentProjectName" xml:space="preserve">
+    <value>New Project Name</value>
   </data>
-  <data name="NewPasswordPlaceholderText" xml:space="preserve">
-    <value>Введите новый пароль...</value>
+  <data name="DeletionWarning" xml:space="preserve">
+    <value>Removal will result in the loss of all events inside the project!</value>
   </data>
-  <data name="NoClosest" xml:space="preserve">
-    <value>Нет ближайших</value>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
   </data>
-  <data name="PasswordLengthShort" xml:space="preserve">
-    <value>Длина пароля должна быть минимум 8 символов</value>
+  <data name="ErrorChangindData" xml:space="preserve">
+    <value>Error changing data</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NewProjectName" xml:space="preserve">
+    <value>Name of the new project</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="RemoveInformation" xml:space="preserve">
+    <value>with all the events inside was deleted</value>
+  </data>
+  <data name="ShortDescription" xml:space="preserve">
+    <value>Brief description of the project</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
   </data>
   <data name="UndefinedError" xml:space="preserve">
-    <value>Неизвестная ошибка. Попробуйте сменить пароль позже, или обратитесь к разработчику</value>
-  </data>
-  <data name="UnknownEmail" xml:space="preserve">
-    <value>Неизвестный@gmail.com</value>
-  </data>
-  <data name="YourEmail.Header" xml:space="preserve">
-    <value>Электронная почта:</value>
+    <value>Unexpected error, try again later</value>
   </data>
 </root>
