@@ -103,7 +103,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="mainPanel">Panel of frame</param>
 		public CategoryViewModel()
 		{
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+			StartPageViewModel.Instance.SetHeader(Headers.MapEvents);
 			ResourceLoader = ResourceLoader.GetForCurrentView("CalendarsVM");
 
 			MultipleSelection = ListViewSelectionMode.Single;

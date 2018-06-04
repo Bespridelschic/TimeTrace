@@ -110,6 +110,7 @@
     <Compile Include="Model\DBContext\MainDatabaseContext.cs" />
     <Compile Include="Model\Events\Project.cs" />
     <Compile Include="Model\Events\MapEvent.cs" />
+    <Compile Include="Model\RepeatMode.cs" />
     <Compile Include="Model\Requests\FileSystemRequests.cs" />
     <Compile Include="Model\Requests\InternetRequests.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ChatViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ContactsViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\Headers.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ISearchable.cs" />
     <Compile Include="ViewModel\MainViewModel\StartPageViewModel.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="View\Converters\FromIntToBoolConverter.cs" />
     <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
+    <Compile Include="View\Converters\FromRepeatModeToIntConverter.cs" />
     <Compile Include="View\Converters\FromUtcToLocalTime.cs" />
     <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>

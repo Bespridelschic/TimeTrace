@@ -295,7 +295,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		private void InitializationData()
 		{
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Shedule);
+			StartPageViewModel.Instance.SetHeader(Headers.Shedule);
 			ResourceLoader = ResourceLoader.GetForCurrentView("ScheduleVM");
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
@@ -419,10 +419,37 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					using (MainDatabaseContext db = new MainDatabaseContext())
 					{
-						db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent.Value].Id).IsDelete = true;
-						MapEvents.RemoveAt(SelectedMapEvent.Value);
+						// Remove copies
+						if (string.IsNullOrEmpty(MapEvents[SelectedMapEvent.Value].EventInterval))
+						{
+							if (db.MapEvents.Count(i => i.EventInterval == MapEvents[SelectedMapEvent.Value].Id) > 0)
+							{
+								// Remove all repeated copies
+								foreach (var item in db.MapEvents.Where(i => i.EventInterval == MapEvents[SelectedMapEvent.Value].Id))
+								{
+									db.MapEvents.FirstOrDefault(i => i.Id == item.Id).IsDelete = true;
+								}
+							}
+
+							// Remove original event
+							db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent.Value].Id).IsDelete = true;
+						}
+						// Remove original and copies
+						else
+						{
+							var originalEvent = db.MapEvents.First(i => i.Id == MapEvents[SelectedMapEvent.Value].EventInterval);
+
+							foreach (var item in db.MapEvents.Where(i => i.EventInterval == originalEvent.Id))
+							{
+								db.MapEvents.FirstOrDefault(i => i.Id == item.Id).IsDelete = true;
+							}
+
+							db.MapEvents.FirstOrDefault(i => i.Id == originalEvent.Id).IsDelete = true;
+						}
 
 						db.SaveChanges();
+
+						ResetAllFilters();
 					}
 
 					await (new MessageDialog(ResourceLoader.GetString("/ScheduleVM/EventSuccessfullyDeleted"), ResourceLoader.GetString("/ScheduleVM/Success"))).ShowAsync();
@@ -528,9 +555,32 @@ namespace TimeTrace.ViewModel.MainViewModel
 					return;
 				}
 
+				var originalList = SelectedEvents.Where(i => string.IsNullOrEmpty(i.EventInterval)).ToList();
+
+				using (var db = new MainDatabaseContext())
+				{
+					var copies = db.MapEvents
+						.Join(
+							SelectedEvents.Where(i => !string.IsNullOrEmpty(i.EventInterval)).ToList(),
+							i => i.EventInterval,
+							w => w.EventInterval,
+							(i, w) => i)
+						.Distinct().ToList();
+
+					originalList
+						.AddRange(db.MapEvents
+							.Join(
+								copies,
+								i => i.Id,
+								w => w.EventInterval,
+								(i, w) => i)
+							.Distinct()
+						);
+				}
+
 				string removedEvents = string.Empty;
 
-				foreach (var localEvent in SelectedEvents)
+				foreach (var localEvent in originalList)
 				{
 					removedEvents += $"{localEvent.Name}\n";
 				}
@@ -563,18 +613,19 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					using (MainDatabaseContext db = new MainDatabaseContext())
 					{
-						foreach (var localEvent in SelectedEvents)
+						foreach (var item in originalList)
 						{
-							localEvent.IsDelete = true;
+							db.MapEvents.Where(i => i.Id == item.Id).FirstOrDefault().IsDelete = true;
+
+							foreach (var copy in db.MapEvents.Where(i => i.EventInterval == item.Id))
+							{
+								db.MapEvents.Where(i => i.Id == copy.Id).FirstOrDefault().IsDelete = true;
+							}
 						}
 
-						db.MapEvents.UpdateRange(SelectedEvents);
 						db.SaveChanges();
 
-						foreach (var localEvent in SelectedEvents)
-						{
-							MapEvents.Remove(localEvent);
-						}
+						ResetAllFilters();
 					}
 
 					await StartPageViewModel.Instance.CategoriesSynchronization();

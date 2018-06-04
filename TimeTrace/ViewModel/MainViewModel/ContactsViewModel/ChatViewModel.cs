@@ -50,7 +50,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		/// </summary>
 		public ChatViewModel()
 		{
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Contacts);
+			StartPageViewModel.Instance.SetHeader(Headers.Contacts);
 		}
 
 		/// <summary>

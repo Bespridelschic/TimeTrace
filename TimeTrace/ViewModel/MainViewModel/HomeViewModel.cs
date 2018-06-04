@@ -99,7 +99,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			ResourceLoader = ResourceLoader.GetForCurrentView("HomeVM");
 
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Home);
+			StartPageViewModel.Instance.SetHeader(Headers.Home);
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
 
 			CurrentUser = GetUserInfo();

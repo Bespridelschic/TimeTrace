@@ -209,14 +209,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 		}
 
 		/// <summary>
-		/// Target pages
-		/// </summary>
-		public enum Headers
-		{
-			Home, Shedule, Contacts, MapEvents, Settings
-		}
-
-		/// <summary>
 		/// Set NavigationView title
 		/// </summary>
 		/// <param name="menu">Sender <see cref="NavigationView"/></param>

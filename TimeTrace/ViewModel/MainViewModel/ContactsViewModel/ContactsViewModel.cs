@@ -159,7 +159,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 		public ContactsViewModel()
 		{
 			ResourceLoader = ResourceLoader.GetForCurrentView("ContactsVM");
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Contacts);
+			StartPageViewModel.Instance.SetHeader(Headers.Contacts);
 
 			Contacts = new ObservableCollection<Contact>();
 			SelectedTabIndex = 0;

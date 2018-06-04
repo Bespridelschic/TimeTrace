@@ -78,7 +78,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public SettingsViewModel()
 		{
 			ResourceLoader = ResourceLoader.GetForCurrentView("HomeVM");
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.Settings);
+			StartPageViewModel.Instance.SetHeader(Headers.Settings);
 
 			if ((Application.Current as App).AppFrame.Language.ToLowerInvariant().Contains("ru"))
 			{

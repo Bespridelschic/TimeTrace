@@ -71,7 +71,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public ProjectViewModel(Area area)
 		{
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+			StartPageViewModel.Instance.SetHeader(Headers.MapEvents);
 			CurrentArea = area;
 
 			ResourceLoader = ResourceLoader.GetForCurrentView("ProjectsVM");

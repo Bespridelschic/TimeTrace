@@ -52,6 +52,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public DateTime MinDate { get; }
 
+		private DateTimeOffset? maxDate;
+		/// <summary>
+		/// Max date for custom repeat setting
+		/// </summary>
+		public DateTimeOffset? MaxDate
+		{
+			get => maxDate;
+			set
+			{
+				maxDate = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private DateTimeOffset? startDate;
 		/// <summary>
 		/// Event start time
@@ -65,11 +79,34 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				if (StartDate != null)
 				{
 					CurrentMapEvent.Start = StartDate.Value.Date + StartTime;
+					BeforeDateRecurrence = value;
 				}
 
 				if (!isNotAllDay)
 				{
 					EndDate = value;
+				}
+
+				if (value.HasValue)
+				{
+					// Set max date as start + 1 year
+					MaxDate = value.Value.AddYears(1);
+				}
+
+				if (SelectedRepeatMode == RepeatMode.YearOnce)
+				{
+					MaxDate = DateTime.Now.AddYears(10);
+				}
+				else
+				{
+					if (StartDate.HasValue)
+					{
+						MaxDate = StartDate.Value.AddYears(1);
+					}
+					else
+					{
+						MaxDate = DateTime.Now.AddYears(1);
+					}
 				}
 
 				OnPropertyChanged();
@@ -239,17 +276,31 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		private int selectedRepeatMode;
+		private bool isCustomDateOfWeekSelectingEnable;
+		/// <summary>
+		/// Is custom setting of event dates enabled for days of week
+		/// </summary>
+		public bool IsCustomDateOfWeekSelectingEnable
+		{
+			get => isCustomDateOfWeekSelectingEnable;
+			set
+			{
+				isCustomDateOfWeekSelectingEnable = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private RepeatMode selectedRepeatMode;
 		/// <summary>
 		/// The selected repeat mode
 		/// </summary>
-		public int SelectedRepeatMode
+		public RepeatMode SelectedRepeatMode
 		{
 			get => selectedRepeatMode;
 			set
 			{
 				selectedRepeatMode = value;
-				if (value == 6)
+				if (value != RepeatMode.NotRepeat)
 				{
 					CustomRepeatEnable = true;
 					IsEndingForDateSelected = true;
@@ -257,6 +308,31 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				else
 				{
 					CustomRepeatEnable = false;
+				}
+
+				if (value == RepeatMode.Custom)
+				{
+					IsCustomDateOfWeekSelectingEnable = true;
+				}
+				else
+				{
+					IsCustomDateOfWeekSelectingEnable = false;
+				}
+
+				if (value == RepeatMode.YearOnce)
+				{
+					MaxDate = DateTime.Now.AddYears(10);
+				}
+				else
+				{
+					if (StartDate.HasValue)
+					{
+						MaxDate = StartDate.Value.AddYears(1);
+					}
+					else
+					{
+						MaxDate = DateTime.Now.AddYears(1);
+					}
 				}
 
 				OnPropertyChanged();
@@ -282,6 +358,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private DateTimeOffset? beforeDateRecurrence;
+		/// <summary>
+		/// Before the date of recurrence
+		/// </summary>
+		public DateTimeOffset? BeforeDateRecurrence
+		{
+			get => beforeDateRecurrence;
+			set
+			{
+				beforeDateRecurrence = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private bool isEndingForRepeatSelected;
 		/// <summary>
 		/// Repeat event by number
@@ -301,6 +391,39 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private int beforeNumberRecurrence;
+		/// <summary>
+		/// Before the number of recurrence
+		/// </summary>
+		public int BeforeNumberRecurrence
+		{
+			get { return beforeNumberRecurrence; }
+			set
+			{
+				beforeNumberRecurrence = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ObservableCollection<bool> selectedRepeatedDates;
+		/// <summary>
+		/// Binded days
+		/// </summary>
+		public ObservableCollection<bool> SelectedRepeatedDates
+		{
+			get => selectedRepeatedDates;
+			set
+			{
+				selectedRepeatedDates = value;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// If edited event is repeatable
+		/// </summary>
+		private bool IsEditedEventRepeated { get; set; }
+
 		#endregion
 
 		/// <summary>
@@ -308,15 +431,27 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// </summary>
 		public PersonalEventCreateViewModel()
 		{
-			StartPageViewModel.Instance.SetHeader(StartPageViewModel.Headers.MapEvents);
+			StartPageViewModel.Instance.SetHeader(Headers.MapEvents);
 			StartTabIndex = 0;
 
 			CurrentMapEvent = new MapEvent();
 			StartDate = DateTime.Now;
 
 			MinDate = DateTime.Today;
+			MaxDate = StartDate.Value.AddYears(1);
+
 			IsNotAllDay = IsBindingForWindowsCalendar = false;
 			MapEventsPersonsSuggestList = new ObservableCollection<string>();
+			SelectedRepeatedDates = new ObservableCollection<bool>()
+			{
+				DateTime.Now.DayOfWeek == DayOfWeek.Monday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Tuesday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Wednesday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Thursday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Friday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Saturday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Sunday,
+			};
 		}
 
 		/// <summary>
@@ -326,6 +461,19 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		public PersonalEventCreateViewModel(MapEvent mapEvent) : this()
 		{
 			StartTabIndex = 1;
+
+			if (!string.IsNullOrEmpty(mapEvent.EventInterval))
+			{
+				using (var db = new MainDatabaseContext())
+				{
+					var originalMapEvent = db.MapEvents.Where(i => i.Id == mapEvent.EventInterval).FirstOrDefault();
+
+					if (originalMapEvent != null)
+					{
+						mapEvent = originalMapEvent;
+					}
+				}
+			}
 
 			CurrentMapEvent = mapEvent.Clone() as MapEvent;
 			if (CurrentMapEvent != null)
@@ -356,6 +504,64 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					IsNotAllDay = true;
 				}
+
+				using (var db = new MainDatabaseContext())
+				{
+					var repeatedCount = db.MapEvents.Count(i => i.EventInterval == CurrentMapEvent.Id);
+					if (repeatedCount > 0)
+					{
+						IsEditedEventRepeated = true;
+
+						if (repeatedCount > 3)
+						{
+							repeatedCount = 3;
+						}
+
+						var repeatedList = db.MapEvents.Where(i => i.EventInterval == CurrentMapEvent.Id).OrderBy(i => i.Start).Take(repeatedCount).ToList();
+
+						// Set date of ending of repetition
+						BeforeDateRecurrence = db.MapEvents
+								.Where(i => i.EventInterval == CurrentMapEvent.Id)
+								.OrderByDescending(i => i.Start)
+								.First().Start.ToLocalTime();
+
+						Debug.WriteLine($"{CurrentMapEvent.Start.AddDays(1)} {repeatedList[0].Start}");
+						if (CurrentMapEvent.Start.AddDays(1).ToUniversalTime() == repeatedList[0].Start)
+						{
+							SelectedRepeatMode = RepeatMode.EveryDay;
+
+							Debug.WriteLine("Повторяемое каждый день");
+						}
+
+						if (CurrentMapEvent.Start.AddDays(2).ToUniversalTime() == repeatedList[0].Start)
+						{
+							SelectedRepeatMode = RepeatMode.AfterOneDay;
+
+							Debug.WriteLine("Повторяемое через день");
+						}
+
+						if (CurrentMapEvent.Start.AddDays(7).ToUniversalTime() == repeatedList[0].Start)
+						{
+							SelectedRepeatMode = RepeatMode.WeekOnce;
+
+							Debug.WriteLine("Повторяемое через неделю");
+						}
+
+						if (CurrentMapEvent.Start.AddMonths(1).ToUniversalTime() == repeatedList[0].Start)
+						{
+							SelectedRepeatMode = RepeatMode.MonthOnce;
+
+							Debug.WriteLine("Повторяемое через месяц");
+						}
+
+						if (CurrentMapEvent.Start.AddYears(1).ToUniversalTime() == repeatedList[0].Start)
+						{
+							SelectedRepeatMode = RepeatMode.YearOnce;
+
+							Debug.WriteLine("Повторяемое через год");
+						}
+					}
+				}
 			}
 		}
 
@@ -365,18 +571,8 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <returns>Result of event creation or changing</returns>
 		public async Task EventCreateAsync()
 		{
-			if (string.IsNullOrEmpty(CurrentMapEvent.Name?.Trim()) || StartDate == null || (EndDate == null && IsNotAllDay))
+			if (!await CanCreateEvent())
 			{
-				await (new MessageDialog("Не заполнено одно из обязательных полей",
-					(StartTabIndex == 0) ? "Ошибка создания нового события" : "Ошибка изменения события")).ShowAsync();
-
-				return;
-			}
-
-			if (CurrentMapEvent.Start > CurrentMapEvent.End)
-			{
-				await (new MessageDialog("Дата начала не может быть позже даты окончания события", "Ошибка создания нового события")).ShowAsync();
-
 				return;
 			}
 
@@ -387,7 +583,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				CurrentMapEvent.End,
 				CurrentMapEvent.Location,
 				CurrentMapEvent.UserBind,
-				"Не повторяется",
+				"",
 				CurrentMapEvent.IsPublic,
 				CurrentMapEvent.Color,
 				CurrentMapEvent.ProjectId)
@@ -406,6 +602,14 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				if (StartTabIndex == 0)
 				{
 					db.MapEvents.Add(savedMapEvent);
+
+					var savedMultipliedEvent = MultiplyEvents(savedMapEvent, SelectedRepeatMode);
+
+					if (savedMultipliedEvent.Count != 0)
+					{
+						db.MapEvents.AddRange(savedMultipliedEvent);
+					}
+
 					db.SaveChanges();
 				}
 				else
@@ -422,8 +626,316 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			NewMapEventNotification(savedMapEvent.Name, savedMapEvent.Start.ToLocalTime());
 
-			// Synchronization of changes with server
-			await StartPageViewModel.Instance.CategoriesSynchronization();
+			if (StartPageViewModel.Instance.InternetFeaturesEnable)
+			{
+				// Synchronization of changes with server
+				await StartPageViewModel.Instance.CategoriesSynchronization();
+			}
+		}
+
+		/// <summary>
+		/// Multiplication of events
+		/// </summary>
+		/// <param name="mapEvent">Multiplicated event</param>
+		/// <param name="repeatMode">Mode of repetition</param>
+		/// <returns></returns>
+		private List<MapEvent> MultiplyEvents(MapEvent mapEvent, RepeatMode repeatMode)
+		{
+			var temp = (MapEvent)mapEvent.Clone();
+			temp.EventInterval = mapEvent.Id;
+
+			switch (repeatMode)
+			{
+				case RepeatMode.EveryDay:
+
+					if (IsEndingForRepeatSelected)
+					{
+						List<MapEvent> repeatedEvents = new List<MapEvent>(BeforeNumberRecurrence + 10);
+
+						var countingDate = 1;
+						for (int i = 0; i < BeforeNumberRecurrence; i++)
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = added.Start.AddDays(countingDate);
+							added.End = added.End.AddDays(countingDate);
+
+							countingDate++;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					if (IsEndingForDateSelected)
+					{
+						if (BeforeDateRecurrence.Value.Date == StartDate.Value.Date)
+						{
+							break;
+						}
+
+						// Amount is difference between end date and start event date
+						var eventsCount = (int)BeforeDateRecurrence.Value.Subtract(DateTime.Now).TotalDays;
+
+						List<MapEvent> repeatedEvents = new List<MapEvent>(eventsCount + 10);
+
+						var countingDate = 1;
+						for (int i = 0; i < eventsCount; i++)
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = added.Start.AddDays(countingDate);
+							added.End = added.End.AddDays(countingDate);
+
+							countingDate++;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					break;
+
+				case RepeatMode.AfterOneDay:
+
+					if (IsEndingForRepeatSelected)
+					{
+						List<MapEvent> repeatedEvents = new List<MapEvent>(BeforeNumberRecurrence + 10);
+
+						int count = 2;
+						for (int i = 0; i < BeforeNumberRecurrence; i++)
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = temp.Start.AddDays(count);
+							added.End = temp.End.AddDays(count);
+
+							count += 2;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					if (IsEndingForDateSelected)
+					{
+						if (BeforeDateRecurrence.Value.Date < StartDate.Value.AddDays(2).Date)
+						{
+							break;
+						}
+
+						// Amount is difference between end date and start date as division to 2, because after one day
+						var eventsCount = (int)BeforeDateRecurrence.Value.Subtract(DateTime.Now).TotalDays / 2;
+
+						List<MapEvent> repeatedEvents = new List<MapEvent>(eventsCount + 10);
+
+						for (DateTime i = temp.Start.AddDays(2), j = temp.End.AddDays(2); i <= BeforeDateRecurrence; i = i.AddDays(2), j = j.AddDays(2))
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = i;
+							added.End = j;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					break;
+
+				case RepeatMode.WeekOnce:
+
+					if (IsEndingForRepeatSelected)
+					{
+						List<MapEvent> repeatedEvents = new List<MapEvent>(BeforeNumberRecurrence + 10);
+
+						int count = 7;
+						for (int i = 0; i < BeforeNumberRecurrence; i++)
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = temp.Start.AddDays(count);
+							added.End = temp.End.AddDays(count);
+
+							count += 7;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					if (IsEndingForDateSelected)
+					{
+						if (BeforeDateRecurrence.Value.Date < StartDate.Value.AddDays(7).Date)
+						{
+							break;
+						}
+
+						// Amount is difference between end date and start date as division to 7, because after one week
+						var eventsCount = ((int)BeforeDateRecurrence.Value.Subtract(DateTime.Now).TotalDays) / 7;
+
+						List<MapEvent> repeatedEvents = new List<MapEvent>(eventsCount + 10);
+
+						for (DateTime i = temp.Start.AddDays(7), j = temp.End.AddDays(7); i <= BeforeDateRecurrence; i = i.AddDays(7), j = j.AddDays(7))
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = i;
+							added.End = j;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					break;
+
+				case RepeatMode.MonthOnce:
+
+					if (IsEndingForRepeatSelected)
+					{
+						List<MapEvent> repeatedEvents = new List<MapEvent>(BeforeNumberRecurrence + 10);
+
+						int count = 1;
+						for (int i = 0; i < BeforeNumberRecurrence; i++)
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = temp.Start.AddMonths(count);
+							added.End = temp.End.AddMonths(count);
+
+							count++;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					if (IsEndingForDateSelected)
+					{
+						if (BeforeDateRecurrence.Value.Date < StartDate.Value.AddMonths(1).Date)
+						{
+							break;
+						}
+
+						// Amount is difference between end date and start date as division to 31, because after one month
+						var eventsCount = (int)BeforeDateRecurrence.Value.Subtract(DateTime.Now).TotalDays / 31;
+
+						List<MapEvent> repeatedEvents = new List<MapEvent>(eventsCount + 10);
+
+						for (DateTime i = temp.Start.AddMonths(1), j = temp.End.AddMonths(1); i <= BeforeDateRecurrence; i = i.AddMonths(1), j = j.AddMonths(1))
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = i;
+							added.End = j;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					break;
+
+				case RepeatMode.YearOnce:
+
+					if (IsEndingForRepeatSelected)
+					{
+						var localRecurrence = BeforeNumberRecurrence > 100 ? 100 : BeforeNumberRecurrence;
+
+						List<MapEvent> repeatedEvents = new List<MapEvent>(localRecurrence + 10);
+
+						int count = 1;
+						for (int i = 0; i < localRecurrence; i++)
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = temp.Start.AddYears(count);
+							added.End = temp.End.AddYears(count);
+
+							count++;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					if (IsEndingForDateSelected)
+					{
+						if (BeforeDateRecurrence.Value.Date < StartDate.Value.AddMonths(1).Date)
+						{
+							break;
+						}
+
+						// Amount is difference between end date and start date as division to 361, because after one year
+						var eventsCount = (int)BeforeDateRecurrence.Value.Subtract(DateTime.Now).TotalDays / 361;
+
+						List<MapEvent> repeatedEvents = new List<MapEvent>(eventsCount + 10);
+
+						for (DateTime i = temp.Start.AddYears(1), j = temp.End.AddYears(1); i <= BeforeDateRecurrence; i = i.AddYears(1), j = j.AddYears(1))
+						{
+							var added = (MapEvent)temp.Clone();
+							added.Id = Guid.NewGuid().ToString();
+							added.Start = i;
+							added.End = j;
+
+							repeatedEvents.Add(added);
+						}
+
+						return repeatedEvents;
+					}
+
+					break;
+			}
+
+			return new List<MapEvent>();
+		}
+
+		/// <summary>
+		/// Checking the possibility of creating an event
+		/// </summary>
+		/// <returns>True if all requirement fulfilled</returns>
+		private async Task<bool> CanCreateEvent()
+		{
+			if (string.IsNullOrEmpty(CurrentMapEvent.Name?.Trim()) || StartDate == null || (EndDate == null && IsNotAllDay))
+			{
+				await (new MessageDialog("Не заполнено одно из обязательных полей",
+					(StartTabIndex == 0) ? "Ошибка создания нового события" : "Ошибка изменения события")).ShowAsync();
+
+				return false;
+			}
+
+			if (CurrentMapEvent.Start > CurrentMapEvent.End)
+			{
+				await (new MessageDialog("Дата начала не может быть позже даты окончания события", "Ошибка создания нового события")).ShowAsync();
+
+				return false;
+			}
+
+			if (IsEndingForDateSelected && !BeforeDateRecurrence.HasValue)
+			{
+				await new MessageDialog("Не указана дата окончания события", "Ошибка создания нового события").ShowAsync();
+
+				return false;
+			}
+
+			if (IsEndingForRepeatSelected && BeforeNumberRecurrence < 1)
+			{
+				await new MessageDialog("Число повторений не может быть меньше 1", "Ошибка создания нового события").ShowAsync();
+
+				return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -459,6 +971,39 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Controlling the input to the correctness of filling the numbers
+		/// </summary>
+		/// <param name="sender">TextBox sender</param>
+		/// <param name="e">Sended parameter</param>
+		public void ControlTheInputOfTheNumberOfRepetitions(object sender, TextChangedEventArgs e)
+		{
+			if (((TextBox)sender).Text.Length > 3)
+			{
+				((TextBox)sender).Text = ((TextBox)sender).Text.Substring(0, 3);
+			}
+
+			var isCorrect = int.TryParse(((TextBox)sender).Text, out int res);
+			if (isCorrect && res >= 0)
+			{
+				BeforeNumberRecurrence = res;
+			}
+			else
+			{
+				try
+				{
+					((TextBox)sender).Text = ((TextBox)sender).Text.Remove(((TextBox)sender).Text.Length - 1);
+				}
+				catch (Exception)
+				{
+					((TextBox)sender).Text = string.Empty;
+					BeforeNumberRecurrence = 0;
+				}
+			}
+
+			((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
 		}
 
 		/// <summary>
