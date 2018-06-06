@@ -17,6 +17,7 @@ using TimeTrace.Model;
 using TimeTrace.Model.Requests;
 using TimeTrace.View.MainView;
 using TimeTrace.ViewModel.MainViewModel;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace
 {
@@ -25,6 +26,20 @@ namespace TimeTrace
 	/// </summary>
 	sealed partial class App : Application
 	{
+		#region Properties
+
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
+
+		/// <summary>
+		/// Global application frame
+		/// </summary>
+		public Frame AppFrame { get; set; }
+
+		#endregion
+
 		/// <summary>
 		/// Инициализирует одноэлементный объект приложения.  Это первая выполняемая строка разрабатываемого
 		/// кода; поэтому она является логическим эквивалентом main() или WinMain().
@@ -51,11 +66,6 @@ namespace TimeTrace
 				db.Database.Migrate();
 			}
 		}
-
-		/// <summary>
-		/// Global application frame
-		/// </summary>
-		public Frame AppFrame { get; set; }
 
 		/// <summary>
 		/// Вызывается при обычном запуске приложения пользователем.  Будут использоваться другие точки входа,
@@ -207,11 +217,13 @@ namespace TimeTrace
 				{
 					await InternetRequests.ContactsSynchronizationRequestAsync();
 
+					ResourceLoader = ResourceLoader.GetForCurrentView("App");
+
 					// Save user local data for using after sign in
 					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 					User currentUser = new User();
 					await currentUser.LoadUserFromFileAsync();
-					localSettings.Values["email"] = currentUser.Email.ToLower() ?? "Неизвестный";
+					localSettings.Values["email"] = currentUser.Email.ToLower() ?? $"{ResourceLoader.GetString("/App/Unknown")}@gmail.com";
 
 					if (Window.Current.Content is Frame frame)
 					{
@@ -224,7 +236,7 @@ namespace TimeTrace
 			catch (Exception ex)
 			{
 				await (new Windows.UI.Popups.MessageDialog($"{ex.Message}\n" +
-					$"Ошибка входа, удаленный сервер не доступен. Повторите попытку позже", "Ошибка входа")).ShowAsync();
+					$"{ResourceLoader.GetString("/App/SignInWithTokenError")}", $"{ResourceLoader.GetString("/App/SignInErrorHeader")}")).ShowAsync();
 			}
 		}
 

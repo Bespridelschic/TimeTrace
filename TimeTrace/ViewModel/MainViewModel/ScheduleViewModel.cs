@@ -425,26 +425,32 @@ namespace TimeTrace.ViewModel.MainViewModel
 							if (db.MapEvents.Count(i => i.EventInterval == MapEvents[SelectedMapEvent.Value].Id) > 0)
 							{
 								// Remove all repeated copies
-								foreach (var item in db.MapEvents.Where(i => i.EventInterval == MapEvents[SelectedMapEvent.Value].Id))
+								foreach (var item in db.MapEvents.Where(i => i.EventInterval == MapEvents[SelectedMapEvent.Value].Id && i.End > DateTime.UtcNow))
 								{
 									db.MapEvents.FirstOrDefault(i => i.Id == item.Id).IsDelete = true;
 								}
 							}
 
 							// Remove original event
-							db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent.Value].Id).IsDelete = true;
+							if (MapEvents[SelectedMapEvent.Value].End >= DateTime.UtcNow)
+							{
+								db.MapEvents.FirstOrDefault(i => i.Id == MapEvents[SelectedMapEvent.Value].Id).IsDelete = true;
+							}
 						}
 						// Remove original and copies
 						else
 						{
 							var originalEvent = db.MapEvents.First(i => i.Id == MapEvents[SelectedMapEvent.Value].EventInterval);
 
-							foreach (var item in db.MapEvents.Where(i => i.EventInterval == originalEvent.Id))
+							foreach (var item in db.MapEvents.Where(i => i.EventInterval == originalEvent.Id && i.End > DateTime.UtcNow))
 							{
 								db.MapEvents.FirstOrDefault(i => i.Id == item.Id).IsDelete = true;
 							}
 
-							db.MapEvents.FirstOrDefault(i => i.Id == originalEvent.Id).IsDelete = true;
+							if (originalEvent.End >= DateTime.UtcNow)
+							{
+								db.MapEvents.FirstOrDefault(i => i.Id == originalEvent.Id).IsDelete = true;
+							}
 						}
 
 						db.SaveChanges();
@@ -582,7 +588,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 				foreach (var localEvent in originalList)
 				{
-					removedEvents += $"{localEvent.Name}\n";
+					if (!removedEvents.Contains(localEvent.Name))
+					{
+						removedEvents += $"{localEvent.Name}\n";
+					}
 				}
 
 				ScrollViewer scrollViewer = new ScrollViewer()
@@ -615,9 +624,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 					{
 						foreach (var item in originalList)
 						{
-							db.MapEvents.Where(i => i.Id == item.Id).FirstOrDefault().IsDelete = true;
+							if (item.End > DateTime.UtcNow)
+							{
+								db.MapEvents.Where(i => i.Id == item.Id).FirstOrDefault().IsDelete = true;
+							}
 
-							foreach (var copy in db.MapEvents.Where(i => i.EventInterval == item.Id))
+							foreach (var copy in db.MapEvents.Where(i => i.EventInterval == item.Id && i.End > DateTime.UtcNow))
 							{
 								db.MapEvents.Where(i => i.Id == copy.Id).FirstOrDefault().IsDelete = true;
 							}
