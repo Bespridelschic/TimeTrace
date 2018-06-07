@@ -172,7 +172,6 @@ namespace TimeTrace.ViewModel.MainViewModel
 		{
 			if (args.IsSettingsSelected)
 			{
-				SetHeader(Headers.Settings);
 				(Application.Current as App).AppFrame.Navigate(typeof(SettingsPage));
 			}
 
@@ -183,22 +182,21 @@ namespace TimeTrace.ViewModel.MainViewModel
 				switch (item.Tag)
 				{
 					case "home":
-						SetHeader(Headers.Home);
-						(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
+						if (PageTitle != ResourceLoader.GetString("/StartVM/Homepage"))
+						{
+							(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
+						}
 						break;
 
 					case "schedule":
-						SetHeader(Headers.Shedule);
 						(Application.Current as App).AppFrame.Navigate(typeof(SchedulePage));
 						break;
 
 					case "contacts":
-						SetHeader(Headers.Contacts);
 						(Application.Current as App).AppFrame.Navigate(typeof(ContactsPage));
 						break;
 
 					case "personalMaps":
-						SetHeader(Headers.MapEvents);
 						(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 						break;
 
@@ -218,13 +216,13 @@ namespace TimeTrace.ViewModel.MainViewModel
 			switch (header)
 			{
 				case Headers.Home:
-					PageTitle = ResourceLoader.GetString("/StartVM/Homepage");
-
 					// If without check - null reference exception, because app start on home page
 					if (LocalNavView != null)
 					{
 						LocalNavView.SelectedItem = LocalNavView.MenuItems[0];
 					}
+
+					PageTitle = ResourceLoader.GetString("/StartVM/Homepage");
 					break;
 
 				case Headers.Shedule:
