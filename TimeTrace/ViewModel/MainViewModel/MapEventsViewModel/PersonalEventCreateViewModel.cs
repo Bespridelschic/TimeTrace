@@ -490,13 +490,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			MapEventsPersonsSuggestList = new ObservableCollection<string>();
 			SelectedRepeatedDates = new ObservableCollection<bool>()
 			{
+				DateTime.Now.DayOfWeek == DayOfWeek.Sunday,
 				DateTime.Now.DayOfWeek == DayOfWeek.Monday,
 				DateTime.Now.DayOfWeek == DayOfWeek.Tuesday,
 				DateTime.Now.DayOfWeek == DayOfWeek.Wednesday,
 				DateTime.Now.DayOfWeek == DayOfWeek.Thursday,
 				DateTime.Now.DayOfWeek == DayOfWeek.Friday,
-				DateTime.Now.DayOfWeek == DayOfWeek.Saturday,
-				DateTime.Now.DayOfWeek == DayOfWeek.Sunday,
+				DateTime.Now.DayOfWeek == DayOfWeek.Saturday
 			};
 		}
 
@@ -565,7 +565,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							startRepeatNumbers = 3;
 						}
 
-						var repeatedList = db.MapEvents.Where(i => i.EventInterval == CurrentMapEvent.Id).OrderBy(i => i.Start).Take(startRepeatNumbers).ToList();
+						var repeatedList = db.MapEvents.Where(i => i.EventInterval == CurrentMapEvent.Id).OrderBy(i => i.Start).ToList();
 
 						// Set date of ending of repetition
 						BeforeDateRecurrence = db.MapEvents
@@ -580,35 +580,67 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						{
 							SelectedRepeatMode = RepeatMode.EveryDay;
 							startRepeatMode = RepeatMode.EveryDay;
-							Debug.WriteLine("Повторяемое каждый день");
 						}
-
-						if (CurrentMapEvent.Start.AddDays(2).ToUniversalTime() == repeatedList[0].Start)
+						else if (CurrentMapEvent.Start.AddDays(2).ToUniversalTime() == repeatedList[0].Start)
 						{
 							SelectedRepeatMode = RepeatMode.AfterOneDay;
 							startRepeatMode = RepeatMode.AfterOneDay;
-							Debug.WriteLine("Повторяемое через день");
 						}
 
-						if (CurrentMapEvent.Start.AddDays(7).ToUniversalTime() == repeatedList[0].Start)
+						else if (CurrentMapEvent.Start.AddDays(7).ToUniversalTime() == repeatedList[0].Start)
 						{
 							SelectedRepeatMode = RepeatMode.WeekOnce;
 							startRepeatMode = RepeatMode.WeekOnce;
-							Debug.WriteLine("Повторяемое через неделю");
 						}
 
-						if (CurrentMapEvent.Start.AddMonths(1).ToUniversalTime() == repeatedList[0].Start)
+						else if (CurrentMapEvent.Start.AddMonths(1).ToUniversalTime() == repeatedList[0].Start)
 						{
 							SelectedRepeatMode = RepeatMode.MonthOnce;
 							startRepeatMode = RepeatMode.MonthOnce;
-							Debug.WriteLine("Повторяемое через месяц");
 						}
 
-						if (CurrentMapEvent.Start.AddYears(1).ToUniversalTime() == repeatedList[0].Start)
+						else if (CurrentMapEvent.Start.AddYears(1).ToUniversalTime() == repeatedList[0].Start)
 						{
 							SelectedRepeatMode = RepeatMode.YearOnce;
 							startRepeatMode = RepeatMode.YearOnce;
-							Debug.WriteLine("Повторяемое через год");
+						}
+						else
+						{
+							var startWeek = CurrentMapEvent.Start.AddDays(7 - (int)CurrentMapEvent.Start.DayOfWeek);
+							var copies = db.MapEvents.Where(i => i.Start >= startWeek && i.Start <= startWeek.AddDays(7)).OrderBy(i => i.Start).ToList();
+
+							foreach (var item in copies)
+							{
+								switch (item.Start.ToLocalTime().DayOfWeek)
+								{
+									case DayOfWeek.Friday:
+										SelectedRepeatedDates[5] = true;
+										break;
+									case DayOfWeek.Monday:
+										SelectedRepeatedDates[1] = true;
+										break;
+									case DayOfWeek.Saturday:
+										SelectedRepeatedDates[6] = true;
+										break;
+									case DayOfWeek.Sunday:
+										SelectedRepeatedDates[0] = true;
+										break;
+									case DayOfWeek.Thursday:
+										SelectedRepeatedDates[4] = true;
+										break;
+									case DayOfWeek.Tuesday:
+										SelectedRepeatedDates[2] = true;
+										break;
+									case DayOfWeek.Wednesday:
+										SelectedRepeatedDates[3] = true;
+										break;
+									default:
+										break;
+								}
+							}
+
+							SelectedRepeatMode = RepeatMode.Custom;
+							startRepeatMode = RepeatMode.Custom;
 						}
 					}
 				}
@@ -674,6 +706,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							count = BeforeDateRecurrence.Value.Date.Subtract(savedMapEvent.Start.ToLocalTime().Date).Days / 361;
 							break;
 						case RepeatMode.Custom:
+							count = BeforeDateRecurrence.Value.Date.Subtract(savedMapEvent.Start.ToLocalTime().Date).Days / 7;
 							break;
 						default:
 							break;
@@ -691,9 +724,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				{
 					db.MapEvents.Add(savedMapEvent);
 
-					var savedMultipliedEvent = MultiplyEvents(savedMapEvent, SelectedRepeatMode, count);
+					var savedMultipliedEvent = MultiplyEvents(savedMapEvent, SelectedRepeatMode, count, SelectedRepeatedDates);
 					if (savedMultipliedEvent.Count != 0)
 					{
+						if (SelectedRepeatMode == RepeatMode.Custom)
+						{
+							savedMultipliedEvent.RemoveAll(i => i.Start.ToLocalTime() <= StartDate.Value.ToLocalTime() && i.Start.ToLocalTime() > BeforeDateRecurrence.Value.ToLocalTime());
+						}
 						db.MapEvents.AddRange(savedMultipliedEvent);
 					}
 
@@ -705,9 +742,22 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 					savedMapEvent.UpdateAt = DateTime.UtcNow;
 					savedMapEvent.CreateAt = CurrentMapEvent.CreateAt;
 
-					var savedMultipliedEvent = MultiplyEvents(savedMapEvent, SelectedRepeatMode, count);
+					List<MapEvent> savedMultipliedEvent;
+					if (SelectedRepeatMode == RepeatMode.Custom)
+					{
+						savedMultipliedEvent = MultiplyEvents(savedMapEvent, SelectedRepeatMode, count, SelectedRepeatedDates);
+					}
+					else
+					{
+						savedMultipliedEvent = MultiplyEvents(savedMapEvent, SelectedRepeatMode, count);
+					}
+
 					if (savedMultipliedEvent.Count != 0)
 					{
+						if (SelectedRepeatMode == RepeatMode.Custom)
+						{
+							savedMultipliedEvent.RemoveAll(i => i.Start <= StartDate && i.Start > BeforeDateRecurrence);
+						}
 						db.MapEvents.AddRange(savedMultipliedEvent);
 					}
 
@@ -760,11 +810,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <param name="mapEvent">Multiplicated event</param>
 		/// <param name="repeatMode">Mode of repetition</param>
 		/// <param name="counts">Amount of copies setted by user</param>
-		/// <param name="endDate">Copy before date setted by user</param>
-		/// <param name="otherStartDate">Other start date if editing</param>
-		/// <param name="otherCount">Other amount of copies if editing</param>
+		/// <param name="customOrder">If custom mode of repeat selected, get custom order</param>
 		/// <returns></returns>
-		private List<MapEvent> MultiplyEvents(MapEvent mapEvent, RepeatMode repeatMode, int counts)
+		private List<MapEvent> MultiplyEvents(MapEvent mapEvent, RepeatMode repeatMode, int counts, ObservableCollection<bool> customOrder = null)
 		{
 			var temp = (MapEvent)mapEvent.Clone();
 			temp.EventInterval = mapEvent.Id;
@@ -894,6 +942,170 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						return repeatedEvents;
 
 					case RepeatMode.Custom:
+						temp.Start = temp.Start.AddDays((int)temp.Start.DayOfWeek * -1);
+						temp.End = temp.End.AddDays((int)temp.End.DayOfWeek * -1);
+
+						if (SelectedRepeatedDates[0] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate);
+								added.End = temp.End.AddDays(countingDate);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
+						if (SelectedRepeatedDates[1] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate + 1);
+								added.End = temp.End.AddDays(countingDate + 1);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
+						if (SelectedRepeatedDates[2] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate + 2);
+								added.End = temp.End.AddDays(countingDate + 2);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
+						if (SelectedRepeatedDates[3] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate + 3);
+								added.End = temp.End.AddDays(countingDate + 3);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
+						if (SelectedRepeatedDates[4] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate + 4);
+								added.End = temp.End.AddDays(countingDate + 4);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
+						if (SelectedRepeatedDates[5] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate + 5);
+								added.End = temp.End.AddDays(countingDate + 5);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
+						if (SelectedRepeatedDates[6] == true)
+						{
+							countingDate = 7;
+							for (int i = 0; i < counts; i++)
+							{
+								var added = (MapEvent)temp.Clone();
+								if (oldCopies.Count > 0)
+								{
+									added.Id = oldCopies.Pop();
+								}
+								else
+								{
+									added.Id = Guid.NewGuid().ToString();
+								}
+								added.Start = temp.Start.AddDays(countingDate + 6);
+								added.End = temp.End.AddDays(countingDate + 6);
+
+								countingDate += 7;
+
+								repeatedEvents.Add(added);
+							}
+						}
+
 						return repeatedEvents;
 
 					default:
