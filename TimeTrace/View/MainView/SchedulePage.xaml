@@ -14,6 +14,8 @@
 			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<converters:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
 			<converters:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
+			<converters:FromIntToVisibilityConverter x:Key="fromIntToVisibilityConverter" />
+			<converters:FromIntToCollapseConverter x:Key="fromIntToCollapseConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -64,6 +66,15 @@
 						<Image Source="../../Assets/logo_Win.png" Stretch="UniformToFill" />
 					</ParallaxView>
 
+					<HyperlinkButton
+						x:Uid="/ScheduleView/ProposalToCreateNewEvent"
+						Grid.Row="1"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Click="{x:Bind ViewModel.GoToCalendars}"
+						FontSize="25"
+						Visibility="{x:Bind ViewModel.MapEvents.Count, Mode=OneWay, Converter={StaticResource fromIntToCollapseConverter}}" />
+
 					<ListView
 						x:Name="MapEventsList"
 						Grid.Row="1"
@@ -73,7 +84,8 @@
 						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
 						SelectedIndex="{x:Bind ViewModel.SelectedMapEvent, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
 						SelectionChanged="{x:Bind ViewModel.MultipleEventsSelection}"
-						SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}">
+						SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}"
+						Visibility="{x:Bind ViewModel.MapEvents.Count, Mode=OneWay, Converter={StaticResource fromIntToVisibilityConverter}}">
 						<ListView.ItemContainerStyle>
 							<Style TargetType="ListViewItem">
 								<Setter Property="BorderBrush" Value="Gray" />

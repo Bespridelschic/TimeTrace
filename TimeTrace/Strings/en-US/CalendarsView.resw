@@ -144,6 +144,9 @@
   <data name="GoTo.Text" xml:space="preserve">
     <value>Go to</value>
   </data>
+  <data name="ProposalToCreateNewCalendar.Content" xml:space="preserve">
+    <value>No calendars. Create new</value>
+  </data>
   <data name="Remove.Text" xml:space="preserve">
     <value>Remove</value>
   </data>

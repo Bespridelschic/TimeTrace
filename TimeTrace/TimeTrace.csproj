@@ -138,7 +138,9 @@
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Converters\FromIntToBoolConverter.cs" />
+    <Compile Include="View\Converters\FromIntToCollapseConverter.cs" />
     <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
+    <Compile Include="View\Converters\FromIntToVisibilityConverter.cs" />
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
     <Compile Include="View\Converters\FromRepeatModeToIntConverter.cs" />
     <Compile Include="View\Converters\FromUtcToLocalTime.cs" />

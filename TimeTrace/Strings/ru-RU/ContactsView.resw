@@ -159,6 +159,9 @@
   <data name="ParticipantsContacts.Header" xml:space="preserve">
     <value>Участники календарей</value>
   </data>
+  <data name="ProposalToCreateNewContact.Content" xml:space="preserve">
+    <value>Список пуст. Создать новый контакт</value>
+  </data>
   <data name="Searching.Text" xml:space="preserve">
     <value>Поиск по контактам: </value>
   </data>

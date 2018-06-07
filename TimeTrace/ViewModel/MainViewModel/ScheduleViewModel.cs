@@ -655,6 +655,14 @@ namespace TimeTrace.ViewModel.MainViewModel
 			var result = await InternetRequests.GetPublicMapEventsAsync();
 		}
 
+		/// <summary>
+		/// Go to calendars
+		/// </summary>
+		public void GoToCalendars()
+		{
+			(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
+		}
+
 		#region Filtering
 
 		/// <summary>

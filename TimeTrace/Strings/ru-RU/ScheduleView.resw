@@ -186,6 +186,9 @@
   <data name="PlaceBinding.PlaceholderText" xml:space="preserve">
     <value>Место связанное с событием</value>
   </data>
+  <data name="ProposalToCreateNewEvent.Content" xml:space="preserve">
+    <value>Нет событий. Перейти к созданию</value>
+  </data>
   <data name="PublicEventsFiltration.Text" xml:space="preserve">
     <value>Фильтрация по публичности события</value>
   </data>

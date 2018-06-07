@@ -2,17 +2,19 @@
 	x:Class="TimeTrace.View.MainView.PersonalMapsCreatePages.CategorySelectPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:converver="using:TimeTrace.View.Converters"
+	xmlns:converter="using:TimeTrace.View.Converters"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:TimeTrace.Model.Events"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
 	<Page.Resources>
-		<converver:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
-		<converver:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
-		<converver:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
-		<converver:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
+		<converter:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
+		<converter:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
+		<converter:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
+		<converter:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
+		<converter:FromIntToVisibilityConverter x:Key="fromIntToVisibilityConverter" />
+		<converter:FromIntToCollapseConverter x:Key="fromIntToCollapseConverter" />
 	</Page.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -42,6 +44,15 @@
 
 		</Grid>
 
+		<HyperlinkButton
+			x:Uid="/CalendarsView/ProposalToCreateNewCalendar"
+			Grid.Row="1"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Click="{x:Bind ViewModel.CategoryCreateAsync}"
+			FontSize="25"
+			Visibility="{x:Bind ViewModel.Calendars.Count, Mode=OneWay, Converter={StaticResource fromIntToCollapseConverter}}" />
+
 		<GridView
 			Grid.Row="1"
 			Padding="40,20"
@@ -52,7 +63,8 @@
 			RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
 			SelectedIndex="{x:Bind ViewModel.SelectedArea, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
 			SelectionChanged="{x:Bind ViewModel.MultipleAreasSelection}"
-			SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}">
+			SelectionMode="{x:Bind ViewModel.MultipleSelection, Mode=TwoWay}"
+			Visibility="{x:Bind ViewModel.Calendars.Count, Mode=OneWay, Converter={StaticResource fromIntToVisibilityConverter}}">
 			<GridView.ContextFlyout>
 				<MenuFlyout Placement="Bottom">
 					<MenuFlyoutItem
