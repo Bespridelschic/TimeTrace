@@ -188,15 +188,15 @@
 			<Pivot.TitleTemplate>
 				<DataTemplate>
 					<TextBlock
+						x:Uid="/EventView/PageTitle"
 						Margin="6,0,0,-15"
 						FontSize="35"
 						FontWeight="SemiLight"
-						Text="События календаря"
 						TextWrapping="WrapWholeWords" />
 				</DataTemplate>
 			</Pivot.TitleTemplate>
 
-			<PivotItem Padding="-15,0,0,0" Header="Просмотр">
+			<PivotItem x:Uid="/EventView/LookInside" Padding="-15,0,0,0">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition />
@@ -318,68 +318,58 @@
 							Orientation="Horizontal">
 							<StackPanel>
 								<TextBox
+									x:Uid="/EventView/EventName"
 									Width="370"
 									MaxWidth="370"
 									Margin="15,5,15,5"
 									HorizontalAlignment="Center"
-									Header="Имя события*"
 									IsSpellCheckEnabled="True"
 									MaxLength="50"
-									PlaceholderText="Задайте имя события"
-									Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}"
-									ToolTipService.ToolTip="Имя событие, отображаемое в календаре" />
+									Text="{x:Bind ViewModel.CurrentMapEvent.Name, Mode=TwoWay}" />
 
 								<TextBox
+									x:Uid="/EventView/EventDescription"
 									Height="130"
 									MaxWidth="370"
 									MaxHeight="130"
 									Margin="15,5,15,5"
 									AcceptsReturn="True"
-									Header="Описание события"
 									IsSpellCheckEnabled="True"
 									MaxLength="200"
-									PlaceholderText="Задайте описание событию"
 									Text="{x:Bind ViewModel.CurrentMapEvent.Description, Mode=TwoWay}"
-									TextWrapping="Wrap"
-									ToolTipService.ToolTip="Описание события" />
+									TextWrapping="Wrap" />
 							</StackPanel>
 
 							<StackPanel>
 
 								<AutoSuggestBox
+									x:Uid="/EventView/EventPlace"
 									MaxWidth="370"
 									Margin="15,5,15,5"
-									Header="Место события"
-									PlaceholderText="Выберите место события"
 									QueryIcon="Globe"
-									Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}"
-									ToolTipService.ToolTip="Место, привязываемое к событию" />
+									Text="{x:Bind ViewModel.CurrentMapEvent.Location, Mode=TwoWay}" />
 
 								<AutoSuggestBox
+									x:Uid="/EventView/EventContact"
 									MaxWidth="370"
 									Margin="15,5,15,5"
-									Header="Имя контакта"
 									ItemsSource="{x:Bind ViewModel.MapEventsPersonsSuggestList, Mode=TwoWay}"
-									PlaceholderText="Человек связанный с событием"
 									QueryIcon="Contact"
 									Text="{x:Bind ViewModel.CurrentMapEvent.UserBind, Mode=TwoWay}"
-									TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}"
-									ToolTipService.ToolTip="Имя человека, к которому привязывается событие" />
+									TextChanged="{x:Bind ViewModel.MapEventsPersonsFilter}" />
 
 								<CheckBox
+									x:Uid="/EventView/IsPublic"
 									Margin="15,5,15,0"
 									VerticalAlignment="Center"
-									Content="Доступно для моих контактов"
-									IsChecked="{x:Bind ViewModel.CurrentMapEvent.IsPublic, Mode=TwoWay}"
-									ToolTipService.ToolTip="При выборе, все люди из списка контактов смогут видеть создаваемое событие" />
+									IsChecked="{x:Bind ViewModel.CurrentMapEvent.IsPublic, Mode=TwoWay}" />
 
 								<CheckBox
+									x:Uid="/EventView/WinTenCalendarBinding"
 									Width="300"
 									Margin="15,-10,15,5"
 									VerticalAlignment="Center"
-									Content="Установить в календарь Windows 10"
-									IsChecked="{x:Bind ViewModel.IsBindingForWindowsCalendar, Mode=TwoWay}"
-									ToolTipService.ToolTip="При выборе, данное событие будет так же установлено в календаре Windows 10" />
+									IsChecked="{x:Bind ViewModel.IsBindingForWindowsCalendar, Mode=TwoWay}" />
 
 							</StackPanel>
 
@@ -391,25 +381,22 @@
 									</Grid.ColumnDefinitions>
 
 									<CalendarDatePicker
+										x:Uid="/EventView/StartDate"
 										Width="180"
 										Margin="15,5,10,5"
 										Date="{x:Bind ViewModel.StartDate, Mode=TwoWay}"
 										DateFormat="{}{day.integer} {month.full} {year.full}"
-										Header="Дата начала*"
-										MinDate="{x:Bind ViewModel.MinDate}"
-										PlaceholderText="Дата начала"
-										ToolTipService.ToolTip="Дата, к которой будет привязано событие" />
+										MinDate="{x:Bind ViewModel.MinDate}" />
 
 									<TimePicker
+										x:Uid="/EventView/StartTime"
 										Grid.Column="1"
 										Width="180"
 										MinWidth="180"
 										Margin="0,5,15,5"
 										HorizontalAlignment="Right"
-										Header="Время начала"
 										IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
-										Time="{x:Bind ViewModel.StartTime, Mode=TwoWay}"
-										ToolTipService.ToolTip="Время, к которому будет привязано событие" />
+										Time="{x:Bind ViewModel.StartTime, Mode=TwoWay}" />
 								</Grid>
 
 								<Grid>
@@ -419,26 +406,23 @@
 									</Grid.ColumnDefinitions>
 
 									<CalendarDatePicker
+										x:Uid="/EventView/EndDate"
 										Width="180"
 										Margin="15,5,10,5"
 										Date="{x:Bind ViewModel.EndDate, Mode=TwoWay}"
 										DateFormat="{}{day.integer} {month.full} {year.full}"
-										Header="Дата окончания*"
 										IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
-										MinDate="{x:Bind ViewModel.MinDate}"
-										PlaceholderText="Дата окончания"
-										ToolTipService.ToolTip="Дата, к которой будет привязано событие" />
+										MinDate="{x:Bind ViewModel.MinDate}" />
 
 									<TimePicker
+										x:Uid="/EventView/EndTime"
 										Grid.Column="1"
 										Width="180"
 										MinWidth="180"
 										Margin="0,5,15,5"
 										HorizontalAlignment="Right"
-										Header="Время окончания"
 										IsEnabled="{x:Bind ViewModel.IsNotAllDay, Mode=OneWay}"
-										Time="{x:Bind ViewModel.EndTime, Mode=TwoWay}"
-										ToolTipService.ToolTip="Длительность создаваемого события" />
+										Time="{x:Bind ViewModel.EndTime, Mode=TwoWay}" />
 								</Grid>
 
 								<Grid>
@@ -448,29 +432,25 @@
 									</Grid.ColumnDefinitions>
 
 									<ComboBox
+										x:Uid="/EventView/RepetitionMode"
 										Grid.Column="0"
 										Margin="15,5,10,5"
 										HorizontalAlignment="Stretch"
-										Header="Повторение события"
-										PlaceholderText="Без повторений"
-										SelectedIndex="{x:Bind ViewModel.SelectedRepeatMode, Mode=TwoWay, Converter={StaticResource fromRepeatModeToIntConverter}}"
-										ToolTipService.ToolTip="Как часто будет происходить напоминание">
-										<ComboBoxItem Content="Без повторений" />
-										<ComboBoxItem Content="Каждый день" />
-										<ComboBoxItem Content="Через день" />
-										<ComboBoxItem Content="Раз в неделю" />
-										<ComboBoxItem Content="Раз в месяц" />
-										<ComboBoxItem Content="Раз в год" />
-										<ComboBoxItem Content="Свой вариант" />
+										SelectedIndex="{x:Bind ViewModel.SelectedRepeatMode, Mode=TwoWay, Converter={StaticResource fromRepeatModeToIntConverter}}">
+										<ComboBoxItem x:Uid="/EventView/NoRepetition" />
+										<ComboBoxItem x:Uid="/EventView/EveryDate" />
+										<ComboBoxItem x:Uid="/EventView/AfterOneDate" />
+										<ComboBoxItem x:Uid="/EventView/OnceWeek" />
+										<ComboBoxItem x:Uid="/EventView/OnceMonth" />
+										<ComboBoxItem x:Uid="/EventView/OnceYear" />
+										<ComboBoxItem x:Uid="/EventView/CustomRepeat" />
 									</ComboBox>
 
 									<ToggleSwitch
+										x:Uid="/EventView/IsAllDay"
 										Grid.Column="1"
 										Margin="15,5,10,5"
-										Header="Весь день"
-										IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}"
-										OffContent="Да"
-										OnContent="Нет" />
+										IsOn="{x:Bind ViewModel.IsNotAllDay, Mode=TwoWay}" />
 
 								</Grid>
 							</StackPanel>
@@ -478,13 +458,13 @@
 							<StackPanel Visibility="{x:Bind ViewModel.CustomRepeatEnable, Mode=OneWay}">
 
 								<ToggleSwitch
+									x:Uid="/EventView/DateAsEnd"
 									Name="EndingForDate"
 									Margin="15,-5,0,-3"
-									IsOn="{x:Bind ViewModel.IsEndingForDateSelected, Mode=TwoWay}"
-									OffContent="Окончить по дате"
-									OnContent="Окончание по дате" />
+									IsOn="{x:Bind ViewModel.IsEndingForDateSelected, Mode=TwoWay}" />
 
 								<CalendarDatePicker
+									x:Uid="/EventView/EndRepetitionDate"
 									Grid.Column="1"
 									Width="180"
 									Margin="15,0,15,5"
@@ -493,33 +473,29 @@
 									DateFormat="{}{day.integer} {month.full} {year.full}"
 									IsEnabled="{Binding ElementName=EndingForDate, Path=IsOn}"
 									MaxDate="{x:Bind ViewModel.MaxDate.Value, Mode=OneWay}"
-									MinDate="{x:Bind ViewModel.StartDate.Value, Mode=OneWay}"
-									PlaceholderText="Крайняя дата"
-									ToolTipService.ToolTip="Дата окончания события" />
+									MinDate="{x:Bind ViewModel.StartDate.Value, Mode=OneWay}" />
 
 								<ToggleSwitch
+									x:Uid="/EventView/CountAsEnd"
 									Name="EndingForRepeated"
 									Margin="15,-4,15,0"
-									IsOn="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=TwoWay}"
-									OffContent="Окончить после количества"
-									OnContent="Окончание после количества" />
+									IsOn="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=TwoWay}"/>
 
 								<TextBox
+									x:Uid="/EventView/EndRepetitionCount"
 									Grid.Column="1"
 									MaxWidth="150"
 									Margin="15,-3,15,5"
 									HorizontalAlignment="Left"
 									InputScope="Number"
 									IsEnabled="{Binding ElementName=EndingForRepeated, Path=IsOn}"
-									PlaceholderText="Число"
 									Text="{x:Bind ViewModel.BeforeNumberRecurrence, Mode=OneWay}"
-									TextChanged="{x:Bind ViewModel.ControlTheInputOfTheNumberOfRepetitions}"
-									ToolTipService.ToolTip="Число повторов. Максимальное число повторов - 999" />
+									TextChanged="{x:Bind ViewModel.ControlTheInputOfTheNumberOfRepetitions}" />
 
 								<TextBlock
+									x:Uid="/EventView/CustomDays"
 									Margin="15,5,15,5"
 									HorizontalAlignment="Left"
-									Text="Дни недели"
 									Visibility="{x:Bind ViewModel.IsCustomDateOfWeekSelectingEnable, Mode=OneWay}" />
 
 								<Grid Margin="15,0,15,0" Visibility="{x:Bind ViewModel.IsCustomDateOfWeekSelectingEnable, Mode=OneWay}">
@@ -534,52 +510,52 @@
 									</Grid.ColumnDefinitions>
 
 									<ToggleButton
+										x:Uid="/EventView/Monday"
 										Height="35"
 										Margin="0,0,2,0"
 										HorizontalAlignment="Stretch"
-										Content="Пн."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[1], Mode=TwoWay}" />
 									<ToggleButton
+										x:Uid="/EventView/Tuesday"
 										Grid.Column="1"
 										Height="35"
 										Margin="2,0,2,0"
 										HorizontalAlignment="Stretch"
-										Content="Вт."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[2], Mode=TwoWay}" />
 									<ToggleButton
+										x:Uid="/EventView/Wednesday"
 										Grid.Column="2"
 										Height="35"
 										Margin="2,0,2,0"
 										HorizontalAlignment="Stretch"
-										Content="Ср."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[3], Mode=TwoWay}" />
 									<ToggleButton
+										x:Uid="/EventView/Thursday"
 										Grid.Column="3"
 										Height="35"
 										Margin="2,0,2,0"
 										HorizontalAlignment="Stretch"
-										Content="Чт."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[4], Mode=TwoWay}" />
 									<ToggleButton
+										x:Uid="/EventView/Friday"
 										Grid.Column="4"
 										Height="35"
 										Margin="2,0,2,0"
 										HorizontalAlignment="Stretch"
-										Content="Пт."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[5], Mode=TwoWay}" />
 									<ToggleButton
+										x:Uid="/EventView/Saturday"
 										Grid.Column="5"
 										Height="35"
 										Margin="2,0,2,0"
 										HorizontalAlignment="Stretch"
-										Content="Сб."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[6], Mode=TwoWay}" />
 									<ToggleButton
+										x:Uid="/EventView/Sunday"
 										Grid.Column="6"
 										Height="35"
 										Margin="2,0,0,0"
 										HorizontalAlignment="Stretch"
-										Content="Вс."
 										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[0], Mode=TwoWay}" />
 								</Grid>
 
@@ -596,7 +572,7 @@
 							Margin="0,0,0,10"
 							FontSize="10"
 							Foreground="Gray"
-							Text="* - обязательные поля" />
+							x:Uid="/EventView/RequiredFields"/>
 						<Button
 							HorizontalAlignment="Center"
 							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"

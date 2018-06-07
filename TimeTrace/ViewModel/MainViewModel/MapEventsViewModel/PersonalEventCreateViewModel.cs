@@ -24,6 +24,7 @@ using TimeTrace.Model.Events;
 using System.Collections.ObjectModel;
 using Windows.Storage;
 using TimeTrace.View.MainView;
+using Windows.ApplicationModel.Resources;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -47,6 +48,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				OnPropertyChanged();
 			}
 		}
+
+		/// <summary>
+		/// Localization resource loader
+		/// </summary>
+		public ResourceLoader ResourceLoader { get; set; }
 
 		/// <summary>
 		/// Min updateAt - current day
@@ -240,13 +246,13 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				if (startTabIndex == 0)
 				{
-					Header = "Создание";
-					ActionName = "Создать событие";
+					Header = ResourceLoader.GetString("/EventVM/Creation");
+					ActionName = ResourceLoader.GetString("/EventVM/CreateEvent");
 				}
 				else
 				{
-					Header = "Редактирование";
-					ActionName = "Изменить событие";
+					Header = ResourceLoader.GetString("/EventVM/Editing");
+					ActionName = ResourceLoader.GetString("/EventVM/EditEvent");
 				}
 
 				OnPropertyChanged();
@@ -478,6 +484,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		public PersonalEventCreateViewModel()
 		{
 			StartPageViewModel.Instance.SetHeader(Headers.MapEvents);
+			ResourceLoader = ResourceLoader.GetForCurrentView("EventVM");
 			StartTabIndex = 0;
 
 			CurrentMapEvent = new MapEvent();
@@ -1124,29 +1131,29 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			if (string.IsNullOrEmpty(CurrentMapEvent.Name?.Trim()) || StartDate == null || (EndDate == null && IsNotAllDay))
 			{
-				await (new MessageDialog("Не заполнено одно из обязательных полей",
-					(StartTabIndex == 0) ? "Ошибка создания нового события" : "Ошибка изменения события")).ShowAsync();
+				await (new MessageDialog(ResourceLoader.GetString("/EventVM/OneFieldIsNotFilled"),
+					(StartTabIndex == 0) ? ResourceLoader.GetString("/EventVM/EventCreationError") : ResourceLoader.GetString("/EventVM/EventChangingError"))).ShowAsync();
 
 				return false;
 			}
 
 			if (CurrentMapEvent.Start > CurrentMapEvent.End)
 			{
-				await (new MessageDialog("Дата начала не может быть позже даты окончания события", "Ошибка создания нового события")).ShowAsync();
+				await (new MessageDialog(ResourceLoader.GetString("/EventVM/StartDateMoreEndDate"), ResourceLoader.GetString("/EventVM/EventCreationError"))).ShowAsync();
 
 				return false;
 			}
 
 			if (IsEndingForDateSelected && !BeforeDateRecurrence.HasValue)
 			{
-				await new MessageDialog("Не указана дата окончания события", "Ошибка создания нового события").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/EventVM/EndDateIsNotFilled"), ResourceLoader.GetString("/EventVM/EventCreationError")).ShowAsync();
 
 				return false;
 			}
 
 			if (IsEndingForRepeatSelected && BeforeNumberRecurrence < 1)
 			{
-				await new MessageDialog("Число повторений не может быть меньше 1", "Ошибка создания нового события").ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/EventVM/RepeatCountLessOne"), ResourceLoader.GetString("/EventVM/EventCreationError")).ShowAsync();
 
 				return false;
 			}
@@ -1299,7 +1306,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						{
 							new AdaptiveText()
 							{
-								Text = (StartTabIndex == 0) ? "Создано новое событие" : "Событие изменено",
+								Text = (StartTabIndex == 0) ? ResourceLoader.GetString("/EventVM/CreatedNewEvent") : ResourceLoader.GetString("/EventVM/EventChanged"),
 								HintMaxLines = 1
 							},
 							new AdaptiveText()
@@ -1308,7 +1315,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							},
 							new AdaptiveText()
 							{
-								Text = $"Начало в {start.ToShortTimeString()}"
+								Text = $"{ResourceLoader.GetString("/EventVM/StartAt")} {start.ToShortTimeString()}"
 							}
 						},
 						AppLogoOverride = new ToastGenericAppLogo()
