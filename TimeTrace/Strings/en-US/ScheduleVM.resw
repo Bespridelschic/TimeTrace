@@ -195,4 +195,46 @@
   <data name="WillComeThrough" xml:space="preserve">
     <value>Will come through</value>
   </data>
+  <data name="AddingPublicProjectsTitle" xml:space="preserve">
+    <value>Adding public contacts projects</value>
+  </data>
+  <data name="ContactsDontHavePublicEvents" xml:space="preserve">
+    <value>У ваших контактов нет публичных событий</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Events</value>
+  </data>
+  <data name="FailedToGetPublicEvents" xml:space="preserve">
+    <value>Failed to get public contacts projects</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>no desctiprion</value>
+  </data>
+  <data name="NoPersonalProjects" xml:space="preserve">
+    <value>You have not added any projects to which you could place the received events</value>
+  </data>
+  <data name="NoProjectWasSelected" xml:space="preserve">
+    <value>No project was selected</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="PublicEventsAddingError" xml:space="preserve">
+    <value>Error getting public contacts events</value>
+  </data>
+  <data name="PublicEventsWereAdded" xml:space="preserve">
+    <value>Selected contact events successfully added</value>
+  </data>
+  <data name="ToAdd" xml:space="preserve">
+    <value>Add to</value>
+  </data>
+  <data name="UndefinedError" xml:space="preserve">
+    <value>Unexpected error. Try later</value>
+  </data>
 </root>

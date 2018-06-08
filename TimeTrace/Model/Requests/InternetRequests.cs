@@ -421,7 +421,8 @@ namespace TimeTrace.Model.Requests
 							area_id = i.AreaId,
 							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-							personEmail = i.EmailOfOwner
+							personEmail = i.EmailOfOwner,
+							from = i.From
 						}
 					),
 					events = db.MapEvents.Join
@@ -443,7 +444,9 @@ namespace TimeTrace.Model.Requests
 							update_at = i.UpdateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							create_at = i.CreateAt.Value.ToString("yyyy-MM-dd HH:mm:ss"),
 							projectPersonEmail = i.ProjectOwnerEmail,
-							personEmail = i.EmailOfOwner
+							personEmail = i.EmailOfOwner,
+							isPublic = i.IsPublic,
+							people = i.UserBind
 						}
 					)
 				};
@@ -625,7 +628,7 @@ namespace TimeTrace.Model.Requests
 		/// Get public map events from added contacts
 		/// </summary>
 		/// <returns>Result of getting</returns>
-		public static async Task<int> GetPublicMapEventsAsync()
+		public static async Task<(int operationResult, List<Project> publicProjects, List<MapEvent> publicEvents)> GetPublicMapEventsAsync()
 		{
 			int resultOfSynchronization = 1;
 
@@ -635,69 +638,39 @@ namespace TimeTrace.Model.Requests
 			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 			string deviceId = (string)localSettings.Values["DeviceId"];
 
-			using (MainDatabaseContext db = new MainDatabaseContext())
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId })}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			resultOfSynchronization = (int)jsonString["answer"];
+
+			if (resultOfSynchronization != 0)
 			{
-				Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId })}");
-				var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId }));
-
-				JObject jsonString = JObject.Parse(resultOfRequest);
-				Debug.WriteLine($"Получаемые данные \n{jsonString}");
-
-				resultOfSynchronization = (int)jsonString["answer"];
-
-				if (resultOfSynchronization != 0)
-				{
-					return resultOfSynchronization;
-				}
-
-				#region Projects adding to database
-
-				// Get projects items for adding to local database
-				IList<Project> receivedProjects = new List<Project>();
-				foreach (var result in jsonString["projects"]["item"].Children().ToList())
-				{
-					var searchResult = result.ToObject<Project>();
-					searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
-					searchResult.EmailOfOwner = (string)localSettings.Values["email"];
-					searchResult.Id = Guid.NewGuid().ToString();
-
-					receivedProjects.Add(searchResult);
-				}
-
-				// Add received projects to local database
-				db.Projects.AddRange(receivedProjects);
-
-				Debug.WriteLine($"Добавляем: {receivedProjects.Count} публичных проектов контактов");
-
-				#endregion
-
-				#region MapEvents adding to database
-
-				// Get map events items for adding to local database
-				IList<MapEvent> receivedMapEvents = new List<MapEvent>();
-				foreach (var result in jsonString["events"]["item"].Children().ToList())
-				{
-					var searchResult = result.ToObject<MapEvent>();
-					searchResult.Id = Guid.NewGuid().ToString();
-					searchResult.EmailOfOwner = (string)localSettings.Values["email"];
-					searchResult.ProjectOwnerEmail = (string)localSettings.Values["email"];
-					searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
-					searchResult.IsPublic = false;
-
-					receivedMapEvents.Add(searchResult);
-				}
-
-				// Add received map events to local database
-				db.MapEvents.AddRange(receivedMapEvents);
-
-				Debug.WriteLine($"Добавляем: {receivedMapEvents.Count} публичных событий контактов");
-
-				#endregion
-
-				db.SaveChanges();
+				return (resultOfSynchronization, null, null);
 			}
 
-			return resultOfSynchronization;
+			List<Project> receivedProjects = new List<Project>();
+			foreach (var result in jsonString["projects"].Children().ToList())
+			{
+				var searchResult = result.ToObject<Project>();
+				searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
+
+				receivedProjects.Add(searchResult);
+			}
+
+			List<MapEvent> receivedMapEvents = new List<MapEvent>();
+			foreach (var result in jsonString["events"].Children().ToList())
+			{
+				var searchResult = result.ToObject<MapEvent>();
+				searchResult.ProjectOwnerEmail = (string)localSettings.Values["email"];
+				searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
+
+				receivedMapEvents.Add(searchResult);
+			}
+
+			return (resultOfSynchronization, receivedProjects, receivedMapEvents);
 		}
 
 		/// <summary>

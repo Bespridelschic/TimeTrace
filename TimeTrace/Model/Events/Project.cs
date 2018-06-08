@@ -29,6 +29,19 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
+		private string from;
+		/// <summary>
+		/// Email of original creator
+		/// </summary>
+		[JsonProperty(PropertyName = "from")]
+		public string From
+		{
+			get { return from; }
+			set { from = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -38,7 +51,7 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public Project()
 		{
-			
+			From = EmailOfOwner;
 		}
 
 		/// <summary>

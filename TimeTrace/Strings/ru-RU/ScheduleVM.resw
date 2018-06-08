@@ -195,4 +195,46 @@
   <data name="WillComeThrough" xml:space="preserve">
     <value>Наступит через</value>
   </data>
+  <data name="AddingPublicProjectsTitle" xml:space="preserve">
+    <value>Добавление публичных проектов контактов</value>
+  </data>
+  <data name="ContactsDontHavePublicEvents" xml:space="preserve">
+    <value>У ваших контактов нет публичных событий</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Создатель</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Событий</value>
+  </data>
+  <data name="FailedToGetPublicEvents" xml:space="preserve">
+    <value>Не удалось получить публичные проекты контактов</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Позже</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>нет описания</value>
+  </data>
+  <data name="NoPersonalProjects" xml:space="preserve">
+    <value>У вас не добавлено ни одного проекта, в который можно было бы поместить получаемые события</value>
+  </data>
+  <data name="NoProjectWasSelected" xml:space="preserve">
+    <value>Ни один проект не был выбран</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Проект</value>
+  </data>
+  <data name="PublicEventsAddingError" xml:space="preserve">
+    <value>Ошибка получения публичных событий контактов</value>
+  </data>
+  <data name="PublicEventsWereAdded" xml:space="preserve">
+    <value>Выбранные события контактов успешно добавлены</value>
+  </data>
+  <data name="ToAdd" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="UndefinedError" xml:space="preserve">
+    <value>Непредвиденная ошибка. Попробуйте позже</value>
+  </data>
 </root>

@@ -652,7 +652,192 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void GetPublicEventsAsync()
 		{
-			var result = await InternetRequests.GetPublicMapEventsAsync();
+			using (var db = new MainDatabaseContext())
+			{
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+				if (db.Projects.Count(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]) < 1)
+				{
+					await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/NoPersonalProjects"),
+						ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
+					return;
+				}
+			}
+
+			try
+			{
+				var result = await InternetRequests.GetPublicMapEventsAsync();
+				if (result.operationResult != 0)
+				{
+					await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/FailedToGetPublicEvents"),
+						ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
+
+					return;
+				}
+
+				if (result.publicProjects.Count < 1)
+				{
+					await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/ContactsDontHavePublicEvents"),
+						ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
+
+					return;
+				}
+
+				// List of selected ID's for adding to local
+				List<string> selectedProjects = new List<string>(result.publicEvents.Count);
+
+				StackPanel mainPanel = new StackPanel();
+				foreach (var item in result.publicProjects)
+				{
+					StackPanel project = new StackPanel();
+					project.Children.Add(new TextBlock() { Text = item.Name, TextTrimming = TextTrimming.CharacterEllipsis });
+					project.Children.Add(new TextBlock()
+					{
+						Text = $"{ResourceLoader.GetString("/ScheduleVM/Events")}: " +
+							$"{result.publicProjects.Join(result.publicEvents, i => i.Id, w => w.ProjectId, (i, w) => i).Where(i => i.Id == item.Id).Count()}"
+					});
+					List<string> listOfCalendars;
+
+					using (var db = new MainDatabaseContext())
+					{
+						listOfCalendars = db.Areas.Select(x => x.Name).ToList();
+					}
+
+					var comboBoxAreas = new ComboBox()
+					{
+						ItemsSource = listOfCalendars,
+						SelectedItem = listOfCalendars[0],
+						Width = 280,
+						Margin = new Thickness(0, 5, 0, 3),
+					};
+					comboBoxAreas.SelectionChanged += (i, e) =>
+					{
+						if (i is ComboBox comboBox)
+						{
+							using (var db = new MainDatabaseContext())
+							{
+								var allAreas = db.Areas.Select(x => x).ToList();
+								item.AreaId = allAreas[comboBox.SelectedIndex].Id;
+							}
+						}
+					};
+					project.Children.Add(comboBoxAreas);
+
+					string description = string.IsNullOrEmpty(item.Description) ? ResourceLoader.GetString("/ScheduleVM/NoDescription") : item.Description;
+					ToolTip toolTip = new ToolTip()
+					{
+						Placement = Windows.UI.Xaml.Controls.Primitives.PlacementMode.Mouse,
+						Content = new TextBlock()
+						{
+							Text = $"{ResourceLoader.GetString("/ScheduleVM/Project")}: {item.Name}\n" +
+								$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}\n" +
+								$"{ResourceLoader.GetString("/ScheduleVM/Creator")}: {item.From}",
+							FontSize = 15,
+						},
+					};
+					ToolTipService.SetToolTip(project, toolTip);
+
+					var checkBox = new CheckBox()
+					{
+						Content = project,
+						Tag = item.Id,
+					};
+					checkBox.Checked += (i, e) =>
+					{
+						if (i is CheckBox chBox)
+						{
+							selectedProjects.Add((string)chBox.Tag);
+						}
+					};
+					checkBox.Unchecked += (i, e) =>
+					{
+						if (i is CheckBox chBox)
+						{
+							selectedProjects.Remove((string)chBox.Tag);
+						}
+					};
+
+					mainPanel.Children.Add(checkBox);
+				}
+
+				ScrollViewer scroll = new ScrollViewer()
+				{
+					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+					Content = mainPanel
+				};
+
+				ContentDialog getPublicDialog = new ContentDialog()
+				{
+					Title = ResourceLoader.GetString("/ScheduleVM/AddingPublicProjectsTitle"),
+					Content = scroll,
+					PrimaryButtonText = ResourceLoader.GetString("/ScheduleVM/ToAdd"),
+					CloseButtonText = ResourceLoader.GetString("/ScheduleVM/Later"),
+					DefaultButton = ContentDialogButton.Primary
+				};
+
+				var res = await getPublicDialog.ShowAsync();
+
+				if (res == ContentDialogResult.Primary)
+				{
+					if (selectedProjects.Count < 1)
+					{
+						await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/NoProjectWasSelected"),
+							ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
+
+						return;
+					}
+
+					// Merge selected indexes and projects
+					var finalList = result.publicProjects
+						.Join(
+							selectedProjects,
+							i => i.Id,
+							w => w,
+							(i, w) => i)
+						.ToList();
+
+					using (var db = new MainDatabaseContext())
+					{
+						foreach (var item in finalList)
+						{
+							// If areaId is empty - set first calendar for that
+							if (string.IsNullOrEmpty(item.AreaId))
+							{
+								item.AreaId = db.Areas.Select(x => x).ToList()[0].Id;
+							}
+
+							item.Color = db.Areas.Where(i => i.Id == item.AreaId).First().Color;
+						}
+
+						var addedEvents = result.publicEvents.Join(
+								finalList,
+								i => i.ProjectId,
+								w => w.Id,
+								(i, w) => i).ToList();
+
+						foreach (var item in addedEvents)
+						{
+							item.Color = finalList.Where(i => i.Id == item.ProjectId).First().Color;
+						}
+
+						db.Projects.AddRange(finalList);
+						db.MapEvents.AddRange(addedEvents);
+
+						db.SaveChanges();
+					}
+					
+					await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/PublicEventsWereAdded"),
+						ResourceLoader.GetString("/ScheduleVM/Success")).ShowAsync();
+
+					// Reload all projects and reset all applied filters
+					ResetAllFilters();
+				}
+			}
+			catch (Exception)
+			{
+				   await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/UndefinedError"),
+					   ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
+			}
 		}
 
 		/// <summary>
