@@ -458,8 +458,8 @@
 							<StackPanel Visibility="{x:Bind ViewModel.CustomRepeatEnable, Mode=OneWay}">
 
 								<ToggleSwitch
-									x:Uid="/EventView/DateAsEnd"
 									Name="EndingForDate"
+									x:Uid="/EventView/DateAsEnd"
 									Margin="15,-5,0,-3"
 									IsOn="{x:Bind ViewModel.IsEndingForDateSelected, Mode=TwoWay}" />
 
@@ -476,10 +476,10 @@
 									MinDate="{x:Bind ViewModel.StartDate.Value, Mode=OneWay}" />
 
 								<ToggleSwitch
-									x:Uid="/EventView/CountAsEnd"
 									Name="EndingForRepeated"
+									x:Uid="/EventView/CountAsEnd"
 									Margin="15,-4,15,0"
-									IsOn="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=TwoWay}"/>
+									IsOn="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=TwoWay}" />
 
 								<TextBox
 									x:Uid="/EventView/EndRepetitionCount"
@@ -569,10 +569,10 @@
 						Margin="0,0,0,5"
 						HorizontalAlignment="Center">
 						<TextBlock
+							x:Uid="/EventView/RequiredFields"
 							Margin="0,0,0,10"
 							FontSize="10"
-							Foreground="Gray"
-							x:Uid="/EventView/RequiredFields"/>
+							Foreground="Gray" />
 						<Button
 							HorizontalAlignment="Center"
 							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"

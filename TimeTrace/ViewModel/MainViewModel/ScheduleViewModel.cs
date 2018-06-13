@@ -13,6 +13,8 @@ using TimeTrace.Model.Requests;
 using System.Diagnostics;
 using Windows.ApplicationModel.Resources;
 using System.Collections.Generic;
+using Windows.UI.Xaml.Data;
+using TimeTrace.View.AdvancedControls;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -99,6 +101,20 @@ namespace TimeTrace.ViewModel.MainViewModel
 			set
 			{
 				selectedEvents = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private CollectionViewSource sortedCollection;
+		/// <summary>
+		/// Set of sorted events
+		/// </summary>
+		public CollectionViewSource SortedCollection
+		{
+			get => sortedCollection;
+			set
+			{
+				sortedCollection = value;
 				OnPropertyChanged();
 			}
 		}
@@ -298,6 +314,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			StartPageViewModel.Instance.SetHeader(Headers.Shedule);
 			ResourceLoader = ResourceLoader.GetForCurrentView("ScheduleVM");
 			InternetFeaturesEnable = StartPageViewModel.Instance.InternetFeaturesEnable;
+			SortedCollection = new CollectionViewSource();
 
 			SearchSuggestions = new ObservableCollection<string>();
 			SelectedFilteredDates = new ObservableCollection<DateTimeOffset>();
@@ -323,6 +340,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"] && !i.IsDelete && i.End >= DateTime.UtcNow)
 						.OrderBy(i => i.Start)
 						.ToList());
+
+				SetEventsToGroup(SortedCollection, MapEvents);
 			}
 		}
 
@@ -346,6 +365,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 						.ToList());
 				}
 			}
+
+			SetEventsToGroup(SortedCollection, MapEvents);
 		}
 
 		/// <summary>
@@ -373,6 +394,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 						.ToList());
 				}
 			}
+
+			SetEventsToGroup(SortedCollection, MapEvents);
 		}
 
 		#endregion
@@ -700,7 +723,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 					using (var db = new MainDatabaseContext())
 					{
-						listOfCalendars = db.Areas.Select(x => x.Name).ToList();
+						ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+						listOfCalendars = db.Areas
+							.Where(x => !x.IsDelete && x.EmailOfOwner == (string)localSettings.Values["email"])
+							.Select(x => x.Name).ToList();
 					}
 
 					var comboBoxAreas = new ComboBox()
@@ -716,7 +743,9 @@ namespace TimeTrace.ViewModel.MainViewModel
 						{
 							using (var db = new MainDatabaseContext())
 							{
-								var allAreas = db.Areas.Select(x => x).ToList();
+								ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+								var allAreas = db.Areas.Where(x => !x.IsDelete && x.EmailOfOwner == (string)localSettings.Values["email"]).ToList();
 								item.AreaId = allAreas[comboBox.SelectedIndex].Id;
 							}
 						}
@@ -800,13 +829,20 @@ namespace TimeTrace.ViewModel.MainViewModel
 					{
 						foreach (var item in finalList)
 						{
+							ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
 							// If areaId is empty - set first calendar for that
 							if (string.IsNullOrEmpty(item.AreaId))
 							{
-								item.AreaId = db.Areas.Select(x => x).ToList()[0].Id;
+								item.AreaId = db.Areas
+									.Where(x => !x.IsDelete && x.EmailOfOwner == (string)localSettings.Values["email"])
+									.Select(x => x)
+									.ToList()[0].Id;
 							}
 
-							item.Color = db.Areas.Where(i => i.Id == item.AreaId).First().Color;
+							item.Color = db.Areas
+								.Where(i => i.Id == item.AreaId && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+								.First().Color;
 						}
 
 						var addedEvents = result.publicEvents.Join(
@@ -825,7 +861,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 						db.SaveChanges();
 					}
-					
+
 					await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/PublicEventsWereAdded"),
 						ResourceLoader.GetString("/ScheduleVM/Success")).ShowAsync();
 
@@ -835,8 +871,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 			}
 			catch (Exception)
 			{
-				   await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/UndefinedError"),
-					   ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
+				await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/UndefinedError"),
+					ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();
 			}
 		}
 
@@ -846,6 +882,34 @@ namespace TimeTrace.ViewModel.MainViewModel
 		public void GoToCalendars()
 		{
 			(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
+		}
+
+		/// <summary>
+		/// Grouping map events for start time and set to <seealso cref="CollectionViewSource"/> source
+		/// </summary>
+		/// <param name="targetCollection">Target <seealso cref="CollectionViewSource"/></param>
+		/// <param name="events"><seealso cref="ObservableCollection{T}"/> of events</param>
+		private void SetEventsToGroup(CollectionViewSource targetCollection, ObservableCollection<MapEvent> events)
+		{
+			ObservableCollection<GroupInfoList> groups = new ObservableCollection<GroupInfoList>();
+
+			var query = from item in MapEvents
+						group item by item.Start.ToLocalTime().Date into g
+						orderby g.Key
+						select new { GroupName = g.Key, Items = g };
+
+			foreach (var g in query)
+			{
+				GroupInfoList info = new GroupInfoList();
+				info.Key = g.GroupName;
+				foreach (var item in g.Items)
+				{
+					info.Add(item);
+				}
+				groups.Add(info);
+			}
+
+			targetCollection.Source = groups;
 		}
 
 		#region Filtering
@@ -1078,6 +1142,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 					}
 				}
 			}
+
+			SetEventsToGroup(SortedCollection, MapEvents);
 		}
 
 		/// <summary>
@@ -1092,6 +1158,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 			RequiredMapEventsLocation = string.Empty;
 			RequiredMapEventsPerson = string.Empty;
+
+			SetEventsToGroup(SortedCollection, MapEvents);
 		}
 
 		#endregion
@@ -1147,6 +1215,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 						.Where(i => i.EmailOfOwner == (string)localSettings.Values["email"]
 							&& !i.IsDelete
 							&& i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.Select(i => i))
 					{
 						MapEvents.Add(i);
@@ -1163,6 +1232,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 							&& i.EmailOfOwner == (string)localSettings.Values["email"]
 							&& !i.IsDelete
 							&& i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.Select(i => i))
 					{
 						if (!SearchSuggestions.Contains(i.Name))
@@ -1174,6 +1244,8 @@ namespace TimeTrace.ViewModel.MainViewModel
 					}
 				}
 			}
+
+			SetEventsToGroup(SortedCollection, MapEvents);
 		}
 
 		/// <summary>
@@ -1201,12 +1273,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 							&& !i.IsDelete
 							&& i.EmailOfOwner == (string)localSettings.Values["email"]
 							&& i.End >= DateTime.UtcNow)
+						.OrderBy(i => i.Start)
 						.Select(i => i))
 					{
 						MapEvents.Add(i);
 					}
 				}
 			}
+
+			SetEventsToGroup(SortedCollection, MapEvents);
 		}
 
 		#endregion

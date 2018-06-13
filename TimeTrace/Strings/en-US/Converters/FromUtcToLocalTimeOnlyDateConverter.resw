@@ -117,61 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddProject.Label" xml:space="preserve">
-    <value>Добавить проект</value>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
   </data>
-  <data name="AddProject.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Создать новый проект</value>
-  </data>
-  <data name="Calendar.Text" xml:space="preserve">
-    <value>Календарь: </value>
-  </data>
-  <data name="CreateAt.Text" xml:space="preserve">
-    <value>Создан</value>
-  </data>
-  <data name="Date.Width" xml:space="preserve">
-    <value>290</value>
-  </data>
-  <data name="Description.Text" xml:space="preserve">
-    <value>Описание</value>
-  </data>
-  <data name="EditProject.Label" xml:space="preserve">
-    <value>Редактировать проект</value>
-  </data>
-  <data name="EditProject.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Редактировать выбранный проект</value>
-  </data>
-  <data name="GoToEvents.Content" xml:space="preserve">
-    <value>Перейти</value>
-  </data>
-  <data name="GoToEvents.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Перейти к созданию новых событий для текущего выбранного проекта</value>
-  </data>
-  <data name="MarkPublic.Label" xml:space="preserve">
-    <value>Отметить публичные</value>
-  </data>
-  <data name="MarkPublic.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Отметить события в текущем проекте как публичные</value>
-  </data>
-  <data name="ProjectsSearching.Text" xml:space="preserve">
-    <value>Поиск по проектам: </value>
-  </data>
-  <data name="ProjectsSearchingPlaceholder.PlaceholderText" xml:space="preserve">
-    <value>Поиск...</value>
-  </data>
-  <data name="RemoveProject.Label" xml:space="preserve">
-    <value>Удалить проект</value>
-  </data>
-  <data name="RemoveProject.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Удалить выбранный проект</value>
-  </data>
-  <data name="ShareProject.Label" xml:space="preserve">
-    <value>Поделиться проектом</value>
-  </data>
-  <data name="ShareProject.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Отправить проект своему контакту</value>
-  </data>
-  <data name="UpdateAt.Text" xml:space="preserve">
-    <value>Обновлён</value>
+  <data name="Undefined" xml:space="preserve">
+    <value>Undefined</value>
   </data>
 </root>

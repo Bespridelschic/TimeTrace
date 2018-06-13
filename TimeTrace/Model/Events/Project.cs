@@ -36,8 +36,10 @@ namespace TimeTrace.Model.Events
 		[JsonProperty(PropertyName = "from")]
 		public string From
 		{
-			get { return from; }
-			set { from = value;
+			get => from;
+			set
+			{
+				from = value;
 				OnPropertyChanged();
 			}
 		}

@@ -129,6 +129,7 @@
     <Compile Include="ViewModel\MainViewModel\ScheduleViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\SettingsViewModel.cs" />
     <Compile Include="View\AdvancedControls\FlipViewIndicator.cs" />
+    <Compile Include="View\AdvancedControls\GroupInfoList.cs" />
     <Compile Include="View\AuthenticationView\SignInPage.xaml.cs">
       <DependentUpon>SignInPage.xaml</DependentUpon>
     </Compile>
@@ -137,6 +138,7 @@
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Converters\FromEmptyStringToTextConverter.cs" />
     <Compile Include="View\Converters\FromIntToBoolConverter.cs" />
     <Compile Include="View\Converters\FromIntToCollapseConverter.cs" />
     <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
@@ -144,6 +146,7 @@
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
     <Compile Include="View\Converters\FromRepeatModeToIntConverter.cs" />
     <Compile Include="View\Converters\FromUtcToLocalTime.cs" />
+    <Compile Include="View\Converters\FromUtcToLocalTimeOnlyDateConverter.cs" />
     <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>
@@ -211,6 +214,10 @@
     <PRIResource Include="Strings\en-US\EventView.resw" />
     <PRIResource Include="Strings\ru-RU\EventVM.resw" />
     <PRIResource Include="Strings\en-US\EventVM.resw" />
+    <PRIResource Include="Strings\ru-RU\Converters\FromEmptyStringToTextConverter.resw" />
+    <PRIResource Include="Strings\en-US\Converters\FromEmptyStringToTextConverter.resw" />
+    <PRIResource Include="Strings\ru-RU\Converters\FromUtcToLocalTimeOnlyDateConverter.resw" />
+    <PRIResource Include="Strings\en-US\Converters\FromUtcToLocalTimeOnlyDateConverter.resw" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />

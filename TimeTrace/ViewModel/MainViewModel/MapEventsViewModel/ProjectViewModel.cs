@@ -95,7 +95,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		/// <summary>
 		/// Creation of new project
 		/// </summary>
-		public async void ProjectCreate()
+		public async void ProjectCreateAsync()
 		{
 			Project newProject = await ProjectCreationDialogAsync(null);
 
@@ -231,6 +231,119 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				}
 			}
 		}
+
+		//public async void MarkInnerEventsAsPublicAsync()
+		//{
+		//	using (var db = new MainDatabaseContext())
+		//	{
+		//		if (!SelectedProject.HasValue)
+		//		{
+		//			return;
+		//		}
+
+		//		ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+		//		if (db.MapEvents
+		//			.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
+		//			.Count() < 1)
+		//		{
+		//			await new MessageDialog("Внутри проекта нет актуальных событий", "Ошибка").ShowAsync();
+		//			return;
+		//		}
+
+		//		var mainPanel = new StackPanel();
+		//		foreach (var item in db.MapEvents
+		//			.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]))
+		//		{
+		//			StackPanel project = new StackPanel();
+		//			project.Children.Add(new TextBlock() { Text = item.Name, TextTrimming = TextTrimming.CharacterEllipsis });
+		//			project.Children.Add(new TextBlock()
+		//			{
+		//				Text = $"{ResourceLoader.GetString("/ScheduleVM/Events")}: " +
+		//					$"{result.publicProjects.Join(result.publicEvents, i => i.Id, w => w.ProjectId, (i, w) => i).Where(i => i.Id == item.Id).Count()}"
+		//			});
+		//			List<string> listOfCalendars;
+
+		//			using (var db = new MainDatabaseContext())
+		//			{
+		//				listOfCalendars = db.Areas.Select(x => x.Name).ToList();
+		//			}
+
+		//			var comboBoxAreas = new ComboBox()
+		//			{
+		//				ItemsSource = listOfCalendars,
+		//				SelectedItem = listOfCalendars[0],
+		//				Width = 280,
+		//				Margin = new Thickness(0, 5, 0, 3),
+		//			};
+		//			comboBoxAreas.SelectionChanged += (i, e) =>
+		//			{
+		//				if (i is ComboBox comboBox)
+		//				{
+		//					using (var db = new MainDatabaseContext())
+		//					{
+		//						var allAreas = db.Areas.Select(x => x).ToList();
+		//						item.AreaId = allAreas[comboBox.SelectedIndex].Id;
+		//					}
+		//				}
+		//			};
+		//			project.Children.Add(comboBoxAreas);
+
+		//			string description = string.IsNullOrEmpty(item.Description) ? ResourceLoader.GetString("/ScheduleVM/NoDescription") : item.Description;
+		//			ToolTip toolTip = new ToolTip()
+		//			{
+		//				Placement = Windows.UI.Xaml.Controls.Primitives.PlacementMode.Mouse,
+		//				Content = new TextBlock()
+		//				{
+		//					Text = $"{ResourceLoader.GetString("/ScheduleVM/Project")}: {item.Name}\n" +
+		//						$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}\n" +
+		//						$"{ResourceLoader.GetString("/ScheduleVM/Creator")}: {item.From}",
+		//					FontSize = 15,
+		//				},
+		//			};
+		//			ToolTipService.SetToolTip(project, toolTip);
+
+		//			var checkBox = new CheckBox()
+		//			{
+		//				Content = project,
+		//				Tag = item.Id,
+		//			};
+		//			checkBox.Checked += (i, e) =>
+		//			{
+		//				if (i is CheckBox chBox)
+		//				{
+		//					selectedProjects.Add((string)chBox.Tag);
+		//				}
+		//			};
+		//			checkBox.Unchecked += (i, e) =>
+		//			{
+		//				if (i is CheckBox chBox)
+		//				{
+		//					selectedProjects.Remove((string)chBox.Tag);
+		//				}
+		//			};
+
+		//			mainPanel.Children.Add(checkBox);
+		//		}
+
+		//		ScrollViewer scroll = new ScrollViewer()
+		//		{
+		//			VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+		//			Content = mainPanel
+		//		};
+
+		//		ContentDialog getPublicDialog = new ContentDialog()
+		//		{
+		//			Title = ResourceLoader.GetString("/ScheduleVM/AddingPublicProjectsTitle"),
+		//			Content = scroll,
+		//			PrimaryButtonText = ResourceLoader.GetString("/ScheduleVM/ToAdd"),
+		//			CloseButtonText = ResourceLoader.GetString("/ScheduleVM/Later"),
+		//			DefaultButton = ContentDialogButton.Primary
+		//		};
+
+		//		var res = await getPublicDialog.ShowAsync();
+		//	}
+		//}
 
 		/// <summary>
 		/// Creation of edition project dialog

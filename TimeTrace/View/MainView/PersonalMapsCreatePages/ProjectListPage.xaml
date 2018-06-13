@@ -14,6 +14,8 @@
 			<converter:FromNullableIntToIntConverter x:Key="fromNullableIntToIntConverter" />
 			<converter:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<converter:FromIntToBoolConverter x:Key="fromIntToBoolConverter" />
+			<converter:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
+			<converter:FromEmptyStringToTextConverter x:Key="fromEmptyStringToTextConverter" />
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/ResourceDictionaries/MainDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
@@ -90,7 +92,7 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Top"
 								FontSize="35"
-								Text="{x:Bind Name, Mode=OneWay, FallbackValue=123}"
+								Text="{x:Bind Name, Mode=OneWay, Converter={StaticResource fromEmptyStringToTextConverter}}"
 								TextTrimming="CharacterEllipsis" />
 
 							<GridView
@@ -117,9 +119,9 @@
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
 											FontSize="30"
-											Text="{x:Bind Description, Mode=OneWay}"
+											Text="{x:Bind Description, Mode=OneWay, Converter={StaticResource fromEmptyStringToTextConverter}}"
 											TextTrimming="CharacterEllipsis"
-											ToolTipService.ToolTip="{x:Bind Description, Mode=OneWay}" />
+											ToolTipService.ToolTip="{x:Bind Description, Mode=OneWay, Converter={StaticResource fromEmptyStringToTextConverter}}" />
 
 										<MenuFlyoutSeparator Grid.Row="1" />
 
@@ -149,8 +151,8 @@
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
 											FontSize="30"
-											Text="{x:Bind CreateAt, Mode=OneWay}"
-											ToolTipService.ToolTip="{x:Bind CreateAt, Mode=OneWay}" />
+											Text="{x:Bind CreateAt, Mode=OneWay, Converter={StaticResource fromUtcToLocalTimeConverter}}"
+											ToolTipService.ToolTip="{x:Bind CreateAt, Mode=OneWay, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 
 										<MenuFlyoutSeparator Grid.Row="1" />
 
@@ -180,8 +182,8 @@
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
 											FontSize="30"
-											Text="{x:Bind UpdateAt, Mode=OneWay}"
-											ToolTipService.ToolTip="{x:Bind UpdateAt, Mode=OneWay}" />
+											Text="{x:Bind UpdateAt, Mode=OneWay, Converter={StaticResource fromUtcToLocalTimeConverter}}"
+											ToolTipService.ToolTip="{x:Bind UpdateAt, Mode=OneWay, Converter={StaticResource fromUtcToLocalTimeConverter}}" />
 
 										<MenuFlyoutSeparator Grid.Row="1" />
 
@@ -268,18 +270,28 @@
 
 			<AppBarButton
 				x:Uid="/ProjectsView/AddProject"
-				Click="{x:Bind ViewModel.ProjectCreate}"
+				Click="{x:Bind ViewModel.ProjectCreateAsync}"
 				Icon="Add" />
 			<AppBarButton
 				x:Uid="/ProjectsView/EditProject"
 				Click="{x:Bind ViewModel.ProjectEditAsync}"
 				Icon="Edit"
 				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
-			<AppBarSeparator />
 			<AppBarButton
 				x:Uid="/ProjectsView/RemoveProject"
 				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
 				Icon="Remove"
+				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
+			<AppBarSeparator />
+			<AppBarButton
+				x:Uid="/ProjectsView/ShareProject"
+				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
+				Icon="Share"
+				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
+			<AppBarButton
+				x:Uid="/ProjectsView/MarkPublic"
+				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
+				Icon="AllApps"
 				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 		</CommandBar>
 

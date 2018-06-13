@@ -147,6 +147,12 @@
   <data name="GoToEvents.ToolTipService.ToolTip" xml:space="preserve">
     <value>Go to create new events for the currently selected project</value>
   </data>
+  <data name="MarkPublic.Label" xml:space="preserve">
+    <value>Mark public</value>
+  </data>
+  <data name="MarkPublic.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Mark events in the current project as public</value>
+  </data>
   <data name="ProjectsSearching.Text" xml:space="preserve">
     <value>Projects searching: </value>
   </data>
@@ -158,6 +164,12 @@
   </data>
   <data name="RemoveProject.ToolTipService.ToolTip" xml:space="preserve">
     <value>Remove selected project</value>
+  </data>
+  <data name="ShareProject.Label" xml:space="preserve">
+    <value>Share this project</value>
+  </data>
+  <data name="ShareProject.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Send a project to your contact</value>
   </data>
   <data name="UpdateAt.Text" xml:space="preserve">
     <value>Update at</value>

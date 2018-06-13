@@ -292,7 +292,12 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 				using (MainDatabaseContext db = new MainDatabaseContext())
 				{
-					if (contact == null && (db.Contacts.Where(i => i.Email.ToLower() == email.Text.Trim().ToLower()).Count() > 0))
+					ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+					// Checking the occurrence of a contact in the list
+					if (contact == null
+						&& (db.Contacts.Where(i => i.Email.ToLower() == email.Text.Trim().ToLower()).Count() > 0)
+							|| ((string)localSettings.Values["email"]).ToLower() == email.Text.Trim().ToLower())
 					{
 						await new MessageDialog(ResourceLoader.GetString("/ContactsVM/ContactAlreadyAddedError"), ResourceLoader.GetString("/ContactsVM/AddContactError")).ShowAsync();
 
