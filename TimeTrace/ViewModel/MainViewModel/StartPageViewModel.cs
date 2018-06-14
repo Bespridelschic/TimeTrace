@@ -226,7 +226,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 					break;
 
 				case Headers.Shedule:
-					PageTitle = ResourceLoader.GetString("/StartVM/Shedule");
+					PageTitle = ResourceLoader.GetString("/StartVM/Schedule");
 					LocalNavView.SelectedItem = LocalNavView.MenuItems[1];
 					break;
 

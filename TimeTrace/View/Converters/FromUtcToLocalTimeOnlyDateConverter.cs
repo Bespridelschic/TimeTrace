@@ -26,7 +26,7 @@ namespace TimeTrace.View.Converters
 				}
 				else
 				{
-					return date.Value.ToLocalTime().Date.ToShortDateString();
+					return date.Value.ToLocalTime().Date.ToLongDateString();
 				}
 			}
 			else

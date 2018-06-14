@@ -727,6 +727,30 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
+
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+				if (StartTabIndex == 0 && db.MapEvents
+					.Count(i => i.Start <= savedMapEvent.Start.ToUniversalTime()
+						&& i.End >= savedMapEvent.End.ToUniversalTime()
+						&& i.EmailOfOwner == (string)localSettings.Values["email"]
+						&& !i.IsDelete)
+					> 0)
+				{
+					ContentDialog collisionSolution = new ContentDialog()
+					{
+						Title = ResourceLoader.GetString("ImportantMessage"),
+						Content = ResourceLoader.GetString("CollisionMessage"),
+						PrimaryButtonText = ResourceLoader.GetString("Create"),
+						CloseButtonText = ResourceLoader.GetString("Cancel"),
+						DefaultButton = ContentDialogButton.Primary
+					};
+
+					if (await collisionSolution.ShowAsync() != ContentDialogResult.Primary)
+					{
+						return;
+					}
+				}
+
 				if (StartTabIndex == 0)
 				{
 					db.MapEvents.Add(savedMapEvent);

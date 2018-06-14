@@ -156,11 +156,11 @@
   <data name="PersonalEvents" xml:space="preserve">
     <value>Personal events</value>
   </data>
+  <data name="Schedule" xml:space="preserve">
+    <value>Schedule</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
-  </data>
-  <data name="Shedule" xml:space="preserve">
-    <value>Shedule</value>
   </data>
   <data name="SignOutCancel" xml:space="preserve">
     <value>Cancel</value>
