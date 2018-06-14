@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TimeTrace.Model.Events;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -39,5 +40,17 @@ namespace TimeTrace.View.MainView
 		}
 
 		public ViewModel.MainViewModel.ScheduleViewModel ViewModel { get; set; }
+
+		/// <summary>
+		/// System color
+		/// </summary>
+		private SolidColorBrush SolidBrush
+		{
+			get
+			{
+				var color = (Color)this.Resources["SystemAccentColor"];
+				return new SolidColorBrush(color);
+			}
+		}
 	}
 }

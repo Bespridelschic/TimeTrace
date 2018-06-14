@@ -51,22 +51,7 @@
 
 			<SplitView.Content>
 				<Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-
-					<TextBlock
-						x:Uid="/ScheduleView/CurrentSchedule"
-						Grid.Row="0"
-						Margin="20,10,20,4"
-						HorizontalAlignment="Left"
-						FontSize="35"
-						FontWeight="SemiLight" />
-
 					<ParallaxView
-						Grid.Row="1"
 						Opacity="0.5"
 						Source="{x:Bind MapEventsList}"
 						VerticalShift="200">
@@ -75,7 +60,6 @@
 
 					<HyperlinkButton
 						x:Uid="/ScheduleView/ProposalToCreateNewEvent"
-						Grid.Row="1"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
 						Click="{x:Bind ViewModel.GoToCalendars}"
@@ -84,8 +68,7 @@
 
 					<ListView
 						x:Name="MapEventsList"
-						Grid.Row="1"
-						Padding="20,5"
+						Padding="8,5,15,5"
 						DoubleTapped="{x:Bind ViewModel.MoreAboutMapEvent}"
 						ItemsSource="{x:Bind cvs.View, Mode=OneWay}"
 						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
@@ -95,7 +78,7 @@
 						Visibility="{x:Bind ViewModel.MapEvents.Count, Mode=OneWay, Converter={StaticResource fromIntToVisibilityConverter}}">
 						<ListView.ItemContainerStyle>
 							<Style TargetType="ListViewItem">
-								<Setter Property="BorderBrush" Value="Gray" />
+								<Setter Property="BorderBrush" Value="LightGray" />
 								<Setter Property="BorderThickness" Value="0,0,0,.2" />
 								<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 							</Style>
@@ -105,7 +88,7 @@
 								<GroupStyle.HeaderTemplate>
 									<DataTemplate x:DataType="advanced:GroupInfoList">
 										<TextBlock
-											FontSize="30"
+											FontSize="33"
 											FontWeight="SemiLight"
 											Text="{x:Bind Key, Converter={StaticResource fromUtcToLocalTimeOnlyDateConverter}}" />
 									</DataTemplate>
@@ -326,7 +309,7 @@
 							Grid.Row="1"
 							Margin="20,5"
 							HorizontalAlignment="Stretch"
-							Background="{StaticResource HostBackdropBrush}"
+							Background="{x:Bind SolidBrush}"
 							Click="{x:Bind ViewModel.ResetAllFilters}"
 							FontSize="18"
 							Foreground="White" />
