@@ -232,118 +232,136 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
-		//public async void MarkInnerEventsAsPublicAsync()
-		//{
-		//	using (var db = new MainDatabaseContext())
-		//	{
-		//		if (!SelectedProject.HasValue)
-		//		{
-		//			return;
-		//		}
+		public async void MarkInnerEventsAsPublicAsync()
+		{
+			if (!SelectedProject.HasValue)
+			{
+				return;
+			}
 
-		//		ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			using (var db = new MainDatabaseContext())
+			{
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-		//		if (db.MapEvents
-		//			.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"])
-		//			.Count() < 1)
-		//		{
-		//			await new MessageDialog("Внутри проекта нет актуальных событий", "Ошибка").ShowAsync();
-		//			return;
-		//		}
+				int eventsTotalCount = db.MapEvents
+					.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id
+						&& i.End >= DateTime.UtcNow
+						&& !i.IsDelete
+						&& i.EmailOfOwner == (string)localSettings.Values["email"])
+					.Count();
 
-		//		var mainPanel = new StackPanel();
-		//		foreach (var item in db.MapEvents
-		//			.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]))
-		//		{
-		//			StackPanel project = new StackPanel();
-		//			project.Children.Add(new TextBlock() { Text = item.Name, TextTrimming = TextTrimming.CharacterEllipsis });
-		//			project.Children.Add(new TextBlock()
-		//			{
-		//				Text = $"{ResourceLoader.GetString("/ScheduleVM/Events")}: " +
-		//					$"{result.publicProjects.Join(result.publicEvents, i => i.Id, w => w.ProjectId, (i, w) => i).Where(i => i.Id == item.Id).Count()}"
-		//			});
-		//			List<string> listOfCalendars;
+				if (eventsTotalCount < 1)
+				{
+					await new MessageDialog(ResourceLoader.GetString("NoActualEvents"), ResourceLoader.GetString("Error")).ShowAsync();
+					return;
+				}
 
-		//			using (var db = new MainDatabaseContext())
-		//			{
-		//				listOfCalendars = db.Areas.Select(x => x.Name).ToList();
-		//			}
+				// List of selected ID's for mark as public
+				List<string> publicSelectedEvents = new List<string>(eventsTotalCount);
 
-		//			var comboBoxAreas = new ComboBox()
-		//			{
-		//				ItemsSource = listOfCalendars,
-		//				SelectedItem = listOfCalendars[0],
-		//				Width = 280,
-		//				Margin = new Thickness(0, 5, 0, 3),
-		//			};
-		//			comboBoxAreas.SelectionChanged += (i, e) =>
-		//			{
-		//				if (i is ComboBox comboBox)
-		//				{
-		//					using (var db = new MainDatabaseContext())
-		//					{
-		//						var allAreas = db.Areas.Select(x => x).ToList();
-		//						item.AreaId = allAreas[comboBox.SelectedIndex].Id;
-		//					}
-		//				}
-		//			};
-		//			project.Children.Add(comboBoxAreas);
+				// List of selected ID's for mark as private
+				List<string> privateSelectedEvents = new List<string>(eventsTotalCount);
 
-		//			string description = string.IsNullOrEmpty(item.Description) ? ResourceLoader.GetString("/ScheduleVM/NoDescription") : item.Description;
-		//			ToolTip toolTip = new ToolTip()
-		//			{
-		//				Placement = Windows.UI.Xaml.Controls.Primitives.PlacementMode.Mouse,
-		//				Content = new TextBlock()
-		//				{
-		//					Text = $"{ResourceLoader.GetString("/ScheduleVM/Project")}: {item.Name}\n" +
-		//						$"{ResourceLoader.GetString("/ScheduleVM/Description")}: {description}\n" +
-		//						$"{ResourceLoader.GetString("/ScheduleVM/Creator")}: {item.From}",
-		//					FontSize = 15,
-		//				},
-		//			};
-		//			ToolTipService.SetToolTip(project, toolTip);
+				var mainPanel = new StackPanel();
+				foreach (var item in db.MapEvents
+					.Where(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id
+						&& i.End >= DateTime.UtcNow
+						&& !i.IsDelete
+						&& i.EmailOfOwner == (string)localSettings.Values["email"]))
+				{
+					StackPanel project = new StackPanel();
+					project.Children.Add(new TextBlock() { Text = item.Name, TextTrimming = TextTrimming.CharacterEllipsis });
 
-		//			var checkBox = new CheckBox()
-		//			{
-		//				Content = project,
-		//				Tag = item.Id,
-		//			};
-		//			checkBox.Checked += (i, e) =>
-		//			{
-		//				if (i is CheckBox chBox)
-		//				{
-		//					selectedProjects.Add((string)chBox.Tag);
-		//				}
-		//			};
-		//			checkBox.Unchecked += (i, e) =>
-		//			{
-		//				if (i is CheckBox chBox)
-		//				{
-		//					selectedProjects.Remove((string)chBox.Tag);
-		//				}
-		//			};
+					string description = string.IsNullOrEmpty(item.Description) ? ResourceLoader.GetString("NoDescription") : item.Description;
+					ToolTip toolTip = new ToolTip()
+					{
+						Placement = Windows.UI.Xaml.Controls.Primitives.PlacementMode.Mouse,
+						Content = new TextBlock()
+						{
+							Text = $"{ResourceLoader.GetString("Start")}: {item.Start.ToLocalTime()}\n" +
+								$"{ResourceLoader.GetString("Name")}: {item.Name}\n" +
+								$"{ResourceLoader.GetString("Description")}: {description}\n" +
+								$"{ResourceLoader.GetString("Creator")}: {item.EmailOfOwner}",
+							FontSize = 15,
+						},
+					};
+					ToolTipService.SetToolTip(project, toolTip);
 
-		//			mainPanel.Children.Add(checkBox);
-		//		}
+					if (item.IsPublic)
+					{
+						publicSelectedEvents.Add(item.Id);
+					}
+					else
+					{
+						privateSelectedEvents.Add(item.Id);
+					}
 
-		//		ScrollViewer scroll = new ScrollViewer()
-		//		{
-		//			VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-		//			Content = mainPanel
-		//		};
+					var checkBox = new CheckBox()
+					{
+						Content = project,
+						Tag = item.Id,
+						IsChecked = item.IsPublic,
+					};
+					checkBox.Checked += (i, e) =>
+					{
+						if (i is CheckBox chBox)
+						{
+							publicSelectedEvents.Add((string)chBox.Tag);
+							privateSelectedEvents.Remove((string)chBox.Tag);
+						}
+					};
+					checkBox.Unchecked += (i, e) =>
+					{
+						if (i is CheckBox chBox)
+						{
+							publicSelectedEvents.Remove((string)chBox.Tag);
+							privateSelectedEvents.Add((string)chBox.Tag);
+						}
+					};
 
-		//		ContentDialog getPublicDialog = new ContentDialog()
-		//		{
-		//			Title = ResourceLoader.GetString("/ScheduleVM/AddingPublicProjectsTitle"),
-		//			Content = scroll,
-		//			PrimaryButtonText = ResourceLoader.GetString("/ScheduleVM/ToAdd"),
-		//			CloseButtonText = ResourceLoader.GetString("/ScheduleVM/Later"),
-		//			DefaultButton = ContentDialogButton.Primary
-		//		};
+					mainPanel.Children.Add(checkBox);
+				}
 
-		//		var res = await getPublicDialog.ShowAsync();
-		//	}
-		//}
+				ScrollViewer scroll = new ScrollViewer()
+				{
+					VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+					Content = mainPanel
+				};
+
+				ContentDialog getPublicDialog = new ContentDialog()
+				{
+					Title = ResourceLoader.GetString("PublicityChanging"),
+					Content = scroll,
+					PrimaryButtonText = ResourceLoader.GetString("Change"),
+					CloseButtonText = ResourceLoader.GetString("Later"),
+					DefaultButton = ContentDialogButton.Primary
+				};
+
+				var res = await getPublicDialog.ShowAsync();
+
+				if (res == ContentDialogResult.Primary)
+				{
+					foreach (var item in publicSelectedEvents)
+					{
+						db.MapEvents.First(i => i.Id == item).IsPublic = true;
+						db.MapEvents.First(i => i.Id == item).UpdateAt = DateTime.UtcNow;
+						Debug.WriteLine($"Публично: {db.MapEvents.First(i => i.Id == item).Name}");
+					}
+
+					foreach (var item in privateSelectedEvents)
+					{
+						db.MapEvents.First(i => i.Id == item).IsPublic = false;
+						db.MapEvents.First(i => i.Id == item).UpdateAt = DateTime.UtcNow;
+						Debug.WriteLine($"Скрыто: {db.MapEvents.First(i => i.Id == item).Name}");
+					}
+
+					db.SaveChanges();
+
+					// Synchronization last changes with server
+					await StartPageViewModel.Instance.CategoriesSynchronization();
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creation of edition project dialog

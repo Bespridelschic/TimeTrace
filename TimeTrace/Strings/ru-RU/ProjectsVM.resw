@@ -150,6 +150,9 @@
   <data name="CreatingNewProjectErrorNameNotEntered" xml:space="preserve">
     <value>Не заполнено имя для нового проекта</value>
   </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Создатель</value>
+  </data>
   <data name="CurrentProjectName" xml:space="preserve">
     <value>Новое название проекта</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="Description" xml:space="preserve">
     <value>Описание</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
   </data>
   <data name="ErrorChangindData" xml:space="preserve">
     <value>Ошибка при изменении данных</value>
@@ -171,8 +177,17 @@
   <data name="NewProjectName" xml:space="preserve">
     <value>Название нового проекта</value>
   </data>
+  <data name="NoActualEvents" xml:space="preserve">
+    <value>Внутри проекта нет актуальных событий</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>нет описания</value>
+  </data>
   <data name="Project" xml:space="preserve">
     <value>Проект</value>
+  </data>
+  <data name="PublicityChanging" xml:space="preserve">
+    <value>Изменение публичности</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Удалить</value>
@@ -182,6 +197,9 @@
   </data>
   <data name="ShortDescription" xml:space="preserve">
     <value>Краткое описание проекта</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Начало</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Успех</value>

@@ -290,7 +290,7 @@
 				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 			<AppBarButton
 				x:Uid="/ProjectsView/MarkPublic"
-				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
+				Click="{x:Bind ViewModel.MarkInnerEventsAsPublicAsync}"
 				Icon="AllApps"
 				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 		</CommandBar>

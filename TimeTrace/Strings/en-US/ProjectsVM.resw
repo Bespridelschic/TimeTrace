@@ -150,6 +150,9 @@
   <data name="CreatingNewProjectErrorNameNotEntered" xml:space="preserve">
     <value>The name for the new project is not filled in</value>
   </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
   <data name="CurrentProjectName" xml:space="preserve">
     <value>New Project Name</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
   </data>
   <data name="ErrorChangindData" xml:space="preserve">
     <value>Error changing data</value>
@@ -171,8 +177,17 @@
   <data name="NewProjectName" xml:space="preserve">
     <value>Name of the new project</value>
   </data>
+  <data name="NoActualEvents" xml:space="preserve">
+    <value>There are no up-to-date events within the project</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>No description</value>
+  </data>
   <data name="Project" xml:space="preserve">
     <value>Project</value>
+  </data>
+  <data name="PublicityChanging" xml:space="preserve">
+    <value>Change of publicity</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
@@ -182,6 +197,9 @@
   </data>
   <data name="ShortDescription" xml:space="preserve">
     <value>Brief description of the project</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Success</value>

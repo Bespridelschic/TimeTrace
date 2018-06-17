@@ -199,7 +199,7 @@
     <value>Adding public contacts projects</value>
   </data>
   <data name="ContactsDontHavePublicEvents" xml:space="preserve">
-    <value>У ваших контактов нет публичных событий</value>
+    <value>Your contacts have no public events</value>
   </data>
   <data name="Creator" xml:space="preserve">
     <value>Creator</value>

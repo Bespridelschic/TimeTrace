@@ -115,17 +115,17 @@ namespace TimeTrace.Model.Requests
 						break;
 
 					case PostRequestDestination.SignUp:
-						link = "https://planningway.ru/customer/signup";
+						link = "https://planningway.ru/customer/sign-up";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 
 					case PostRequestDestination.AccountActivation:
-						link = "https://planningway.ru/customer/sendactivationkey";
+						link = "https://planningway.ru/customer/send-activation-key";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 
 					case PostRequestDestination.PasswordReset:
-						link = "https://planningway.ru/customer/sendresetkey";
+						link = "https://planningway.ru/customer/send-reset-key";
 						result = await BasePostRequestAsync(link, JsonSerialize(user));
 						break;
 

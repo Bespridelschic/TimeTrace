@@ -572,6 +572,12 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		public async void EventsRemoveAsync()
 		{
+			if (IsHistoryEventsViewed)
+			{
+				await (new MessageDialog(ResourceLoader.GetString("/ScheduleVM/PastEventCantBeRemoved"), ResourceLoader.GetString("/ScheduleVM/Error"))).ShowAsync();
+				return;
+			}
+
 			if (MultipleSelection == ListViewSelectionMode.Single)
 			{
 				MultipleSelection = ListViewSelectionMode.Multiple;
@@ -889,27 +895,51 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// </summary>
 		/// <param name="targetCollection">Target <seealso cref="CollectionViewSource"/></param>
 		/// <param name="events"><seealso cref="ObservableCollection{T}"/> of events</param>
-		private void SetEventsToGroup(CollectionViewSource targetCollection, ObservableCollection<MapEvent> events)
+		/// <param name="orderByDescending">Use true if need show events history</param>
+		private void SetEventsToGroup(CollectionViewSource targetCollection, ObservableCollection<MapEvent> events, bool orderByDescending = false)
 		{
 			ObservableCollection<GroupInfoList> groups = new ObservableCollection<GroupInfoList>();
 
-			var query = from item in MapEvents
-						group item by item.Start.ToLocalTime().Date into g
-						orderby g.Key
-						select new { GroupName = g.Key, Items = g };
-
-			foreach (var g in query)
+			if (orderByDescending)
 			{
-				GroupInfoList info = new GroupInfoList();
-				info.Key = g.GroupName;
-				foreach (var item in g.Items)
-				{
-					info.Add(item);
-				}
-				groups.Add(info);
-			}
+				var query = from item in MapEvents
+							group item by item.Start.ToLocalTime().Date into g
+							orderby g.Key descending
+							select new { GroupName = g.Key, Items = g };
 
-			targetCollection.Source = groups;
+				foreach (var g in query)
+				{
+					GroupInfoList info = new GroupInfoList();
+					info.Key = g.GroupName;
+					foreach (var item in g.Items)
+					{
+						info.Add(item);
+					}
+					groups.Add(info);
+				}
+
+				targetCollection.Source = groups;
+			}
+			else
+			{
+				var query = from item in MapEvents
+							group item by item.Start.ToLocalTime().Date into g
+							orderby g.Key
+							select new { GroupName = g.Key, Items = g };
+
+				foreach (var g in query)
+				{
+					GroupInfoList info = new GroupInfoList();
+					info.Key = g.GroupName;
+					foreach (var item in g.Items)
+					{
+						info.Add(item);
+					}
+					groups.Add(info);
+				}
+
+				targetCollection.Source = groups;
+			}
 		}
 
 		#region Filtering
@@ -1143,7 +1173,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				}
 			}
 
-			SetEventsToGroup(SortedCollection, MapEvents);
+			SetEventsToGroup(SortedCollection, MapEvents, IsHistoryEventsViewed);
 		}
 
 		/// <summary>
