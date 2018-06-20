@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
   <data name="AddingNewProjectError" xml:space="preserve">
     <value>Error adding new project</value>
   </data>
@@ -168,6 +171,15 @@
   <data name="ErrorChangindData" xml:space="preserve">
     <value>Error changing data</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="InvitationSentError" xml:space="preserve">
+    <value>Invitation sent error</value>
+  </data>
+  <data name="InvitationSentSuccessfully" xml:space="preserve">
+    <value>Invitation Sent Successfully</value>
+  </data>
   <data name="Later" xml:space="preserve">
     <value>Later</value>
   </data>
@@ -180,11 +192,26 @@
   <data name="NoActualEvents" xml:space="preserve">
     <value>There are no up-to-date events within the project</value>
   </data>
+  <data name="NoContacts" xml:space="preserve">
+    <value>You have not added any contacts</value>
+  </data>
   <data name="NoDescription" xml:space="preserve">
     <value>No description</value>
   </data>
+  <data name="NoInternet" xml:space="preserve">
+    <value>You can not send projects offline</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>no name</value>
+  </data>
+  <data name="NoSelectedContacts" xml:space="preserve">
+    <value>No contacts selected</value>
+  </data>
   <data name="Project" xml:space="preserve">
     <value>Project</value>
+  </data>
+  <data name="ProjectSentError" xml:space="preserve">
+    <value>Error sending project</value>
   </data>
   <data name="PublicityChanging" xml:space="preserve">
     <value>Change of publicity</value>
@@ -194,6 +221,12 @@
   </data>
   <data name="RemoveInformation" xml:space="preserve">
     <value>with all the events inside was deleted</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="SendingProjectToContacts" xml:space="preserve">
+    <value>Sending a project to contacts</value>
   </data>
   <data name="ShortDescription" xml:space="preserve">
     <value>Brief description of the project</value>

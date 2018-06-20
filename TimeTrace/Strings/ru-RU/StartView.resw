@@ -132,6 +132,12 @@
   <data name="EventsSearching.ToolTipService.ToolTip" xml:space="preserve">
     <value>Введите имена ваших события для поиска</value>
   </data>
+  <data name="Invitations.Content" xml:space="preserve">
+    <value>Приглашения</value>
+  </data>
+  <data name="Invitations.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Приглашения к обмену проектами</value>
+  </data>
   <data name="ReportBug.Label" xml:space="preserve">
     <value>Сообщить об ошибке</value>
   </data>

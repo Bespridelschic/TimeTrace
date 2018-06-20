@@ -29,7 +29,7 @@ namespace TimeTrace.Model.Requests
 		{
 			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(data))
 			{
-				return null;
+				return string.Empty;
 			}
 
 			try
@@ -64,8 +64,9 @@ namespace TimeTrace.Model.Requests
 
 				return result;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				Debug.WriteLine($"Error code: {ex.Message}");
 				throw;
 			}
 		}
@@ -671,6 +672,229 @@ namespace TimeTrace.Model.Requests
 			}
 
 			return (resultOfSynchronization, receivedProjects, receivedMapEvents);
+		}
+
+		/// <summary>
+		/// Sending invitation to contacts for project
+		/// </summary>
+		/// <param name="contacts">List of contacts for sending invitation</param>
+		/// <param name="project">Shared project</param>
+		/// <returns>0 - success, 1 - operation error</returns>
+		public static async Task<int> SendInvitationToContact(IList<string> contacts, Project project)
+		{
+			int resultOfSynchronization = 1;
+			if (contacts.Count < 1 || project == null)
+			{
+				return resultOfSynchronization;
+			}
+			
+			string receivedlink = "https://planningway.ru/invitation/invite";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			List<Invitation> invitations = new List<Invitation>(contacts.Count);
+			foreach (var item in contacts)
+			{
+				invitations.Add(new Invitation(item, project.Id));
+			}
+
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId, invitations })}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId, invitations }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			resultOfSynchronization = (int)jsonString["answer"];
+
+			return resultOfSynchronization;
+		}
+
+		/// <summary>
+		/// Getting invitations send by me to my contacts
+		/// </summary>
+		/// <returns></returns>
+		public static async Task<List<Invitation>> GetMyInvitations()
+		{
+			List<Invitation> invites = new List<Invitation>();
+
+			string receivedlink = "https://planningway.ru/invitation/get-my-invitation";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId})}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			int resultOfSynchronization = (int)jsonString["answer"];
+			
+			if (resultOfSynchronization != 0)
+			{
+				return invites;
+			}
+
+			foreach (var result in jsonString["invitations"].Children().ToList())
+			{
+				invites.Add(result.ToObject<Invitation>());
+			}
+
+			return invites;
+		}
+
+		/// <summary>
+		/// Getting invitations for me
+		/// </summary>
+		/// <returns></returns>
+		public static async Task<(List<Invitation> invitations, List<Project> projects)> GetInvitationsForMe()
+		{
+			string receivedlink = "https://planningway.ru/invitation/get-invitation";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId })}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			int resultOfSynchronization = (int)jsonString["answer"];
+
+			List<Invitation> invitations = new List<Invitation>();
+			List<Project> projects = new List<Project>();
+
+			if (resultOfSynchronization != 0)
+			{
+				return (invitations, projects);
+			}
+
+			foreach (var result in jsonString["invitations"].Children().ToList())
+			{
+				invitations.Add(result.ToObject<Invitation>());
+			}
+
+			foreach (var result in jsonString["projects"].Children().ToList())
+			{
+				projects.Add(result.ToObject<Project>());
+			}
+
+			return (invitations, projects);
+		}
+
+		/// <summary>
+		/// Accepting of contact project
+		/// </summary>
+		/// <param name="projectId">Id of accepted project</param>
+		/// <returns></returns>
+		public static async Task<(Project project, List<MapEvent> events)> AcceptInvite(string projectId)
+		{
+			Project project = new Project();
+			List<MapEvent> events = new List<MapEvent>(); 
+
+			if (string.IsNullOrEmpty(projectId))
+			{
+				return (project, events);
+			}
+
+			string receivedlink = "https://planningway.ru/invitation/accept";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId, projectId })}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId, projectId }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			int resultOfSynchronization = (int)jsonString["answer"];
+
+			if (resultOfSynchronization != 0)
+			{
+				return (project, events);
+			}
+
+			project = jsonString["project"].ToObject<Project>();
+
+			foreach (var result in jsonString["events"].Children().ToList())
+			{
+				var temp = result.ToObject<MapEvent>();
+				temp.UpdateAt = temp.CreateAt = DateTime.UtcNow;
+				temp.EmailOfOwner = (string)localSettings.Values["email"];
+
+				events.Add(temp);
+			}
+
+			return (project, events);
+		}
+
+		/// <summary>
+		/// Deny invitation for project
+		/// </summary>
+		/// <param name="projectId">Id of denied project</param>
+		/// <returns>0 - success, 1 - error</returns>
+		public static async Task<int> DenyInvite(string projectId)
+		{
+			int resultOfSynchronization = 1;
+
+			if (string.IsNullOrEmpty(projectId))
+			{
+				return resultOfSynchronization;
+			}
+
+			string receivedlink = "https://planningway.ru/invitation/deny";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId, projectId })}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId, projectId }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			resultOfSynchronization = (int)jsonString["answer"];
+
+			return resultOfSynchronization;
+		}
+
+		/// <summary>
+		/// Cancel invitations for my contacts
+		/// </summary>
+		/// <param name="ids">Id's of unsubscribed invites</param>
+		/// <returns>0 - success, 1 - error</returns>
+		public static async Task<int> UnsubscribeInvitations(string id)
+		{
+			int resultOfSynchronization = 1;
+
+			if (string.IsNullOrEmpty(id))
+			{
+				return resultOfSynchronization;
+			}
+
+			string receivedlink = "https://planningway.ru/invitation/delete-invitation";
+			string token = (await FileSystemRequests.LoadUserEmailAndTokenFromFileAsync()).token;
+
+			ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+			string deviceId = (string)localSettings.Values["DeviceId"];
+
+			Debug.WriteLine($"Данные для сверки: {JsonSerialize(new { _csrf = token, idDevice = deviceId, isDelete = id })}");
+			var resultOfRequest = await BasePostRequestAsync(receivedlink, JsonSerialize(new { _csrf = token, idDevice = deviceId, isDelete = id }));
+
+			JObject jsonString = JObject.Parse(resultOfRequest);
+			Debug.WriteLine($"Получаемые данные \n{jsonString}");
+
+			resultOfSynchronization = (int)jsonString["answer"];
+
+			return resultOfSynchronization;
 		}
 
 		/// <summary>

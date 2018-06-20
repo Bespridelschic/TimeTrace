@@ -200,6 +200,10 @@ namespace TimeTrace.ViewModel.MainViewModel
 						(Application.Current as App).AppFrame.Navigate(typeof(CategorySelectPage));
 						break;
 
+					case "invitations":
+						(Application.Current as App).AppFrame.Navigate(typeof(InvitationsPage));
+						break;
+
 					default:
 						break;
 				}
@@ -238,6 +242,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 				case Headers.MapEvents:
 					PageTitle = ResourceLoader.GetString("/StartVM/PersonalEvents");
 					LocalNavView.SelectedItem = LocalNavView.MenuItems[3];
+					break;
+
+				case Headers.Invitations:
+					PageTitle = ResourceLoader.GetString("/StartVM/Invitations");
+					LocalNavView.SelectedItem = LocalNavView.MenuItems[4];
 					break;
 
 				case Headers.Settings:

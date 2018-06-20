@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Added" xml:space="preserve">
+    <value>Добавлен</value>
+  </data>
   <data name="AddingNewProjectError" xml:space="preserve">
     <value>Ошибка добавления нового проекта</value>
   </data>
@@ -168,6 +171,15 @@
   <data name="ErrorChangindData" xml:space="preserve">
     <value>Ошибка при изменении данных</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="InvitationSentError" xml:space="preserve">
+    <value>Возникли проблемы при отправке проекта</value>
+  </data>
+  <data name="InvitationSentSuccessfully" xml:space="preserve">
+    <value>Приглашение успешно отправлено</value>
+  </data>
   <data name="Later" xml:space="preserve">
     <value>Отложить</value>
   </data>
@@ -180,11 +192,26 @@
   <data name="NoActualEvents" xml:space="preserve">
     <value>Внутри проекта нет актуальных событий</value>
   </data>
+  <data name="NoContacts" xml:space="preserve">
+    <value>У вас не добавлены контакты</value>
+  </data>
   <data name="NoDescription" xml:space="preserve">
     <value>нет описания</value>
   </data>
+  <data name="NoInternet" xml:space="preserve">
+    <value>Нельзя отправлять проекты в офлайн режиме</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>нет имени</value>
+  </data>
+  <data name="NoSelectedContacts" xml:space="preserve">
+    <value>Ни один контакт не выбран</value>
+  </data>
   <data name="Project" xml:space="preserve">
     <value>Проект</value>
+  </data>
+  <data name="ProjectSentError" xml:space="preserve">
+    <value>Ошибка отправки проекта</value>
   </data>
   <data name="PublicityChanging" xml:space="preserve">
     <value>Изменение публичности</value>
@@ -194,6 +221,12 @@
   </data>
   <data name="RemoveInformation" xml:space="preserve">
     <value>со всеми событиями внутри был удалён</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="SendingProjectToContacts" xml:space="preserve">
+    <value>Отправка проекта контактам</value>
   </data>
   <data name="ShortDescription" xml:space="preserve">
     <value>Краткое описание проекта</value>

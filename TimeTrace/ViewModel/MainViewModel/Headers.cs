@@ -9,6 +9,7 @@
 		Shedule,
 		Contacts,
 		MapEvents,
-		Settings
+		Settings,
+		Invitations
 	}
 }

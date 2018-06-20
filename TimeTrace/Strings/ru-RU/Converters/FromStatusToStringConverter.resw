@@ -117,55 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutUser.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Go to homepage</value>
+  <data name="Accepted" xml:space="preserve">
+    <value>принят</value>
   </data>
-  <data name="ChangeUser.Label" xml:space="preserve">
-    <value>Change user</value>
+  <data name="NotViewed" xml:space="preserve">
+    <value>не просмотрен</value>
   </data>
-  <data name="ChangeUser.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Sign out</value>
+  <data name="Rejected" xml:space="preserve">
+    <value>отклонен</value>
   </data>
-  <data name="EventsSearching.PlaceholderText" xml:space="preserve">
-    <value>Events searching</value>
-  </data>
-  <data name="EventsSearching.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Type the name of events for searching...</value>
-  </data>
-  <data name="Invitations.Content" xml:space="preserve">
-    <value>Invitations</value>
-  </data>
-  <data name="Invitations.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Invitations to exchange projects</value>
-  </data>
-  <data name="ReportBug.Label" xml:space="preserve">
-    <value>Feedback</value>
-  </data>
-  <data name="ReportBug.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Tell about the found bugs or suggest new features</value>
-  </data>
-  <data name="ToContacts.Content" xml:space="preserve">
-    <value>Contacts</value>
-  </data>
-  <data name="ToContacts.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Go to the contact list</value>
-  </data>
-  <data name="ToEvents.Content" xml:space="preserve">
-    <value>Personal events</value>
-  </data>
-  <data name="ToEvents.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Editing and creating personal events</value>
-  </data>
-  <data name="ToHome.Content" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="ToHome.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Go to homepage</value>
-  </data>
-  <data name="ToShedule.Content" xml:space="preserve">
-    <value>Schedule</value>
-  </data>
-  <data name="ToShedule.ToolTipService.ToolTip" xml:space="preserve">
-    <value>View current schedule</value>
+  <data name="Undefined" xml:space="preserve">
+    <value>не определено</value>
   </data>
 </root>

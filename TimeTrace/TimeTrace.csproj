@@ -113,6 +113,7 @@
     <Compile Include="Model\RepeatMode.cs" />
     <Compile Include="Model\Requests\FileSystemRequests.cs" />
     <Compile Include="Model\Requests\InternetRequests.cs" />
+    <Compile Include="Model\Requests\Invitation.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignInViewModel.cs" />
     <Compile Include="ViewModel\AuthenticationViewModel\SignUpViewModel.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="ViewModel\MainViewModel\ContactsViewModel\ContactsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\Headers.cs" />
     <Compile Include="ViewModel\MainViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel\InvitationsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\ISearchable.cs" />
     <Compile Include="ViewModel\MainViewModel\StartPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel\MapEventsViewModel\CategoryViewModel.cs" />
@@ -139,12 +141,15 @@
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Converters\FromEmptyStringToTextConverter.cs" />
+    <Compile Include="View\Converters\FromGUIDToContactEmailConverter.cs" />
     <Compile Include="View\Converters\FromIntToBoolConverter.cs" />
     <Compile Include="View\Converters\FromIntToCollapseConverter.cs" />
     <Compile Include="View\Converters\FromIntToSolidColorBrushConverter.cs" />
     <Compile Include="View\Converters\FromIntToVisibilityConverter.cs" />
     <Compile Include="View\Converters\FromNullableIntToIntConverter.cs" />
+    <Compile Include="View\Converters\FromProjectIdToProjectNameConverter.cs" />
     <Compile Include="View\Converters\FromRepeatModeToIntConverter.cs" />
+    <Compile Include="View\Converters\FromStatusToStringConverter.cs" />
     <Compile Include="View\Converters\FromUtcToLocalTime.cs" />
     <Compile Include="View\Converters\FromUtcToLocalTimeOnlyDateConverter.cs" />
     <Compile Include="View\MainView\ContactPages\ChatPage.xaml.cs">
@@ -155,6 +160,9 @@
     </Compile>
     <Compile Include="View\MainView\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainView\InvitationsPage.xaml.cs">
+      <DependentUpon>InvitationsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainView\PersonalMapsCreatePages\CategorySelectPage.xaml.cs">
       <DependentUpon>CategorySelectPage.xaml</DependentUpon>
@@ -218,6 +226,16 @@
     <PRIResource Include="Strings\en-US\Converters\FromEmptyStringToTextConverter.resw" />
     <PRIResource Include="Strings\ru-RU\Converters\FromUtcToLocalTimeOnlyDateConverter.resw" />
     <PRIResource Include="Strings\en-US\Converters\FromUtcToLocalTimeOnlyDateConverter.resw" />
+    <PRIResource Include="Strings\ru-RU\Converters\FromGUIDToContactEmailConverter.resw" />
+    <PRIResource Include="Strings\en-US\Converters\FromGUIDToContactEmailConverter.resw" />
+    <PRIResource Include="Strings\ru-RU\Converters\FromStatusToStringConverter.resw" />
+    <PRIResource Include="Strings\en-US\Converters\FromStatusToStringConverter.resw" />
+    <PRIResource Include="Strings\ru-RU\Converters\FromProjectIdToProjectNameConverter.resw" />
+    <PRIResource Include="Strings\en-US\Converters\FromProjectIdToProjectNameConverter.resw" />
+    <PRIResource Include="Strings\ru-RU\InvitationsView.resw" />
+    <PRIResource Include="Strings\en-US\InvitationsView.resw" />
+    <PRIResource Include="Strings\ru-RU\InvitationsVM.resw" />
+    <PRIResource Include="Strings\en-US\InvitationsVM.resw" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />
@@ -310,6 +328,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MainView\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainView\InvitationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

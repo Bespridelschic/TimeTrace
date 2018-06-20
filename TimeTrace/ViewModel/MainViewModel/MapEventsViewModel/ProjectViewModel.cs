@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Windows.ApplicationModel.Resources;
+using TimeTrace.Model.Requests;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -232,6 +233,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		/// <summary>
+		/// Marking events of selected project as public
+		/// </summary>
 		public async void MarkInnerEventsAsPublicAsync()
 		{
 			if (!SelectedProject.HasValue)
@@ -359,6 +363,134 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 					// Synchronization last changes with server
 					await StartPageViewModel.Instance.CategoriesSynchronization();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Send project to contacts
+		/// </summary>
+		public async void SendProjectToContacts()
+		{
+			if (!StartPageViewModel.Instance.InternetFeaturesEnable)
+			{
+				await new MessageDialog(ResourceLoader.GetString("NoInternet"), ResourceLoader.GetString("ProjectSentError")).ShowAsync();
+				return;
+			}
+
+			if (SelectedProject.HasValue)
+			{
+				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+				using (var db = new MainDatabaseContext())
+				{
+					// If no contacts
+					if (db.Contacts.Count(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]) < 1)
+					{
+						await new MessageDialog(ResourceLoader.GetString("NoContacts"), ResourceLoader.GetString("ProjectSentError")).ShowAsync();
+						return;
+					}
+
+					// If no actual events in project
+					if (db.MapEvents
+							.Count(i => i.ProjectId == CurrentProjects[SelectedProject.Value].Id
+								&& !i.IsDelete
+								&& i.End >= DateTime.UtcNow)
+							< 1)
+					{
+						await new MessageDialog(ResourceLoader.GetString("NoActualEvents"), ResourceLoader.GetString("ProjectSentError")).ShowAsync();
+						return;
+					}
+
+					// List of selected ID's contacts
+					List<string> selectedContacts = new List<string>(db.Contacts.Count(i => !i.IsDelete));
+
+					var mainPanel = new StackPanel();
+					foreach (var item in db.Contacts.Where(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]))
+					{
+						StackPanel project = new StackPanel();
+						project.Children.Add(new TextBlock() { Text = item.Email, TextTrimming = TextTrimming.CharacterEllipsis });
+
+						string contactName = string.IsNullOrEmpty(item.Name) ? ResourceLoader.GetString("NoName") : item.Name;
+						ToolTip toolTip = new ToolTip()
+						{
+							Placement = Windows.UI.Xaml.Controls.Primitives.PlacementMode.Mouse,
+							Content = new TextBlock()
+							{
+								Text = $"{item.Email}\n" +
+									$"{ResourceLoader.GetString("FirstName")}: {contactName}\n" +
+									$"{ResourceLoader.GetString("Added")}: {item.CreateAt.Value.ToLocalTime()}",
+								FontSize = 15,
+							},
+						};
+						ToolTipService.SetToolTip(project, toolTip);
+
+						var checkBox = new CheckBox()
+						{
+							Content = project,
+							Tag = item.Id,
+						};
+						checkBox.Checked += (i, e) =>
+						{
+							if (i is CheckBox chBox)
+							{
+								selectedContacts.Add((string)chBox.Tag);
+							}
+						};
+						checkBox.Unchecked += (i, e) =>
+						{
+							if (i is CheckBox chBox)
+							{
+								selectedContacts.Remove((string)chBox.Tag);
+							}
+						};
+
+						mainPanel.Children.Add(checkBox);
+					}
+
+					ScrollViewer scroll = new ScrollViewer()
+					{
+						VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+						Content = mainPanel
+					};
+
+					ContentDialog getPublicDialog = new ContentDialog()
+					{
+						Title = ResourceLoader.GetString("SendingProjectToContacts"),
+						Content = scroll,
+						PrimaryButtonText = ResourceLoader.GetString("Send"),
+						CloseButtonText = ResourceLoader.GetString("Later"),
+						DefaultButton = ContentDialogButton.Primary
+					};
+
+					var res = await getPublicDialog.ShowAsync();
+
+					if (res == ContentDialogResult.Primary)
+					{
+						if (selectedContacts.Count < 1)
+						{
+							await new MessageDialog(ResourceLoader.GetString("NoSelectedContacts"), ResourceLoader.GetString("ProjectSentError")).ShowAsync();
+							return;
+						}
+
+						try
+						{
+							int result = await InternetRequests.SendInvitationToContact(selectedContacts, CurrentProjects[SelectedProject.Value]);
+
+							if (result == 0)
+							{
+								await new MessageDialog(ResourceLoader.GetString("InvitationSentSuccessfully"), ResourceLoader.GetString("Success")).ShowAsync();
+							}
+							else
+							{
+								await new MessageDialog(ResourceLoader.GetString("InvitationSentError"), ResourceLoader.GetString("ProjectSentError")).ShowAsync();
+							}
+						}
+						catch (Exception)
+						{
+							await new MessageDialog(ResourceLoader.GetString("InvitationSentError"), ResourceLoader.GetString("ProjectSentError")).ShowAsync();
+						}
+					}
 				}
 			}
 		}

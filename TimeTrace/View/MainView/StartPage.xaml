@@ -94,6 +94,13 @@
 				Tag="personalMaps"
 				ToolTipService.Placement="Right" />
 
+			<NavigationViewItem
+				x:Uid="/StartView/Invitations"
+				Icon="People"
+				IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
+				Tag="invitations"
+				ToolTipService.Placement="Right" />
+
 			<NavigationViewItemSeparator />
 		</NavigationView.MenuItems>
 

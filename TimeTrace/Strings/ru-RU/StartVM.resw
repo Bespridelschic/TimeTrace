@@ -153,6 +153,9 @@
   <data name="Homepage" xml:space="preserve">
     <value>Домашняя страница</value>
   </data>
+  <data name="Invitations" xml:space="preserve">
+    <value>Приглашения</value>
+  </data>
   <data name="PersonalEvents" xml:space="preserve">
     <value>Персональные события</value>
   </data>

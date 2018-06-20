@@ -285,7 +285,7 @@
 			<AppBarSeparator />
 			<AppBarButton
 				x:Uid="/ProjectsView/ShareProject"
-				Click="{x:Bind ViewModel.ProjectRemoveAsync}"
+				Click="{x:Bind ViewModel.SendProjectToContacts}"
 				Icon="Share"
 				IsEnabled="{x:Bind ViewModel.CurrentProjects.Count, Mode=OneWay, Converter={StaticResource fromIntToBoolConverter}}" />
 			<AppBarButton
