@@ -129,6 +129,20 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
+		private int notificationTime;
+		/// <summary>
+		/// Pre-warning time
+		/// </summary>
+		public int NotificationTime
+		{
+			get => notificationTime;
+			set
+			{
+				notificationTime = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Constructors

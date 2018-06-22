@@ -278,11 +278,11 @@
 							<MenuFlyout Placement="Bottom">
 								<MenuFlyoutItem
 									x:Uid="/InvitationsView/Add"
-									Click="{x:Bind ViewModel.AddProject}"
+									Click="{x:Bind ViewModel.AddProjectAsync}"
 									Icon="Add" />
 								<MenuFlyoutItem
 									x:Uid="/InvitationsView/Refuse"
-									Click="{x:Bind ViewModel.DenyProject}"
+									Click="{x:Bind ViewModel.DenyProjectAsync}"
 									Icon="Remove" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
@@ -303,7 +303,7 @@
 
 					<ListView
 						Padding="8,5,15,5"
-						DoubleTapped="{x:Bind ViewModel.CancelInvitation}"
+						DoubleTapped="{x:Bind ViewModel.CancelInvitationAsync}"
 						ItemsSource="{x:Bind ViewModel.MyInvitations, Mode=OneWay}"
 						RightTapped="{x:Bind ViewModel.SelectMyInvitationOnRightClick}"
 						SelectedIndex="{x:Bind ViewModel.SelectedIndexOfMyInvitations, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
@@ -371,7 +371,7 @@
 							<MenuFlyout Placement="Bottom">
 								<MenuFlyoutItem
 									x:Uid="/InvitationsView/Undo"
-									Click="{x:Bind ViewModel.CancelInvitation}"
+									Click="{x:Bind ViewModel.CancelInvitationAsync}"
 									Icon="Delete" />
 							</MenuFlyout>
 						</ListView.ContextFlyout>
@@ -383,11 +383,11 @@
 		<CommandBar Grid.Row="1" VerticalAlignment="Bottom">
 			<AppBarButton
 				x:Uid="/InvitationsView/Refresh"
-				Click="{x:Bind ViewModel.Refresh}"
+				Click="{x:Bind ViewModel.RefreshAsync}"
 				Icon="Refresh" />
 			<AppBarToggleButton
 				x:Uid="/InvitationsView/DeleteMyInvitations"
-				Click="{x:Bind ViewModel.CancelInvitations}"
+				Click="{x:Bind ViewModel.CancelInvitationsAsync}"
 				Icon="Delete" />
 		</CommandBar>
 

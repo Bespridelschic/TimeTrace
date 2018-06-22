@@ -128,7 +128,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// Get fresh info from server
 		/// </summary>
 		/// <returns></returns>
-		private async Task InitializationData()
+		private async Task InitializationDataAsync()
 		{
 			if (MyInvitations == null)
 			{
@@ -178,7 +178,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			MultipleSelection = ListViewSelectionMode.Single;
 			SelectedInvitations = new List<Invitation>();
 
-			InitializationData().GetAwaiter();
+			InitializationDataAsync().GetAwaiter();
 		}
 
 		#endregion
@@ -186,15 +186,15 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Reload all lists with new information
 		/// </summary>
-		public async void Refresh()
+		public async void RefreshAsync()
 		{
-			await InitializationData();
+			await InitializationDataAsync();
 		}
 
 		/// <summary>
 		/// Add project and its events to local
 		/// </summary>
-		public async void AddProject()
+		public async void AddProjectAsync()
 		{
 			if (SelectedIndexOfInvitationsForMe.HasValue)
 			{
@@ -234,14 +234,37 @@ namespace TimeTrace.ViewModel.MainViewModel
 
 						invites.project.Color = calendars[calendarsList.SelectedIndex].Color;
 						invites.project.AreaId = calendars[calendarsList.SelectedIndex].Id;
+						invites.project.EmailOfOwner = calendars[calendarsList.SelectedIndex].EmailOfOwner;
+						invites.project.CreateAt = invites.project.UpdateAt = DateTime.UtcNow;
+
+						var events = new List<MapEvent>(invites.events.Count);
 
 						foreach (var item in invites.events)
+						{
+							var temp = db.MapEvents.FirstOrDefault(i => i.Id == item.Id);
+
+							// Add new event to list if absent in database
+							if (temp == null)
+							{
+								events.Add(item);
+							}
+						}
+
+						foreach (var item in events)
 						{
 							item.Color = calendars[calendarsList.SelectedIndex].Color;
 						}
 
-						db.MapEvents.AddRange(invites.events);
-						db.Projects.Add(invites.project);
+						if (events.Count > 0)
+						{
+							db.MapEvents.AddRange(events);
+						}
+
+						if (db.Projects.Count(i => i.Id == invites.project.Id) < 1)
+						{
+							invites.project.AreaId = calendars[calendarsList.SelectedIndex].Id;
+							db.Projects.Add(invites.project);
+						}
 
 						db.SaveChanges();
 
@@ -254,7 +277,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Deny invitation for project
 		/// </summary>
-		public async void DenyProject()
+		public async void DenyProjectAsync()
 		{
 			if (SelectedIndexOfInvitationsForMe.HasValue)
 			{
@@ -326,7 +349,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Cancel one of my invitation
 		/// </summary>
-		public async void CancelInvitation()
+		public async void CancelInvitationAsync()
 		{
 			if (SelectedIndexOfMyInvitations.HasValue)
 			{
@@ -380,7 +403,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// <summary>
 		/// Cancel of my several invitations
 		/// </summary>
-		public async void CancelInvitations()
+		public async void CancelInvitationsAsync()
 		{
 			if (MultipleSelection == ListViewSelectionMode.Single)
 			{

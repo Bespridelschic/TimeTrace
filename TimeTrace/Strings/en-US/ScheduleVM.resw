@@ -217,7 +217,7 @@
     <value>no desctiprion</value>
   </data>
   <data name="NoPersonalProjects" xml:space="preserve">
-    <value>You have not added any projects to which you could place the received events</value>
+    <value>You have not added any calendars to which you could place the received events</value>
   </data>
   <data name="NoProjectWasSelected" xml:space="preserve">
     <value>No project was selected</value>

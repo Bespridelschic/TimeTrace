@@ -428,7 +428,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 						var checkBox = new CheckBox()
 						{
 							Content = project,
-							Tag = item.Id,
+							Tag = item.Email.ToLowerInvariant(),
 						};
 						checkBox.Checked += (i, e) =>
 						{

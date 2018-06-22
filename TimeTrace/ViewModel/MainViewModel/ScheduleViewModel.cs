@@ -685,7 +685,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-				if (db.Projects.Count(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]) < 1)
+				if (db.Areas.Count(i => !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]) < 1)
 				{
 					await new MessageDialog(ResourceLoader.GetString("/ScheduleVM/NoPersonalProjects"),
 						ResourceLoader.GetString("/ScheduleVM/PublicEventsAddingError")).ShowAsync();

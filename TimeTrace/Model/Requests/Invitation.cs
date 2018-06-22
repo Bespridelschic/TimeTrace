@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace TimeTrace.Model.Requests
 {
@@ -6,7 +7,6 @@ namespace TimeTrace.Model.Requests
 	{
 		[JsonProperty(PropertyName = "id")]
 		public string Id { get; set; }
-
 
 		[JsonProperty(PropertyName = "email")]
 		public string Email { get; set; }
@@ -20,12 +20,18 @@ namespace TimeTrace.Model.Requests
 		[JsonProperty(PropertyName = "from")]
 		public string From { get; set; }
 
+		[JsonProperty(PropertyName = "visible")]
+		public bool Visible { get; set; }
+
+		[JsonProperty(PropertyName = "create_at")]
+		public DateTime? CreateAt { get; set; }
+
 		/// <summary>
 		/// Standart constructor
 		/// </summary>
 		public Invitation()
 		{
-
+			Visible = true;
 		}
 
 		/// <summary>
@@ -33,7 +39,7 @@ namespace TimeTrace.Model.Requests
 		/// </summary>
 		/// <param name="email">Email of contact</param>
 		/// <param name="projectId">Id of sended project</param>
-		public Invitation(string email, string projectId)
+		public Invitation(string email, string projectId) : this()
 		{
 			Email = email;
 			ProjectId = projectId;

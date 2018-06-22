@@ -217,7 +217,7 @@
     <value>нет описания</value>
   </data>
   <data name="NoPersonalProjects" xml:space="preserve">
-    <value>У вас не добавлено ни одного проекта, в который можно было бы поместить получаемые события</value>
+    <value>У вас не добавлено ни одного календаря, в который можно было бы поместить получаемые события</value>
   </data>
   <data name="NoProjectWasSelected" xml:space="preserve">
     <value>Ни один проект не был выбран</value>

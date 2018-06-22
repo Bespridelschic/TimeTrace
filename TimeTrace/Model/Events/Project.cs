@@ -53,7 +53,7 @@ namespace TimeTrace.Model.Events
 		/// </summary>
 		public Project()
 		{
-			From = EmailOfOwner;
+			
 		}
 
 		/// <summary>

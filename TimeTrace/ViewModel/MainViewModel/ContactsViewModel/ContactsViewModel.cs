@@ -296,7 +296,7 @@ namespace TimeTrace.ViewModel.MainViewModel.ContactsViewModel
 
 					// Checking the occurrence of a contact in the list
 					if (contact == null
-						&& (db.Contacts.Where(i => i.Email.ToLower() == email.Text.Trim().ToLower()).Count() > 0)
+						&& (db.Contacts.Where(i => i.Email.ToLower() == email.Text.Trim().ToLower() && !i.IsDelete && i.EmailOfOwner == (string)localSettings.Values["email"]).Count() > 0)
 							|| ((string)localSettings.Values["email"]).ToLower() == email.Text.Trim().ToLower())
 					{
 						await new MessageDialog(ResourceLoader.GetString("/ContactsVM/ContactAlreadyAddedError"), ResourceLoader.GetString("/ContactsVM/AddContactError")).ShowAsync();
