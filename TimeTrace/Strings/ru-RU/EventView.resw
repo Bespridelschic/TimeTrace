@@ -133,10 +133,10 @@
     <value>Свой вариант</value>
   </data>
   <data name="DateAsEnd.OffContent" xml:space="preserve">
-    <value>Окончить по дате</value>
+    <value>Окончить после количества</value>
   </data>
   <data name="DateAsEnd.OnContent" xml:space="preserve">
-    <value>Окончание по дате</value>
+    <value>Окончить по дате</value>
   </data>
   <data name="EndDate.Header" xml:space="preserve">
     <value>Дата окончания*</value>
@@ -204,6 +204,33 @@
   <data name="EveryDate.Content" xml:space="preserve">
     <value>Каждый день</value>
   </data>
+  <data name="ForBegining.Content" xml:space="preserve">
+    <value>При старте</value>
+  </data>
+  <data name="ForDateStart.Content" xml:space="preserve">
+    <value>В начале дня</value>
+  </data>
+  <data name="ForFifteenMinutes.Content" xml:space="preserve">
+    <value>За 15 минут</value>
+  </data>
+  <data name="ForFiveMinutes.Content" xml:space="preserve">
+    <value>За 5 минут</value>
+  </data>
+  <data name="ForOneDay.Content" xml:space="preserve">
+    <value>За 1 день</value>
+  </data>
+  <data name="ForOneHour.Content" xml:space="preserve">
+    <value>За 1 час</value>
+  </data>
+  <data name="ForOneMinute.Content" xml:space="preserve">
+    <value>За минуту</value>
+  </data>
+  <data name="ForThirtyMinutes.Content" xml:space="preserve">
+    <value>За 30 минут</value>
+  </data>
+  <data name="ForTwelveHours.Content" xml:space="preserve">
+    <value>За 12 часов</value>
+  </data>
   <data name="Friday.Content" xml:space="preserve">
     <value>Пт.</value>
   </data>
@@ -236,6 +263,9 @@
   </data>
   <data name="NoRepetition.Content" xml:space="preserve">
     <value>Без повторений</value>
+  </data>
+  <data name="Notification.Header" xml:space="preserve">
+    <value>Время уведомления</value>
   </data>
   <data name="OnceMonth.Content" xml:space="preserve">
     <value>Раз в месяц</value>

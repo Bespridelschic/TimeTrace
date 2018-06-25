@@ -129,11 +129,12 @@ namespace TimeTrace.Model.Events
 			}
 		}
 
-		private int notificationTime;
+		private DateTime notificationTime;
 		/// <summary>
 		/// Pre-warning time
 		/// </summary>
-		public int NotificationTime
+		[JsonProperty(PropertyName = "timeNotification")]
+		public DateTime NotificationTime
 		{
 			get => notificationTime;
 			set
@@ -226,7 +227,8 @@ namespace TimeTrace.Model.Events
 				CreateAt = this.CreateAt,
 				UpdateAt = this.UpdateAt,
 				IsDelete = this.IsDelete,
-				EmailOfOwner = this.EmailOfOwner
+				EmailOfOwner = this.EmailOfOwner,
+				NotificationTime = this.NotificationTime
 			};
 		}
 	}

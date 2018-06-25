@@ -206,11 +206,11 @@
 					</ParallaxView>
 
 					<HyperlinkButton
+						x:Uid="/ContactsView/ProposalToCreateNewContact"
 						Grid.Row="1"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
 						Click="{x:Bind ViewModel.AddContactAsync}"
-						x:Uid="/ContactsView/ProposalToCreateNewContact"
 						FontSize="25"
 						IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
 						Visibility="{x:Bind ViewModel.Contacts.Count, Mode=OneWay, Converter={StaticResource fromIntToCollapseConverter}}" />
@@ -218,7 +218,7 @@
 					<ListView
 						x:Name="ContactsList"
 						Padding="0,0,5,0"
-						DoubleTapped="{x:Bind ViewModel.StartChat}"
+						DoubleTapped="{x:Bind ViewModel.MoreAboutContactAsync}"
 						ItemsSource="{x:Bind ViewModel.Contacts, Mode=TwoWay}"
 						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
 						SelectedIndex="{x:Bind ViewModel.SelectedContact, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
@@ -280,7 +280,8 @@
 									x:Uid="/ContactsView/ContextMenuSendMessage"
 									Click="{x:Bind ViewModel.StartChat}"
 									Icon="Message"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
+									Visibility="Collapsed" />
 								<MenuFlyoutItem
 									x:Uid="/ContactsView/ContextMenuDetails"
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"
@@ -314,7 +315,7 @@
 					<ListView
 						x:Name="UsedContactsList"
 						Padding="0,0,5,0"
-						DoubleTapped="{x:Bind ViewModel.StartChat}"
+						DoubleTapped="{x:Bind ViewModel.MoreAboutContactAsync}"
 						ItemsSource="{x:Bind ViewModel.Contacts, Mode=TwoWay}"
 						RightTapped="{x:Bind ViewModel.SelectItemOnRightClick}"
 						SelectedIndex="{x:Bind ViewModel.SelectedContact, Mode=TwoWay, Converter={StaticResource fromNullableIntToIntConverter}}"
@@ -375,7 +376,8 @@
 									x:Uid="/ContactsView/ContextMenuSendMessage"
 									Click="{x:Bind ViewModel.StartChat}"
 									Icon="Message"
-									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}" />
+									IsEnabled="{x:Bind ViewModel.InternetFeaturesEnable, Mode=OneWay}"
+									Visibility="Collapsed" />
 								<MenuFlyoutItem
 									x:Uid="/ContactsView/ContextMenuDetails"
 									Click="{x:Bind ViewModel.MoreAboutContactAsync}"

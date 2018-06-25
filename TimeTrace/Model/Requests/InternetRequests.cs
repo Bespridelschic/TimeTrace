@@ -447,6 +447,7 @@ namespace TimeTrace.Model.Requests
 							projectPersonEmail = i.ProjectOwnerEmail,
 							personEmail = i.EmailOfOwner,
 							isPublic = i.IsPublic,
+							timeNotification = i.NotificationTime.ToString("yyyy-MM-dd HH:mm:ss"),
 							people = i.UserBind
 						}
 					)

@@ -263,6 +263,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 						if (db.Projects.Count(i => i.Id == invites.project.Id) < 1)
 						{
 							invites.project.AreaId = calendars[calendarsList.SelectedIndex].Id;
+							invites.project.Color = calendars[calendarsList.SelectedIndex].Color;
 							db.Projects.Add(invites.project);
 						}
 

@@ -110,6 +110,8 @@
     <Compile Include="Model\DBContext\MainDatabaseContext.cs" />
     <Compile Include="Model\Events\Project.cs" />
     <Compile Include="Model\Events\MapEvent.cs" />
+    <Compile Include="Model\Notifications\INotificationPipeline.cs" />
+    <Compile Include="Model\Notifications\NotificationPipeline.cs" />
     <Compile Include="Model\RepeatMode.cs" />
     <Compile Include="Model\Requests\FileSystemRequests.cs" />
     <Compile Include="Model\Requests\InternetRequests.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="View\AuthenticationView\SignUp\SignUpPage.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Converters\FromBoolToVisibilityConverter.cs" />
     <Compile Include="View\Converters\FromEmptyStringToTextConverter.cs" />
     <Compile Include="View\Converters\FromGUIDToContactEmailConverter.cs" />
     <Compile Include="View\Converters\FromIntToBoolConverter.cs" />
@@ -236,6 +239,8 @@
     <PRIResource Include="Strings\en-US\InvitationsView.resw" />
     <PRIResource Include="Strings\ru-RU\InvitationsVM.resw" />
     <PRIResource Include="Strings\en-US\InvitationsVM.resw" />
+    <PRIResource Include="Strings\ru-RU\NotificationPipelineModel.resw" />
+    <PRIResource Include="Strings\en-US\NotificationPipelineModel.resw" />
     <None Include="TimeTrace_TemporaryKey.pfx" />
     <PRIResource Include="Strings\ru-RU\SignInUp.resw" />
     <PRIResource Include="Strings\en-US\SignInUp.resw" />

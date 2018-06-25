@@ -14,6 +14,7 @@
 			<converters:FromIntToSolidColorBrushConverter x:Key="fromIntToSolidColorBrushConverter" />
 			<converters:FromUtcToLocalTimeConverter x:Key="fromUtcToLocalTimeConverter" />
 			<converters:FromRepeatModeToIntConverter x:Key="fromRepeatModeToIntConverter" />
+			<converters:FromBoolToVisibilityConverter x:Key="fromBoolToVisibilityConverter" />
 			<Style TargetType="StackPanel">
 				<Setter Property="Transitions">
 					<Setter.Value>
@@ -432,18 +433,19 @@
 									</Grid.ColumnDefinitions>
 
 									<ComboBox
-										x:Uid="/EventView/RepetitionMode"
-										Grid.Column="0"
 										Margin="15,5,10,5"
-										HorizontalAlignment="Stretch"
-										SelectedIndex="{x:Bind ViewModel.SelectedRepeatMode, Mode=TwoWay, Converter={StaticResource fromRepeatModeToIntConverter}}">
-										<ComboBoxItem x:Uid="/EventView/NoRepetition" />
-										<ComboBoxItem x:Uid="/EventView/EveryDate" />
-										<ComboBoxItem x:Uid="/EventView/AfterOneDate" />
-										<ComboBoxItem x:Uid="/EventView/OnceWeek" />
-										<ComboBoxItem x:Uid="/EventView/OnceMonth" />
-										<ComboBoxItem x:Uid="/EventView/OnceYear" />
-										<ComboBoxItem x:Uid="/EventView/CustomRepeat" />
+										Grid.Column="0"
+										x:Uid="/EventView/Notification"
+										SelectedIndex="{x:Bind ViewModel.SelectedIndexOfNotification, Mode=TwoWay}">
+										<ComboBoxItem x:Uid="/EventView/ForBegining" />
+										<ComboBoxItem x:Uid="/EventView/ForDateStart" />
+										<ComboBoxItem x:Uid="/EventView/ForOneMinute" />
+										<ComboBoxItem x:Uid="/EventView/ForFiveMinutes" />
+										<ComboBoxItem x:Uid="/EventView/ForFifteenMinutes" />
+										<ComboBoxItem x:Uid="/EventView/ForThirtyMinutes" />
+										<ComboBoxItem x:Uid="/EventView/ForOneHour" />
+										<ComboBoxItem x:Uid="/EventView/ForTwelveHours" />
+										<ComboBoxItem x:Uid="/EventView/ForOneDay" />
 									</ComboBox>
 
 									<ToggleSwitch
@@ -455,109 +457,118 @@
 								</Grid>
 							</StackPanel>
 
-							<StackPanel Visibility="{x:Bind ViewModel.CustomRepeatEnable, Mode=OneWay}">
-
-								<ToggleSwitch
-									Name="EndingForDate"
-									x:Uid="/EventView/DateAsEnd"
-									Margin="15,-5,0,-3"
-									IsOn="{x:Bind ViewModel.IsEndingForDateSelected, Mode=TwoWay}" />
-
-								<CalendarDatePicker
-									x:Uid="/EventView/EndRepetitionDate"
-									Grid.Column="1"
-									Width="180"
-									Margin="15,0,15,5"
-									HorizontalAlignment="Left"
-									Date="{x:Bind ViewModel.BeforeDateRecurrence, Mode=TwoWay}"
-									DateFormat="{}{day.integer} {month.full} {year.full}"
-									IsEnabled="{Binding ElementName=EndingForDate, Path=IsOn}"
-									MaxDate="{x:Bind ViewModel.MaxDate.Value, Mode=OneWay}"
-									MinDate="{x:Bind ViewModel.StartDate.Value, Mode=OneWay}" />
-
-								<ToggleSwitch
-									Name="EndingForRepeated"
-									x:Uid="/EventView/CountAsEnd"
-									Margin="15,-4,15,0"
-									IsOn="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=TwoWay}" />
-
-								<TextBox
-									x:Uid="/EventView/EndRepetitionCount"
-									Grid.Column="1"
-									MaxWidth="150"
-									Margin="15,-3,15,5"
-									HorizontalAlignment="Left"
-									InputScope="Number"
-									IsEnabled="{Binding ElementName=EndingForRepeated, Path=IsOn}"
-									Text="{x:Bind ViewModel.BeforeNumberRecurrence, Mode=OneWay}"
-									TextChanged="{x:Bind ViewModel.ControlTheInputOfTheNumberOfRepetitions}" />
-
-								<TextBlock
-									x:Uid="/EventView/CustomDays"
+							<StackPanel>
+								<ComboBox
+									x:Uid="/EventView/RepetitionMode"
 									Margin="15,5,15,5"
-									HorizontalAlignment="Left"
-									Visibility="{x:Bind ViewModel.IsCustomDateOfWeekSelectingEnable, Mode=OneWay}" />
+									HorizontalAlignment="Stretch"
+									SelectedIndex="{x:Bind ViewModel.SelectedRepeatMode, Mode=TwoWay, Converter={StaticResource fromRepeatModeToIntConverter}}">
+									<ComboBoxItem x:Uid="/EventView/NoRepetition" />
+									<ComboBoxItem x:Uid="/EventView/EveryDate" />
+									<ComboBoxItem x:Uid="/EventView/AfterOneDate" />
+									<ComboBoxItem x:Uid="/EventView/OnceWeek" />
+									<ComboBoxItem x:Uid="/EventView/OnceMonth" />
+									<ComboBoxItem x:Uid="/EventView/OnceYear" />
+									<ComboBoxItem x:Uid="/EventView/CustomRepeat" />
+								</ComboBox>
 
-								<Grid Margin="15,0,15,0" Visibility="{x:Bind ViewModel.IsCustomDateOfWeekSelectingEnable, Mode=OneWay}">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition />
-										<ColumnDefinition />
-										<ColumnDefinition />
-										<ColumnDefinition />
-										<ColumnDefinition />
-										<ColumnDefinition />
-										<ColumnDefinition />
-									</Grid.ColumnDefinitions>
+								<StackPanel Visibility="{x:Bind ViewModel.CustomRepeatEnable, Mode=OneWay}">
+									<ToggleSwitch
+										Name="EndingForDate"
+										x:Uid="/EventView/DateAsEnd"
+										Margin="15,-5,0,-3"
+										IsOn="{x:Bind ViewModel.IsEndingForDateSelected, Mode=TwoWay}" />
 
-									<ToggleButton
-										x:Uid="/EventView/Monday"
-										Height="35"
-										Margin="0,0,2,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[1], Mode=TwoWay}" />
-									<ToggleButton
-										x:Uid="/EventView/Tuesday"
-										Grid.Column="1"
-										Height="35"
-										Margin="2,0,2,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[2], Mode=TwoWay}" />
-									<ToggleButton
-										x:Uid="/EventView/Wednesday"
-										Grid.Column="2"
-										Height="35"
-										Margin="2,0,2,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[3], Mode=TwoWay}" />
-									<ToggleButton
-										x:Uid="/EventView/Thursday"
-										Grid.Column="3"
-										Height="35"
-										Margin="2,0,2,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[4], Mode=TwoWay}" />
-									<ToggleButton
-										x:Uid="/EventView/Friday"
-										Grid.Column="4"
-										Height="35"
-										Margin="2,0,2,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[5], Mode=TwoWay}" />
-									<ToggleButton
-										x:Uid="/EventView/Saturday"
-										Grid.Column="5"
-										Height="35"
-										Margin="2,0,2,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[6], Mode=TwoWay}" />
-									<ToggleButton
-										x:Uid="/EventView/Sunday"
-										Grid.Column="6"
-										Height="35"
-										Margin="2,0,0,0"
-										HorizontalAlignment="Stretch"
-										IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[0], Mode=TwoWay}" />
-								</Grid>
+									<CalendarDatePicker
+										x:Uid="/EventView/EndRepetitionDate"
+										Width="180"
+										Margin="15,0,15,5"
+										HorizontalAlignment="Left"
+										Date="{x:Bind ViewModel.BeforeDateRecurrence, Mode=TwoWay}"
+										DateFormat="{}{day.integer} {month.full} {year.full}"
+										IsEnabled="{Binding ElementName=EndingForDate, Path=IsOn}"
+										MaxDate="{x:Bind ViewModel.MaxDate.Value, Mode=OneWay}"
+										MinDate="{x:Bind ViewModel.StartDate.Value, Mode=OneWay}"
+										Visibility="{x:Bind ViewModel.IsEndingForDateSelected, Mode=OneWay, Converter={StaticResource fromBoolToVisibilityConverter}}" />
+
+									<TextBox
+										x:Uid="/EventView/EndRepetitionCount"
+										MaxWidth="150"
+										Margin="15,0,15,5"
+										HorizontalAlignment="Left"
+										InputScope="Number"
+										IsEnabled="{Binding ElementName=EndingForRepeated, Path=IsOn}"
+										Text="{x:Bind ViewModel.BeforeNumberRecurrence, Mode=OneWay}"
+										TextChanged="{x:Bind ViewModel.ControlTheInputOfTheNumberOfRepetitions}"
+										Visibility="{x:Bind ViewModel.IsEndingForRepeatSelected, Mode=OneWay, Converter={StaticResource fromBoolToVisibilityConverter}}" />
+
+									<TextBlock
+										x:Uid="/EventView/CustomDays"
+										Margin="15,5,15,5"
+										HorizontalAlignment="Left"
+										Visibility="{x:Bind ViewModel.IsCustomDateOfWeekSelectingEnable, Mode=OneWay}" />
+
+									<Grid Margin="15,0,15,0" Visibility="{x:Bind ViewModel.IsCustomDateOfWeekSelectingEnable, Mode=OneWay}">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
+										<ToggleButton
+											x:Uid="/EventView/Monday"
+											Height="35"
+											Margin="0,0,2,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[1], Mode=TwoWay}" />
+										<ToggleButton
+											x:Uid="/EventView/Tuesday"
+											Grid.Column="1"
+											Height="35"
+											Margin="2,0,2,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[2], Mode=TwoWay}" />
+										<ToggleButton
+											x:Uid="/EventView/Wednesday"
+											Grid.Column="2"
+											Height="35"
+											Margin="2,0,2,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[3], Mode=TwoWay}" />
+										<ToggleButton
+											x:Uid="/EventView/Thursday"
+											Grid.Column="3"
+											Height="35"
+											Margin="2,0,2,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[4], Mode=TwoWay}" />
+										<ToggleButton
+											x:Uid="/EventView/Friday"
+											Grid.Column="4"
+											Height="35"
+											Margin="2,0,2,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[5], Mode=TwoWay}" />
+										<ToggleButton
+											x:Uid="/EventView/Saturday"
+											Grid.Column="5"
+											Height="35"
+											Margin="2,0,2,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[6], Mode=TwoWay}" />
+										<ToggleButton
+											x:Uid="/EventView/Sunday"
+											Grid.Column="6"
+											Height="35"
+											Margin="2,0,0,0"
+											HorizontalAlignment="Stretch"
+											IsChecked="{x:Bind ViewModel.SelectedRepeatedDates[0], Mode=TwoWay}" />
+									</Grid>
+								</StackPanel>
 
 							</StackPanel>
 

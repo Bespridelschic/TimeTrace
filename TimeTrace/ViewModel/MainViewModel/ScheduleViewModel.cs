@@ -513,6 +513,7 @@ namespace TimeTrace.ViewModel.MainViewModel
 				{
 					Text = $"{ResourceLoader.GetString("/ScheduleVM/Name")}: {tempEvent.Name}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Start")}: {tempEvent.Start.ToLocalTime().ToShortDateString()} {tempEvent.Start.ToLocalTime().ToShortTimeString()}\n" +
+							$"{ResourceLoader.GetString("/ScheduleVM/Notify")}: {tempEvent.NotificationTime.ToLocalTime().ToShortDateString()} {tempEvent.NotificationTime.ToLocalTime().ToShortTimeString()}\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/Duration")}: {duration}.\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/WillComeThrough")}: {willComeThrough}.\n" +
 							$"{ResourceLoader.GetString("/ScheduleVM/PersonAssociatedWithEvent")}: {person}\n" +

@@ -17,6 +17,7 @@ using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using TimeTrace.Model.Notifications;
 
 namespace TimeTrace.ViewModel.MainViewModel
 {
@@ -55,6 +56,11 @@ namespace TimeTrace.ViewModel.MainViewModel
 		/// Local reference to main navigation view
 		/// </summary>
 		public NavigationView LocalNavView { get; set; }
+
+		/// <summary>
+		/// Notification pipeline
+		/// </summary>
+		private NotificationPipeline NotificationPipeline { get; set; }
 
 		/// <summary>
 		/// Localization resource loader
@@ -394,6 +400,14 @@ namespace TimeTrace.ViewModel.MainViewModel
 			{
 				(Application.Current as App).AppFrame.Navigate(typeof(HomePage));
 			}
+		}
+
+		/// <summary>
+		/// Reset notification pipeline
+		/// </summary>
+		public void ReInstallNotificationPipeline()
+		{
+			NotificationPipeline = new NotificationPipeline();
 		}
 
 		#region Searching map events

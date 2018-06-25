@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using TimeTrace.Model;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using TimeTrace.View.MainView.PersonalMapsCreatePages;
 using Windows.UI.Popups;
-using System.Xml.Linq;
-using System.Diagnostics;
-using System.Runtime.Serialization.Json;
-using System.IO;
 using TimeTrace.Model.DBContext;
 using Windows.UI;
-using Windows.UI.Xaml.Shapes;
+using System.Diagnostics;
 using Windows.UI.Xaml.Media;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
@@ -25,6 +17,7 @@ using System.Collections.ObjectModel;
 using Windows.Storage;
 using TimeTrace.View.MainView;
 using Windows.ApplicationModel.Resources;
+using Windows.UI.Xaml.Documents;
 
 namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 {
@@ -447,6 +440,20 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 			}
 		}
 
+		private int selectedIndexOfNotification;
+		/// <summary>
+		/// Index of selected notification mode
+		/// </summary>
+		public int SelectedIndexOfNotification
+		{
+			get => selectedIndexOfNotification;
+			set
+			{
+				selectedIndexOfNotification = value;
+				OnPropertyChanged();
+			}
+		}
+
 		#region Repetition edit data
 
 		/// <summary>
@@ -505,8 +512,11 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				DateTime.Now.DayOfWeek == DayOfWeek.Friday,
 				DateTime.Now.DayOfWeek == DayOfWeek.Saturday
 			};
+
+			SelectedIndexOfNotification = 0;
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Standart constructor for map event editing
 		/// </summary>
@@ -556,6 +566,43 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				else
 				{
 					IsNotAllDay = true;
+				}
+
+				if (CurrentMapEvent.Start.Date == CurrentMapEvent.NotificationTime.ToLocalTime().Date)
+				{
+					SelectedIndexOfNotification = 1;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.ToLocalTime())
+				{
+					SelectedIndexOfNotification = 0;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddMinutes(1).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 2;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddMinutes(5).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 3;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddMinutes(15).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 4;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddMinutes(30).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 5;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddHours(1).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 6;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddHours(12).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 7;
+				}
+				if (CurrentMapEvent.Start == CurrentMapEvent.NotificationTime.AddDays(1).ToLocalTime())
+				{
+					SelectedIndexOfNotification = 8;
 				}
 
 				using (var db = new MainDatabaseContext())
@@ -686,6 +733,45 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				BindingEventToWindowsCalendarAsync(savedMapEvent);
 			}
 
+			switch (SelectedIndexOfNotification)
+			{
+				case 0:
+					savedMapEvent.NotificationTime = savedMapEvent.Start;
+					break;
+
+				case 1:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.ToLocalTime().Date;
+					break;
+
+				case 2:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(0, 1, 0));
+					break;
+
+				case 3:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(0, 5, 0));
+					break;
+
+				case 4:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(0, 15, 0));
+					break;
+
+				case 5:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(0, 30, 0));
+					break;
+
+				case 6:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(1, 0, 0));
+					break;
+
+				case 7:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(12, 0, 0));
+					break;
+
+				case 8:
+					savedMapEvent.NotificationTime = savedMapEvent.Start.Subtract(new TimeSpan(24, 0, 0));
+					break;
+			}
+
 			// Count of copies
 			int count = 0;
 			if (IsEndingForDateSelected)
@@ -727,7 +813,6 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 			using (MainDatabaseContext db = new MainDatabaseContext())
 			{
-
 				ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 				if (StartTabIndex == 0 && db.MapEvents
 					.Count(i => i.Start <= savedMapEvent.Start.ToUniversalTime()
@@ -808,6 +893,9 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 				// Synchronization of changes with server
 				await StartPageViewModel.Instance.CategoriesSynchronization();
 			}
+
+			// Reinstall pipeline of notifications
+			StartPageViewModel.Instance.ReInstallNotificationPipeline();
 		}
 
 		/// <summary>
@@ -819,7 +907,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 		{
 			using (var db = new MainDatabaseContext())
 			{
-				var IdAndCreationDate = new Stack<string>(db.MapEvents
+				var idAndCreationDate = new Stack<string>(db.MapEvents
 					.Where(i => i.EventInterval == mapEvent.Id)
 					.OrderBy(i => i.Start)
 					.Select(i => i.Id)
@@ -831,7 +919,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 
 				db.SaveChanges();
 
-				return IdAndCreationDate;
+				return idAndCreationDate;
 			}
 		}
 
@@ -876,6 +964,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							}
 							added.Start = added.Start.AddDays(countingDate);
 							added.End = added.End.AddDays(countingDate);
+							added.NotificationTime = added.NotificationTime.AddDays(countingDate);
 
 							countingDate++;
 
@@ -898,6 +987,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							}
 							added.Start = temp.Start.AddDays(countingDate);
 							added.End = temp.End.AddDays(countingDate);
+							added.NotificationTime = temp.NotificationTime.AddDays(countingDate);
 
 							countingDate += 2;
 
@@ -920,6 +1010,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							}
 							added.Start = temp.Start.AddDays(countingDate);
 							added.End = temp.End.AddDays(countingDate);
+							added.NotificationTime = temp.NotificationTime.AddDays(countingDate);
 
 							countingDate += 7;
 
@@ -942,6 +1033,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							}
 							added.Start = temp.Start.AddMonths(countingDate);
 							added.End = temp.End.AddMonths(countingDate);
+							added.NotificationTime = temp.NotificationTime.AddDays(countingDate);
 
 							countingDate++;
 
@@ -965,6 +1057,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 							}
 							added.Start = temp.Start.AddYears(countingDate);
 							added.End = temp.End.AddYears(countingDate);
+							added.NotificationTime = temp.NotificationTime.AddDays(countingDate);
 
 							countingDate++;
 
@@ -1015,6 +1108,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								}
 								added.Start = temp.Start.AddDays(countingDate + 1);
 								added.End = temp.End.AddDays(countingDate + 1);
+								added.NotificationTime = temp.NotificationTime.AddDays(countingDate + 1);
 
 								countingDate += 7;
 
@@ -1038,6 +1132,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								}
 								added.Start = temp.Start.AddDays(countingDate + 2);
 								added.End = temp.End.AddDays(countingDate + 2);
+								added.NotificationTime = temp.NotificationTime.AddDays(countingDate + 2);
 
 								countingDate += 7;
 
@@ -1061,6 +1156,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								}
 								added.Start = temp.Start.AddDays(countingDate + 3);
 								added.End = temp.End.AddDays(countingDate + 3);
+								added.NotificationTime = temp.NotificationTime.AddDays(countingDate + 3);
 
 								countingDate += 7;
 
@@ -1084,6 +1180,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								}
 								added.Start = temp.Start.AddDays(countingDate + 4);
 								added.End = temp.End.AddDays(countingDate + 4);
+								added.NotificationTime = temp.NotificationTime.AddDays(countingDate + 4);
 
 								countingDate += 7;
 
@@ -1107,6 +1204,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								}
 								added.Start = temp.Start.AddDays(countingDate + 5);
 								added.End = temp.End.AddDays(countingDate + 5);
+								added.NotificationTime = temp.NotificationTime.AddDays(countingDate + 5);
 
 								countingDate += 7;
 
@@ -1130,6 +1228,7 @@ namespace TimeTrace.ViewModel.MainViewModel.MapEventsViewModel
 								}
 								added.Start = temp.Start.AddDays(countingDate + 6);
 								added.End = temp.End.AddDays(countingDate + 6);
+								added.NotificationTime = temp.NotificationTime.AddDays(countingDate + 6);
 
 								countingDate += 7;
 

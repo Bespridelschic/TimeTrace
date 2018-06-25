@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using TimeTrace.Model.Requests;
+using TimeTrace.ViewModel.MainViewModel;
 
 namespace TimeTrace.ViewModel.AuthenticationViewModel
 {
@@ -190,7 +191,8 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 							// Set current user name into title bar
 							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/SignInUp/UnknownEmail"), null);
-							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
+							StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
+							StartPageViewModel.Instance.ReInstallNotificationPipeline();
 
 							if (Window.Current.Content is Frame frame)
 							{
@@ -231,14 +233,15 @@ namespace TimeTrace.ViewModel.AuthenticationViewModel
 
 							// Set current user name into title bar
 							var tempCurrentUser = new User((string)localSettings.Values["email"] ?? ResourceLoader.GetString("/SignInUp/UnknownEmail"), null);
-							MainViewModel.StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
+							StartPageViewModel.Instance.CurrentUserName = tempCurrentUser.Email[0].ToString().ToUpper() + tempCurrentUser.Email.Substring(1, tempCurrentUser.Email.IndexOf('@') - 1);
+							StartPageViewModel.Instance.ReInstallNotificationPipeline();
 
 							if (Window.Current.Content is Frame frame)
 							{
 								frame.Navigate(typeof(StartPage));
 							}
 
-							await MainViewModel.StartPageViewModel.Instance.ServerDataSynchronization();
+							await StartPageViewModel.Instance.ServerDataSynchronization();
 
 							break;
 						}
