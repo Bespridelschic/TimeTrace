@@ -3,9 +3,10 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Models.Models.FileSystemRequests;
+using System.Threading.Tasks;
+using Models.FileSystemRequests;
 
-namespace Models.Models.UserModel
+namespace Models.UserModel
 {
 	/// <inheritdoc />
 	/// <summary>
@@ -24,7 +25,7 @@ namespace Models.Models.UserModel
 
 		public string Email
 		{
-			get => email.Trim();
+			get => email?.Trim();
 			set
 			{
 				email = value;
@@ -34,7 +35,7 @@ namespace Models.Models.UserModel
 
 		public string Password
 		{
-			get => password.Trim();
+			get => password?.Trim();
 			set
 			{
 				password = value;
@@ -115,12 +116,12 @@ namespace Models.Models.UserModel
 		/// </summary>
 		public User()
 		{
-			LoadUserDataFromFile();
+			LoadUserDataFromFileAsync().GetAwaiter().GetResult();
 		}
 
 		/// <inheritdoc />
 		/// <summary>
-		/// Initializing new <seealso cref="T:Models.Models.UserModel.User" />
+		/// Initializing new <seealso cref="T:Models.UserModel.User" />
 		/// </summary>
 		/// <param name="email">Email</param>
 		/// <param name="password">Password</param>
@@ -134,10 +135,10 @@ namespace Models.Models.UserModel
 
 		#region Methods
 
-		public async void LoadUserDataFromFile()
-		{
-			await this.LoadUserEmailAndTokenFromFileAsync();
-		}
+		/// <summary>
+		/// Async loading user data from local files
+		/// </summary>
+		public async Task LoadUserDataFromFileAsync() => await new FileSystemRequests.FileSystemRequests().LoadUserEmailAndTokenFromFileAsync(this);
 
 		#endregion
 

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Models.Models.UserModel;
+using Models.UserModel;
 
-namespace Models.Models.FileSystemRequests
+namespace Models.FileSystemRequests
 {
 	/// <summary>
 	/// Class for working with file system
 	/// </summary>
-	public static class FileSystemRequests
+	public class FileSystemRequests : IFileSystemService
 	{
 		#region Saving
 
@@ -17,7 +17,7 @@ namespace Models.Models.FileSystemRequests
 		/// </summary>
 		/// <param name="user">Saving object <see cref="User"/></param>
 		/// <returns>Success of saving</returns>
-		public static async Task<bool> SaveUserEmailToFileAsync(this User user)
+		public async Task<bool> SaveUserEmailToFileAsync(User user)
 		{
 			// Check argument for null or empty user email
 			if (ArgumentIsNull(user) || string.IsNullOrEmpty(user.Email))
@@ -34,7 +34,7 @@ namespace Models.Models.FileSystemRequests
 		/// Save user email and password hash to file
 		/// </summary>
 		/// <returns>Result of saving</returns>
-		public static async Task<bool> SaveUserHashToFileAsync(this User user)
+		public async Task<bool> SaveUserHashToFileAsync(User user)
 		{
 			// Check argument for null or empty user email
 			if (ArgumentIsNull(user) || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Password))
@@ -50,19 +50,19 @@ namespace Models.Models.FileSystemRequests
 		/// <summary>
 		/// Save user token to file
 		/// </summary>
-		/// <param name="token">Token</param>
+		/// <param name="user"><seealso cref="User"/> with token</param>
 		/// <returns>Success of saving</returns>
-		public static async Task<bool> SaveUserTokenToFileAsync(string token)
+		public async Task<bool> SaveUserTokenToFileAsync(User user)
 		{
 			// Check argument for null or empty user email
-			if (ArgumentIsNull(token) || string.IsNullOrEmpty(token.Trim()))
+			if (ArgumentIsNull(user) || string.IsNullOrEmpty(user.Token?.Trim()))
 			{
 				throw new ArgumentNullException($"{nameof(User)} is incorrect for saving");
 			}
 
 			const string fileName = "UserTokenData.bin";
 
-			return await WriteToFile(fileName, token);
+			return await WriteToFile(fileName, user.Token);
 		}
 
 		#endregion
@@ -74,7 +74,7 @@ namespace Models.Models.FileSystemRequests
 		/// </summary>
 		/// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Result of loading</returns>
-		public static async Task<bool> LoadUserEmailFromFileAsync(this User user)
+		public async Task<bool> LoadUserEmailFromFileAsync(User user)
 		{
 			if (ArgumentIsNull(user))
 			{
@@ -98,7 +98,7 @@ namespace Models.Models.FileSystemRequests
 		/// </summary>
 		/// /// <param name="user">Object of <see cref="User"/></param>
 		/// <returns>Result of loading</returns>
-		public static async Task<bool> LoadUserEmailAndTokenFromFileAsync(this User user)
+		public async Task<bool> LoadUserEmailAndTokenFromFileAsync(User user)
 		{
 			if (ArgumentIsNull(user))
 			{
@@ -107,7 +107,7 @@ namespace Models.Models.FileSystemRequests
 
 			const string userDataFileName = "UserData.bin";
 			const string userTokenFileName = "UserTokenData.bin";
-			
+
 			user.Email = await ReadFromFile(userDataFileName);
 			user.Token = await ReadFromFile(userTokenFileName);
 
@@ -122,7 +122,7 @@ namespace Models.Models.FileSystemRequests
 		/// Remove all confidential files
 		/// </summary>
 		/// <returns>Result of removing of all files</returns>
-		public static async Task<bool> RemoveAllUserFilesAsync()
+		public async Task<bool> RemoveAllUserFilesAsync()
 		{
 			try
 			{
@@ -155,6 +155,55 @@ namespace Models.Models.FileSystemRequests
 			}
 		}
 
+		/// <summary>
+		/// Delete selected files
+		/// </summary>
+		/// <param name="userData">Is need remove file with user email</param>
+		/// <param name="userToken">Is need remove file with user token</param>
+		/// <param name="userHash">Is need remove file with user hash code</param>
+		/// <returns></returns>
+		public async Task<bool> RemoveUserFilesAsync(bool userData, bool userToken, bool userHash)
+		{
+			try
+			{
+				await Task.Run(() =>
+				{
+					if (userData)
+					{
+						const string userDataFileName = "UserData.bin";
+						if (File.Exists(userDataFileName))
+						{
+							File.Delete(userDataFileName);
+						}
+					}
+
+					if (userToken)
+					{
+						const string userTokenFileName = "UserTokenData.bin";
+						if (File.Exists(userTokenFileName))
+						{
+							File.Delete(userTokenFileName);
+						}
+					}
+
+					if (userHash)
+					{
+						const string userHashFileName = "UserHashData.bin";
+						if (File.Exists(userHashFileName))
+						{
+							File.Delete(userHashFileName);
+						}
+					}
+				});
+
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
 		#endregion
 
 		/// <summary>
@@ -162,7 +211,7 @@ namespace Models.Models.FileSystemRequests
 		/// </summary>
 		/// <param name="user">Current authorized <seealso cref="User"/></param>
 		/// <returns>Is available offline authorization</returns>
-		public static async Task<bool> CanAuthorizationWithoutInternetAsync(this User user)
+		public async Task<bool> CanAuthorizationWithoutInternetAsync(User user)
 		{
 			if (ArgumentIsNull(user))
 			{
@@ -194,7 +243,7 @@ namespace Models.Models.FileSystemRequests
 		/// <typeparam name="T">Type of argument</typeparam>
 		/// <param name="param">Sender parameter</param>
 		/// <returns>Is param null</returns>
-		private static bool ArgumentIsNull<T>(T param)
+		private bool ArgumentIsNull<T>(T param)
 		{
 			return param == null;
 		}
@@ -205,7 +254,7 @@ namespace Models.Models.FileSystemRequests
 		/// <param name="path">Path to file</param>
 		/// <param name="data">Saved data</param>
 		/// <returns>Result of saving</returns>
-		private static async Task<bool> WriteToFile(string path, string data)
+		private async Task<bool> WriteToFile(string path, string data)
 		{
 			try
 			{
@@ -235,7 +284,7 @@ namespace Models.Models.FileSystemRequests
 		/// </summary>
 		/// <param name="path">Path to file</param>
 		/// <returns>Result of reading</returns>
-		private static async Task<string> ReadFromFile(string path)
+		private async Task<string> ReadFromFile(string path)
 		{
 			if (!File.Exists(path))
 			{

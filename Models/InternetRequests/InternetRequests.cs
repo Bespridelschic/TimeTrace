@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Models.Models.DatabaseModel;
-using Models.Models.UserModel;
-
-namespace Models.Models.InternetRequests
+﻿namespace Models.InternetRequests
 {
 	/// <summary>
 	/// Static class to work with internet server
@@ -336,10 +326,10 @@ namespace Models.Models.InternetRequests
 	//			#region Adding to database
 
 	//			// Get map events items for adding to local database
-	//			IList<MapEvent> receivedMapEvents = new List<MapEvent>();
+	//			IList<Event> receivedMapEvents = new List<Event>();
 	//			foreach (var result in jsonString["events"]["item"].Children().ToList())
 	//			{
-	//				var searchResult = result.ToObject<MapEvent>();
+	//				var searchResult = result.ToObject<Event>();
 	//				receivedMapEvents.Add(searchResult);
 	//			}
 
@@ -443,7 +433,7 @@ namespace Models.Models.InternetRequests
 	//						personEmail = i.EmailOfOwner,
 	//						isPublic = i.IsPublic,
 	//						timeNotification = i.NotificationTime.ToString("yyyy-MM-dd HH:mm:ss"),
-	//						people = i.UserBind
+	//						people = i.AssociatedPerson
 	//					}
 	//				)
 	//			};
@@ -625,7 +615,7 @@ namespace Models.Models.InternetRequests
 	//	/// Get public map events from added contacts
 	//	/// </summary>
 	//	/// <returns>Result of getting</returns>
-	//	public static async Task<(int operationResult, List<Project> publicProjects, List<MapEvent> publicEvents)> GetPublicMapEventsAsync()
+	//	public static async Task<(int operationResult, List<Project> publicProjects, List<Event> publicEvents)> GetPublicMapEventsAsync()
 	//	{
 	//		int resultOfSynchronization = 1;
 
@@ -657,10 +647,10 @@ namespace Models.Models.InternetRequests
 	//			receivedProjects.Add(searchResult);
 	//		}
 
-	//		List<MapEvent> receivedMapEvents = new List<MapEvent>();
+	//		List<Event> receivedMapEvents = new List<Event>();
 	//		foreach (var result in jsonString["events"].Children().ToList())
 	//		{
-	//			var searchResult = result.ToObject<MapEvent>();
+	//			var searchResult = result.ToObject<Event>();
 	//			searchResult.ProjectOwnerEmail = (string)localSettings.Values["email"];
 	//			searchResult.CreateAt = searchResult.UpdateAt = DateTime.UtcNow;
 
@@ -788,10 +778,10 @@ namespace Models.Models.InternetRequests
 	//	/// </summary>
 	//	/// <param name="projectId">Id of accepted project</param>
 	//	/// <returns></returns>
-	//	public static async Task<(Project project, List<MapEvent> events)> AcceptInvite(string projectId)
+	//	public static async Task<(Project project, List<Event> events)> AcceptInvite(string projectId)
 	//	{
 	//		Project project = new Project();
-	//		List<MapEvent> events = new List<MapEvent>(); 
+	//		List<Event> events = new List<Event>(); 
 
 	//		if (string.IsNullOrEmpty(projectId))
 	//		{
@@ -821,7 +811,7 @@ namespace Models.Models.InternetRequests
 
 	//		foreach (var result in jsonString["events"].Children().ToList())
 	//		{
-	//			var temp = result.ToObject<MapEvent>();
+	//			var temp = result.ToObject<Event>();
 	//			temp.UpdateAt = temp.CreateAt = DateTime.UtcNow;
 	//			temp.EmailOfOwner = (string)localSettings.Values["email"];
 
