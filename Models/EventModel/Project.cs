@@ -24,20 +24,13 @@ namespace Models.EventModel
 		#region Constructors
 
 		/// <summary>
-		/// Standart constructor for creation new project
-		/// </summary>
-		public Project(string owner) : base(owner)
-		{
-			Creator = owner;
-		}
-
-		/// <summary>
 		/// Standart constructor for loading projects of calendar
 		/// </summary>
-		/// <param name="calendar"></param>
-		public Project(Calendar calendar)
+		/// <param name="calendar">Root calendar</param>
+		public Project(Calendar calendar) : base(calendar.Owner)
 		{
 			CalendarId = calendar.Id;
+			Creator = calendar.Owner;
 		}
 
 		#endregion

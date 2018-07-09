@@ -7,7 +7,7 @@ using Models.UserModel;
 namespace ModelUnitTests.UserTests
 {
 	[TestClass]
-    internal class UserTest
+    public class UserTest
     {
 		/// <summary>
 		/// Checking correct email

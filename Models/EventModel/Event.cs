@@ -121,29 +121,13 @@ namespace Models.EventModel
 		#region Constructors
 
 		/// <summary>
-		/// Standart constructor
+		/// Standart constructor for loading events of project
 		/// </summary>
-		public Event()
+		/// <param name="project">Root project</param>
+		public Event(Project project) : base(project.Owner)
 		{
-			IsPublic = false;
-		}
-
-		/// <summary>
-		/// Standart constructor for create new event
-		/// </summary>
-		/// <param name="owner"></param>
-		public Event(string owner) : base(owner)
-		{
-			IsPublic = false;
-		}
-
-		/// <summary>
-		/// Create builder for creation new <seealso cref="Event"/> object in fluent notation
-		/// </summary>
-		/// <returns>New object of <seealso cref="EventBuilder"/></returns>
-		public static EventBuilder CreateBuilder()
-		{
-			return new EventBuilder();
+			ProjectId = project.Id;
+			Color = project.Color;
 		}
 
 		/// <summary>
@@ -151,9 +135,9 @@ namespace Models.EventModel
 		/// </summary>
 		/// <param name="owner">Owner of created event</param>
 		/// <returns>New object of <seealso cref="EventBuilder"/></returns>
-		public static EventBuilder CreateBuilder(string owner)
+		public static EventBuilder CreateBuilder(Project project)
 		{
-			return new EventBuilder(owner);
+			return new EventBuilder(project);
 		}
 
 		#endregion

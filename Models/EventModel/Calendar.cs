@@ -34,15 +34,6 @@ namespace Models.EventModel
 
 		/// <inheritdoc />
 		/// <summary>
-		/// Standart constructor
-		/// </summary>
-		public Calendar() : base()
-		{
-			Favorite = false;
-		}
-
-		/// <inheritdoc />
-		/// <summary>
 		/// Standart constructor for creation new calendar
 		/// </summary>
 		/// <param name="owner">Owner of calendar</param>

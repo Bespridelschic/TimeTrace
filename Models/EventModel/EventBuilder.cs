@@ -11,17 +11,10 @@ namespace Models.EventModel
 	{
 		private Event @event;
 
-		public EventBuilder()
+		public EventBuilder(Project project)
 		{
-			@event = new Event();
+			@event = new Event(project);
 			@event.Start = @event.End = DateTime.UtcNow;
-		}
-
-		public EventBuilder(string owner)
-		{
-			@event = new Event();
-			@event.Start = @event.End = DateTime.UtcNow;
-			@event.Owner = owner;
 		}
 
 		public EventBuilder SetName(string name)

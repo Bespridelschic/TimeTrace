@@ -63,14 +63,6 @@ namespace Models.EventModel.EntitiesFoundationModel
 		#region Constructors
 
 		/// <summary>
-		/// Standart constructor
-		/// </summary>
-		public Category()
-		{
-			Color = 1;
-		}
-
-		/// <summary>
 		/// Standart constructor for initializing new category
 		/// </summary>
 		public Category(string owner) : base(owner)
