@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using ViewModels.Annotations;
 
 namespace ViewModels
@@ -10,7 +7,7 @@ namespace ViewModels
 	/// <summary>
 	/// Abstract base class of ViewModel
 	/// </summary>
-	internal abstract class BaseViewModel : INotifyPropertyChanged
+	public abstract class BaseViewModel : INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Called event

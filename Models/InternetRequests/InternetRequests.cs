@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,56 +13,50 @@ namespace Models.InternetRequests
 	/// </summary>
 	public static class InternetRequests
 	{
-		//	/// <summary>
-		//	/// Base method for sending POST requests
-		//	/// </summary>
-		//	/// <param name="url">URL for request</param>
-		//	/// <param name="data">Data in json format for sending</param>
-		//	/// <returns>Answer of server in json format</returns>
-		//	private static async Task<string> BasePostRequestAsync(string url, string data)
-		//	{
-		//		if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(data))
-		//		{
-		//			return string.Empty;
-		//		}
+		/// <summary>
+		/// Base method for sending POST requests
+		/// </summary>
+		/// <param name="url">URL for request</param>
+		/// <param name="data">Data in json format for sending</param>
+		/// <returns>Answer of server in json format</returns>
+		private static async Task<string> BasePostRequestAsync(string url, string data)
+		{
+			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(data))
+			{
+				return string.Empty;
+			}
 
-		//		try
-		//		{
-		//			WebRequest request = WebRequest.Create(url);
-		//			request.Method = "POST";
+			WebRequest request = WebRequest.Create(url);
+			request.Method = "POST";
 
-		//			byte[] byteArray = Encoding.UTF8.GetBytes(data);
+			byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
-		//			request.ContentType = "application/json";
+			request.ContentType = "application/json";
 
-		//			// Set header
-		//			request.ContentLength = byteArray.Length;
+			// Set header
+			request.ContentLength = byteArray.Length;
 
-		//			// Write data to stream
-		//			using (Stream dataStream = request.GetRequestStream())
-		//			{
-		//				dataStream.Write(byteArray, 0, byteArray.Length);
-		//			}
+			// Write data to stream
+			using (Stream dataStream = request.GetRequestStream())
+			{
+				dataStream.Write(byteArray, 0, byteArray.Length);
+			}
 
-		//			string result = string.Empty;
+			StringBuilder result = new StringBuilder(1000);
 
-		//			WebResponse response = await request.GetResponseAsync();
-		//			using (Stream stream = response.GetResponseStream())
-		//			{
-		//				using (StreamReader reader = new StreamReader(stream ?? throw new InvalidOperationException()))
-		//				{
-		//					result += reader.ReadToEnd();
-		//				}
-		//			}
-		//			response.Close();
+			using (var response = await request.GetResponseAsync())
+			{
+				using (Stream stream = response.GetResponseStream())
+				{
+					using (StreamReader reader = new StreamReader(stream ?? throw new InvalidOperationException()))
+					{
+						result.Append(reader.ReadToEnd());
+					}
+				}
+			}
 
-		//			return result;
-		//		}
-		//		catch (Exception)
-		//		{
-		//			throw;
-		//		}
-		//	}
+			return result.ToString();
+		}
 
 		//	/// <summary>
 		//	/// Type of sending request
@@ -889,34 +885,34 @@ namespace Models.InternetRequests
 		//		return resultOfSynchronization;
 		//	}
 
-		//	/// <summary>
-		//	/// Check Internet connection
-		//	/// </summary>
-		//	/// <returns>Return true, if connected</returns>
-		//	public static bool CheckForInternetConnection()
-		//	{
-		//		try
-		//		{
-		//			using (var webClient = new WebClient())
-		//			{
-		//				webClient.Proxy = null;
+		/// <summary>
+		/// Check Internet connection
+		/// </summary>
+		/// <returns>Return true, if connected</returns>
+		public static bool CheckForInternetConnection()
+		{
+			try
+			{
+				using (var webClient = new WebClient())
+				{
+					webClient.Proxy = null;
 
-		//				using (webClient.OpenRead("http://clients3.google.com/generate_204"))
-		//				{
-		//					return true;
-		//				}
-		//			}
-		//		}
-		//		catch (WebException)
-		//		{
-		//			return false;
-		//		}
+					using (webClient.OpenRead("http://clients3.google.com/generate_204"))
+					{
+						return true;
+					}
+				}
+			}
+			catch (WebException)
+			{
+				return false;
+			}
 
-		//		catch (Exception)
-		//		{
-		//			return false;
-		//		}
-		//	}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
 
 		#region JSON Converting
 

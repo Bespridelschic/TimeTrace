@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Models.InternetRequests;
 using Models.UserModel;
@@ -7,35 +8,36 @@ using Models.UserModel;
 namespace ViewModels.AuthenticationViewModels
 {
 	/// <summary>
-	/// Authorization of user in system
+	/// Registration of new user in system
 	/// </summary>
-	public class AuthorizationViewModel : BaseViewModel, IMessageNotification
+	public class RegistrationViewModel : BaseViewModel, IMessageNotification
 	{
 		#region Properties
 
-		public User User { get; private set; }
+		public RegisteredUser User { get; private set; }
 
 		public event Action<string, string> MessageNotification = delegate { };
 
-		public bool IsUserDataSave { get; set; }
-
 		#endregion
 
-		public AuthorizationViewModel()
+		/// <summary>
+		/// Creation of new user for registration
+		/// </summary>
+		/// <param name="user">Prepared <seealso cref="User"/> object</param>
+		public RegistrationViewModel(User user)
 		{
-			User = new User();
-			IsUserDataSave = true;
+			User = new RegisteredUser(user.Email, string.Empty);
 		}
 
 		/// <summary>
-		/// Trying to authorization in system
+		/// Trying to registration in system
 		/// </summary>
 		/// <returns></returns>
-		public async Task<bool> SignInAsync()
+		public async Task<bool> SignUnAsync()
 		{
 			if (!InternetRequests.CheckForInternetConnection())
 			{
-				await MessageInvokeAsync("No internet connection", "Authorization error");
+				await MessageInvokeAsync("No internet connection", "Registration error");
 				return false;
 			}
 
