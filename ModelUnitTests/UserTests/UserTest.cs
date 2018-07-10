@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Models.UserModel;
@@ -15,22 +16,18 @@ namespace ModelUnitTests.UserTests
 		[TestMethod]
 		public void CorrectEmailValidation()
 		{
-			User user = new User("test@gmail.com", "pass");
-
-			Assert.AreEqual(true, user.EmailCorrectCheck());
+			User user = new User("test@gmail.com", "1234567890");
+			Assert.AreEqual(0, user.Validation().Count);
 		}
 
 		/// <summary>
 		/// Checking incorrect email
 		/// </summary>
 		[TestMethod]
-		public void InCorrectEmailValidation()
+		public void IncorrectEmailValidation()
 		{
 			User user = new User("test.gmail.com", "pass");
-			Assert.AreNotEqual(true, user.EmailCorrectCheck());
-
-			user.Email = "test@gmail";
-			Assert.AreNotEqual(true, user.EmailCorrectCheck());
+			Assert.AreEqual(2, user.Validation().Count);
 		}
 	}
 }

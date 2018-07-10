@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,6 +15,7 @@ namespace Models.UserModel
 	/// <summary>
 	/// User class
 	/// </summary>
+	[DataContract]
 	public class User : INotifyPropertyChanged
 	{
 		#region Fields
@@ -23,6 +27,9 @@ namespace Models.UserModel
 
 		#region Properties
 
+		[DataMember]
+		[Required]
+		[EmailAddress]
 		public string Email
 		{
 			get => email?.Trim();
@@ -33,6 +40,8 @@ namespace Models.UserModel
 			}
 		}
 
+		[DataMember]
+		[StringLength(30, MinimumLength = 8)]
 		public string Password
 		{
 			get => password?.Trim();
@@ -43,71 +52,32 @@ namespace Models.UserModel
 			}
 		}
 
+		[DataMember]
 		public string Token { get; set; }
 
 		#endregion
 
-		#region Validation of entered data
-
 		/// <summary>
-		/// Validation of entered email
+		/// Validation of object
 		/// </summary>
-		/// <returns></returns>
-		public bool EmailCorrectCheck()
+		/// <returns>Null is error of validation. Empty list is good validation</returns>
+		public IList<string> Validation()
 		{
-			string pattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
-			var res = Regex.Match(Email, pattern);
+			var results = new List<ValidationResult>();
+			var context = new ValidationContext(this);
 
-			if (res.Success)
+			IList<string> listOfErrors = new List<string>();
+
+			if (!Validator.TryValidateObject(this, context, results, true))
 			{
-				return true;
+				foreach (var error in results)
+				{
+					listOfErrors.Add(error.ErrorMessage);
+				}
 			}
 
-			return false;
+			return listOfErrors;
 		}
-
-		/// <summary>
-		/// Password complexity level
-		/// </summary>
-		public enum PasswordScore
-		{
-			Blank = 0,
-			VeryWeak = 1,
-			Weak = 2,
-			Medium = 3,
-			Strong = 4,
-			VeryStrong = 5
-		}
-
-		/// <summary>
-		/// Checking the complexity of the password
-		/// </summary>
-		/// <returns>Level of security strong</returns>
-		public PasswordScore PasswordSecurityCheck()
-		{
-			int score = 1;
-
-			if (Password.Length < 1)
-				return PasswordScore.Blank;
-			if (Password.Length < 4)
-				return PasswordScore.VeryWeak;
-
-			if (Password.Length >= 8)
-				score++;
-			if (Password.Length >= 12)
-				score++;
-			if (Regex.Match(Password, @"/\d+/", RegexOptions.ECMAScript).Success)
-				score++;
-			if (Regex.Match(Password, @"/[a-z]/", RegexOptions.ECMAScript).Success
-				&& Regex.Match(Password, @"/[A-Z]/", RegexOptions.ECMAScript).Success)
-				score++;
-			if (Regex.Match(Password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
-				score++;
-
-			return (PasswordScore)score;
-		}
-
-		#endregion
 
 		#region Constructors
 

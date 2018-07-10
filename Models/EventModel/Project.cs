@@ -24,6 +24,14 @@ namespace Models.EventModel
 		#region Constructors
 
 		/// <summary>
+		/// Empty constructor for deserializing
+		/// </summary>
+		public Project()
+		{
+			
+		}
+
+		/// <summary>
 		/// Standart constructor for loading projects of calendar
 		/// </summary>
 		/// <param name="calendar">Root calendar</param>

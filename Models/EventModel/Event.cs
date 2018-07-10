@@ -121,6 +121,14 @@ namespace Models.EventModel
 		#region Constructors
 
 		/// <summary>
+		/// Empty constructor for deserializing
+		/// </summary>
+		public Event()
+		{
+			
+		}
+
+		/// <summary>
 		/// Standart constructor for loading events of project
 		/// </summary>
 		/// <param name="project">Root project</param>

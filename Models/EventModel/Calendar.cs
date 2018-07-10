@@ -32,6 +32,14 @@ namespace Models.EventModel
 
 		#region Constructors
 
+		/// <summary>
+		/// Empty constructor for deserializing
+		/// </summary>
+		public Calendar()
+		{
+			
+		}
+
 		/// <inheritdoc />
 		/// <summary>
 		/// Standart constructor for creation new calendar
