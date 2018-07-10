@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Models.UserModel;
 
-namespace ModelUnitTests.UserTests
+namespace ModelsUnitTests.UserTests
 {
 	[TestClass]
-    public class UserTest
-    {
+	public class UserTest
+	{
 		/// <summary>
 		/// Checking correct email
 		/// </summary>

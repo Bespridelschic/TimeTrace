@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Microsoft.Extensions.Configuration;
 
-namespace ViewModels.AuthorizationViewModels
+namespace ViewModels.AuthenticationViewModels
 {
     class AuthorizationViewModel : BaseViewModel
     {
