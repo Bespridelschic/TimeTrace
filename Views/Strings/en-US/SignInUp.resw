@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountActivateText" xml:space="preserve">
+    <value>Account activation</value>
+    <comment>Activation page title</comment>
+  </data>
+  <data name="AccountSuccessRegistredText" xml:space="preserve">
+    <value>Account successfully registered</value>
+    <comment>Account is registred report</comment>
+  </data>
+  <data name="AccountVerificationText" xml:space="preserve">
+    <value>Account Verification</value>
+    <comment>Account verification text</comment>
+  </data>
+  <data name="ActivationInstructionText" xml:space="preserve">
+    <value>Check your E-mail, we are send you instruction for activation</value>
+    <comment>Activation account instructions report</comment>
+  </data>
+  <data name="BirthdayCalendar.Header" xml:space="preserve">
+    <value>Birthday:</value>
+    <comment>Birthday field</comment>
+  </data>
+  <data name="BirthdayCalendar.PlaceholderText" xml:space="preserve">
+    <value>Set your date of birth...</value>
+  </data>
+  <data name="BirthdayCalendar.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Set your real date of birth</value>
+  </data>
+  <data name="CantActivateAccountText" xml:space="preserve">
+    <value>Remote server isn't available now. Please, Try later</value>
+    <comment>Can't activate account report</comment>
+  </data>
+  <data name="CantChangePasswordText" xml:space="preserve">
+    <value>Password change error. Please, try later</value>
+    <comment>Can't change passwort report</comment>
+  </data>
+  <data name="ChangePasswordText" xml:space="preserve">
+    <value>Changing password</value>
+    <comment>Password changing title</comment>
+  </data>
+  <data name="CheckCorrectionText" xml:space="preserve">
+    <value>Check your input data or create a new account</value>
+    <comment>Chech correction report</comment>
+  </data>
+  <data name="CheckInternetConnectionMessage" xml:space="preserve">
+    <value>Check your internet connection</value>
+  </data>
+  <data name="ConfirmOfflineSignIn" xml:space="preserve">
+    <value>Do you want to log in to your account offline?</value>
+  </data>
+  <data name="ConfirmPasswordBoxRegistration.Header" xml:space="preserve">
+    <value>Confirm password:</value>
+    <comment>Confirm password field</comment>
+  </data>
+  <data name="ConfirmPasswordBoxRegistration.PlaceholderText" xml:space="preserve">
+    <value>Confirm your password...</value>
+  </data>
+  <data name="ConfirmPasswordBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Confirm the password entered earlier</value>
+  </data>
+  <data name="EmailAlreadyRegisteredText" xml:space="preserve">
+    <value>E-mail with this email already registered</value>
+    <comment>E-mail is already registered report</comment>
+  </data>
+  <data name="EmailBox.Header" xml:space="preserve">
+    <value>E-mail address:</value>
+    <comment>E-mail enter field</comment>
+  </data>
+  <data name="EmailBox.PlaceholderText" xml:space="preserve">
+    <value>Enter your E-mail...</value>
+  </data>
+  <data name="EmailBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter registered E-mail</value>
+  </data>
+  <data name="EmailBoxRegistration.Header" xml:space="preserve">
+    <value>E-mail:</value>
+    <comment>E-mail registration field</comment>
+  </data>
+  <data name="EmailBoxRegistration.PlaceholderText" xml:space="preserve">
+    <value>Enter your E-mail...</value>
+  </data>
+  <data name="EmailBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter your registrered E-mail</value>
+  </data>
+  <data name="EmailBoxRegistrationHeader" xml:space="preserve">
+    <value>E-mail:</value>
+    <comment>E-mail registration field</comment>
+  </data>
+  <data name="EmailBoxRegistrationPlaceholderText" xml:space="preserve">
+    <value>Enter your E-mail...</value>
+  </data>
+  <data name="FillAllFieldsText" xml:space="preserve">
+    <value>Fill in all the fields</value>
+    <comment>Fill in all the fields report</comment>
+  </data>
+  <data name="FirstNameTextBox.Header" xml:space="preserve">
+    <value>First name:</value>
+    <comment>Name field</comment>
+  </data>
+  <data name="FirstNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Enter your first name...</value>
+  </data>
+  <data name="FirstNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter your real first name</value>
+  </data>
+  <data name="GetKeyButtonText" xml:space="preserve">
+    <value>Get key</value>
+    <comment>Get key button</comment>
+  </data>
+  <data name="HeaderTextBoxExtendPage.Text" xml:space="preserve">
+    <value>Common information</value>
+    <comment>Extended registration page title</comment>
+  </data>
+  <data name="HeaderTextBoxRegistrationPage.Text" xml:space="preserve">
+    <value>Registration</value>
+    <comment>Registration finish page title</comment>
+  </data>
+  <data name="IncorrectEmailText" xml:space="preserve">
+    <value>E-mail incorrect. Check it again</value>
+    <comment>E-mail incorrect report</comment>
+  </data>
+  <data name="InternetConnectionProblemMessage" xml:space="preserve">
+    <value>No access to the Internet</value>
+  </data>
+  <data name="InternetConnectionProblems" xml:space="preserve">
+    <value>Input is not possible. Check your internet connection</value>
+  </data>
+  <data name="LastNameTextBox.Header" xml:space="preserve">
+    <value>Last name:</value>
+    <comment>Last name field</comment>
+  </data>
+  <data name="LastNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Enter your last name...</value>
+  </data>
+  <data name="LastNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter your real last name</value>
+  </data>
+  <data name="LaterButtonText" xml:space="preserve">
+    <value>Later</value>
+    <comment>Cancel password recovery button</comment>
+  </data>
+  <data name="LimitFunctionWarnings" xml:space="preserve">
+    <value>Some functions will be unavailable!</value>
+  </data>
+  <data name="MiddleNameTextBox.Header" xml:space="preserve">
+    <value>Middle name:</value>
+    <comment>Middle name field</comment>
+  </data>
+  <data name="MiddleNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Enter your middle name...</value>
+  </data>
+  <data name="MiddleNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter your real middle name if you have one</value>
+  </data>
+  <data name="NewPasswordHeader" xml:space="preserve">
+    <value>New password:</value>
+    <comment>New password text box</comment>
+  </data>
+  <data name="NewPasswordPlaceholderText" xml:space="preserve">
+    <value>Input a new password...</value>
+  </data>
+  <data name="NoMatchesFoundText" xml:space="preserve">
+    <value>No matches found for accounts.</value>
+    <comment>No matches found for accounts report</comment>
+  </data>
+  <data name="ObligatoryFieldAttentionText.Text" xml:space="preserve">
+    <value>All fields are obligatory*</value>
+    <comment>Obligatory attention text</comment>
+  </data>
+  <data name="OfferOfflineSignIn" xml:space="preserve">
+    <value>We found that you previously used this account from this computer.</value>
+  </data>
+  <data name="OfflineSignIn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="OfflineSignInCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OfflineSignInConfirm" xml:space="preserve">
+    <value>Do you want to login offline?</value>
+  </data>
+  <data name="OperationFailedText" xml:space="preserve">
+    <value>Operation failed</value>
+    <comment>Operation failed report</comment>
+  </data>
+  <data name="OptionalFieldAttentionText.Text" xml:space="preserve">
+    <value>All field are optional*</value>
+    <comment>Optional attention text</comment>
+  </data>
+  <data name="PasswordBox.Header" xml:space="preserve">
+    <value>Password:</value>
+    <comment>Password field</comment>
+  </data>
+  <data name="PasswordBox.PlaceholderText" xml:space="preserve">
+    <value>Enter your password...</value>
+  </data>
+  <data name="PasswordBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter your real account password</value>
+  </data>
+  <data name="PasswordBoxRegistration.Header" xml:space="preserve">
+    <value>Password:</value>
+    <comment>Registration finish password field</comment>
+  </data>
+  <data name="PasswordBoxRegistration.PlaceholderText" xml:space="preserve">
+    <value>Enter strong password...</value>
+  </data>
+  <data name="PasswordBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enter strong account password</value>
+  </data>
+  <data name="PasswordForgotLink.Content" xml:space="preserve">
+    <value>Forgot password?</value>
+    <comment>Recovery password button</comment>
+  </data>
+  <data name="PasswordForgotLink.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Go to password recovery page</value>
+  </data>
+  <data name="PasswordLengthShortText" xml:space="preserve">
+    <value>Password must be at least 8 characters</value>
+    <comment>Password length is short report</comment>
+  </data>
+  <data name="PasswordRecoveryText" xml:space="preserve">
+    <value>Password recovery</value>
+    <comment>Password recovery page title</comment>
+  </data>
+  <data name="PasswordSaveChechBox.Content" xml:space="preserve">
+    <value>Save the password</value>
+    <comment>Password save check</comment>
+  </data>
+  <data name="PasswordSaveChechBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Use automatic login</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+    <comment>Passwords do not match report</comment>
+  </data>
+  <data name="RecoveryButtonText" xml:space="preserve">
+    <value>Recovery</value>
+    <comment>Recovery text button</comment>
+  </data>
+  <data name="RegistrationButton.Content" xml:space="preserve">
+    <value>Create account</value>
+    <comment>Registration finish button</comment>
+  </data>
+  <data name="RegistrationButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Create an account in the system</value>
+  </data>
+  <data name="RegistrationError" xml:space="preserve">
+    <value>Registration error</value>
+    <comment>Registration error report</comment>
+  </data>
+  <data name="RegistrationNextStepButton.Content" xml:space="preserve">
+    <value>Next</value>
+    <comment>Next registration step in a system</comment>
+  </data>
+  <data name="RegistrationNextStepButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Continue registration in the system</value>
+  </data>
+  <data name="RegistrationProblemText" xml:space="preserve">
+    <value>Registration problem</value>
+    <comment>Registration problem page title</comment>
+  </data>
+  <data name="ServerConnectionProblemBadRegistrationText" xml:space="preserve">
+    <value>Registration error, remote server is not available. Please try again later</value>
+    <comment>Remote server isn't available for registration report</comment>
+  </data>
+  <data name="ServerConnectionProblemText" xml:space="preserve">
+    <value>Remote server isn't available now. Please, Try later</value>
+    <comment>Remote server isn't available for login report</comment>
+  </data>
+  <data name="SignInButton.Content" xml:space="preserve">
+    <value>Sign in</value>
+    <comment>Sign in button</comment>
+  </data>
+  <data name="SignInButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Login to the system</value>
+  </data>
+  <data name="SignInErrorText" xml:space="preserve">
+    <value>Sign in error</value>
+    <comment>Error accessing the system report</comment>
+  </data>
+  <data name="SignUpLink.Content" xml:space="preserve">
+    <value>Sign up</value>
+    <comment>Sign up button</comment>
+  </data>
+  <data name="SignUpLink.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Go to sign up page</value>
+  </data>
+  <data name="SuccessText" xml:space="preserve">
+    <value>Success</value>
+    <comment>Success registration report</comment>
+  </data>
+  <data name="UndefinedErrorText" xml:space="preserve">
+    <value>Undefined error. Please, contact the developer</value>
+    <comment>Undefined error report</comment>
+  </data>
+  <data name="UnknownEmail" xml:space="preserve">
+    <value>Unknown@gmail.com</value>
+  </data>
+</root>

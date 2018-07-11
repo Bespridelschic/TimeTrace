@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountActivateText" xml:space="preserve">
+    <value>Активировать аккаунт</value>
+    <comment>Заглавие окна активации аккаунта</comment>
+  </data>
+  <data name="AccountSuccessRegistredText" xml:space="preserve">
+    <value>Аккаунт успешно зарегистирован</value>
+    <comment>Сообщение об успешной регистрации аккаунта</comment>
+  </data>
+  <data name="AccountVerificationText" xml:space="preserve">
+    <value>Подтверждение аккаунта</value>
+    <comment>Сообщение о подтверждении аккаунта</comment>
+  </data>
+  <data name="ActivationInstructionText" xml:space="preserve">
+    <value>На вашу электронную почту отправлено письмо с инструкцией по активации</value>
+    <comment>Инструкции по активации аккаунта</comment>
+  </data>
+  <data name="BirthdayCalendar.Header" xml:space="preserve">
+    <value>Дата рождения:</value>
+    <comment>Поле для ввода даты рождения</comment>
+  </data>
+  <data name="BirthdayCalendar.PlaceholderText" xml:space="preserve">
+    <value>Установите дату рождения...</value>
+  </data>
+  <data name="BirthdayCalendar.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Уточните дату вашего рождения</value>
+  </data>
+  <data name="CantActivateAccountText" xml:space="preserve">
+    <value>Не предвиденная ошибка. Повторите попытку позже</value>
+    <comment>Сообщение о не удачной попытке активации аккаунта</comment>
+  </data>
+  <data name="CantChangePasswordText" xml:space="preserve">
+    <value>Ошибка изменения пароля! Сброс пароля не возможен</value>
+    <comment>Сообщение о невозможности изменения пароля</comment>
+  </data>
+  <data name="ChangePasswordText" xml:space="preserve">
+    <value>Изменение пароля</value>
+    <comment>Заглавие сообщения о изменении пароля</comment>
+  </data>
+  <data name="CheckCorrectionText" xml:space="preserve">
+    <value>Проверьте корректность введенных данных, или зарегистрируйте новый аккаунт</value>
+    <comment>Сообщение с предложением создания аккаунта или проверкой корректности данных</comment>
+  </data>
+  <data name="CheckInternetConnectionMessage" xml:space="preserve">
+    <value>Проверьте своё подключение к интернету</value>
+  </data>
+  <data name="ConfirmOfflineSignIn" xml:space="preserve">
+    <value>Хотите войти под своей учётной записью в автономном режиме?</value>
+  </data>
+  <data name="ConfirmPasswordBoxRegistration.Header" xml:space="preserve">
+    <value>Подтвердите пароль:</value>
+    <comment>Поле для подтверждения введенного пароля</comment>
+  </data>
+  <data name="ConfirmPasswordBoxRegistration.PlaceholderText" xml:space="preserve">
+    <value>Подтвердите ваш пароль...</value>
+  </data>
+  <data name="ConfirmPasswordBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Подтвердите пароль, введённый ранее</value>
+  </data>
+  <data name="EmailAlreadyRegisteredText" xml:space="preserve">
+    <value>Пользователь с таким Email уже зарегистрирован</value>
+    <comment>Сообщение о существовании аккаунта</comment>
+  </data>
+  <data name="EmailBox.Header" xml:space="preserve">
+    <value>Почта:</value>
+    <comment>Поле для ввода электронного адреса</comment>
+  </data>
+  <data name="EmailBox.PlaceholderText" xml:space="preserve">
+    <value>Введите ваш эл. адрес...</value>
+  </data>
+  <data name="EmailBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите зарегистрированный адрес электронной почты</value>
+  </data>
+  <data name="EmailBoxRegistration.Header" xml:space="preserve">
+    <value>Электронная почта:</value>
+    <comment>Поле для ввода электронной почты для завершения регистрации</comment>
+  </data>
+  <data name="EmailBoxRegistration.PlaceholderText" xml:space="preserve">
+    <value>Введите вашу эл. почту...</value>
+  </data>
+  <data name="EmailBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите вашу реальную электронную почту</value>
+  </data>
+  <data name="EmailBoxRegistrationHeader" xml:space="preserve">
+    <value>Электронная почта:</value>
+    <comment>Поле для ввода электронной почты для завершения регистрации</comment>
+  </data>
+  <data name="EmailBoxRegistrationPlaceholderText" xml:space="preserve">
+    <value>Введите вашу эл. почту...</value>
+  </data>
+  <data name="FillAllFieldsText" xml:space="preserve">
+    <value>Необходимо заполнить все поля</value>
+    <comment>Сообщение о требовании ввода всех полей</comment>
+  </data>
+  <data name="FirstNameTextBox.Header" xml:space="preserve">
+    <value>Имя:</value>
+    <comment>Поле для ввода имени</comment>
+  </data>
+  <data name="FirstNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Введите ваше имя...</value>
+  </data>
+  <data name="FirstNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите своё имя</value>
+  </data>
+  <data name="GetKeyButtonText" xml:space="preserve">
+    <value>Получить код</value>
+    <comment>Кнопка получения пароля активации</comment>
+  </data>
+  <data name="HeaderTextBoxExtendPage.Text" xml:space="preserve">
+    <value>Общая информация</value>
+    <comment>Заголовок окна заполнения общих данных</comment>
+  </data>
+  <data name="HeaderTextBoxRegistrationPage.Text" xml:space="preserve">
+    <value>Регистрация</value>
+    <comment>Заголовок окна завершения регистрации</comment>
+  </data>
+  <data name="IncorrectEmailText" xml:space="preserve">
+    <value>Проверьте корректность введенного адреса электронной почты</value>
+    <comment>Сообщение о некорректном формате адреса электронной почты</comment>
+  </data>
+  <data name="InternetConnectionProblemMessage" xml:space="preserve">
+    <value>Нет доступа к интернету</value>
+  </data>
+  <data name="InternetConnectionProblems" xml:space="preserve">
+    <value>Вход невозможен. Проверьте своё интернет подключение</value>
+  </data>
+  <data name="LastNameTextBox.Header" xml:space="preserve">
+    <value>Фамилия:</value>
+    <comment>Поле для ввода фамилии</comment>
+  </data>
+  <data name="LastNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Введите вашу фамилию...</value>
+  </data>
+  <data name="LastNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите свою фамилию</value>
+  </data>
+  <data name="LaterButtonText" xml:space="preserve">
+    <value>Позже</value>
+    <comment>Название кнопки отмены восстановления пароля</comment>
+  </data>
+  <data name="LimitFunctionWarnings" xml:space="preserve">
+    <value>Некоторые функции будут недоступны!</value>
+  </data>
+  <data name="MiddleNameTextBox.Header" xml:space="preserve">
+    <value>Отчество:</value>
+    <comment>Поле для ввода отчества</comment>
+  </data>
+  <data name="MiddleNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Введите ваше отчество...</value>
+  </data>
+  <data name="MiddleNameTextBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите своё отчество</value>
+  </data>
+  <data name="NewPasswordHeader" xml:space="preserve">
+    <value>Новый пароль:</value>
+    <comment>Ввод нового пароля</comment>
+  </data>
+  <data name="NewPasswordPlaceholderText" xml:space="preserve">
+    <value>Введите новый пароль...</value>
+  </data>
+  <data name="NoMatchesFoundText" xml:space="preserve">
+    <value>Не найдено совпадений с существующими аккаунтами.</value>
+    <comment>Сообщение об не найденном аккаунте</comment>
+  </data>
+  <data name="ObligatoryFieldAttentionText.Text" xml:space="preserve">
+    <value>Все поля являются обязательными*</value>
+    <comment>Предупреждение об обязательности полей</comment>
+  </data>
+  <data name="OfferOfflineSignIn" xml:space="preserve">
+    <value>Мы обнаружили, что вы ранее входили под этой учётной записью с этого компьютера.</value>
+  </data>
+  <data name="OfflineSignIn" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="OfflineSignInCancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="OfflineSignInConfirm" xml:space="preserve">
+    <value>Хотите войти локально?</value>
+  </data>
+  <data name="OperationFailedText" xml:space="preserve">
+    <value>Ошибка операции</value>
+    <comment>Сообщение об ошибке операции</comment>
+  </data>
+  <data name="OptionalFieldAttentionText.Text" xml:space="preserve">
+    <value>Поля не являются обязательными*</value>
+    <comment>Предупреждение о необязательности полей</comment>
+  </data>
+  <data name="PasswordBox.Header" xml:space="preserve">
+    <value>Пароль:</value>
+    <comment>Поле для ввода пароля</comment>
+  </data>
+  <data name="PasswordBox.PlaceholderText" xml:space="preserve">
+    <value>Введите ваш пароль...</value>
+  </data>
+  <data name="PasswordBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите ваш пароль от аккаунта</value>
+  </data>
+  <data name="PasswordBoxRegistration.Header" xml:space="preserve">
+    <value>Пароль:</value>
+    <comment>Поле для ввода пароля для завершения регистрации</comment>
+  </data>
+  <data name="PasswordBoxRegistration.PlaceholderText" xml:space="preserve">
+    <value>Введите желаемый пароль...</value>
+  </data>
+  <data name="PasswordBoxRegistration.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Введите пароль, с помощью которого вы будете входить в систему. Придумайте надёжный пароль</value>
+  </data>
+  <data name="PasswordForgotLink.Content" xml:space="preserve">
+    <value>Забыли пароль?</value>
+    <comment>Кнопка восстановления пароля</comment>
+  </data>
+  <data name="PasswordForgotLink.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Перейти на страницу восстановления пароля</value>
+  </data>
+  <data name="PasswordLengthShortText" xml:space="preserve">
+    <value>Минимальная длина пароля должна составлять 8 символов</value>
+    <comment>Сообщение о слишком коротком пароле</comment>
+  </data>
+  <data name="PasswordRecoveryText" xml:space="preserve">
+    <value>Восстановление пароля</value>
+    <comment>Заглавие окна восстановления пароля</comment>
+  </data>
+  <data name="PasswordSaveChechBox.Content" xml:space="preserve">
+    <value>Сохранить пароль</value>
+    <comment>Галочка сохранения пароль</comment>
+  </data>
+  <data name="PasswordSaveChechBox.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Использовать автоматический вход в систему</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Введенные пароли не совпадают</value>
+    <comment>Сообщение о не совпадении введенных паролей</comment>
+  </data>
+  <data name="RecoveryButtonText" xml:space="preserve">
+    <value>Восстановить</value>
+    <comment>Название кнопки восстановления пароля</comment>
+  </data>
+  <data name="RegistrationButton.Content" xml:space="preserve">
+    <value>Зарегистироваться</value>
+    <comment>Кнопка завершения регистрации</comment>
+  </data>
+  <data name="RegistrationButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Зарегистрироваться в системе</value>
+  </data>
+  <data name="RegistrationError" xml:space="preserve">
+    <value>Ошибка регистрации</value>
+    <comment>Заголовок окна с ошибкой регистраци</comment>
+  </data>
+  <data name="RegistrationNextStepButton.Content" xml:space="preserve">
+    <value>Далее</value>
+    <comment>Кнопка продолжения регистрации в системе</comment>
+  </data>
+  <data name="RegistrationNextStepButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Продолжить регистрацию в системе</value>
+  </data>
+  <data name="RegistrationProblemText" xml:space="preserve">
+    <value>Проблема регистрации</value>
+    <comment>Сообщение о проблеме регистрации в системе</comment>
+  </data>
+  <data name="ServerConnectionProblemBadRegistrationText" xml:space="preserve">
+    <value>Ошибка регистрации, удаленный сервер не доступен. Повторите попытку позже</value>
+    <comment>Сообщение об не удачном соединении с сервером при регистрации</comment>
+  </data>
+  <data name="ServerConnectionProblemText" xml:space="preserve">
+    <value>Ошибка входа, удаленный сервер не доступен. Повторите попытку позже</value>
+    <comment>Сообщение об не удачном соединении с сервером при входе</comment>
+  </data>
+  <data name="SignInButton.Content" xml:space="preserve">
+    <value>Вход</value>
+    <comment>Кнопка входа в систему</comment>
+  </data>
+  <data name="SignInButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Войти в систему</value>
+  </data>
+  <data name="SignInErrorText" xml:space="preserve">
+    <value>Ошибка входа</value>
+    <comment>Сообщение об ошибке входа</comment>
+  </data>
+  <data name="SignUpLink.Content" xml:space="preserve">
+    <value>Зарегистрировать новый аккаунт</value>
+    <comment>Кнопка регистрации нового аккаунта</comment>
+  </data>
+  <data name="SignUpLink.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Перейти на страницу регистрации</value>
+  </data>
+  <data name="SuccessText" xml:space="preserve">
+    <value>Успех</value>
+    <comment>Заголовок окна успешной регистрации</comment>
+  </data>
+  <data name="UndefinedErrorText" xml:space="preserve">
+    <value>Не предвиденная ошибка. Обратитесь к разработчику</value>
+    <comment>Сообщение о не предвиденной ошибке</comment>
+  </data>
+  <data name="UnknownEmail" xml:space="preserve">
+    <value>Неизвестный@gmail.com</value>
+  </data>
+</root>

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTrace", "TimeTrace\TimeTrace.csproj", "{380D2987-D7D9-4C4E-AC25-E4B22C9B7DA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTraceOld", "TimeTrace\TimeTraceOld.csproj", "{380D2987-D7D9-4C4E-AC25-E4B22C9B7DA5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{496805CA-CD3F-4E71-A574-A0F00F05B6A6}"
 EndProject
@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core\Core.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "ViewModels\ViewModels.csproj", "{CF567458-DF60-489A-B06C-A2DC4BF4ECBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelsUnitTests", "ModelsUnitTests\ModelsUnitTests.csproj", "{AE649758-84CC-4AE4-9449-CD58C855CEEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelsUnitTests", "ModelsUnitTests\ModelsUnitTests.csproj", "{AE649758-84CC-4AE4-9449-CD58C855CEEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Views", "Views\Views.csproj", "{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +111,26 @@ Global
 		{AE649758-84CC-4AE4-9449-CD58C855CEEC}.Release|x64.Build.0 = Release|Any CPU
 		{AE649758-84CC-4AE4-9449-CD58C855CEEC}.Release|x86.ActiveCfg = Release|Any CPU
 		{AE649758-84CC-4AE4-9449-CD58C855CEEC}.Release|x86.Build.0 = Release|Any CPU
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|ARM.ActiveCfg = Debug|ARM
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|ARM.Build.0 = Debug|ARM
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|ARM.Deploy.0 = Debug|ARM
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|x64.ActiveCfg = Debug|x64
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|x64.Build.0 = Debug|x64
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|x64.Deploy.0 = Debug|x64
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|x86.ActiveCfg = Debug|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|x86.Build.0 = Debug|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Debug|x86.Deploy.0 = Debug|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|Any CPU.ActiveCfg = Release|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|ARM.ActiveCfg = Release|ARM
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|ARM.Build.0 = Release|ARM
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|ARM.Deploy.0 = Release|ARM
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|x64.ActiveCfg = Release|x64
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|x64.Build.0 = Release|x64
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|x64.Deploy.0 = Release|x64
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|x86.ActiveCfg = Release|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|x86.Build.0 = Release|x86
+		{82A603DF-8653-4EB5-9B75-0CAB3AC7BD8F}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
