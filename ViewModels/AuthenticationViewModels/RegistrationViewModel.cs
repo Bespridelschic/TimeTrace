@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Models.InternetRequests;
 using Models.UserModel;
+using ViewModels.Dialogs;
 
 namespace ViewModels.AuthenticationViewModels
 {

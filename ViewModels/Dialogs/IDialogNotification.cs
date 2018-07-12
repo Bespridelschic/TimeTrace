@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ViewModels
+namespace ViewModels.Dialogs
 {
 	/// <summary>
 	/// Notifying the user of new dialog

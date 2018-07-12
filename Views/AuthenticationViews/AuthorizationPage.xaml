@@ -21,7 +21,7 @@
 				</Setter>
 			</Style>
 			<ResourceDictionary.MergedDictionaries>
-				<!--<ResourceDictionary Source="/ResourceDictionaries/AuthenticationDictionary.xaml" />-->
+				<ResourceDictionary Source="/ResourceDictionaries/AuthenticationDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 
@@ -45,7 +45,6 @@
 			<ColumnDefinition Width="0.2*" />
 		</Grid.ColumnDefinitions>
 
-		<!--  Background="{StaticResource HostBackdropBrush}"  -->
 		<Grid
 			Grid.Row="0"
 			Grid.Column="0"
@@ -56,8 +55,10 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			Style="{StaticResource GridAnimation}">
-			<!--  Source="../../Assets/logo_Win.png"  -->
-			<Image VerticalAlignment="Bottom" Stretch="Uniform" />
+			<Image
+				VerticalAlignment="Bottom"
+				Source="/Assets/logo_Win.png"
+				Stretch="Uniform" />
 		</Grid>
 
 		<Grid

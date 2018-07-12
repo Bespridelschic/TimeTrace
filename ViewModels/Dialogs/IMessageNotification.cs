@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ViewModels
+namespace ViewModels.Dialogs
 {
 	/// <summary>
 	/// Notifying the user of new messages

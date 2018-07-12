@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ViewModels
+namespace ViewModels.Navigation
 {
     public interface INavigationService<T>
 	{
